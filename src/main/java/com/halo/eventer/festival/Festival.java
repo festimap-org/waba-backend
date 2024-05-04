@@ -1,10 +1,14 @@
 package com.halo.eventer.festival;
 
 
+import com.halo.eventer.duration.Duration;
+import com.halo.eventer.festival.dto.ColorReqDto;
 import com.halo.eventer.festival.dto.FestivalCreateDto;
 import com.halo.eventer.concert.Concert;
-import com.halo.eventer.map.Map;
+import com.halo.eventer.festival.dto.MainMenuDto;
+import com.halo.eventer.map.MapCategory;
 import com.halo.eventer.notice.Notice;
+import com.halo.eventer.widget.Widget;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,17 +30,16 @@ public class Festival {
 
     private String name;
 
-    @Column(columnDefinition = "varchar(2000)")
-    private String content;
+    private String mainColor;
+    private String subColor;
+    private String fontColor;
 
-    private String image;
+    private String logo;
 
-    private String location;
-
-
-
-    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
-    private List<Map> maps = new ArrayList<>();
+    private String menuName1;
+    private String menuName2;
+    private String menuImage1;
+    private String menuImage2;
 
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
@@ -46,22 +49,45 @@ public class Festival {
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private List<Notice> notices = new ArrayList<>();
 
+    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    private List<MapCategory> mapCategories = new ArrayList<>();
+
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
-    private List<Notice> mapCategories = new ArrayList<>();
+    private List<Duration> durations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    private List<Widget> widgets = new ArrayList<>();
 
 
     @Builder
     public Festival(FestivalCreateDto festivalCreateDto) {
         this.name = festivalCreateDto.getName();
-        this.content = festivalCreateDto.getContent();
-        this.image = festivalCreateDto.getImage();
-        this.location = festivalCreateDto.getLocation();
+
     }
 
     public void setFestival(FestivalCreateDto festivalCreateDto) {
         this.name = festivalCreateDto.getName();
-        this.content = festivalCreateDto.getContent();
-        this.image = festivalCreateDto.getImage();
-        this.location = festivalCreateDto.getLocation();
+    }
+
+    public void setColor(ColorReqDto colorReqDto) {
+        this.mainColor = colorReqDto.getMainColor();
+        this.subColor = colorReqDto.getSubColor();
+        this.fontColor = colorReqDto.getFontColor();
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    public void setMainMenu(MainMenuDto mainMenuDto) {
+        this.menuName1 = mainMenuDto.getMenuName1();
+        this.menuName2 = mainMenuDto.getMenuName2();
+        this.menuImage1 = mainMenuDto.getMenuImage1();
+        this.menuImage2 = mainMenuDto.getMenuImage2();
+    }
+
+    public void setMapCategory(List<MapCategory> mapCategories) {
+        this.mapCategories = mapCategories;
+        mapCategories.forEach(o->o.setFestival(this));
     }
 }

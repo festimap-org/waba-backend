@@ -1,4 +1,4 @@
-package com.halo.eventer.festival.swagger;
+package com.halo.eventer.home;
 
 
 import io.swagger.v3.oas.annotations.Operation;

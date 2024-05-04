@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface FestivalRepository extends JpaRepository<Festival,Long> {
 
-    Optional<Festival> findByLocation(String location);
+    Optional<Festival> findByName(String name);
 }

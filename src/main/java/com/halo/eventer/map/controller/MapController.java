@@ -2,8 +2,10 @@ package com.halo.eventer.map.controller;
 
 
 
-import com.halo.eventer.map.dto.map.StoreCreateDto;
-import com.halo.eventer.map.dto.map.StoreCreateResDto;
+import com.halo.eventer.map.dto.map.MapCreateDto;
+import com.halo.eventer.map.dto.map.MapCreateResDto;
+import com.halo.eventer.map.dto.map.MapResDto;
+import com.halo.eventer.map.enumtype.OperationTime;
 import com.halo.eventer.map.service.MapService;
 import com.halo.eventer.map.swagger.map.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,31 +24,27 @@ public class MapController {
 
     @MapCreateApi
     @PostMapping()
-    public StoreCreateResDto createMap(@RequestBody StoreCreateDto storeCreateDto,
-                                         @RequestParam("mapCategoryId") Long id){
-        return mapService.createMap(storeCreateDto,id);
+    public MapCreateResDto createMap(@RequestBody MapCreateDto mapCreateDto,
+                                     @RequestParam("mapCategoryId") Long mapCategoryId,
+                                     @RequestParam("operationTime") OperationTime operationTime
+                                     ){
+        return mapService.createMap(mapCreateDto,mapCategoryId,operationTime);
     }
 
 
-    @GetStoreApi
+    @MapGetApi
     @GetMapping("/{mapId}")
-    public ResponseEntity<?> getStore(@PathVariable("mapId")Long mapId){
-        try{
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(mapService.getMap(mapId));
-        }
-        catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
+    public MapResDto getMap(@PathVariable("mapId")Long mapId){
+        return mapService.getMap(mapId);
+
     }
 
-    @GetStoresApi
+    @MapGetsApi
     @GetMapping()
-    public ResponseEntity<?> getStores(@RequestParam("mapCategoryId") Long mapCategoryId){
+    public ResponseEntity<?> getMaps(@RequestParam("mapCategoryId") Long mapCategoryId){
         try{
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(mapService.getStores(mapCategoryId));
+                    .body(mapService.getMaps(mapCategoryId));
         }
         catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -55,13 +53,14 @@ public class MapController {
     }
 
 
-    @UpdateStoreApi
+    @MapUpdateApi
     @PatchMapping("/{mapId}")
-    public ResponseEntity<?> updateStore(@PathVariable("mapId") Long id,
-                                         @RequestBody StoreCreateDto storeCreateDto){
+    public ResponseEntity<?> updateStore(@PathVariable("mapId") Long mapId,
+                                         @RequestBody MapCreateDto mapCreateDto,
+                                         @RequestParam("mapCategoryId") Long mapCategoryId){
         try{
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(mapService.updateStore(id, storeCreateDto));
+                    .body(mapService.updateStore(mapId, mapCreateDto, mapCategoryId));
         }
         catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -70,7 +69,7 @@ public class MapController {
     }
 
 
-    @DeleteStoreApi
+    @MapDeleteApi
     @DeleteMapping("/{mapId}")
     public ResponseEntity<?> deleteStore(@PathVariable("mapId") Long id){
         try{

@@ -21,6 +21,7 @@ public class SwaggerConfig {
 
 
     }
+
     private Info apiInfo() {
         return new Info()
                 .title("whatever API 명세서")

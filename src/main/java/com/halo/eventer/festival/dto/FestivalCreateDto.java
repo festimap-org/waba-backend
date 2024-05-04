@@ -11,10 +11,4 @@ public class FestivalCreateDto {
 
     private String name;
 
-    private String content;
-
-    private String image;
-
-    private String location;
-
 }

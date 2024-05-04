@@ -14,9 +14,7 @@ import java.lang.annotation.RetentionPolicy;
 @ApiResponse(responseCode = "200", description = "삭제 완료되었습니다.",
         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 examples = {
-                        @ExampleObject(name = "삭제 완료 예제",
-                                value = "삭제완료",
-                                summary = "API 성공 예제", description = "삭제가 완료된 경우의 예제입니다.")
+                        @ExampleObject(name = "삭제 완료 예제", value = "삭제완료")
                 }))
 public @interface FestivalDeleteApi {
 }

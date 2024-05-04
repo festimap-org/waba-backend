@@ -11,17 +11,11 @@ public class FestivalResDto {
 
     private String name;
 
-    private String content;
+    private ColorReqDto colors;
 
-    private String image;
-
-    private String location;
-
-    public FestivalResDto(Festival festival) {
+    public FestivalResDto(Festival festival, ColorReqDto colors) {
         this.id = festival.getId();
         this.name = festival.getName();
-        this.content = festival.getContent();
-        this.image = festival.getImage();
-        this.location = festival.getLocation();
+        this.colors =colors;
     }
 }

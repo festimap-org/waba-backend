@@ -7,14 +7,15 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class StoreCreateDto {
+public class MapCreateDto {
 
     private String name;
+
+    private List<Long> durationIds;
 
     private String summary;
     private String content;
 
-    private Boolean isOperation;
 
     private String operationHours;
 
@@ -23,6 +24,5 @@ public class StoreCreateDto {
     private double longitude; // 경도
 
     private String thumbnail;
-    private String type;
 
 }

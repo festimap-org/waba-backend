@@ -1,12 +1,16 @@
 package com.halo.eventer.map.service;
 
+import com.amazonaws.services.ec2.model.OperationType;
+import com.halo.eventer.duration.repository.DurationRepository;
+import com.halo.eventer.duration_map.DurationMap;
 import com.halo.eventer.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.map.dto.map.GetAllStoreResDto;
-import com.halo.eventer.map.dto.map.StoreCreateDto;
-import com.halo.eventer.map.dto.map.StoreCreateResDto;
-import com.halo.eventer.map.dto.map.StoreResDto;
+import com.halo.eventer.map.dto.map.MapCreateDto;
+import com.halo.eventer.map.dto.map.MapCreateResDto;
+import com.halo.eventer.map.dto.map.MapResDto;
 import com.halo.eventer.map.Map;
 import com.halo.eventer.image.ImageRepository;
+import com.halo.eventer.map.enumtype.OperationTime;
 import com.halo.eventer.map.repository.MapCategoryRepository;
 import com.halo.eventer.map.repository.MapRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,64 +26,45 @@ import java.util.stream.Collectors;
 public class MapService {
     private final MapRepository mapRepository;
     private final MapCategoryRepository mapCategoryRepository;
+    private final DurationRepository durationRepository;
     private final ImageRepository imageRepository;
 
     @Transactional
-    public StoreCreateResDto createMap(StoreCreateDto storeCreateDto, Long mapCategoryId)throws NoDataInDatabaseException{
+    public MapCreateResDto createMap(MapCreateDto mapCreateDto, Long mapCategoryId, OperationTime operationTime)throws NoDataInDatabaseException{
 
-        Map map = Map.builder().storeCreateDto(storeCreateDto)
-                .build();
+        Map map = new Map(mapCreateDto,operationTime);
+
+
+        durationRepository.findByIdIn(mapCreateDto.getDurationIds()).stream().map(o->new DurationMap(o,map))
+                        .forEach(o-> map.getDurationMaps().add(o));
 
         map.setMapCategory(mapCategoryRepository.findById(mapCategoryId).orElseThrow(()-> new NoDataInDatabaseException("해당 카테고리 정보가 존재하지 않습니다.")));
 
         mapRepository.save(map);
-        return new StoreCreateResDto(map.getId());
+        return new MapCreateResDto(map.getId());
     }
 
-    public StoreResDto getMap(Long mapId)throws Exception{
-        Map map = mapRepository.findById(mapId).orElseThrow(()->new NotFoundException("존재하지 않습니다"));
-        StoreResDto response = new StoreResDto(map);
+    public MapResDto getMap(Long mapId)throws NoDataInDatabaseException{
+        Map map = mapRepository.findById(mapId).orElseThrow(()->new NoDataInDatabaseException("맵 정보가 존재하지 않습니다"));
+        MapResDto response = new MapResDto(map);
         response.setMenus(map.getMenus());
 
         return response;
     }
 
-    public List<GetAllStoreResDto> getStores(Long mapCategoryId) throws Exception{
+    public List<GetAllStoreResDto> getMaps(Long mapCategoryId) throws Exception{
         
-        List<GetAllStoreResDto> response = mapRepository.findAllByMapCategoryId(mapCategoryId)
-                .stream().map(o->new GetAllStoreResDto(o)).collect(Collectors.toList());
+        return mapRepository.findAllByMapCategoryId(mapCategoryId)
+                .stream().map(GetAllStoreResDto::new).collect(Collectors.toList());
 
-        return response;
     }
 
     @Transactional
-    public StoreResDto updateStore(Long storeId, StoreCreateDto storeCreateDto) throws Exception{
-        Map map = mapRepository.findById(storeId).orElseThrow(()->new NotFoundException("존재하지 않습니다"));
-        map.setStore(storeCreateDto);
-        if(storeCreateDto.getType().equals("MANAGER")){
-            map.setType(StoreType.MANAGER);
-        }
-        else if (storeCreateDto.getType().equals("INFO")){
-            map.setType(StoreType.INFO);
-        }
-        else if(storeCreateDto.getType().equals("SHOP")){
-            map.setType(StoreType.SHOP);
-        }
-        else if(storeCreateDto.getType().equals("TOILET")){
-            map.setType(StoreType.TOILET);
-        }
-        else if(storeCreateDto.getType().equals("SMOKING")){
-            map.setType(StoreType.SMOKING);
-        }
-        else if(storeCreateDto.getType().equals("PARKING")){
-            map.setType(StoreType.PARKING);
-        }
-        else{
-            map.setType(StoreType.etc);
-        }
-        StoreResDto response = new StoreResDto(map);
-
-        return response;
+    public MapResDto updateStore(Long mapId, MapCreateDto mapCreateDto, Long mapCategoryId) throws Exception{
+        Map map = mapRepository.findById(mapId).orElseThrow(()->new NotFoundException("존재하지 않습니다"));
+        map.setMap(mapCreateDto);
+        map.setMapCategory(mapCategoryRepository.findById(mapCategoryId).orElseThrow(()-> new NoDataInDatabaseException("해당 카테고리 정보가 존재하지 않습니다.")));
+        return new MapResDto(map);
     }
 
     @Transactional

@@ -1,7 +1,7 @@
 package com.halo.eventer.map.swagger.map;
 
-
-import com.halo.eventer.map.dto.map.MapCreateResDto;
+import com.halo.eventer.festival.dto.FestivalResDto;
+import com.halo.eventer.map.dto.map.MapResDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -14,16 +14,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "맵 등록", description = "맵 등록 URI")
+@Operation(summary = "맵 단일 조회", description = "맵 id로 조회")
 @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "맵 정보 생성 성공",
+        @ApiResponse(responseCode = "200", description = "맵 단일 조회 성공",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = MapCreateResDto.class))),
-        @ApiResponse(responseCode = "400", description = "축제가 삭제되었을 경우",
+                        schema = @Schema(implementation = MapResDto.class))),
+        @ApiResponse(responseCode = "400", description = "데이터가 존재하지 않을 경우 예외",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        examples = {@ExampleObject(value = "축제 정보가 존재하지 않습니다.")
+                        examples = {@ExampleObject(value = "맵 정보가 존재하지 않습니다")
                         })
         )
 })
-public @interface MapCreateApi {
+public @interface MapGetApi {
 }

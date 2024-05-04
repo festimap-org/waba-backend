@@ -13,11 +13,13 @@ public class GetAllStoreResDto {
     private String name;
     private double latitude; // 위도
     private double longitude; // 경도
+    private String type;
 
     public GetAllStoreResDto(Map map) {
         this.id = map.getId();
         this.name = map.getName();
         this.latitude = map.getLatitude();
         this.longitude = map.getLongitude();
+        this.type = map.getMapCategory().getCategoryName();
     }
 }

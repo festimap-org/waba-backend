@@ -1,16 +1,16 @@
 package com.halo.eventer.festival.controller;
 
 
-import com.halo.eventer.festival.dto.FestivalCreateDto;
-import com.halo.eventer.festival.dto.FestivalResDto;
+import com.halo.eventer.common.common.ImageDto;
+import com.halo.eventer.festival.dto.*;
 import com.halo.eventer.festival.service.FestivalService;
 import com.halo.eventer.festival.swagger.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/festival")
@@ -27,7 +27,12 @@ public class FestivalController {
     @GetFestivalApi
     @GetMapping("/{id}")
     public FestivalResDto getFestival(@PathVariable("id")Long id){
-            return festivalService.getFestival(id);
+        return festivalService.getFestival(id);
+    }
+
+    @GetMapping
+    public List<FestivalListDto> getFestivals(){
+        return festivalService.getFestivals();
     }
 
     @FestivalUpdateApi
@@ -41,4 +46,23 @@ public class FestivalController {
     public String deleteFestival(@PathVariable("id") Long id){
             return festivalService.deleteFestival(id);
     }
+
+    @FestivalColorAddApi
+    @PostMapping("/{festivalId}/color")
+    public String addColor(@PathVariable("festivalId") Long id, @RequestBody ColorReqDto colorReqDto){
+        return festivalService.addColor(id, colorReqDto);
+    }
+
+
+    @FestivalLogoAddApi
+    @PostMapping("/{festivalId}/logo")
+    public String addLogo(@PathVariable("festivalId") Long id, @RequestBody ImageDto imageDto){
+        return festivalService.addLogo(id, imageDto);
+    }
+
+    @PostMapping("/{festivalId}/main-menu")
+    public String addMainMenu(@PathVariable("festivalId") Long id, @RequestBody MainMenuDto mainMenuDto){
+        return festivalService.addMainMenu(id,mainMenuDto);
+    }
+
 }

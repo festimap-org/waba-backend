@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class StoreCreateResDto {
+public class MapCreateResDto {
     private Long mapId;
 
-    public StoreCreateResDto(Long storeId) {
+    public MapCreateResDto(Long storeId) {
         this.mapId = storeId;
     }
 }

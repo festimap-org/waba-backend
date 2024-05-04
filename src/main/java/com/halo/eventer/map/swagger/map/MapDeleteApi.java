@@ -11,7 +11,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "상점 삭제", description = "상점 id로 삭제")
+@Operation(summary = "맵 삭제", description = "맵 id로 삭제")
 @ApiResponse(responseCode = "200", description = "삭제 완료되었습니다.",
         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 examples = {
@@ -19,5 +19,5 @@ import java.lang.annotation.RetentionPolicy;
                                 value = "삭제완료",
                                 summary = "API 성공 예제", description = "삭제가 완료된 경우의 예제입니다.")
                 }))
-public @interface DeleteStoreApi {
+public @interface MapDeleteApi {
 }
