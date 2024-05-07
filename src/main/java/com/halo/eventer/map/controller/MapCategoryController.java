@@ -4,6 +4,7 @@ package com.halo.eventer.map.controller;
 import com.halo.eventer.map.dto.mapcategory.MapCategoryCreateDto;
 import com.halo.eventer.map.dto.mapcategory.MapCategoryResDto;
 import com.halo.eventer.map.service.MapCategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/mapCategory")
+@Tag(name = "맵 카테고리")
 public class MapCategoryController {
 
 

@@ -5,13 +5,15 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 @Getter
 @NoArgsConstructor
-public class ConcertCreateDto {
-
+public class ConcertUpdateDto {
     private Long durationId;
 
     private String thumbnail;
 
     private List<String> images;
+
+    private List<Long> deletedImages;
 }

@@ -1,6 +1,7 @@
 package com.halo.eventer.duration;
 
 
+import com.halo.eventer.concert.Concert;
 import com.halo.eventer.duration.dto.DurationCreateDto;
 import com.halo.eventer.duration.dto.DurationDto;
 import com.halo.eventer.duration_map.DurationMap;
@@ -31,6 +32,10 @@ public class Duration {
 
     @OneToMany(mappedBy = "duration",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<DurationMap> durationMaps = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "duration",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Concert> concerts = new ArrayList<>();
 
     public Duration(DurationCreateDto durationDto, Festival festival) {
         this.date = durationDto.getDate();

@@ -1,4 +1,4 @@
-package com.halo.eventer.concert.dto;
+package com.halo.eventer.concert_info.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,11 +7,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class ConcertCreateDto {
-
-    private Long durationId;
-
-    private String thumbnail;
-
+public class ConcertInfoUpdateDto {
     private List<String> images;
+    private List<Long> deletedImages;
 }

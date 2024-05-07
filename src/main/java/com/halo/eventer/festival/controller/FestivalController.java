@@ -2,6 +2,7 @@ package com.halo.eventer.festival.controller;
 
 
 import com.halo.eventer.common.common.ImageDto;
+import com.halo.eventer.festival.dto.FestivalConcertMenuDto;
 import com.halo.eventer.festival.dto.*;
 import com.halo.eventer.festival.service.FestivalService;
 import com.halo.eventer.festival.swagger.*;
@@ -63,6 +64,18 @@ public class FestivalController {
     @PostMapping("/{festivalId}/main-menu")
     public String addMainMenu(@PathVariable("festivalId") Long id, @RequestBody MainMenuDto mainMenuDto){
         return festivalService.addMainMenu(id,mainMenuDto);
+    }
+
+    @PostMapping("/{festivalId}/entry")
+    public String addEntryInfo(@PathVariable("festivalId") Long festivalId,
+                               @RequestBody FestivalConcertMenuDto festivalConcertMenuDto){
+        return festivalService.addEntryInfo(festivalId, festivalConcertMenuDto);
+    }
+
+    @PostMapping("/{festivalId}/view")
+    public String addViewInfo(@PathVariable("festivalId") Long festivalId,
+                              @RequestBody FestivalConcertMenuDto festivalConcertMenuDto){
+        return festivalService.addViewInfo(festivalId, festivalConcertMenuDto);
     }
 
 }

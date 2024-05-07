@@ -1,6 +1,8 @@
 package com.halo.eventer.festival;
 
 
+import com.halo.eventer.concert_info.ConcertInfo;
+import com.halo.eventer.festival.dto.FestivalConcertMenuDto;
 import com.halo.eventer.duration.Duration;
 import com.halo.eventer.festival.dto.ColorReqDto;
 import com.halo.eventer.festival.dto.FestivalCreateDto;
@@ -41,6 +43,11 @@ public class Festival {
     private String menuImage1;
     private String menuImage2;
 
+    private String entrySummary;
+    private String entryIcon;
+    private String viewSummary;
+    private String viewIcon;
+
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private List<Concert> concerts = new ArrayList<>();
@@ -57,6 +64,9 @@ public class Festival {
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private List<Widget> widgets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    private List<ConcertInfo> concertInfos = new ArrayList<>();
 
 
     @Builder
@@ -89,5 +99,15 @@ public class Festival {
     public void setMapCategory(List<MapCategory> mapCategories) {
         this.mapCategories = mapCategories;
         mapCategories.forEach(o->o.setFestival(this));
+    }
+
+    public void setEntry(FestivalConcertMenuDto festivalConcertMenuDto){
+        this.entrySummary = festivalConcertMenuDto.getSummary();
+        this.entryIcon = festivalConcertMenuDto.getIcon();
+    }
+
+    public void setView(FestivalConcertMenuDto festivalConcertMenuDto){
+        this.viewSummary = festivalConcertMenuDto.getSummary();
+        this.viewIcon = festivalConcertMenuDto.getIcon();
     }
 }

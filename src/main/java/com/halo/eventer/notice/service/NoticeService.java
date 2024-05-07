@@ -3,6 +3,7 @@ package com.halo.eventer.notice.service;
 
 
 import com.halo.eventer.common.ArticleType;
+import com.halo.eventer.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.festival.Festival;
 import com.halo.eventer.image.Image;
 import com.halo.eventer.notice.Notice;
@@ -28,33 +29,27 @@ public class NoticeService {
     private final ImageRepository imageRepository;
 
     @Transactional
-    public String registerNotice(NoticeReqDto noticeReqDto, Long id) throws Exception {
+    public String registerNotice(NoticeReqDto noticeReqDto, Long id) throws NoDataInDatabaseException {
 
-        Festival festival = festivalRepository.findById(id).orElseThrow(()-> new Exception("축제가 존재하지 않습니다."));
+        Festival festival = festivalRepository.findById(id).orElseThrow(()-> new NoDataInDatabaseException("축제가 존재하지 않습니다."));
 
         Notice notice = new Notice(noticeReqDto);
         notice.setFestival(festival);
+        notice.setImages(noticeReqDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
         noticeRepository.save(notice);
 
-        List<Image> images = noticeReqDto.getImages().stream().map(o-> new Image(o)).collect(Collectors.toList());
 
-        images.stream().forEach((o)-> {
-            o.setNotice(notice);
-            imageRepository.save(o);
-        });
+
         return "저장 완료";
 
     }
 
-    // 전체 게시글 중 type 으로 조회
     @Transactional
-    public List<GetAllNoticeResDto> inquireNotices(Long festivalId, ArticleType type) throws NotFoundException{
+    public List<GetAllNoticeResDto> inquireNotices(Long festivalId, ArticleType type) throws NoDataInDatabaseException{
         List<Notice> notices = noticeRepository.findAllByFestivalAndType(festivalRepository.findById(festivalId)
-                .orElseThrow(() -> new NotFoundException(festivalId + "에 해당하는 공지사항이 존재하지 않습니다.")),type);
+                .orElseThrow(() -> new NoDataInDatabaseException("공지사항이 존재하지 않습니다.")),type);
 
-        List<GetAllNoticeResDto> response = notices.stream()
-                .map(o-> new GetAllNoticeResDto(o))
-                .collect(Collectors.toList());
+        List<GetAllNoticeResDto> response = notices.stream().map(o-> new GetAllNoticeResDto(o)).collect(Collectors.toList());
 
         return response;
     }

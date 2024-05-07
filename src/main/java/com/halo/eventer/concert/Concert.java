@@ -1,7 +1,7 @@
 package com.halo.eventer.concert;
 
 
-import com.halo.eventer.concert.dto.ConcertCreateDto;
+import com.halo.eventer.duration.Duration;
 import com.halo.eventer.festival.Festival;
 import com.halo.eventer.image.Image;
 import lombok.Getter;
@@ -19,58 +19,39 @@ public class Concert {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String tag;
+    private String thumbnail;
 
-    private String name;
 
-    private String summary;
-
-    @Column(columnDefinition = "varchar(2000)")
-    private String content;
-
-    private double latitude; // 위도
-    private double longitude; // 경도
-    private String location;
-
-    private Boolean isOperation;
-    private String operationHours;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
     private Festival festival;
 
-    private String thumbnail;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "durationId")
+    private Duration duration;
 
-    @OneToMany(mappedBy = "concert", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+
+    @OneToMany(mappedBy = "concert", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private List<Image> images = new ArrayList<>();
 
-    public Concert(ConcertCreateDto c) {
-        this.tag = c.getTag();
-        this.name = c.getName();
-        this.summary = c.getSummary();
-        this.content = c.getContent();
-        this.latitude = c.getLatitude();
-        this.longitude = c.getLongitude();
-        this.location = c.getLocation();
-        this.isOperation = c.getIsOperation();
-        this.operationHours = c.getOperationHours();
-        this.thumbnail = c.getThumbnail();
-    }
+    public Concert(String thumbnail, Festival festival, Duration duration) {
 
-    public void setAll(ConcertCreateDto c){
-        this.tag = c.getTag();
-        this.name = c.getName();
-        this.summary = c.getSummary();
-        this.content = c.getContent();
-        this.latitude = c.getLatitude();
-        this.longitude = c.getLongitude();
-        this.location = c.getLocation();
-        this.isOperation = c.getIsOperation();
-        this.operationHours = c.getOperationHours();
-        this.thumbnail = c.getThumbnail();
-    }
-
-    public void setFestival(Festival festival) {
+        this.thumbnail = thumbnail;
         this.festival = festival;
+        this.duration = duration;
     }
+
+    public void setAll(String thumbnail, Duration duration){
+        ;this.thumbnail = thumbnail;
+        this.duration = duration;
+    }
+
+    public  void setImages(List<Image> images){
+        this.images = images;
+        images.forEach(o->o.setConcert(this));
+    }
+
+
+
 }

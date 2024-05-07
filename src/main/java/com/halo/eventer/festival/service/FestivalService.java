@@ -2,6 +2,7 @@ package com.halo.eventer.festival.service;
 
 
 import com.halo.eventer.common.common.ImageDto;
+import com.halo.eventer.festival.dto.FestivalConcertMenuDto;
 import com.halo.eventer.exception.common.DuplicatedElementException;
 import com.halo.eventer.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.festival.dto.*;
@@ -86,5 +87,23 @@ public class FestivalService {
 
         festival.setMainMenu(mainMenuDto);
         return "메인 메뉴 정보 등록";
+    }
+
+    @Transactional
+    public String addEntryInfo(Long concertId, FestivalConcertMenuDto festivalConcertMenuDto) throws NoDataInDatabaseException {
+        Festival festival = festivalRepository.findById(concertId).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다."));
+        festival.setEntry(festivalConcertMenuDto);
+        festivalRepository.save(festival);
+        return "입장방법 등록";
+
+    }
+
+    @Transactional
+    public String addViewInfo(Long concertId, FestivalConcertMenuDto festivalConcertMenuDto) throws NoDataInDatabaseException {
+        Festival festival = festivalRepository.findById(concertId).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다."));
+        festival.setView(festivalConcertMenuDto);
+        festivalRepository.save(festival);
+        return "관람안내 등록";
+
     }
 }

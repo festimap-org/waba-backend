@@ -39,7 +39,7 @@ public class Notice {
     @Enumerated(EnumType.STRING)
     private ArticleType type;
 
-    @OneToMany(mappedBy = "notice", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,orphanRemoval = true)
+    @OneToMany(mappedBy = "notice", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
     private List<Image> images = new ArrayList<>();
 
     @CreatedDate
@@ -84,5 +84,10 @@ public class Notice {
 
     public void setRank(Integer rank) {
         this.bannerRank = rank;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+        images.forEach(o->o.setNotice(this));
     }
 }

@@ -2,6 +2,7 @@ package com.halo.eventer.notice.controller;
 
 import com.halo.eventer.common.ArticleType;
 import com.halo.eventer.notice.dto.BannerEditReqDto;
+import com.halo.eventer.notice.dto.GetAllNoticeResDto;
 import com.halo.eventer.notice.dto.NoticeReqDto;
 import com.halo.eventer.notice.service.NoticeService;
 import com.halo.eventer.notice.swagger.*;
@@ -22,37 +23,18 @@ public class NoticeController {
 
     private final NoticeService noticeService;
 
-
-    /**   공지사항 생성하기   */
-    @CreateNoticeReqApi
-    @CreateNoticeResApi
+    @CreateNoticeApi
     @PostMapping
-    public ResponseEntity<?> registerNotice(@RequestBody NoticeReqDto noticeReqDto,
+    public String registerNotice(@RequestBody NoticeReqDto noticeReqDto,
                                             @RequestParam("festivalId") Long id) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(noticeService.registerNotice(noticeReqDto,id));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
+        return noticeService.registerNotice(noticeReqDto, id);
     }
 
-
-    /**   공지사항 / 이벤트 리스트 조회하기   */
-    @GetNoticesReqApi
-    @GetNoticesResApi
+    @NoticeGetsApi
     @GetMapping("/{festivalId}")
-    public ResponseEntity<?> inquireNotices(@PathVariable Long festivalId,
-                                            @RequestParam("type") ArticleType type) {
-
-        try {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(noticeService.inquireNotices(festivalId,type));
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
+    public List<GetAllNoticeResDto> inquireNotices(@PathVariable Long festivalId,
+                                                   @RequestParam("type") ArticleType type) {
+        return noticeService.inquireNotices(festivalId, type);
     }
 
 
