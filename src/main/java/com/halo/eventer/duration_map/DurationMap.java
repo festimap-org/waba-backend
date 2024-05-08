@@ -29,5 +29,7 @@ public class DurationMap {
         this.duration = duration;
         this.map = map;
     }
+
+
 }
 

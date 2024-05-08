@@ -5,6 +5,8 @@ import com.halo.eventer.exception.common.DuplicatedElementException;
 import com.halo.eventer.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.festival.repository.FestivalRepository;
 import com.halo.eventer.map.MapCategory;
+import com.halo.eventer.map.dto.map.MapListDto;
+import com.halo.eventer.map.dto.mapcategory.MapCategoryImageDto;
 import com.halo.eventer.map.dto.mapcategory.MapCategoryResDto;
 import com.halo.eventer.map.repository.MapCategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,12 +38,22 @@ public class MapCategoryService {
     }
 
     @Transactional
-    public String addIcon(Long categoryId, String icon) throws DuplicatedElementException, NoDataInDatabaseException {
-        MapCategory mapCategory = mapCategoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NoDataInDatabaseException("축제 정보가 존재하지 않습니다."));
-        mapCategory.setIcon(icon);
-        return "아이콘 등록 완료";
+    public String addIcon(Long categoryId, MapCategoryImageDto mapCategoryImageDto) throws DuplicatedElementException, NoDataInDatabaseException {
+        MapCategory mapCategory = mapCategoryRepository.findById(categoryId).orElseThrow(() -> new NoDataInDatabaseException("축제 정보가 존재하지 않습니다."));
+        mapCategory.setImage(mapCategoryImageDto);
+        return "아이콘, 핀 등록 완료";
     }
 
 
+    public String deleteMapCategory(Long categoryId) {
+        mapCategoryRepository.deleteById(categoryId);
+        return "삭제완료";
+    }
+
+
+
+    public List<MapListDto> getLandMarks(Long mapCategoryId) {
+        return mapCategoryRepository.findById(mapCategoryId)
+                .orElseThrow().getMaps().stream().map(MapListDto::new).collect(Collectors.toList());
+    }
 }

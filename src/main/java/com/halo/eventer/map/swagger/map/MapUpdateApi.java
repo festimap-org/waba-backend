@@ -11,7 +11,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "맵 수정", description = "맵 id로 수정")
+@Operation(summary = "맵 수정", description = "맵 id로 수정, 기간 변경시 deleteIds에 지울 id 넣어주기, 만약 기간 변경하지 않으면 durationIds 비워서 보내주기")
 @ApiResponse(responseCode = "200", description = "맵 정보 수정 성공",
         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                 examples = {

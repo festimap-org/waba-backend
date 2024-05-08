@@ -36,6 +36,7 @@ public class Map {
     private String operationHours;
 
     private String thumbnail;
+    private String icon;
 
     @Enumerated(EnumType.STRING)
     private OperationTime operationType;
@@ -62,6 +63,7 @@ public class Map {
         this.operationHours = mapCreateDto.getOperationHours();
         this.thumbnail = mapCreateDto.getThumbnail();
         this.operationType = operationType;
+        this.icon = mapCreateDto.getIcon();
     }
 
     public void setMap(MapCreateDto mapCreateDto) {
@@ -79,6 +81,9 @@ public class Map {
         this.mapCategory = mapCategory;
     }
 
+    public void setDurationMaps(List<DurationMap> durationMaps){
+        this.durationMaps = durationMaps;
+    }
 
 
 }

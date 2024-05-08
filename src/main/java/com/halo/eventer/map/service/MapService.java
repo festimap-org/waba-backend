@@ -3,6 +3,7 @@ package com.halo.eventer.map.service;
 import com.amazonaws.services.ec2.model.OperationType;
 import com.halo.eventer.duration.repository.DurationRepository;
 import com.halo.eventer.duration_map.DurationMap;
+import com.halo.eventer.duration_map.DurationMapRepository;
 import com.halo.eventer.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.map.dto.map.GetAllStoreResDto;
 import com.halo.eventer.map.dto.map.MapCreateDto;
@@ -27,7 +28,7 @@ public class MapService {
     private final MapRepository mapRepository;
     private final MapCategoryRepository mapCategoryRepository;
     private final DurationRepository durationRepository;
-    private final ImageRepository imageRepository;
+    private final DurationMapRepository durationMapRepository;
 
     @Transactional
     public MapCreateResDto createMap(MapCreateDto mapCreateDto, Long mapCategoryId, OperationTime operationTime)throws NoDataInDatabaseException{
@@ -35,9 +36,8 @@ public class MapService {
         Map map = new Map(mapCreateDto,operationTime);
 
 
-        durationRepository.findByIdIn(mapCreateDto.getDurationIds()).stream().map(o->new DurationMap(o,map))
-                        .forEach(o-> map.getDurationMaps().add(o));
-
+        List<DurationMap>  durationMaps = durationRepository.findByIdIn(mapCreateDto.getDurationIds()).stream().map(o->new DurationMap(o,map)).collect(Collectors.toList());
+        map.setDurationMaps(durationMaps);
         map.setMapCategory(mapCategoryRepository.findById(mapCategoryId).orElseThrow(()-> new NoDataInDatabaseException("해당 카테고리 정보가 존재하지 않습니다.")));
 
         mapRepository.save(map);
@@ -62,6 +62,9 @@ public class MapService {
     @Transactional
     public MapResDto updateStore(Long mapId, MapCreateDto mapCreateDto, Long mapCategoryId) throws Exception{
         Map map = mapRepository.findById(mapId).orElseThrow(()->new NotFoundException("존재하지 않습니다"));
+        durationMapRepository.deleteByIdIn(mapCreateDto.getDeleteIds());
+        List<DurationMap>  durationMaps = durationRepository.findByIdIn(mapCreateDto.getDurationIds()).stream().map(o->new DurationMap(o,map)).collect(Collectors.toList());
+        map.setDurationMaps(durationMaps);
         map.setMap(mapCreateDto);
         map.setMapCategory(mapCategoryRepository.findById(mapCategoryId).orElseThrow(()-> new NoDataInDatabaseException("해당 카테고리 정보가 존재하지 않습니다.")));
         return new MapResDto(map);

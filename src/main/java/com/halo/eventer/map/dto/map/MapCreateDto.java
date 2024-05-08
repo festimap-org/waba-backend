@@ -12,6 +12,7 @@ public class MapCreateDto {
     private String name;
 
     private List<Long> durationIds;
+    private List<Long> deleteIds;
 
     private String summary;
     private String content;
@@ -24,5 +25,6 @@ public class MapCreateDto {
     private double longitude; // 경도
 
     private String thumbnail;
+    private String icon;
 
 }

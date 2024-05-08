@@ -3,7 +3,7 @@ package com.halo.eventer.map;
 
 
 import com.halo.eventer.festival.Festival;
-import com.halo.eventer.map.dto.mapcategory.MapCategoryCreateDto;
+import com.halo.eventer.map.dto.mapcategory.MapCategoryImageDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +23,7 @@ public class MapCategory {
     private String categoryName;
 
     private String icon;
+    private String pin;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
@@ -40,8 +41,9 @@ public class MapCategory {
         this.categoryName = categoryName;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
+    public void setImage(MapCategoryImageDto mapCategoryImageDto) {
+        this.icon = mapCategoryImageDto.getIcon();
+        this.pin = mapCategoryImageDto.getPin();
     }
 
     public void setFestival(Festival festival) {

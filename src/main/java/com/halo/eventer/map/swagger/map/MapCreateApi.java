@@ -14,7 +14,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "맵 등록", description = "맵 등록 URI")
+@Operation(summary = "맵 등록", description = "고정 부스의 경우 icon 까지 채워주고, 그 외의 경우 아이콘 값을 안채워서 보내줘도 됩니다.")
 @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "맵 정보 생성 성공",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,

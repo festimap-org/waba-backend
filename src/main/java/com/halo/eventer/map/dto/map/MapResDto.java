@@ -34,6 +34,7 @@ public class MapResDto {
     private List<MenuResDto> menus;
 
     private String type;
+    private String icon;
 
     private List<DurationDto> durations = new ArrayList<>();
 
@@ -49,6 +50,7 @@ public class MapResDto {
         this.type = map.getMapCategory().getCategoryName();
         this.operationTime = map.getOperationType();
         map.getDurationMaps().stream().map(DurationMap::getDuration).forEach(o->durations.add(new DurationDto(o)));
+        this.icon = map.getIcon();
     }
 
     public void setMenus(List<Menu> menus){
