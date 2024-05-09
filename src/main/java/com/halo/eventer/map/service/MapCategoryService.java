@@ -24,12 +24,12 @@ public class MapCategoryService {
     private final FestivalRepository festivalRepository;
 
     @Transactional
-    public String createMapCategory(Long festivalId, String categoryName) throws DuplicatedElementException, NoDataInDatabaseException{
+    public List<MapCategoryResDto> createMapCategory(Long festivalId, String categoryName) throws DuplicatedElementException, NoDataInDatabaseException{
         if(mapCategoryRepository.findByCategoryName(categoryName).isPresent()) {
             throw new DuplicatedElementException("이미 존재하는 카테고리입니다.");
         }
         mapCategoryRepository.save(new MapCategory(festivalRepository.findById(festivalId).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다.")),categoryName));
-        return "저장완료";
+        return mapCategoryRepository.findAllByFestival_Id(festivalId).stream().map(MapCategoryResDto::new).collect(Collectors.toList());
     }
 
     public List<MapCategoryResDto> getMapCategoryList(Long festivalId){
@@ -44,16 +44,18 @@ public class MapCategoryService {
         return "아이콘, 핀 등록 완료";
     }
 
-
-    public String deleteMapCategory(Long categoryId) {
+    @Transactional
+    public List<MapCategoryResDto> deleteMapCategory(Long categoryId, Long festivalId) {
         mapCategoryRepository.deleteById(categoryId);
-        return "삭제완료";
+        return mapCategoryRepository.findAllByFestival_Id(festivalId).stream().map(MapCategoryResDto::new).collect(Collectors.toList());
     }
-
-
 
     public List<MapListDto> getLandMarks(Long mapCategoryId) {
         return mapCategoryRepository.findById(mapCategoryId)
                 .orElseThrow().getMaps().stream().map(MapListDto::new).collect(Collectors.toList());
+    }
+
+    public List<MapCategoryImageDto> getMapCategoryImages(Long festivalId) {
+        return mapCategoryRepository.findAllByFestival_Id(festivalId).stream().map(MapCategoryImageDto::new).collect(Collectors.toList());
     }
 }

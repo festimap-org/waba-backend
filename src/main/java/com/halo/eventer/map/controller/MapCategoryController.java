@@ -23,12 +23,12 @@ public class MapCategoryController {
     private final MapCategoryService mapCategoryService;
 
     @PostMapping("/{festivalId}")
-    public String createMapCategory(@PathVariable("festivalId") Long festivalId, @RequestParam("categoryName") String categoryName){
+    public List<MapCategoryResDto> createMapCategory(@PathVariable("festivalId") Long festivalId, @RequestParam("categoryName") String categoryName){
         return mapCategoryService.createMapCategory(festivalId,categoryName);
     }
 
     @PatchMapping("/{categoryId}")
-    public String addIcon(@PathVariable("categoryId") Long categoryId, @RequestBody MapCategoryImageDto mapCategoryImageDto){
+    public String addImage(@PathVariable("categoryId") Long categoryId, @RequestBody MapCategoryImageDto mapCategoryImageDto){
         return mapCategoryService.addIcon(categoryId,mapCategoryImageDto);
     }
 
@@ -37,9 +37,14 @@ public class MapCategoryController {
         return mapCategoryService.getMapCategoryList(festivalId);
     }
 
+    @GetMapping("/image")
+    public List<MapCategoryImageDto> getMapCategoryImages(@RequestParam("festivalId") Long festivalId){
+        return mapCategoryService.getMapCategoryImages(festivalId);
+    }
+
     @DeleteMapping("/{categoryId}")
-    public String deleteMapCategory(@PathVariable("categoryId") Long categoryId){
-        return mapCategoryService.deleteMapCategory(categoryId);
+    public List<MapCategoryResDto> deleteMapCategory(@PathVariable("categoryId") Long categoryId, @RequestParam("festivalId") Long festivalId){
+        return mapCategoryService.deleteMapCategory(categoryId, festivalId);
     }
 
     @MapGetApi

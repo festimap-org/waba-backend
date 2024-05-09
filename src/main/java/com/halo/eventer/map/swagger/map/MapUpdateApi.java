@@ -29,4 +29,5 @@ import java.lang.annotation.RetentionPolicy;
                                 summary = "맵 정보 업데이트 성공", description = "맵 정보를 성공적으로 수정한 경우의 예제입니다.")
                 }))
 public @interface MapUpdateApi {
+
 }

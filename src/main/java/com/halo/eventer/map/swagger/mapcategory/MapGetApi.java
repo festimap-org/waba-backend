@@ -2,6 +2,7 @@ package com.halo.eventer.map.swagger.mapcategory;
 
 
 
+import com.halo.eventer.map.dto.mapcategory.MapCategoryResDto;
 import com.halo.eventer.notice.dto.GetAllNoticeResDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -20,7 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "부스 정보 조회 성공",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        array = @ArraySchema(schema = @Schema(implementation = MapGetApi.class))))
+                        array = @ArraySchema(schema = @Schema(implementation = MapCategoryResDto.class))))
 })
 public @interface MapGetApi {
 }
