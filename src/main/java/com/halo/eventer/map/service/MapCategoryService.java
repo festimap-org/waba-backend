@@ -55,7 +55,7 @@ public class MapCategoryService {
                 .orElseThrow().getMaps().stream().map(MapListDto::new).collect(Collectors.toList());
     }
 
-    public List<MapCategoryImageDto> getMapCategoryImages(Long festivalId) {
-        return mapCategoryRepository.findAllByFestival_Id(festivalId).stream().map(MapCategoryImageDto::new).collect(Collectors.toList());
+    public MapCategoryImageDto getMapCategoryImages(Long mapCategoryId) throws NoDataInDatabaseException {
+        return new MapCategoryImageDto(mapCategoryRepository.findById(mapCategoryId).orElseThrow(()->new NoDataInDatabaseException("카테고리가 존재하지 않습니다.")));
     }
 }

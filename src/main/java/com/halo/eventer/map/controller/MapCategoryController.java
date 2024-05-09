@@ -38,8 +38,8 @@ public class MapCategoryController {
     }
 
     @GetMapping("/image")
-    public List<MapCategoryImageDto> getMapCategoryImages(@RequestParam("festivalId") Long festivalId){
-        return mapCategoryService.getMapCategoryImages(festivalId);
+    public MapCategoryImageDto getMapCategoryImages(@RequestParam("mapCategoryId") Long mapCategoryId){
+        return mapCategoryService.getMapCategoryImages(mapCategoryId);
     }
 
     @DeleteMapping("/{categoryId}")
