@@ -2,6 +2,7 @@ package com.halo.eventer.map.controller;
 
 
 
+import com.halo.eventer.map.dto.map.GetAllStoreResDto;
 import com.halo.eventer.map.dto.map.MapCreateDto;
 import com.halo.eventer.map.dto.map.MapCreateResDto;
 import com.halo.eventer.map.dto.map.MapResDto;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "지도")
 @RestController
@@ -41,15 +44,8 @@ public class MapController {
 
     @MapGetsApi
     @GetMapping()
-    public ResponseEntity<?> getMaps(@RequestParam("mapCategoryId") Long mapCategoryId){
-        try{
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(mapService.getMaps(mapCategoryId));
-        }
-        catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
+    public List<GetAllStoreResDto> getMaps(@RequestParam("mapCategoryId") Long mapCategoryId){
+        return mapService.getMaps(mapCategoryId);
     }
 
 

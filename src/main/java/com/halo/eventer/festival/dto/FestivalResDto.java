@@ -11,11 +11,14 @@ public class FestivalResDto {
 
     private String name;
 
+    private String logo;
+
     private ColorReqDto colors;
 
     public FestivalResDto(Festival festival, ColorReqDto colors) {
         this.id = festival.getId();
         this.name = festival.getName();
+        this.logo = festival.getLogo();
         this.colors =colors;
     }
 }

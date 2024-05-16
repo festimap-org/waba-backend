@@ -62,8 +62,14 @@ public class FestivalController {
     }
 
     @PostMapping("/{festivalId}/main-menu")
-    public String addMainMenu(@PathVariable("festivalId") Long id, @RequestBody MainMenuDto mainMenuDto){
+    public String addMainMenu(@PathVariable("festivalId") Long id,
+                              @RequestBody MainMenuDto mainMenuDto){
         return festivalService.addMainMenu(id,mainMenuDto);
+    }
+
+    @GetMapping("/{festivalId}/main-menu")
+    public MainMenuDto getMainMenu(@PathVariable("festivalId") Long id){
+        return festivalService.getMainMenu(id);
     }
 
     @PostMapping("/{festivalId}/entry")
@@ -78,4 +84,13 @@ public class FestivalController {
         return festivalService.addViewInfo(festivalId, festivalConcertMenuDto);
     }
 
+    @GetMapping("/{festivalId}/entry")
+    public FestivalConcertMenuDto getEntryInfo(@PathVariable("festivalId") Long festivalId){
+        return festivalService.getEntryInfo(festivalId);
+    }
+
+    @GetMapping("/{festivalId}/view")
+    public FestivalConcertMenuDto getViewInfo(@PathVariable("festivalId") Long festivalId){
+        return festivalService.getViewInfo(festivalId);
+    }
 }

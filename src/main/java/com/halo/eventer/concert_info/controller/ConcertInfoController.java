@@ -27,8 +27,9 @@ public class ConcertInfoController {
     }
 
     @GetMapping("/{festivalId}")
-    public List<ConcertInfoResDto> getAllName(@PathVariable("festivalId")Long festivalId){
-        return concertInfoService.getAllName(festivalId);
+    public List<ConcertInfoResDto> getAllName(@PathVariable("festivalId")Long festivalId,
+                                              @RequestParam("type") ConcertInfoType type){
+        return concertInfoService.getAllName(festivalId, type);
     }
 
     @GetMapping
@@ -40,6 +41,11 @@ public class ConcertInfoController {
     public String updateConcertInfo(@PathVariable("concertInfoId") Long id,
                                     @RequestBody ConcertInfoUpdateDto concertInfoUpdateDto){
         return concertInfoService.updateConcertInfo(id, concertInfoUpdateDto);
+    }
+
+    @DeleteMapping("/{concertInfoId}")
+    public String deleteConcertInfo(@PathVariable("concertInfoId") Long id){
+        return concertInfoService.deleteConcertInfo(id);
     }
 
 }

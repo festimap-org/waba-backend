@@ -2,6 +2,7 @@ package com.halo.eventer.notice.dto;
 
 import com.halo.eventer.common.ArticleType;
 import com.halo.eventer.image.Image;
+import com.halo.eventer.image.dto.ImageUpdateDto;
 import com.halo.eventer.notice.Notice;
 import lombok.*;
 
@@ -14,22 +15,21 @@ public class GetNoticeResDto {
 
     private String title;
     private String thumbnail;
-    private String subtitle;
+    private String index;
+    private String writer;
     private String content;
     private ArticleType type;
 
-    private List<String> images;
+    private List<ImageUpdateDto> images;
 
     public GetNoticeResDto(Notice notice) {
         this.title = notice.getTitle();
         this.thumbnail = notice.getThumbnail();
-        this.subtitle = notice.getSubtitle();
         this.content = notice.getContent();
         this.type = notice.getType();
-    }
-
-    public void setImages(List<Image> images){
-        this.images = images.stream().map(o->o.getImage_url()).collect(Collectors.toList());
+        this.index = notice.getTag();
+        this.writer = notice.getWriter();
+        this.images = notice.getImages().stream().map(ImageUpdateDto::new).collect(Collectors.toList());
     }
 }
 

@@ -15,8 +15,6 @@ public class NoticeResDto {
 
     private String title;
 
-    private String subtitle;
-
     private String content;
 
     private LocalDateTime updateTime;
@@ -28,7 +26,6 @@ public class NoticeResDto {
     public NoticeResDto(Notice notice) {
         this.id = notice.getId();
         this.title = notice.getTitle();
-        this.subtitle = notice.getSubtitle();
         this.content = notice.getContent();
         this.updateTime = notice.getUpdateTime();
         this.image = notice.getImages().get(0).getImage_url();

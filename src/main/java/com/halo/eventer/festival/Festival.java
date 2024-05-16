@@ -31,10 +31,12 @@ public class Festival {
     private Long id;
 
     private String name;
+    private String subAddress;
 
     private String mainColor;
     private String subColor;
     private String fontColor;
+    private String backgroundColor;
 
     private String logo;
 
@@ -72,7 +74,7 @@ public class Festival {
     @Builder
     public Festival(FestivalCreateDto festivalCreateDto) {
         this.name = festivalCreateDto.getName();
-
+        this.subAddress = festivalCreateDto.getSubAddress();
     }
 
     public void setFestival(FestivalCreateDto festivalCreateDto) {
@@ -83,6 +85,7 @@ public class Festival {
         this.mainColor = colorReqDto.getMainColor();
         this.subColor = colorReqDto.getSubColor();
         this.fontColor = colorReqDto.getFontColor();
+        this.backgroundColor = colorReqDto.getBackgroundColor();
     }
 
     public void setLogo(String logo) {

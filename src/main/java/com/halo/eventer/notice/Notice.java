@@ -25,9 +25,9 @@ public class Notice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String tag;
     private String title;
-
-    private String subtitle;
+    private String writer;
 
     @Column(columnDefinition = "varchar(2000)")
     private String content;
@@ -53,11 +53,12 @@ public class Notice {
 
     public Notice(NoticeReqDto n) {
         this.title = n.getTitle();
-        this.subtitle = n.getSubtitle();
         this.content = n.getContent();
         this.thumbnail = n.getThumbnail();
         this.type =n.getType();
         this.picked = false;
+        this.tag = n.getIndex();
+        this.writer = n.getWriter();
         this.bannerRank = 11;
     }
 
@@ -76,9 +77,10 @@ public class Notice {
 
     public void setAll(NoticeReqDto n){
         this.title = n.getTitle();
-        this.subtitle = n.getSubtitle();
         this.content = n.getContent();
         this.thumbnail = n.getThumbnail();
+        this.tag = n.getIndex();
+        this.writer = n.getWriter();
         this.type = n.getType();
     }
 

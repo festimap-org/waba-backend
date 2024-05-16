@@ -14,16 +14,17 @@ import java.util.List;
 public class NoticeReqDto {
 
     private String title;
-
-    private String subtitle;
-
     private String content;
+    private String index;
+    private String writer;
 
     private String thumbnail;
 
     private ArticleType type;
 
     private List<String> images;
+
+    private List<Long> deleteIds;
 
 }
 

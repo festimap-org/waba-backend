@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface FestivalRepository extends JpaRepository<Festival,Long> {
 
     Optional<Festival> findByName(String name);
+    Optional<Festival> findBySubAddress(String subAddress);
 }

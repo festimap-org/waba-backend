@@ -2,8 +2,7 @@ package com.halo.eventer.concert.dto;
 
 import com.halo.eventer.concert.Concert;
 import com.halo.eventer.duration.dto.DurationDto;
-import com.halo.eventer.image.Image;
-import com.halo.eventer.image.dto.ImageConcertDto;
+import com.halo.eventer.image.dto.ImageUpdateDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +16,7 @@ public class ConcertResDto {
 
     private String thumbnail;
 
-    private List<ImageConcertDto> images;
+    private List<ImageUpdateDto> images;
 
     private DurationDto durationDto;
 
@@ -25,7 +24,7 @@ public class ConcertResDto {
 
         this.durationDto = new DurationDto(c.getDuration());
         this.thumbnail = c.getThumbnail();
-        this.images = c.getImages().stream().map(ImageConcertDto::new).collect(Collectors.toList());
+        this.images = c.getImages().stream().map(ImageUpdateDto::new).collect(Collectors.toList());
     }
 
 }

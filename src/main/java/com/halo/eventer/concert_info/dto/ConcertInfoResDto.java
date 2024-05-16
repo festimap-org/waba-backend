@@ -10,9 +10,11 @@ import lombok.NoArgsConstructor;
 public class ConcertInfoResDto {
     private Long concertInfoId;
     private String name;
+    private String summary;
 
     public ConcertInfoResDto(ConcertInfo concertInfo) {
         this.concertInfoId = concertInfo.getId();
         this.name = concertInfo.getName();
+        this.summary = concertInfo.getSummary();
     }
 }

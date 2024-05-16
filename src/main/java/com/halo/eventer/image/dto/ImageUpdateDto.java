@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ImageConcertDto {
+public class ImageUpdateDto {
     private Long imageId;
     private String image;
 
-    public ImageConcertDto(Image image) {
+    public ImageUpdateDto(Image image) {
         this.imageId = image.getId();
         this.image = image.getImage_url();
     }

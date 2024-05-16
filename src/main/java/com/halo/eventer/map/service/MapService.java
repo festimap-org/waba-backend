@@ -52,7 +52,7 @@ public class MapService {
         return response;
     }
 
-    public List<GetAllStoreResDto> getMaps(Long mapCategoryId) throws Exception{
+    public List<GetAllStoreResDto> getMaps(Long mapCategoryId){
         
         return mapRepository.findAllByMapCategoryId(mapCategoryId)
                 .stream().map(GetAllStoreResDto::new).collect(Collectors.toList());

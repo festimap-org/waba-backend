@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class FestivalCreateDto {
 
     private String name;
+    private String subAddress;
 
 }

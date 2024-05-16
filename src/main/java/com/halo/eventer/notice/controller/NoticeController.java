@@ -3,6 +3,7 @@ package com.halo.eventer.notice.controller;
 import com.halo.eventer.common.ArticleType;
 import com.halo.eventer.notice.dto.BannerEditReqDto;
 import com.halo.eventer.notice.dto.GetAllNoticeResDto;
+import com.halo.eventer.notice.dto.GetNoticeResDto;
 import com.halo.eventer.notice.dto.NoticeReqDto;
 import com.halo.eventer.notice.service.NoticeService;
 import com.halo.eventer.notice.swagger.*;
@@ -42,30 +43,17 @@ public class NoticeController {
     @GetNoticeReqApi
     @GetNoticeResApi
     @GetMapping("/{festivalId}/{noticeId}")
-    public ResponseEntity<?> getNotice(@PathVariable("festivalId") Long festivalId,
-            @PathVariable("noticeId") Long noticeId) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(noticeService.getNotice(noticeId));
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
+    public GetNoticeResDto getNotice(@PathVariable("festivalId") Long festivalId,
+                                     @PathVariable("noticeId") Long noticeId) {
+        return noticeService.getNotice(noticeId);
     }
 
     @SelectBannerApi
     @PostMapping("/banner")
-    public ResponseEntity<?> changeBanner(@RequestParam("noticeId") Long noticeId,
-                                          @RequestParam("pick") Boolean pick)
+    public String changeBanner(@RequestParam("noticeId") Long noticeId,
+                               @RequestParam("pick") Boolean pick)
     {
-        try {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(noticeService.changeBanner(noticeId,pick));
-        }
-        catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
+        return noticeService.changeBanner(noticeId,pick);
     }
 
     //등록된 배너 조회

@@ -37,23 +37,25 @@ public class ConcertInfoService {
         return "저장완료";
     }
 
-    public List<ConcertInfoResDto> getAllName(Long festivalId) {
-        return concertInfoRepository.findAllByFestivalId(festivalId).stream().map(ConcertInfoResDto::new).collect(Collectors.toList());
+    public List<ConcertInfoResDto> getAllName(Long festivalId, ConcertInfoType type) {
+        return concertInfoRepository.findAllByFestivalIdAndType(festivalId,type).stream().map(ConcertInfoResDto::new).collect(Collectors.toList());
     }
 
     @Transactional
     public String updateConcertInfo(Long concertInfoId, ConcertInfoUpdateDto concertUpdateDto) throws NoDataInDatabaseException {
         ConcertInfo concertInfo = concertInfoRepository.findById(concertInfoId).orElseThrow(() -> new NoDataInDatabaseException("해당 카테고리가 존재하지 않습니다."));
-
         concertUpdateDto.getDeletedImages().forEach(imageRepository::deleteById);
-        concertInfo.setImages(concertUpdateDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
-
-
+        concertInfo.setInfo(concertUpdateDto);
         return "상세 이미지 등록";
     }
 
     public ConcertInfoGetDto getConcertInfo(Long concertId) throws NoDataInDatabaseException {
         ConcertInfo concertInfo= concertInfoRepository.findById(concertId).orElseThrow(()->new NoDataInDatabaseException("공연 부가 정보가 존재하지 않습니다."));
         return new ConcertInfoGetDto(concertInfo);
+    }
+
+    public String deleteConcertInfo(Long id) {
+        concertInfoRepository.deleteById(id);
+        return "삭제완료";
     }
 }
