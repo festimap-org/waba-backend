@@ -28,4 +28,8 @@ public class HomeController {
         return festivalService.getFestivalSubAddress(name);
     }
 
+    @GetMapping("/")
+    public void getOk(){
+    }
+
 }
