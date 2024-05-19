@@ -85,8 +85,8 @@ public class NoticeService {
     }
 
     //등록된 배너 전체 조회
-    public List<BannerResDto> getRegisteredBanner() {
-        return noticeRepository.findAllByPicked(true).stream().map(BannerResDto::new).collect(Collectors.toList());
+    public List<BannerResDto> getRegisteredBanner(Long festivalId) {
+        return noticeRepository.findAllByPickedAndFestival_Id(true,festivalId).stream().map(BannerResDto::new).collect(Collectors.toList());
     }
 
     // 배너 순서 정하기

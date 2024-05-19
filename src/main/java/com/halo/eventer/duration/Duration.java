@@ -33,7 +33,6 @@ public class Duration {
     @OneToMany(mappedBy = "duration",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<DurationMap> durationMaps = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "duration",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Concert> concerts = new ArrayList<>();
 

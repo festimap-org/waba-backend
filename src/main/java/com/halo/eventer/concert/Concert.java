@@ -22,7 +22,6 @@ public class Concert {
     private String thumbnail;
 
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
     private Festival festival;

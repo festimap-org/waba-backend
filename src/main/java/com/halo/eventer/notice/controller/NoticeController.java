@@ -1,10 +1,7 @@
 package com.halo.eventer.notice.controller;
 
 import com.halo.eventer.common.ArticleType;
-import com.halo.eventer.notice.dto.BannerEditReqDto;
-import com.halo.eventer.notice.dto.GetAllNoticeResDto;
-import com.halo.eventer.notice.dto.GetNoticeResDto;
-import com.halo.eventer.notice.dto.NoticeReqDto;
+import com.halo.eventer.notice.dto.*;
 import com.halo.eventer.notice.service.NoticeService;
 import com.halo.eventer.notice.swagger.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -58,15 +55,8 @@ public class NoticeController {
 
     //등록된 배너 조회
     @GetMapping("/banner")
-    public ResponseEntity<?> getRegisteredBanner(){
-        try {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(noticeService.getRegisteredBanner());
-        }
-        catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
+    public List<BannerResDto> getRegisteredBanner(@RequestParam("festivalId") Long festivalId){
+        return noticeService.getRegisteredBanner(festivalId);
     }
     // 배너 순서 등록
     @PatchMapping("/banner")
