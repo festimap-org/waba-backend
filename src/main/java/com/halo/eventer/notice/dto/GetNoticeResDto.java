@@ -6,6 +6,7 @@ import com.halo.eventer.image.dto.ImageUpdateDto;
 import com.halo.eventer.notice.Notice;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ public class GetNoticeResDto {
     private String writer;
     private String content;
     private ArticleType type;
+    private LocalDateTime createTime;
 
     private List<ImageUpdateDto> images;
 
@@ -30,6 +32,7 @@ public class GetNoticeResDto {
         this.index = notice.getTag();
         this.writer = notice.getWriter();
         this.images = notice.getImages().stream().map(ImageUpdateDto::new).collect(Collectors.toList());
+        this.createTime = notice.getUpdateTime();
     }
 }
 
