@@ -11,10 +11,12 @@ public class MapCategoryResDto {
     private Long mapCategoryId;
     private String categoryName;
     private String pin;
+    private String icon;
 
     public MapCategoryResDto(MapCategory mapCategory) {
         this.mapCategoryId = mapCategory.getId();
         this.categoryName = mapCategory.getCategoryName();
         this.pin = mapCategory.getPin();
+        this.icon = mapCategory.getIcon();
     }
 }

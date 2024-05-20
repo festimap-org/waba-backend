@@ -21,6 +21,7 @@ public class GetAllStoreResDto {
     private String type;
     private List<DurationDto> durationDto;
     private OperationTime operationTime;
+    private String icon;
 
     public GetAllStoreResDto(Map map) {
         this.id = map.getId();
@@ -30,5 +31,6 @@ public class GetAllStoreResDto {
         this.type = map.getMapCategory().getCategoryName();
         this.durationDto= map.getDurationMaps().stream().map(o->new DurationDto(o.getDuration())).collect(Collectors.toList());
         this.operationTime = map.getOperationType();
+        this.icon = map.getIcon();
     }
 }

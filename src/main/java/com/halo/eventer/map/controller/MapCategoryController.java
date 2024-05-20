@@ -19,7 +19,6 @@ import java.util.List;
 @Tag(name = "맵 카테고리")
 public class MapCategoryController {
 
-
     private final MapCategoryService mapCategoryService;
 
     @PostMapping("/{festivalId}")
@@ -49,7 +48,7 @@ public class MapCategoryController {
 
     @MapGetApi
     @GetMapping("/{mapCategoryId}")
-    public List<MapListDto> getLandMarks(@PathVariable("mapCategoryId") Long mapCategoryId){
+    public List<MapListDto> getMapList(@PathVariable("mapCategoryId") Long mapCategoryId){
         return mapCategoryService.getLandMarks(mapCategoryId);
     }
 }

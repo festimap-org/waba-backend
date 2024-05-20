@@ -9,6 +9,7 @@ import com.halo.eventer.map.dto.map.MapListDto;
 import com.halo.eventer.map.dto.mapcategory.MapCategoryImageDto;
 import com.halo.eventer.map.dto.mapcategory.MapCategoryResDto;
 import com.halo.eventer.map.repository.MapCategoryRepository;
+import com.halo.eventer.map.repository.MapRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class MapCategoryService {
 
     private final MapCategoryRepository mapCategoryRepository;
+    private final MapRepository mapRepository;
     private final FestivalRepository festivalRepository;
 
     @Transactional
@@ -33,8 +35,7 @@ public class MapCategoryService {
     }
 
     public List<MapCategoryResDto> getMapCategoryList(Long festivalId){
-        List<MapCategoryResDto> mapCategories = mapCategoryRepository.findAllByFestival_Id(festivalId).stream().map(MapCategoryResDto::new).collect(Collectors.toList());
-        return mapCategories;
+        return mapCategoryRepository.findAllByFestival_Id(festivalId).stream().map(MapCategoryResDto::new).collect(Collectors.toList());
     }
 
     @Transactional
@@ -58,4 +59,5 @@ public class MapCategoryService {
     public MapCategoryImageDto getMapCategoryImages(Long mapCategoryId) throws NoDataInDatabaseException {
         return new MapCategoryImageDto(mapCategoryRepository.findById(mapCategoryId).orElseThrow(()->new NoDataInDatabaseException("카테고리가 존재하지 않습니다.")));
     }
+
 }
