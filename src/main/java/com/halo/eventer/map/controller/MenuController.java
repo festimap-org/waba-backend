@@ -1,6 +1,7 @@
 package com.halo.eventer.map.controller;
 
 import com.halo.eventer.map.dto.menu.MenuCreateDto;
+import com.halo.eventer.map.dto.menu.MenuResDto;
 import com.halo.eventer.map.service.MenuService;
 import com.halo.eventer.map.swagger.menu.CreateMenuAPi;
 import com.halo.eventer.map.swagger.menu.DeleteMenuApi;
@@ -52,17 +53,10 @@ public class MenuController {
 
 
     @UpdateMenuApi
-    @PatchMapping("/{menuId}")
-    public ResponseEntity<?> updateMenu(@PathVariable("menuId") Long id,
-                                        @RequestBody MenuCreateDto menuCreateDto){
-        try{
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(menuService.updateMenu(id, menuCreateDto));
-        }
-        catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
+    @PatchMapping()
+    public List<MenuResDto> updateMenu(@RequestParam("mapId")Long id,
+                                       @RequestBody List<MenuResDto> menuCreateDtos){
+        return menuService.updateMenu(id,menuCreateDtos);
     }
 
 

@@ -2,6 +2,7 @@ package com.halo.eventer.home;
 
 import com.halo.eventer.festival.Festival;
 import com.halo.eventer.festival.dto.MainMenuDto;
+import com.halo.eventer.festival.dto.MiddleBannerDto;
 import com.halo.eventer.notice.dto.BannerResDto;
 import com.halo.eventer.user.dto.MissingPersonPopupDto;
 import com.halo.eventer.user.dto.UrgentDto;
@@ -18,10 +19,12 @@ public class HomeDto {
     private List<BannerResDto> banner;
     private MainMenuDto mainMenuDto;
     private List<WidgetDto> widgetDto;
+    private MiddleBannerDto middleBannerDto;
 
     public HomeDto(List<BannerResDto> banner, Festival festival) {
         this.banner = banner;
         this.mainMenuDto = new MainMenuDto(festival);
         this.widgetDto = festival.getWidgets().stream().map(WidgetDto::new).collect(Collectors.toList());
+        this.middleBannerDto = new MiddleBannerDto(festival);
     }
 }

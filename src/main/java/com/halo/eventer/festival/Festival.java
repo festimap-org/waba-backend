@@ -2,12 +2,9 @@ package com.halo.eventer.festival;
 
 
 import com.halo.eventer.concert_info.ConcertInfo;
-import com.halo.eventer.festival.dto.FestivalConcertMenuDto;
+import com.halo.eventer.festival.dto.*;
 import com.halo.eventer.duration.Duration;
-import com.halo.eventer.festival.dto.ColorReqDto;
-import com.halo.eventer.festival.dto.FestivalCreateDto;
 import com.halo.eventer.concert.Concert;
-import com.halo.eventer.festival.dto.MainMenuDto;
 import com.halo.eventer.map.MapCategory;
 import com.halo.eventer.notice.Notice;
 import com.halo.eventer.widget.Widget;
@@ -49,6 +46,9 @@ public class Festival {
     private String entryIcon;
     private String viewSummary;
     private String viewIcon;
+
+    private String middleBanner;
+    private String middleUrl;
 
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
@@ -112,5 +112,10 @@ public class Festival {
     public void setView(FestivalConcertMenuDto festivalConcertMenuDto){
         this.viewSummary = festivalConcertMenuDto.getSummary();
         this.viewIcon = festivalConcertMenuDto.getIcon();
+    }
+
+    public void setMiddleBanner(MiddleBannerDto middleBannerDto) {
+        this.middleBanner = middleBannerDto.getMiddleBanner();
+        this.middleUrl = middleBannerDto.getMiddleBannerUrl();
     }
 }

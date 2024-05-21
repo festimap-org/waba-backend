@@ -124,4 +124,15 @@ public class FestivalService {
     public MainMenuDto getMainMenu(Long id) throws NoDataInDatabaseException {
         return new MainMenuDto(festivalRepository.findById(id).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다.")));
     }
+
+    @Transactional
+    public String createMiddleBanner(Long festivalId, MiddleBannerDto middleBannerDto) {
+        festivalRepository.findById(festivalId).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다."))
+                .setMiddleBanner(middleBannerDto);
+        return "수정 완료";
+    }
+
+    public MiddleBannerDto getMiddleBanner(Long id) {
+        return new MiddleBannerDto(festivalRepository.findById(id).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다.")));
+    }
 }

@@ -1,6 +1,7 @@
 package com.halo.eventer.map.service;
 
 
+import com.halo.eventer.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.map.dto.menu.MenuCreateDto;
 import com.halo.eventer.map.dto.menu.MenuResDto;
 import com.halo.eventer.map.Menu;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,10 +40,14 @@ public class MenuService {
     }
 
     @Transactional
-    public MenuResDto updateMenu(Long menuId, MenuCreateDto menuCreateDto) throws Exception{
-        Menu menu = menuRepository.findById(menuId).orElseThrow(()->new NotFoundException("존재하지 않습니다"));
-        menu.setMenu(menuCreateDto);
-        return new MenuResDto(menu);
+    public List<MenuResDto> updateMenu(Long id, List<MenuResDto> menuCreateDto) throws NoDataInDatabaseException {
+        List<Menu> menus = menuRepository.findAllByIdIn(menuCreateDto.stream().map(MenuResDto::getId).collect(Collectors.toList()));
+        java.util.Map<Long, Menu> menuMap = menus.stream().collect(Collectors.toMap(Menu::getId, Function.identity()));
+        for (MenuResDto menuDto : menuCreateDto) {
+            Menu menu = menuMap.get(menuDto.getId());
+            menu.setMenu(menuDto);
+        }
+        return menuRepository.findAllByMap_Id(id).stream().map(MenuResDto::new).collect(Collectors.toList());
     }
 
     @Transactional

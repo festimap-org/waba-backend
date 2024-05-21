@@ -93,4 +93,15 @@ public class FestivalController {
     public FestivalConcertMenuDto getViewInfo(@PathVariable("festivalId") Long festivalId){
         return festivalService.getViewInfo(festivalId);
     }
+
+    @PatchMapping("/{festivalId}/middleBanner")
+    public String createMiddleBanner(@PathVariable("festivalId") Long festivalId,
+                                     @RequestBody MiddleBannerDto middleBannerDto){
+        return festivalService.createMiddleBanner(festivalId,middleBannerDto);
+    }
+
+    @GetMapping("/{festivalId}/middleBanner")
+    public MiddleBannerDto getMiddleBanner(@PathVariable("festivalId") Long id){
+        return festivalService.getMiddleBanner(id);
+    }
 }

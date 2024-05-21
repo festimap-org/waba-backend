@@ -2,6 +2,7 @@ package com.halo.eventer.map;
 
 
 import com.halo.eventer.map.dto.menu.MenuCreateDto;
+import com.halo.eventer.map.dto.menu.MenuResDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,7 +36,7 @@ public class Menu {
         this.image = menuCreateDto.getImage();
     }
 
-    public void setMenu(MenuCreateDto menuCreateDto) {
+    public void setMenu(MenuResDto menuCreateDto) {
         this.name = menuCreateDto.getName();
         this.price = menuCreateDto.getPrice();
         this.summary = menuCreateDto.getSummary();
