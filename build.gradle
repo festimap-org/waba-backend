@@ -36,9 +36,6 @@ dependencies {
 	//mysql driver
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
-	//S3 buket
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
 }
 
 tasks.named('bootBuildImage') {

@@ -4,8 +4,6 @@ import com.halo.eventer.festival.Festival;
 import com.halo.eventer.festival.dto.MainMenuDto;
 import com.halo.eventer.festival.dto.MiddleBannerDto;
 import com.halo.eventer.notice.dto.BannerResDto;
-import com.halo.eventer.user.dto.MissingPersonPopupDto;
-import com.halo.eventer.user.dto.UrgentDto;
 import com.halo.eventer.widget.dto.WidgetDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

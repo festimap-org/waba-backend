@@ -4,13 +4,8 @@ package com.halo.eventer.home;
 import com.halo.eventer.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.festival.Festival;
 import com.halo.eventer.festival.repository.FestivalRepository;
-import com.halo.eventer.home.HomeDto;
-import com.halo.eventer.user.dto.MissingPersonPopupDto;
 import com.halo.eventer.notice.dto.BannerResDto;
-import com.halo.eventer.user.dto.UrgentDto;
-import com.halo.eventer.user.repository.MissingPersonRepository;
 import com.halo.eventer.notice.repository.NoticeRepository;
-import com.halo.eventer.user.repository.UrgentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

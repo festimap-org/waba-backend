@@ -1,7 +1,6 @@
 package com.halo.eventer.concert_info.service;
 
 
-import com.halo.eventer.concert.dto.ConcertResDto;
 import com.halo.eventer.concert_info.ConcertInfo;
 import com.halo.eventer.concert_info.dto.ConcertInfoGetDto;
 import com.halo.eventer.concert_info.dto.ConcertInfoResDto;
@@ -11,9 +10,7 @@ import com.halo.eventer.concert_info.ConcertInfoType;
 import com.halo.eventer.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.festival.Festival;
 import com.halo.eventer.festival.repository.FestivalRepository;
-import com.halo.eventer.image.Image;
 import com.halo.eventer.image.ImageRepository;
-import com.halo.eventer.image.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
