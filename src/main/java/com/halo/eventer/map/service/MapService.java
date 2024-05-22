@@ -1,6 +1,6 @@
 package com.halo.eventer.map.service;
 
-import com.amazonaws.services.ec2.model.OperationType;
+
 import com.halo.eventer.duration.repository.DurationRepository;
 import com.halo.eventer.duration_map.DurationMap;
 import com.halo.eventer.duration_map.DurationMapRepository;
@@ -10,7 +10,6 @@ import com.halo.eventer.map.dto.map.MapCreateDto;
 import com.halo.eventer.map.dto.map.MapCreateResDto;
 import com.halo.eventer.map.dto.map.MapResDto;
 import com.halo.eventer.map.Map;
-import com.halo.eventer.image.ImageRepository;
 import com.halo.eventer.map.enumtype.OperationTime;
 import com.halo.eventer.map.repository.MapCategoryRepository;
 import com.halo.eventer.map.repository.MapRepository;
