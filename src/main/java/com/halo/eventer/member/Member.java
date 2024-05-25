@@ -27,5 +27,13 @@ public class Member {
         roles.forEach(o -> o.setMember(this));
     }
 
+    public Member(String loginId, String password) {
+        this.loginId = loginId;
+        this.password = password;
+    }
 
+    public void setRoles(List<Authority> roles) {
+        this.authorities = roles;
+        roles.forEach(o -> o.setMember(this));
+    }
 }

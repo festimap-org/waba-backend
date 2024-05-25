@@ -7,6 +7,7 @@ import com.halo.eventer.security.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -42,10 +43,9 @@ public class SecurityConfig {
 
                 .authorizeRequests()
                 .antMatchers("/", "/swagger-ui/**", "/v3/**","/swagger-ui.html").permitAll()
-//                .antMatchers(HttpMethod.POST, "/concert","/festival","/mapCategory", "/menu","/notice","/notice/**").hasRole("ADMIN")
-//                .antMatchers(HttpMethod.PATCH, "/concert/**","/festival/**","/mapCategory/**","/menu/**","/notice/**").hasRole("ADMIN")
-//                .antMatchers(HttpMethod.DELETE, "/concert/**","/festival/**","/mapCategory/**","/menu/**","/notice/**").hasRole("ADMIN")
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")                .antMatchers(HttpMethod.DELETE, "/concert/**","/festival/**","/mapCategory/**","/menu/**","/notice/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")
                 .anyRequest().permitAll();
 
         http
