@@ -43,9 +43,9 @@ public class SecurityConfig {
 
                 .authorizeRequests()
                 .antMatchers("/", "/swagger-ui/**", "/v3/**","/swagger-ui.html").permitAll()
-                .antMatchers(HttpMethod.POST, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PATCH, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")                .antMatchers(HttpMethod.DELETE, "/concert/**","/festival/**","/mapCategory/**","/menu/**","/notice/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.POST, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.PATCH, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")                .antMatchers(HttpMethod.DELETE, "/concert/**","/festival/**","/mapCategory/**","/menu/**","/notice/**").hasRole("ADMIN")
+ //               .antMatchers(HttpMethod.DELETE, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")
                 .anyRequest().permitAll();
 
         http
