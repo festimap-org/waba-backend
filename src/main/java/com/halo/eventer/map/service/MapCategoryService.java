@@ -27,9 +27,6 @@ public class MapCategoryService {
 
     @Transactional
     public List<MapCategoryResDto> createMapCategory(Long festivalId, String categoryName) throws DuplicatedElementException, NoDataInDatabaseException{
-        if(mapCategoryRepository.findByCategoryName(categoryName).isPresent()) {
-            throw new DuplicatedElementException("이미 존재하는 카테고리입니다.");
-        }
         mapCategoryRepository.save(new MapCategory(festivalRepository.findById(festivalId).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다.")),categoryName));
         return mapCategoryRepository.findAllByFestival_Id(festivalId).stream().map(MapCategoryResDto::new).collect(Collectors.toList());
     }
