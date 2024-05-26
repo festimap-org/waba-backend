@@ -18,22 +18,20 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
-        String token = memberService.login(loginDto);
+    public TokenDto login(@RequestBody LoginDto loginDto) {
+//        String token = memberService.login(loginDto);
+//
+//        ResponseCookie cookie = ResponseCookie.from("JWT", token)
+//                .httpOnly(true)
+//                .secure(false)
+//                .path("/")
+//                .maxAge(24*60*60)
+//                .sameSite("Lax")
+//                .domain("wabauniv.com")
+//                .build();
+//
+//        response.setHeader("Set-Cookie", cookie.toString());
 
-        ResponseCookie cookie = ResponseCookie.from("JWT", token)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(24*60*60)
-                .sameSite("Lax")
-                .domain("localhost")
-                .build();
-
-
-
-        response.setHeader("Set-Cookie", cookie.toString());
-
-        return "로그인 성공";
+        return memberService.login(loginDto);
     }
 }

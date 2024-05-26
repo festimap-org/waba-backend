@@ -16,12 +16,14 @@ public class MemberService {
     private final PasswordEncoder encoder;
     private final JwtProvider jwtProvider;
 
-    public String login(LoginDto loginDto) throws NoDataInDatabaseException,AccessDenyException {
+    public TokenDto login(LoginDto loginDto) throws NoDataInDatabaseException,AccessDenyException {
         Member member = memberRepository.findByLoginId(loginDto.getLoginId())
                 .orElseThrow(() -> new NoDataInDatabaseException("잘못된 아이디 혹은 비밀번호"));
         if(!encoder.matches(loginDto.getPassword(), member.getPassword())) {
             throw new AccessDenyException("비밀번호가 틀렸거나 아이디가 올바르지 않습니다."); // 401
         }
-        return jwtProvider.createToken(member.getLoginId(),member.getAuthorities());
+
+        return new TokenDto(jwtProvider.createToken(member.getLoginId(),member.getAuthorities()));
+        //return jwtProvider.createToken(member.getLoginId(),member.getAuthorities());
     }
 }

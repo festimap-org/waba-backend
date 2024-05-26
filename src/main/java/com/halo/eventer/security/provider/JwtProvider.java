@@ -64,15 +64,16 @@ public class JwtProvider {
                 .parseClaimsJws(token).getBody().getSubject();
     }
 
+
     // 토큰 검증
     public boolean validateToken(String token) {
         try {
-//            // Bearer 검증
-//            if (!token.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
-//                return false;
-//            } else {
-//                token = token.split(" ")[1].trim();
-//            }
+            // Bearer 검증
+            if (!token.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
+                return false;
+            } else {
+                token = token.split(" ")[1].trim();
+            }
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             // 만료되었을 시 false
             return !claims.getBody().getExpiration().before(new Date());
@@ -81,19 +82,40 @@ public class JwtProvider {
         }
     }
 
+    // Authorization Header를 통해 인증을 한다. 헤더에서 Authorization 부분만 파싱해서 사용하기 위해 만들었음
+    public String resolveToken(HttpServletRequest request) {
+        return request.getHeader("Authorization");
+    }
+
+//    // 토큰 검증
+//    public boolean validateToken(String token) {
+//        try {
+////            // Bearer 검증
+////            if (!token.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
+////                return false;
+////            } else {
+////                token = token.split(" ")[1].trim();
+////            }
+//            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+//            // 만료되었을 시 false
+//            return !claims.getBody().getExpiration().before(new Date());
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
 
     // 쿠키 통해 인증
-    public String resolveToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("JWT".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
+//    public String resolveToken(HttpServletRequest request) {
+//        Cookie[] cookies = request.getCookies();
+//        if (cookies != null) {
+//            for (Cookie cookie : cookies) {
+//                if ("JWT".equals(cookie.getName())) {
+//                    return cookie.getValue();
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     // 권한정보 획득
     // Spring Security 인증과정에서 권한확인을 위한 기능
