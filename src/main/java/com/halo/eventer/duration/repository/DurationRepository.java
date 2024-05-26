@@ -11,4 +11,6 @@ public interface DurationRepository extends CrudRepository<Duration, Long> {
 
     List<Duration> findByIdIn(List<Long> ids);
 
+    List<Duration> findAllByIdIn(List<Long> ids);
+
 }

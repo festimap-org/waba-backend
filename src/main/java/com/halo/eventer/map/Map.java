@@ -8,6 +8,7 @@ import com.halo.eventer.map.enumtype.OperationTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class Map {
     @OneToMany(mappedBy = "map", fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
     private List<Menu> menus = new ArrayList<>();
 
-    @OneToMany(mappedBy = "map",fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
+    @OneToMany(mappedBy = "map",fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
     private List<DurationMap> durationMaps = new ArrayList<>();
 
     @Builder
@@ -82,7 +83,7 @@ public class Map {
     }
 
     public void setDurationMaps(List<DurationMap> durationMaps){
-        this.durationMaps = durationMaps;
+        this.durationMaps.addAll(durationMaps);
     }
 
 
