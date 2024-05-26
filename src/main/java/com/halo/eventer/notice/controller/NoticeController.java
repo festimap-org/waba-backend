@@ -24,7 +24,7 @@ public class NoticeController {
     @CreateNoticeApi
     @PostMapping
     public String registerNotice(@RequestBody NoticeReqDto noticeReqDto,
-                                            @RequestParam("festivalId") Long id) {
+                                 @RequestParam("festivalId") Long id) {
         return noticeService.registerNotice(noticeReqDto, id);
     }
 

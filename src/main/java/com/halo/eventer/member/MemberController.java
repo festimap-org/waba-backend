@@ -3,6 +3,7 @@ package com.halo.eventer.member;
 import com.halo.eventer.member.dto.LoginDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,13 +21,18 @@ public class MemberController {
     public String login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
         String token = memberService.login(loginDto);
 
-        Cookie cookie = new Cookie("JWT", token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false); // 개발 환경에서는 false, 배포 환경에서는 true로 설정
-        cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60); // 1 day
-        cookie.setDomain("localhost"); // 하위 도메인에서 쿠키 공유
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from("JWT", token)
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(24*60*60)
+                .sameSite("Lax")
+                .domain("localhost")
+                .build();
+
+
+
+        response.setHeader("Set-Cookie", cookie.toString());
 
         return "로그인 성공";
     }
