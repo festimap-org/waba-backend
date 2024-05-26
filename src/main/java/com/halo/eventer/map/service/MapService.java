@@ -14,6 +14,7 @@ import com.halo.eventer.map.enumtype.OperationTime;
 import com.halo.eventer.map.repository.MapCategoryRepository;
 import com.halo.eventer.map.repository.MapRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MapService {
     private final MapRepository mapRepository;
     private final MapCategoryRepository mapCategoryRepository;
@@ -35,7 +37,7 @@ public class MapService {
         Map map = new Map(mapCreateDto,operationTime);
 
 
-        List<DurationMap>  durationMaps = durationRepository.findByIdIn(mapCreateDto.getDurationIds()).stream().map(o->new DurationMap(o,map)).collect(Collectors.toList());
+        List<DurationMap>  durationMaps = durationRepository.findAllByIdIn(mapCreateDto.getDurationIds()).stream().map(o->new DurationMap(o,map)).collect(Collectors.toList());
         map.setDurationMaps(durationMaps);
         map.setMapCategory(mapCategoryRepository.findById(mapCategoryId).orElseThrow(()-> new NoDataInDatabaseException("해당 카테고리 정보가 존재하지 않습니다.")));
 
@@ -61,11 +63,15 @@ public class MapService {
     @Transactional
     public MapResDto updateStore(Long mapId, MapCreateDto mapCreateDto, Long mapCategoryId) throws Exception{
         Map map = mapRepository.findById(mapId).orElseThrow(()->new NotFoundException("존재하지 않습니다"));
-        durationMapRepository.deleteByIdIn(mapCreateDto.getDeleteIds());
-        List<DurationMap>  durationMaps = durationRepository.findByIdIn(mapCreateDto.getDurationIds()).stream().map(o->new DurationMap(o,map)).collect(Collectors.toList());
-        map.setDurationMaps(durationMaps);
         map.setMap(mapCreateDto);
         map.setMapCategory(mapCategoryRepository.findById(mapCategoryId).orElseThrow(()-> new NoDataInDatabaseException("해당 카테고리 정보가 존재하지 않습니다.")));
+
+        List<DurationMap> addDurationMaps = durationRepository.findAllByIdIn(mapCreateDto.getDurationIds()).stream().map(o->new DurationMap(o,map)).collect(Collectors.toList());
+        List<DurationMap> deleteDurationMaps =durationMapRepository.findAllByDuration_IdIn(mapCreateDto.getDeleteIds());
+
+        map.getDurationMaps().removeAll(deleteDurationMaps);
+        map.getDurationMaps().addAll(addDurationMaps);
+
         return new MapResDto(map);
     }
 
