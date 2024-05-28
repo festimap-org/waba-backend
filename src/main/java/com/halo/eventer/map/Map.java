@@ -76,6 +76,7 @@ public class Map {
         this.longitude = mapCreateDto.getLongitude();
         this.operationHours = mapCreateDto.getOperationHours();
         this.thumbnail = mapCreateDto.getThumbnail();
+        this.icon = mapCreateDto.getIcon();
     }
 
     public void setMapCategory(MapCategory mapCategory){
