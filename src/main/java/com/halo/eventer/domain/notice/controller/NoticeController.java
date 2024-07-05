@@ -1,13 +1,12 @@
 package com.halo.eventer.domain.notice.controller;
 
+import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.notice.dto.*;
 import com.halo.eventer.domain.notice.swagger.*;
 import com.halo.eventer.global.common.ArticleType;
 import com.halo.eventer.domain.notice.service.NoticeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,81 +19,63 @@ public class NoticeController {
 
     private final NoticeService noticeService;
 
+    /** 공지사항 등록 */
     @CreateNoticeApi
     @PostMapping
-    public String registerNotice(@RequestBody NoticeReqDto noticeReqDto,
+    public String registerNotice(@RequestBody NoticeRegisterDto NoticeRegisterDto,
                                  @RequestParam("festivalId") Long id) {
-        return noticeService.registerNotice(noticeReqDto, id);
+        return noticeService.registerNotice(NoticeRegisterDto, id);
     }
 
+    /** 공지사항 타입별로 조회 */
     @NoticeGetsApi
     @GetMapping("/{festivalId}")
-    public List<GetAllNoticeResDto> inquireNotices(@PathVariable Long festivalId,
-                                                   @RequestParam("type") ArticleType type) {
-        return noticeService.inquireNotices(festivalId, type);
+    public List<NoticeInquireListDto> inquireNoticeList(@PathVariable Long festivalId,
+                                                        @RequestParam("type") ArticleType type) {
+        return noticeService.inquireNoticeList(festivalId, type);
     }
 
 
-    /**   단일 공지사항 / 이벤트 조회하기   */
+    /** 단일 공지사항 / 이벤트 조회하기 */
     @GetNoticeReqApi
-    @GetNoticeResApi
     @GetMapping("/{festivalId}/{noticeId}")
-    public GetNoticeResDto getNotice(@PathVariable("festivalId") Long festivalId,
-                                     @PathVariable("noticeId") Long noticeId) {
+    public Notice getNotice(@PathVariable("festivalId") Long festivalId,
+                            @PathVariable("noticeId") Long noticeId) {
         return noticeService.getNotice(noticeId);
     }
 
+    /** 배너 등록, 해제 */
     @SelectBannerApi
     @PostMapping("/banner")
     public String changeBanner(@RequestParam("noticeId") Long noticeId,
-                               @RequestParam("pick") Boolean pick)
-    {
+                               @RequestParam("pick") Boolean pick) {
         return noticeService.changeBanner(noticeId,pick);
     }
 
-    //등록된 배너 조회
+    /** 등록된 배너 전체 조회 */
     @GetMapping("/banner")
-    public List<BannerResDto> getRegisteredBanner(@RequestParam("festivalId") Long festivalId){
+    public List<RegisteredBannerGetListDto> getRegisteredBanner(@RequestParam("festivalId") Long festivalId){
         return noticeService.getRegisteredBanner(festivalId);
     }
-    // 배너 순서 등록
+
+    /** 배너 순서 등록 */
     @PatchMapping("/banner")
-    public ResponseEntity<?> editBannerRank(@RequestBody List<BannerEditReqDto> bannerEditReqDtos){
-        try {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(noticeService.editBannerRank(bannerEditReqDtos));
-        }
-        catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
+    public String editBannerRank(@RequestBody List<BannerEditListDto> bannerEditListDto){
+        return noticeService.editBannerRank(bannerEditListDto);
     }
 
 
+    /** 공지사항 수정 */
     @PatchMapping("/{noticeId}")
-    public ResponseEntity<?> updateNotice(@PathVariable("noticeId") Long id,
-                                          @RequestBody NoticeReqDto noticeReqDto){
-        try{
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(noticeService.updateNotice(id,noticeReqDto));
-        }
-        catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
+    public String updateNotice(@PathVariable("noticeId") Long id,
+                               @RequestBody NoticeRegisterDto NoticeRegisterDto) {
+        return noticeService.updateNotice(id, NoticeRegisterDto);
     }
 
 
-
+    /** 공지사항 삭제 */
     @DeleteMapping("/{noticeId}")
-    public ResponseEntity<?> deleteNotice(@PathVariable("noticeId") Long id){
-        try{
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(noticeService.deleteNotice(id));
-        }
-        catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
+    public String deleteNotice(@PathVariable("noticeId") Long id) {
+        return noticeService.deleteNotice(id);
     }
 }

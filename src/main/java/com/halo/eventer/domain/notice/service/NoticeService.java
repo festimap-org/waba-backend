@@ -6,6 +6,7 @@ import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.notice.dto.*;
 import com.halo.eventer.domain.notice.repository.NoticeRepository;
 import com.halo.eventer.global.common.ArticleType;
+import com.halo.eventer.global.error.exception.BaseException;
 import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.image.Image;
@@ -28,80 +29,81 @@ public class NoticeService {
 
     private final ImageRepository imageRepository;
 
+    /** 공지사항 등록 */
     @Transactional
-    public String registerNotice(NoticeReqDto noticeReqDto, Long id) throws NoDataInDatabaseException {
+    public String registerNotice(NoticeRegisterDto NoticeRegisterDto, Long id) throws BaseException {
         Festival festival = festivalRepository.findById(id).orElseThrow(()-> new NoDataInDatabaseException("축제가 존재하지 않습니다."));
-        Notice notice = new Notice(noticeReqDto);
+        Notice notice = new Notice(NoticeRegisterDto);
         notice.setFestival(festival);
-        notice.setImages(noticeReqDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
+        notice.setImages(NoticeRegisterDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
         noticeRepository.save(notice);
         return "저장 완료";
     }
 
+    /** 공지사항 타입별로 조회 */
     @Transactional
-    public List<GetAllNoticeResDto> inquireNotices(Long festivalId, ArticleType type) throws NoDataInDatabaseException{
+    public List<NoticeInquireListDto> inquireNoticeList(Long festivalId, ArticleType type) throws BaseException{
         List<Notice> notices = noticeRepository.findAllByFestivalAndType(festivalRepository.findById(festivalId)
                 .orElseThrow(() -> new NoDataInDatabaseException("공지사항이 존재하지 않습니다.")),type);
 
-        return notices.stream().map(GetAllNoticeResDto::new).collect(Collectors.toList());
+        return notices.stream().map(NoticeInquireListDto::new).collect(Collectors.toList());
     }
 
-    // 단일 게시글 조회
+    /** 단일 공지사항 / 이벤트 조회하기 */
     @Transactional
-    public GetNoticeResDto getNotice(Long id) {
+    public Notice getNotice(Long id) throws BaseException {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(id + "에 해당하는 공지사항이 존재하지 않습니다."));
 
-        return new GetNoticeResDto(notice);
+        return notice;
     }
 
-    //배너 등록,해제
+    /** 배너 등록, 해제 */
     @Transactional
-    public String changeBanner(Long noticeId, Boolean pick) throws NoDataInDatabaseException{
-        Notice notice = noticeRepository.findById(noticeId).orElseThrow(()->new NoDataInDatabaseException("실종자 정보가 존재하지 않습니다."));
+    public String changeBanner(Long noticeId, Boolean pick) throws BaseException{
+        Notice notice = getNotice(noticeId);
         notice.setPicked(pick);
         return "반영 완료";
     }
 
 
-    //공지사항 수정
+    /** 공지사항 수정 */
     @Transactional
-    public String updateNotice(Long noticeId, NoticeReqDto noticeReqDto) throws Exception {
-        Notice notice = noticeRepository.findById(noticeId).orElseThrow(() -> new NotFoundException("존재하지 않습니다"));
+    public String updateNotice(Long noticeId, NoticeRegisterDto NoticeRegisterDto) throws BaseException {
+        Notice notice = getNotice(noticeId);
 
-        imageRepository.deleteByIdIn(noticeReqDto.getDeleteIds());
-        notice.setAll(noticeReqDto);
-        notice.setImages(noticeReqDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
+        imageRepository.deleteByIdIn(NoticeRegisterDto.getDeleteIds());
+        notice.setAll(NoticeRegisterDto);
+        notice.setImages(NoticeRegisterDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
         return "수정완료";
     }
 
-
+    /** 공지사항 삭제 */
     @Transactional
-    public String deleteNotice(Long noticeId) throws Exception{
-        Notice notice = noticeRepository.findById(noticeId).orElseThrow(()->new NotFoundException("존재하지 않습니다."));
+    public String deleteNotice(Long noticeId) throws BaseException{
+        Notice notice = getNotice(noticeId);
         noticeRepository.delete(notice);
         return "삭제완료";
     }
 
-    //등록된 배너 전체 조회
-    public List<BannerResDto> getRegisteredBanner(Long festivalId) {
-        return noticeRepository.findAllByPickedAndFestival_Id(true,festivalId).stream().map(BannerResDto::new).collect(Collectors.toList());
+    /** 등록된 배너 전체 조회 */
+    public List<RegisteredBannerGetListDto> getRegisteredBanner(Long festivalId) throws BaseException {
+        return noticeRepository.findAllByPickedAndFestival_Id(true,festivalId).stream().map(RegisteredBannerGetListDto::new).collect(Collectors.toList());
     }
 
-    // 배너 순서 정하기
+    /** 배너 순서 등록 */
     @Transactional
-    public String editBannerRank(List<BannerEditReqDto> bannerEditReqDtos) {
-        List<Notice> notices = noticeRepository.findAllById(bannerEditReqDtos.stream().map(BannerEditReqDto::getNoticeId).collect(Collectors.toList()));
+    public String editBannerRank(List<BannerEditListDto> bannerEditListDto) throws BaseException {
+        List<Notice> notices = noticeRepository.findAllById(bannerEditListDto.stream().map(BannerEditListDto::getNoticeId).collect(Collectors.toList()));
 
         for(Notice notice : notices){
-            for(BannerEditReqDto b : bannerEditReqDtos) {
+            for(BannerEditListDto b : bannerEditListDto) {
                 if (b.getNoticeId() == notice.getId()) {
                     notice.setRank(b.getRank());
                     break;
                 }
             }
         }
-
         return "수정완료";
     }
 }

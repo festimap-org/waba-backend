@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class BannerResDto {
+public class RegisteredBannerGetListDto {
     private Long id;
     private Integer rank;
     private String thumbnail;
     private ArticleType type;
 
-    public BannerResDto(Notice n) {
+    public RegisteredBannerGetListDto(Notice n) {
         this.id = n.getId();
         this.thumbnail = n.getThumbnail();
         this.rank = n.getBannerRank();

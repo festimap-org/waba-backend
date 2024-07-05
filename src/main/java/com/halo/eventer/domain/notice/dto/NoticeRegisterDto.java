@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class NoticeReqDto {
+public class NoticeRegisterDto {
 
     private String title;
     private String content;

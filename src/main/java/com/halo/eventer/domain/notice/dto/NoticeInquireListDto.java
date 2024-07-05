@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @Builder
-public class GetAllNoticeResDto {
+public class NoticeInquireListDto {
 
     private Long id;
     private String title;
@@ -20,7 +20,7 @@ public class GetAllNoticeResDto {
     private boolean picked;
     private LocalDateTime time;
 
-    public GetAllNoticeResDto(Notice notice) {
+    public NoticeInquireListDto(Notice notice) {
         this.id = notice.getId();
         this.title = notice.getTitle();
         this.thumbnail = notice.getThumbnail();

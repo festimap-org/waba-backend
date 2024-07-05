@@ -3,7 +3,7 @@ package com.halo.eventer.domain.notice;
 import com.halo.eventer.global.common.ArticleType;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.image.Image;
-import com.halo.eventer.domain.notice.dto.NoticeReqDto;
+import com.halo.eventer.domain.notice.dto.NoticeRegisterDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -50,7 +50,7 @@ public class Notice {
     @JoinColumn(name = "festival_id")
     private Festival festival;
 
-    public Notice(NoticeReqDto n) {
+    public Notice(NoticeRegisterDto n) {
         this.title = n.getTitle();
         this.content = n.getContent();
         this.thumbnail = n.getThumbnail();
@@ -74,7 +74,7 @@ public class Notice {
         this.picked = picked;
     }
 
-    public void setAll(NoticeReqDto n){
+    public void setAll(NoticeRegisterDto n){
         this.title = n.getTitle();
         this.content = n.getContent();
         this.thumbnail = n.getThumbnail();

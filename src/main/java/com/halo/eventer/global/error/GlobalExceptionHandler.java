@@ -2,6 +2,9 @@ package com.halo.eventer.global.error;
 
 
 import com.halo.eventer.global.error.exception.BaseException;
+import com.halo.eventer.global.exception.common.AccessDenyException;
+import com.halo.eventer.global.exception.common.DuplicatedElementException;
+import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -38,6 +41,24 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleElementNotFoundException(BaseException e) {
         final ErrorResponse response = ErrorResponse.of(e.getMessage(),e.getErrorCode());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({DuplicatedElementException.class})
+    public ResponseEntity<String> handleDuplicatedElement(DuplicatedElementException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler({NoDataInDatabaseException.class})
+    public ResponseEntity<String> handleNoDataInDatabase(NoDataInDatabaseException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler({AccessDenyException.class})
+    public ResponseEntity<String> handleAccessDenyException(AccessDenyException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
     }
 
 }
