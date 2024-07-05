@@ -42,11 +42,11 @@ public class NoticeService {
 
     /** 공지사항 타입별로 조회 */
     @Transactional
-    public List<NoticeInquireListDto> inquireNoticeList(Long festivalId, ArticleType type) throws BaseException{
+    public NoticeInquireListDto inquireNoticeList(Long festivalId, ArticleType type) throws BaseException{
         List<Notice> notices = noticeRepository.findAllByFestivalAndType(festivalRepository.findById(festivalId)
                 .orElseThrow(() -> new NoDataInDatabaseException("공지사항이 존재하지 않습니다.")),type);
 
-        return notices.stream().map(NoticeInquireListDto::new).collect(Collectors.toList());
+        return new NoticeInquireListDto(notices.stream().map(NoticeInquireDto::new).collect(Collectors.toList()));
     }
 
     /** 단일 공지사항 / 이벤트 조회하기 */
@@ -87,17 +87,17 @@ public class NoticeService {
     }
 
     /** 등록된 배너 전체 조회 */
-    public List<RegisteredBannerGetListDto> getRegisteredBanner(Long festivalId) throws BaseException {
-        return noticeRepository.findAllByPickedAndFestival_Id(true,festivalId).stream().map(RegisteredBannerGetListDto::new).collect(Collectors.toList());
+    public RegisteredBannerGetListDto getRegisteredBanner(Long festivalId) throws BaseException {
+        return new RegisteredBannerGetListDto(noticeRepository.findAllByPickedAndFestival_Id(true,festivalId).stream().map(RegisteredBannerGetDto::new).collect(Collectors.toList()));
     }
 
     /** 배너 순서 등록 */
     @Transactional
-    public String editBannerRank(List<BannerEditListDto> bannerEditListDto) throws BaseException {
-        List<Notice> notices = noticeRepository.findAllById(bannerEditListDto.stream().map(BannerEditListDto::getNoticeId).collect(Collectors.toList()));
+    public String editBannerRank(BannerEditListDto bannerEditListDto) throws BaseException {
+        List<Notice> notices = noticeRepository.findAllById(bannerEditListDto.getBannerEditListDto().stream().map(BannerEditDto::getNoticeId).collect(Collectors.toList()));
 
         for(Notice notice : notices){
-            for(BannerEditListDto b : bannerEditListDto) {
+            for(BannerEditDto b : bannerEditListDto.getBannerEditListDto()) {
                 if (b.getNoticeId() == notice.getId()) {
                     notice.setRank(b.getRank());
                     break;

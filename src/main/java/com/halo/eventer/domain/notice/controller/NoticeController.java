@@ -30,8 +30,8 @@ public class NoticeController {
     /** 공지사항 타입별로 조회 */
     @NoticeGetsApi
     @GetMapping("/{festivalId}")
-    public List<NoticeInquireListDto> inquireNoticeList(@PathVariable Long festivalId,
-                                                        @RequestParam("type") ArticleType type) {
+    public NoticeInquireListDto inquireNoticeList(@PathVariable Long festivalId,
+                                                    @RequestParam("type") ArticleType type) {
         return noticeService.inquireNoticeList(festivalId, type);
     }
 
@@ -54,13 +54,13 @@ public class NoticeController {
 
     /** 등록된 배너 전체 조회 */
     @GetMapping("/banner")
-    public List<RegisteredBannerGetListDto> getRegisteredBanner(@RequestParam("festivalId") Long festivalId){
+    public RegisteredBannerGetListDto getRegisteredBanner(@RequestParam("festivalId") Long festivalId){
         return noticeService.getRegisteredBanner(festivalId);
     }
 
     /** 배너 순서 등록 */
     @PatchMapping("/banner")
-    public String editBannerRank(@RequestBody List<BannerEditListDto> bannerEditListDto){
+    public String editBannerRank(@RequestBody BannerEditListDto bannerEditListDto){
         return noticeService.editBannerRank(bannerEditListDto);
     }
 
