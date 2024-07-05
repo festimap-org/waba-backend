@@ -1,10 +1,10 @@
 package com.halo.eventer.festival;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.halo.eventer.festival.controller.FestivalController;
-import com.halo.eventer.festival.dto.FestivalCreateDto;
-import com.halo.eventer.festival.repository.FestivalRepository;
-import com.halo.eventer.festival.service.FestivalService;
+import com.halo.eventer.domain.festival.controller.FestivalController;
+import com.halo.eventer.domain.festival.dto.FestivalCreateDto;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
+import com.halo.eventer.domain.festival.service.FestivalService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
