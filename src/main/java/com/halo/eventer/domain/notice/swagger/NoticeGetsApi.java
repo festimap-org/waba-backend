@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.notice.swagger;
 
-import com.halo.eventer.domain.notice.dto.NoticeInquireListDto;
+import com.halo.eventer.domain.notice.dto.NoticeInquireDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,7 +17,7 @@ import java.lang.annotation.RetentionPolicy;
 @Operation(summary = "공지사항 리스트 조회", description = "공지사항 한개당 이미지(images), 이벤트명(title), 이벤트 간단 설명(simpleExplanation)")
 @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "공지사항 목록 조회 성공", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        array = @ArraySchema(schema = @Schema(implementation = NoticeInquireListDto.class))
+                        array = @ArraySchema(schema = @Schema(implementation = NoticeInquireDto.class))
                 )
         ),
         @ApiResponse(responseCode = "400", description = "데이터가 존재하지 않을 경우 예외",
