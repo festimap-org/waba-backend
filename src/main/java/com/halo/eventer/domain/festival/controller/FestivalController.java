@@ -28,7 +28,7 @@ public class FestivalController {
     @GetFestivalApi
     @GetMapping("/{id}")
     public FestivalResDto getFestival(@PathVariable("id")Long id){
-        return festivalService.getFestival(id);
+        return new FestivalResDto(festivalService.getFestival(id));
     }
 
     @GetMapping

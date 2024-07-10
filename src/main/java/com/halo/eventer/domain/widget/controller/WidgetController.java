@@ -4,6 +4,7 @@ package com.halo.eventer.domain.widget.controller;
 import com.halo.eventer.domain.widget.dto.WidgetDto;
 import com.halo.eventer.domain.widget.Widget;
 import com.halo.eventer.domain.widget.service.WidgetService;
+import com.halo.eventer.global.common.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +20,8 @@ public class WidgetController {
     private final WidgetService widgetService;
 
     @PostMapping("/{festivalId}")
-    public String crateWidget(@PathVariable Long festivalId,
-                              @RequestBody WidgetDto widgetDto) {
-        return widgetService.createWidget(festivalId,widgetDto);
+    public SuccessResponse crateWidget(@PathVariable Long festivalId, @RequestBody WidgetDto widgetDto) {
+        return SuccessResponse.of(widgetService.createWidget(festivalId,widgetDto));
     }
 
     @GetMapping("/{festivalId}")
