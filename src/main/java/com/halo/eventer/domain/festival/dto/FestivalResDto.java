@@ -15,10 +15,10 @@ public class FestivalResDto {
 
     private ColorReqDto colors;
 
-    public FestivalResDto(Festival festival, ColorReqDto colors) {
+    public FestivalResDto(Festival festival) {
         this.id = festival.getId();
         this.name = festival.getName();
         this.logo = festival.getLogo();
-        this.colors =colors;
+        this.colors =new ColorReqDto(festival);
     }
 }

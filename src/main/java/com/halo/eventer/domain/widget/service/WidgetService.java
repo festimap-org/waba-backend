@@ -1,8 +1,11 @@
 package com.halo.eventer.domain.widget.service;
 
 
+import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.widget.dto.WidgetDto;
 import com.halo.eventer.domain.widget.repository.WidgetRepository;
+import com.halo.eventer.global.common.response.SuccessCode;
+import com.halo.eventer.global.common.response.SuccessResponse;
 import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
@@ -19,13 +22,12 @@ public class WidgetService {
 
     private final WidgetRepository widgetRepository;
     private final FestivalRepository festivalRepository;
+    private final FestivalService festivalService;
 
     @Transactional
-    public String createWidget(Long festivalId, WidgetDto widgetDto) throws NoDataInDatabaseException {
-        Festival festival = festivalRepository.findById(festivalId)
-                .orElseThrow(()->new NoDataInDatabaseException("축제 정보가 존재하지 않습니다."));
-        widgetRepository.save(new Widget(widgetDto,festival));
-        return "위젯 저장 완료";
+    public SuccessCode createWidget(Long festivalId, WidgetDto widgetDto) throws NoDataInDatabaseException {
+        widgetRepository.save(new Widget(widgetDto,festivalService.getFestival(festivalId)));
+        return SuccessCode.SAVE_SUCCESS;
     }
 
 
