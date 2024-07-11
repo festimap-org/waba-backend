@@ -49,7 +49,7 @@ public class FestivalService {
     public FestivalResDto updateFestival(Long id, FestivalCreateDto festivalCreateDto) throws NoDataInDatabaseException{
         Festival festival = festivalRepository.findById(id).orElseThrow(()->new NoDataInDatabaseException("존재하지 않습니다"));
         festival.setFestival(festivalCreateDto);
-        return new FestivalResDto(festival, new ColorReqDto(festival));
+        return new FestivalResDto(festival);
     }
 
     @Transactional
