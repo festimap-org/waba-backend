@@ -36,9 +36,9 @@ public class FestivalService {
         return "저장완료";
     }
 
-    public FestivalResDto getFestival(Long id)throws NoDataInDatabaseException{
+    public Festival getFestival(Long id)throws NoDataInDatabaseException{
         Festival festival = festivalRepository.findById(id).orElseThrow(()->new NoDataInDatabaseException("존재하지 않습니다"));
-        return new FestivalResDto(festival, new ColorReqDto(festival));
+        return festival;
     }
 
     public List<FestivalListDto> getFestivals() {

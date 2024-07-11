@@ -11,8 +11,7 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Getter
-public class ConcertResDto {
-
+public class ConcertUpdateResponseDto {
 
     private String thumbnail;
 
@@ -20,8 +19,7 @@ public class ConcertResDto {
 
     private DurationDto durationDto;
 
-    public ConcertResDto(Concert c) {
-
+    public ConcertUpdateResponseDto(Concert c) {
         this.durationDto = new DurationDto(c.getDuration());
         this.thumbnail = c.getThumbnail();
         this.images = c.getImages().stream().map(ImageUpdateDto::new).collect(Collectors.toList());

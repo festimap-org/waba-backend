@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class ConcertCreateDto {
+public class ConcertRegisterDto {
 
     private Long durationId;
 

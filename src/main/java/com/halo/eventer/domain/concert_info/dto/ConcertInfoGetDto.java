@@ -1,32 +1,29 @@
 package com.halo.eventer.domain.concert_info.dto;
 
+
 import com.halo.eventer.domain.concert_info.ConcertInfo;
-import com.halo.eventer.domain.concert_info.ConcertInfoType;
-import com.halo.eventer.domain.image.dto.ImageUpdateDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Getter
 @NoArgsConstructor
 public class ConcertInfoGetDto {
-
-    private Long id;
-
+    private Long concertInfoId;
     private String name;
     private String summary;
 
-    private ConcertInfoType type;
-    private List<ImageUpdateDto> images;
-
     public ConcertInfoGetDto(ConcertInfo concertInfo) {
-        this.id = concertInfo.getId();
+        this.concertInfoId = concertInfo.getId();
         this.name = concertInfo.getName();
-        this.type = concertInfo.getType();
         this.summary = concertInfo.getSummary();
-        this.images = concertInfo.getImages().stream().map(ImageUpdateDto::new).collect(Collectors.toList());
+    }
+
+    public static List<ConcertInfoGetDto> fromConcertInfoList(List<ConcertInfo> concertInfoList) {
+        return concertInfoList.stream()
+                .map(ConcertInfoGetDto::new)
+                .collect(Collectors.toList());
     }
 }

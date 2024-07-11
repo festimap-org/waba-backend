@@ -2,15 +2,14 @@ package com.halo.eventer.domain.notice.service;
 
 
 
+import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.notice.dto.*;
 import com.halo.eventer.domain.notice.repository.NoticeRepository;
 import com.halo.eventer.global.common.ArticleType;
 import com.halo.eventer.global.error.exception.BaseException;
-import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.image.Image;
-import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.image.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,14 +24,14 @@ import java.util.stream.Collectors;
 public class NoticeService {
 
     private final NoticeRepository noticeRepository;
-    private final FestivalRepository festivalRepository;
-
     private final ImageRepository imageRepository;
+
+    private final FestivalService festivalService;
 
     /** 공지사항 등록 */
     @Transactional
     public String registerNotice(NoticeRegisterDto NoticeRegisterDto, Long id) throws BaseException {
-        Festival festival = festivalRepository.findById(id).orElseThrow(()-> new NoDataInDatabaseException("축제가 존재하지 않습니다."));
+        Festival festival = festivalService.getFestival(id);
         Notice notice = new Notice(NoticeRegisterDto);
         notice.setFestival(festival);
         notice.setImages(NoticeRegisterDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
@@ -43,8 +42,7 @@ public class NoticeService {
     /** 공지사항 타입별로 조회 */
     @Transactional
     public NoticeInquireListDto inquireNoticeList(Long festivalId, ArticleType type) throws BaseException{
-        List<Notice> notices = noticeRepository.findAllByFestivalAndType(festivalRepository.findById(festivalId)
-                .orElseThrow(() -> new NoDataInDatabaseException("공지사항이 존재하지 않습니다.")),type);
+        List<Notice> notices = noticeRepository.findAllByFestivalAndType(festivalService.getFestival(festivalId),type);
 
         return new NoticeInquireListDto(notices.stream().map(NoticeInquireDto::new).collect(Collectors.toList()));
     }

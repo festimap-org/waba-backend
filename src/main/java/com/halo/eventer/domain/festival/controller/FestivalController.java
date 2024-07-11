@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.festival.controller;
 
 
+import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.festival.swagger.*;
@@ -27,7 +28,7 @@ public class FestivalController {
 
     @GetFestivalApi
     @GetMapping("/{id}")
-    public FestivalResDto getFestival(@PathVariable("id")Long id){
+    public Festival getFestival(@PathVariable("id")Long id){
         return festivalService.getFestival(id);
     }
 

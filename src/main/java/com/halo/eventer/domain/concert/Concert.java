@@ -42,7 +42,7 @@ public class Concert {
     }
 
     public void setAll(String thumbnail, Duration duration){
-        ;this.thumbnail = thumbnail;
+        this.thumbnail = thumbnail;
         this.duration = duration;
     }
 
