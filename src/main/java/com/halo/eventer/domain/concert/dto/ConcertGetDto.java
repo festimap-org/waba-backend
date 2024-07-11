@@ -4,17 +4,26 @@ import com.halo.eventer.domain.concert.Concert;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @NoArgsConstructor
 @Getter
-public class GetAllConcertDto {
+public class ConcertGetDto {
     private Long concertId;
     private String thumbnail;
     private Integer day;
 
-    public GetAllConcertDto(Concert c) {
+    public ConcertGetDto(Concert c) {
         this.concertId = c.getId();
         this.thumbnail = c.getThumbnail();
         this.day = c.getDuration().getDay();
+    }
+
+    public static List<ConcertGetDto> fromConcertList(List<Concert> concerts) {
+        return concerts.stream()
+                .map(ConcertGetDto::new)
+                .collect(Collectors.toList());
     }
 }

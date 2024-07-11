@@ -37,7 +37,8 @@ public class FestivalService {
     }
 
     public Festival getFestival(Long id)throws NoDataInDatabaseException{
-        return festivalRepository.findById(id).orElseThrow(()->new NoDataInDatabaseException("존재하지 않습니다"));
+        Festival festival = festivalRepository.findById(id).orElseThrow(()->new NoDataInDatabaseException("존재하지 않습니다"));
+        return festival;
     }
 
     public List<FestivalListDto> getFestivals() {
