@@ -8,10 +8,10 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class DurationListDto {
-    List<DurationDto> durations;
+public class DurationGetListDto {
+    private List<DurationGetDto> durations;
 
-    public DurationListDto(List<DurationDto> durations) {
+    public DurationGetListDto(List<DurationGetDto> durations) {
         this.durations = durations;
     }
 }

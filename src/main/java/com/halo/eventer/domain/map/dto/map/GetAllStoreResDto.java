@@ -1,7 +1,7 @@
 package com.halo.eventer.domain.map.dto.map;
 
 
-import com.halo.eventer.domain.duration.dto.DurationDto;
+import com.halo.eventer.domain.duration.dto.DurationGetDto;
 import com.halo.eventer.domain.map.enumtype.OperationTime;
 import com.halo.eventer.domain.map.Map;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class GetAllStoreResDto {
     private double latitude; // 위도
     private double longitude; // 경도
     private String type;
-    private List<DurationDto> durationDto;
+    private List<DurationGetDto> durationGetDto;
     private OperationTime operationTime;
     private String icon;
 
@@ -29,7 +29,7 @@ public class GetAllStoreResDto {
         this.latitude = map.getLatitude();
         this.longitude = map.getLongitude();
         this.type = map.getMapCategory().getCategoryName();
-        this.durationDto= map.getDurationMaps().stream().map(o->new DurationDto(o.getDuration())).collect(Collectors.toList());
+        this.durationGetDto = map.getDurationMaps().stream().map(o->new DurationGetDto(o.getDuration())).collect(Collectors.toList());
         this.operationTime = map.getOperationType();
         this.icon = map.getIcon();
     }
