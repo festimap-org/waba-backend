@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.home;
+package com.halo.eventer.domain.home.swagger;
 
 
 import io.swagger.v3.oas.annotations.Operation;

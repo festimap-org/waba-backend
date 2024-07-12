@@ -1,8 +1,10 @@
-package com.halo.eventer.domain.home;
+package com.halo.eventer.domain.home.controller;
 
 
 import com.halo.eventer.domain.festival.dto.FestivalListDto;
 import com.halo.eventer.domain.festival.service.FestivalService;
+import com.halo.eventer.domain.home.dto.HomeDto;
+import com.halo.eventer.domain.home.service.HomeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

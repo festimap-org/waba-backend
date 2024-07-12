@@ -1,6 +1,10 @@
-package com.halo.eventer.domain.member;
+package com.halo.eventer.domain.member.service;
 
 
+import com.halo.eventer.domain.member.Member;
+import com.halo.eventer.domain.member.dto.TokenDto;
+import com.halo.eventer.domain.member.repository.MemberRepository;
+import com.halo.eventer.global.error.exception.BaseException;
 import com.halo.eventer.global.exception.common.AccessDenyException;
 import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.domain.member.dto.LoginDto;
@@ -16,7 +20,7 @@ public class MemberService {
     private final PasswordEncoder encoder;
     private final JwtProvider jwtProvider;
 
-    public TokenDto login(LoginDto loginDto) throws NoDataInDatabaseException,AccessDenyException {
+    public TokenDto login(LoginDto loginDto) throws BaseException {
         Member member = memberRepository.findByLoginId(loginDto.getLoginId())
                 .orElseThrow(() -> new NoDataInDatabaseException("잘못된 아이디 혹은 비밀번호"));
         if(!encoder.matches(loginDto.getPassword(), member.getPassword())) {
