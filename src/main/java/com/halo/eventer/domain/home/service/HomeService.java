@@ -23,7 +23,7 @@ public class HomeService {
     private final NoticeRepository noticeRepository;
     private final FestivalService festivalService;
 
-    public HomeDto getMainPage(Long festivalId) throws NoDataInDatabaseException {
+    public HomeDto getMainPage(Long festivalId) {
         List<Notice> notices = noticeRepository.findAllByPickedAndFestival_Id(true, festivalId);
         List<RegisteredBannerGetDto> bannerGetDtoList = RegisteredBannerGetDto.fromRegisteredBannerList(notices);
         Festival festival = festivalService.getFestival(festivalId);

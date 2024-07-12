@@ -3,6 +3,8 @@ package com.halo.eventer.domain.festival.service;
 
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.global.common.ImageDto;
+import com.halo.eventer.global.error.ErrorCode;
+import com.halo.eventer.global.error.exception.BaseException;
 import com.halo.eventer.global.exception.common.DuplicatedElementException;
 import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.domain.festival.Festival;
@@ -25,9 +27,9 @@ public class FestivalService {
     private final FestivalRepository festivalRepository;
 
 
-    public String createFestival(FestivalCreateDto festivalCreateDto)throws DuplicatedElementException {
+    public String createFestival(FestivalCreateDto festivalCreateDto) {
         if(festivalRepository.findByName(festivalCreateDto.getName()).isPresent() || festivalRepository.findBySubAddress(festivalCreateDto.getSubAddress()).isPresent()){
-            throw new DuplicatedElementException("중복생성");
+            throw new BaseException("중복생성", ErrorCode.ELEMENT_DUPLICATED);
         }
 
         Festival festival = new Festival(festivalCreateDto);
@@ -36,8 +38,8 @@ public class FestivalService {
         return "저장완료";
     }
 
-    public Festival getFestival(Long id)throws NoDataInDatabaseException{
-        Festival festival = festivalRepository.findById(id).orElseThrow(()->new NoDataInDatabaseException("존재하지 않습니다"));
+    public Festival getFestival(Long id) {
+        Festival festival = festivalRepository.findById(id).orElseThrow(()->new BaseException("축제가 존재하지 않습니다", ErrorCode.ELEMENT_NOT_FOUND));
         return festival;
     }
 
@@ -46,51 +48,44 @@ public class FestivalService {
     }
 
     @Transactional
-    public FestivalResDto updateFestival(Long id, FestivalCreateDto festivalCreateDto) throws NoDataInDatabaseException{
-        Festival festival = festivalRepository.findById(id).orElseThrow(()->new NoDataInDatabaseException("존재하지 않습니다"));
+    public FestivalResDto updateFestival(Long id, FestivalCreateDto festivalCreateDto) {
+        Festival festival = getFestival(id);
         festival.setFestival(festivalCreateDto);
         return new FestivalResDto(festival);
     }
 
     @Transactional
-    public String deleteFestival(Long id) throws NoDataInDatabaseException{
-        Festival festival = festivalRepository.findById(id).orElseThrow(()->new NoDataInDatabaseException("존재하지 않습니다."));
+    public String deleteFestival(Long id) {
+        Festival festival = getFestival(id);
         festivalRepository.delete(festival);
         return "삭제완료";
     }
 
 
     @Transactional
-    public String addColor(Long id, ColorReqDto colorReqDto)throws NoDataInDatabaseException {
-        Festival festival = festivalRepository.findById(id)
-                .orElseThrow(()->new NoDataInDatabaseException("축제 정보가 존재하지 않습니다."));
-
+    public String addColor(Long id, ColorReqDto colorReqDto) {
+        Festival festival = getFestival(id);
         festival.setColor(colorReqDto);
-
         return "색 등록 완료";
     }
 
     @Transactional
-    public String addLogo(Long id, ImageDto imageDto) throws NoDataInDatabaseException {
-        Festival festival = festivalRepository.findById(id)
-                .orElseThrow(()->new NoDataInDatabaseException("축제 정보가 존재하지 않습니다."));
-
+    public String addLogo(Long id, ImageDto imageDto) {
+        Festival festival = getFestival(id);
         festival.setLogo(imageDto.getImage());
         return "로고 등록 완료";
     }
 
     @Transactional
-    public String addMainMenu(Long id, MainMenuDto mainMenuDto) throws NoDataInDatabaseException {
-        Festival festival = festivalRepository.findById(id)
-                .orElseThrow(()->new NoDataInDatabaseException("축제 정보가 존재하지 않습니다."));
-
+    public String addMainMenu(Long id, MainMenuDto mainMenuDto) {
+        Festival festival = getFestival(id);
         festival.setMainMenu(mainMenuDto);
         return "메인 메뉴 정보 등록";
     }
 
     @Transactional
-    public String addEntryInfo(Long concertId, FestivalConcertMenuDto festivalConcertMenuDto) throws NoDataInDatabaseException {
-        Festival festival = festivalRepository.findById(concertId).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다."));
+    public String addEntryInfo(Long id, FestivalConcertMenuDto festivalConcertMenuDto) {
+        Festival festival = getFestival(id);
         festival.setEntry(festivalConcertMenuDto);
         festivalRepository.save(festival);
         return "입장방법 등록";
@@ -98,40 +93,41 @@ public class FestivalService {
     }
 
     @Transactional
-    public String addViewInfo(Long festivalId, FestivalConcertMenuDto festivalConcertMenuDto) throws NoDataInDatabaseException {
-        Festival festival = festivalRepository.findById(festivalId).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다."));
+    public String addViewInfo(Long id, FestivalConcertMenuDto festivalConcertMenuDto) {
+        Festival festival = getFestival(id);
         festival.setView(festivalConcertMenuDto);
         festivalRepository.save(festival);
         return "관람안내 등록";
-
     }
 
-    public FestivalConcertMenuDto getEntryInfo(Long festivalId) throws NoDataInDatabaseException {
-        Festival festival = festivalRepository.findById(festivalId).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다."));
+    public FestivalConcertMenuDto getEntryInfo(Long id) {
+        Festival festival = getFestival(id);
         return new FestivalConcertMenuDto(festival.getEntrySummary(),festival.getEntryIcon());
     }
 
-    public FestivalConcertMenuDto getViewInfo(Long festivalId) throws NoDataInDatabaseException {
-        Festival festival = festivalRepository.findById(festivalId).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다."));
+    public FestivalConcertMenuDto getViewInfo(Long id) {
+        Festival festival = getFestival(id);
         return new FestivalConcertMenuDto(festival.getViewSummary(),festival.getViewIcon());
     }
 
-    public FestivalListDto getFestivalSubAddress(String name) throws NoDataInDatabaseException {
-        return new FestivalListDto(festivalRepository.findBySubAddress(name).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다.")));
+    public FestivalListDto getFestivalSubAddress(String name) {
+        return new FestivalListDto(festivalRepository.findBySubAddress(name).orElseThrow(()->new BaseException("축제가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND)));
     }
 
-    public MainMenuDto getMainMenu(Long id) throws NoDataInDatabaseException {
-        return new MainMenuDto(festivalRepository.findById(id).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다.")));
+    public MainMenuDto getMainMenu(Long id) {
+        Festival festival = getFestival(id);
+        return new MainMenuDto(festival);
     }
 
     @Transactional
-    public String createMiddleBanner(Long festivalId, MiddleBannerDto middleBannerDto) {
-        festivalRepository.findById(festivalId).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다."))
-                .setMiddleBanner(middleBannerDto);
+    public String createMiddleBanner(Long id, MiddleBannerDto middleBannerDto) {
+        Festival festival = getFestival(id);
+        festival.setMiddleBanner(middleBannerDto);
         return "수정 완료";
     }
 
     public MiddleBannerDto getMiddleBanner(Long id) {
-        return new MiddleBannerDto(festivalRepository.findById(id).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다.")));
+        Festival festival = getFestival(id);
+        return new MiddleBannerDto(festival);
     }
 }
