@@ -7,11 +7,13 @@ import com.halo.eventer.domain.duration.Duration;
 import com.halo.eventer.domain.concert.Concert;
 import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.domain.notice.Notice;
+import com.halo.eventer.domain.up_widget.UpWidget;
 import com.halo.eventer.domain.widget.Widget;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.sql.Update;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -69,6 +71,9 @@ public class Festival {
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private List<ConcertInfo> concertInfos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<UpWidget> upWidgets = new ArrayList<>();
 
 
     @Builder

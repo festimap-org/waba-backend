@@ -1,6 +1,8 @@
 package com.halo.eventer.domain.map.service;
 
 
+import com.halo.eventer.global.error.ErrorCode;
+import com.halo.eventer.global.error.exception.BaseException;
 import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.domain.map.dto.menu.MenuCreateDto;
 import com.halo.eventer.domain.map.dto.menu.MenuResDto;
@@ -11,7 +13,6 @@ import com.halo.eventer.domain.map.repository.MapRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.function.Function;
@@ -35,7 +36,7 @@ public class MenuService {
     }
 
     public List<MenuResDto> getMenus(Long storeId)throws Exception{
-        Map map = mapRepository.findById(storeId).orElseThrow(()->new NotFoundException("존재하지 않습니다"));
+        Map map = mapRepository.findById(storeId).orElseThrow(()->new BaseException("존재하지 않습니다",ErrorCode.ELEMENT_NOT_FOUND));
         return map.getMenus().stream().map(o->new MenuResDto(o)).collect(Collectors.toList());
     }
 
@@ -52,7 +53,7 @@ public class MenuService {
 
     @Transactional
     public String deleteMenu(Long id) throws Exception{
-        Menu menu = menuRepository.findById(id).orElseThrow(()->new NotFoundException("존재하지 않습니다."));
+        Menu menu = menuRepository.findById(id).orElseThrow(()->new BaseException("존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
         menuRepository.delete(menu);
         return "삭제완료";
     }
