@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.home;
+package com.halo.eventer.domain.home.dto;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.MainMenuDto;

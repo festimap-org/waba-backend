@@ -5,6 +5,9 @@ import com.halo.eventer.global.common.ArticleType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @NoArgsConstructor
 public class RegisteredBannerGetDto {
@@ -18,5 +21,11 @@ public class RegisteredBannerGetDto {
         this.thumbnail = n.getThumbnail();
         this.rank = n.getBannerRank();
         this.type = n.getType();
+    }
+
+    public static List<RegisteredBannerGetDto> fromRegisteredBannerList(List<Notice> noticeList) {
+        return noticeList.stream()
+                .map(RegisteredBannerGetDto::new)
+                .collect(Collectors.toList());
     }
 }
