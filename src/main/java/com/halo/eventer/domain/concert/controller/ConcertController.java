@@ -3,6 +3,9 @@ package com.halo.eventer.domain.concert.controller;
 import com.halo.eventer.domain.concert.Concert;
 import com.halo.eventer.domain.concert.dto.*;
 import com.halo.eventer.domain.concert.service.ConcertService;
+import com.halo.eventer.domain.concert.swagger.ConcertGetApi;
+import com.halo.eventer.domain.concert.swagger.ConcertGetListApi;
+import com.halo.eventer.domain.concert.swagger.ConcertUpdateApi;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +25,14 @@ public class ConcertController {
     }
 
     /** 공연 전체 조회 */
-    @GetMapping()
-    public ConcertGetListDto getConcertList(@RequestParam("festivalId") Long id){
+    @ConcertGetListApi
+    @GetMapping
+    public ConcertGetListDto getConcertList(@RequestParam("festivalId") Long id) {
         return concertService.getConcertList(id);
     }
 
     /** 단일 공연 조회 */
+    @ConcertGetApi
     @GetMapping("/{concertId}")
     public Concert getConcert(@PathVariable("concertId") Long id) {
         return concertService.getConcert(id);
@@ -35,8 +40,9 @@ public class ConcertController {
 
 
     /** 공연 정보 업데이트 */
+    @ConcertUpdateApi
     @PatchMapping("/{concertId}")
-    public ConcertUpdateResponseDto updateConcert(@PathVariable("concertId") Long id, @RequestBody ConcertUpdateDto updateDto){
+    public ConcertUpdateResponseDto updateConcert(@PathVariable("concertId") Long id, @RequestBody ConcertUpdateDto updateDto) {
         return concertService.updateConcert(id, updateDto);
     }
 

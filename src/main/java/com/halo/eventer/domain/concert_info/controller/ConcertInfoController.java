@@ -6,6 +6,8 @@ import com.halo.eventer.domain.concert_info.dto.ConcertInfoGetListDto;
 import com.halo.eventer.domain.concert_info.dto.ConcertInfoUpdateDto;
 import com.halo.eventer.domain.concert_info.service.ConcertInfoService;
 import com.halo.eventer.domain.concert_info.ConcertInfoType;
+import com.halo.eventer.domain.concert_info.swagger.ConcertInfoGetApi;
+import com.halo.eventer.domain.concert_info.swagger.ConcertInfoGetListApi;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +26,14 @@ public class ConcertInfoController {
     }
 
     /** 타입 별 공연 정보 전체 조회 */
+    @ConcertInfoGetListApi
     @GetMapping("/{festivalId}")
     public ConcertInfoGetListDto getConcertInfoListByType(@PathVariable("festivalId")Long festivalId, @RequestParam("type") ConcertInfoType type){
         return concertInfoService.getConcertInfoListByType(festivalId, type);
     }
 
     /** 단일 공연 정보 조회 */
+    @ConcertInfoGetApi
     @GetMapping
     public ConcertInfo getConcertInfo(@RequestParam("concertId") Long concertId){
         return concertInfoService.getConcertInfo(concertId);
