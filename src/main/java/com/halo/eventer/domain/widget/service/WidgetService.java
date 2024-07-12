@@ -37,8 +37,6 @@ public class WidgetService {
         return widgetRepository.findAllByFestival(festival);
     }
 
-
-
     public String deleteWidget(Long widgetId) throws NoDataInDatabaseException {
         Widget widget = widgetRepository.findById(widgetId).orElseThrow(()->new NoDataInDatabaseException("축제 정보가 존재하지 않습니다."));
         widgetRepository.delete(widget);

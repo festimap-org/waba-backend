@@ -41,4 +41,8 @@ public class Widget {
         this.icon = widgetDto.getIcon();
         this.url = widgetDto.getUrl();
     }
+
+    public static Widget of(WidgetDto widgetDto, Festival festival) {
+        return new Widget(widgetDto, festival);
+    }
 }

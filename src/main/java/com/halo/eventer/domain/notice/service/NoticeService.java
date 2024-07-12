@@ -7,6 +7,7 @@ import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.notice.dto.*;
 import com.halo.eventer.domain.notice.repository.NoticeRepository;
 import com.halo.eventer.global.common.ArticleType;
+import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.image.Image;
@@ -14,7 +15,6 @@ import com.halo.eventer.domain.image.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,7 +51,7 @@ public class NoticeService {
     @Transactional
     public Notice getNotice(Long id) throws BaseException {
         Notice notice = noticeRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(id + "에 해당하는 공지사항이 존재하지 않습니다."));
+                .orElseThrow(() -> new BaseException(id + "에 해당하는 공지사항이 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
 
         return notice;
     }

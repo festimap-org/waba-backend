@@ -5,6 +5,8 @@ import com.halo.eventer.domain.duration.repository.DurationRepository;
 import com.halo.eventer.domain.duration_map.DurationMap;
 import com.halo.eventer.domain.duration_map.DurationMapRepository;
 import com.halo.eventer.domain.map.enumtype.OperationTime;
+import com.halo.eventer.global.error.ErrorCode;
+import com.halo.eventer.global.error.exception.BaseException;
 import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.domain.map.dto.map.GetAllStoreResDto;
 import com.halo.eventer.domain.map.dto.map.MapCreateDto;
@@ -17,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,7 +64,7 @@ public class MapService {
 
     @Transactional
     public MapResDto updateStore(Long mapId, MapCreateDto mapCreateDto, Long mapCategoryId) throws Exception{
-        Map map = mapRepository.findById(mapId).orElseThrow(()->new NotFoundException("존재하지 않습니다"));
+        Map map = mapRepository.findById(mapId).orElseThrow(()->new BaseException("존재하지 않습니다", ErrorCode.ELEMENT_NOT_FOUND));
         map.setMap(mapCreateDto);
         map.setMapCategory(mapCategoryRepository.findById(mapCategoryId).orElseThrow(()-> new NoDataInDatabaseException("해당 카테고리 정보가 존재하지 않습니다.")));
 
@@ -77,7 +79,7 @@ public class MapService {
 
     @Transactional
     public String deleteStore(Long storeId) throws Exception{
-        Map map = mapRepository.findById(storeId).orElseThrow(()->new NotFoundException("존재하지 않습니다."));
+        Map map = mapRepository.findById(storeId).orElseThrow(()->new BaseException("존재하지 않습니다.",ErrorCode.ELEMENT_NOT_FOUND));
         mapRepository.delete(map);
         return "삭제완료";
     }
