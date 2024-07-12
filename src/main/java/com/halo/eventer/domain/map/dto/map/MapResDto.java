@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.map.dto.map;
 
-import com.halo.eventer.domain.duration.dto.DurationDto;
+import com.halo.eventer.domain.duration.dto.DurationGetDto;
 import com.halo.eventer.domain.duration_map.DurationMap;
 import com.halo.eventer.domain.map.dto.menu.MenuResDto;
 import com.halo.eventer.domain.map.enumtype.OperationTime;
@@ -36,7 +36,7 @@ public class MapResDto {
     private String type;
     private String icon;
 
-    private List<DurationDto> durations = new ArrayList<>();
+    private List<DurationGetDto> durations = new ArrayList<>();
 
     public MapResDto(Map map) {
         this.name = map.getName();
@@ -49,7 +49,7 @@ public class MapResDto {
         this.longitude = map.getLongitude();
         this.type = map.getMapCategory().getCategoryName();
         this.operationTime = map.getOperationType();
-        map.getDurationMaps().stream().map(DurationMap::getDuration).forEach(o->durations.add(new DurationDto(o)));
+        map.getDurationMaps().stream().map(DurationMap::getDuration).forEach(o->durations.add(new DurationGetDto(o)));
         this.icon = map.getIcon();
     }
 
