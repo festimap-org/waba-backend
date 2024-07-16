@@ -1,7 +1,7 @@
 package com.halo.eventer.global.security;
 
 import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
-import com.halo.eventer.domain.member.MemberRepository;
+import com.halo.eventer.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

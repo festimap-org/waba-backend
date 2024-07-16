@@ -9,8 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Tag(name = "공지사항", description = "공지사항과 관련된 모든 것")
 @RestController
 @RequiredArgsConstructor
@@ -20,39 +18,34 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     /** 공지사항 등록 */
-    @CreateNoticeApi
     @PostMapping
-    public String registerNotice(@RequestBody NoticeRegisterDto NoticeRegisterDto,
-                                 @RequestParam("festivalId") Long id) {
+    public String registerNotice(@RequestBody NoticeRegisterDto NoticeRegisterDto, @RequestParam("festivalId") Long id) {
         return noticeService.registerNotice(NoticeRegisterDto, id);
     }
 
     /** 공지사항 타입별로 조회 */
-    @NoticeGetsApi
+    @NoticeInquireListApi
     @GetMapping("/{festivalId}")
-    public NoticeInquireListDto inquireNoticeList(@PathVariable Long festivalId,
-                                                    @RequestParam("type") ArticleType type) {
+    public NoticeInquireListDto inquireNoticeList(@PathVariable Long festivalId, @RequestParam("type") ArticleType type) {
         return noticeService.inquireNoticeList(festivalId, type);
     }
 
 
     /** 단일 공지사항 / 이벤트 조회하기 */
-    @GetNoticeReqApi
+    @NoticeGetApi
     @GetMapping("/{festivalId}/{noticeId}")
-    public Notice getNotice(@PathVariable("festivalId") Long festivalId,
-                            @PathVariable("noticeId") Long noticeId) {
+    public Notice getNotice(@PathVariable("festivalId") Long festivalId, @PathVariable("noticeId") Long noticeId) {
         return noticeService.getNotice(noticeId);
     }
 
     /** 배너 등록, 해제 */
-    @SelectBannerApi
     @PostMapping("/banner")
-    public String changeBanner(@RequestParam("noticeId") Long noticeId,
-                               @RequestParam("pick") Boolean pick) {
+    public String changeBanner(@RequestParam("noticeId") Long noticeId, @RequestParam("pick") Boolean pick) {
         return noticeService.changeBanner(noticeId,pick);
     }
 
     /** 등록된 배너 전체 조회 */
+    @RegisteredBannerGetListApi
     @GetMapping("/banner")
     public RegisteredBannerGetListDto getRegisteredBanner(@RequestParam("festivalId") Long festivalId){
         return noticeService.getRegisteredBanner(festivalId);
@@ -67,8 +60,7 @@ public class NoticeController {
 
     /** 공지사항 수정 */
     @PatchMapping("/{noticeId}")
-    public String updateNotice(@PathVariable("noticeId") Long id,
-                               @RequestBody NoticeRegisterDto NoticeRegisterDto) {
+    public String updateNotice(@PathVariable("noticeId") Long id, @RequestBody NoticeRegisterDto NoticeRegisterDto) {
         return noticeService.updateNotice(id, NoticeRegisterDto);
     }
 

@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.member;
+package com.halo.eventer.domain.member.dto;
 
 
 import lombok.Getter;

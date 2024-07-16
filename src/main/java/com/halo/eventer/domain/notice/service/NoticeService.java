@@ -30,7 +30,7 @@ public class NoticeService {
 
     /** 공지사항 등록 */
     @Transactional
-    public String registerNotice(NoticeRegisterDto NoticeRegisterDto, Long id) throws BaseException {
+    public String registerNotice(NoticeRegisterDto NoticeRegisterDto, Long id) {
         Festival festival = festivalService.getFestival(id);
         Notice notice = new Notice(NoticeRegisterDto);
         notice.setFestival(festival);
@@ -41,7 +41,7 @@ public class NoticeService {
 
     /** 공지사항 타입별로 조회 */
     @Transactional
-    public NoticeInquireListDto inquireNoticeList(Long festivalId, ArticleType type) throws BaseException{
+    public NoticeInquireListDto inquireNoticeList(Long festivalId, ArticleType type) {
         List<Notice> notices = noticeRepository.findAllByFestivalAndType(festivalService.getFestival(festivalId),type);
 
         return new NoticeInquireListDto(notices.stream().map(NoticeInquireDto::new).collect(Collectors.toList()));
@@ -49,7 +49,7 @@ public class NoticeService {
 
     /** 단일 공지사항 / 이벤트 조회하기 */
     @Transactional
-    public Notice getNotice(Long id) throws BaseException {
+    public Notice getNotice(Long id) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new BaseException(id + "에 해당하는 공지사항이 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
 
@@ -58,7 +58,7 @@ public class NoticeService {
 
     /** 배너 등록, 해제 */
     @Transactional
-    public String changeBanner(Long noticeId, Boolean pick) throws BaseException{
+    public String changeBanner(Long noticeId, Boolean pick) {
         Notice notice = getNotice(noticeId);
         notice.setPicked(pick);
         return "반영 완료";
@@ -67,7 +67,7 @@ public class NoticeService {
 
     /** 공지사항 수정 */
     @Transactional
-    public String updateNotice(Long noticeId, NoticeRegisterDto NoticeRegisterDto) throws BaseException {
+    public String updateNotice(Long noticeId, NoticeRegisterDto NoticeRegisterDto) {
         Notice notice = getNotice(noticeId);
 
         imageRepository.deleteByIdIn(NoticeRegisterDto.getDeleteIds());
@@ -78,20 +78,20 @@ public class NoticeService {
 
     /** 공지사항 삭제 */
     @Transactional
-    public String deleteNotice(Long noticeId) throws BaseException{
+    public String deleteNotice(Long noticeId) {
         Notice notice = getNotice(noticeId);
         noticeRepository.delete(notice);
         return "삭제완료";
     }
 
     /** 등록된 배너 전체 조회 */
-    public RegisteredBannerGetListDto getRegisteredBanner(Long festivalId) throws BaseException {
+    public RegisteredBannerGetListDto getRegisteredBanner(Long festivalId) {
         return new RegisteredBannerGetListDto(noticeRepository.findAllByPickedAndFestival_Id(true,festivalId).stream().map(RegisteredBannerGetDto::new).collect(Collectors.toList()));
     }
 
     /** 배너 순서 등록 */
     @Transactional
-    public String editBannerRank(BannerEditListDto bannerEditListDto) throws BaseException {
+    public String editBannerRank(BannerEditListDto bannerEditListDto) {
         List<Notice> notices = noticeRepository.findAllById(bannerEditListDto.getBannerEditListDto().stream().map(BannerEditDto::getNoticeId).collect(Collectors.toList()));
 
         for(Notice notice : notices){

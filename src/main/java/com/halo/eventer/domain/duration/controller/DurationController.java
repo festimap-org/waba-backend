@@ -6,6 +6,7 @@ import com.halo.eventer.domain.duration.dto.DurationCreateListDto;
 import com.halo.eventer.domain.duration.dto.DurationGetListDto;
 import com.halo.eventer.domain.duration.service.DurationService;
 import com.halo.eventer.domain.duration.dto.DurationGetDto;
+import com.halo.eventer.domain.duration.swagger.DurationGetListApi;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -24,13 +25,14 @@ public class DurationController {
 
     /** 축제 기간 등록 */
     @PostMapping("/{festivalId}")
-    public String createDuration(@RequestBody DurationCreateListDto durationCreateListDto, @PathVariable("festivalId") Long festivalId){
+    public String createDuration(@RequestBody DurationCreateListDto durationCreateListDto, @PathVariable("festivalId") Long festivalId) {
         return durationService.createDuration(festivalId, durationCreateListDto);
     }
 
     /** 축제 기간 조회 */
+    @DurationGetListApi
     @GetMapping("/{festivalId}")
-    public DurationGetListDto getDurations(@PathVariable("festivalId") Long festivalId){
+    public DurationGetListDto getDurations(@PathVariable("festivalId") Long festivalId) {
         return durationService.getDurations(festivalId);
     }
 }

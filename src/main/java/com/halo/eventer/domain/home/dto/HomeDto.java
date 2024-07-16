@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.home;
+package com.halo.eventer.domain.home.dto;
 
 import com.halo.eventer.domain.down_widget.dto.DownWidgetDto;
 import com.halo.eventer.domain.festival.Festival;
