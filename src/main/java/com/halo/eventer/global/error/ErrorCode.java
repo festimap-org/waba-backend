@@ -16,6 +16,8 @@ public enum ErrorCode {
     ELEMENT_NOT_FOUND( "C004", "Element Not Found"),
     ELEMENT_DUPLICATED("C005", "Element Duplicated"),
 
+    // DownWidget Error
+    PERMIT_THREE_ELEMENT("DW001", "Only Permit Three Element"),
     ;
 
     private final String code;

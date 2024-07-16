@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class UpWidgetGetDto {
-    private Long id;
+
 
     private String title;
     private String url;
@@ -18,7 +18,7 @@ public class UpWidgetGetDto {
     private LocalDateTime endDateTime;
 
     public UpWidgetGetDto(UpWidget upWidget) {
-        this.id = upWidget.getId();
+
         this.title = upWidget.getTitle();
         this.url = upWidget.getUrl();
         this.startDateTime = upWidget.getStartDateTime();

@@ -8,10 +8,13 @@ import com.halo.eventer.domain.home.service.HomeService;
 import com.halo.eventer.domain.home.swagger.FestivalGetListApi;
 import com.halo.eventer.domain.home.swagger.HomeGetApi;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,8 +25,9 @@ public class HomeController {
 
     @HomeGetApi
     @GetMapping("/home/{festivalId}")
-    public HomeDto getManInfo(@PathVariable Long festivalId) {
-        return homeService.getMainPage(festivalId);
+    public HomeDto getManInfo(@PathVariable Long festivalId,
+                              @RequestParam("dateTime") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime dateTime) {
+        return homeService.getMainPage(festivalId,dateTime);
     }
 
     @FestivalGetListApi
