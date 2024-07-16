@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.festival.service;
 
 
+import com.halo.eventer.domain.down_widget.DownWidget;
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.global.common.ImageDto;
 import com.halo.eventer.global.exception.common.DuplicatedElementException;
@@ -32,6 +33,9 @@ public class FestivalService {
 
         Festival festival = new Festival(festivalCreateDto);
         festival.setMapCategory(List.of(new MapCategory("고정 부스")));
+        for(int i =0;i<3;i++){
+            festival.getDownWidgets().add(new DownWidget(festival));
+        }
         festivalRepository.save(festival);
         return "저장완료";
     }

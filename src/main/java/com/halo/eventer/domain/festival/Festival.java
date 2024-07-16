@@ -2,6 +2,7 @@ package com.halo.eventer.domain.festival;
 
 
 import com.halo.eventer.domain.concert_info.ConcertInfo;
+import com.halo.eventer.domain.down_widget.DownWidget;
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.duration.Duration;
 import com.halo.eventer.domain.concert.Concert;
@@ -74,6 +75,9 @@ public class Festival {
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<UpWidget> upWidgets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<DownWidget> downWidgets = new ArrayList<>();
 
 
     @Builder

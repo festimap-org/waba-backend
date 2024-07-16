@@ -6,7 +6,8 @@ import lombok.Getter;
 @Getter
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum SuccessCode {
-    SAVE_SUCCESS("Successfully saved")
+    SAVE_SUCCESS("Successfully saved"),
+    UPDATE_SUCCESS("Successfully updated")
     ;
 
     private String message;

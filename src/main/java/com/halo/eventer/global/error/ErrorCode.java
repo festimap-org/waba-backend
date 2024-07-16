@@ -15,6 +15,8 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED("C003", "Invalid HTTP Method"),
     ELEMENT_NOT_FOUND( "C004", "Element Not Found"),
 
+    // DownWidget Error
+    PERMIT_THREE_ELEMENT("DW001", "Only Permit Three Element"),
     ;
 
     private final String code;
