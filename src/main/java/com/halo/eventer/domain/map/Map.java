@@ -38,6 +38,12 @@ public class Map {
     private String thumbnail;
     private String icon;
 
+    private String buttonName;
+    private String url;
+
+    @Column(length = 1000)
+    private String buttonImage;
+
     @Enumerated(EnumType.STRING)
     private OperationTime operationType;
 
@@ -64,6 +70,9 @@ public class Map {
         this.thumbnail = mapCreateDto.getThumbnail();
         this.operationType = operationType;
         this.icon = mapCreateDto.getIcon();
+        this.buttonName = mapCreateDto.getButtonName();
+        this.buttonImage = mapCreateDto.getButtonImage();
+        this.url = mapCreateDto.getUrl();
     }
 
     public void setMap(MapCreateDto mapCreateDto) {
@@ -76,6 +85,9 @@ public class Map {
         this.operationHours = mapCreateDto.getOperationHours();
         this.thumbnail = mapCreateDto.getThumbnail();
         this.icon = mapCreateDto.getIcon();
+        this.buttonName = mapCreateDto.getButtonName();
+        this.buttonImage = mapCreateDto.getButtonImage();
+        this.url = mapCreateDto.getUrl();
     }
 
     public void setMapCategory(MapCategory mapCategory){

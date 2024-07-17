@@ -34,4 +34,11 @@ public class UpWidget {
         this.endDateTime = upWidgetCreateDto.getEndDateTime();
         this.festival = festival;
     }
+
+    public void update(UpWidgetCreateDto dto) {
+        this.title = dto.getTitle();
+        this.url = dto.getUrl();
+        this.startDateTime = dto.getStartDateTime();
+        this.endDateTime = dto.getEndDateTime();
+    }
 }

@@ -39,11 +39,13 @@ public class Festival {
     private String backgroundColor;
 
     private String logo;
-
     private String menuName1;
-    private String menuName2;
     private String menuImage1;
+    private String menuSummary1;
+
+    private String menuName2;
     private String menuImage2;
+    private String menuSummary2;
 
     private String entrySummary;
     private String entryIcon;

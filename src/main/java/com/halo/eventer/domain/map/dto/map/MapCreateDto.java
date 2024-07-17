@@ -3,6 +3,7 @@ package com.halo.eventer.domain.map.dto.map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.util.List;
 
 @Getter
@@ -26,5 +27,9 @@ public class MapCreateDto {
 
     private String thumbnail;
     private String icon;
+
+    private String buttonName;
+    private String url;
+    private String buttonImage;
 
 }

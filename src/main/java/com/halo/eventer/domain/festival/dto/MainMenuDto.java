@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 public class MainMenuDto {
     private String menuName1;
     private String menuName2;
+    private String menuSummary1;
+    private String menuSummary2;
     private String menuImage1;
     private String menuImage2;
 
@@ -18,5 +20,7 @@ public class MainMenuDto {
         this.menuName2 = festival.getMenuName2();
         this.menuImage1 = festival.getMenuImage1();
         this.menuImage2 = festival.getMenuImage2();
+        this.menuSummary1 = festival.getMenuSummary1();
+        this.menuSummary2 = festival.getMenuSummary2();
     }
 }

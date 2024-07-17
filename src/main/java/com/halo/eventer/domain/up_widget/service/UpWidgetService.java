@@ -12,6 +12,7 @@ import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -50,5 +51,25 @@ public class UpWidgetService {
      * */
     public List<UpWidget> getUpWidgetListByDateTime(Long id, LocalDateTime dateTime) {
         return upWidgetRepository.findAllByFestivalWithDateTime(festivalService.getFestival(id),dateTime);
+    }
+
+    /**
+     * 상단 위젯 수정
+     * */
+    @Transactional
+    public UpWidget updateUpWidget(Long upWidgetId, UpWidgetCreateDto widgetCreateDto) {
+        UpWidget upWidget= upWidgetRepository.findById(upWidgetId).orElseThrow(()->new BaseException("상단 위젯이 찾을 수 없습니다.",ErrorCode.ELEMENT_NOT_FOUND));
+        upWidget.update(widgetCreateDto);
+        return upWidget;
+    }
+
+    /**
+     * 상단 위젯 삭제
+     * */
+
+    @Transactional
+    public SuccessCode deleteUpWidget(Long upWidgetId) {
+        upWidgetRepository.deleteById(upWidgetId);
+        return SuccessCode.SAVE_SUCCESS;
     }
 }

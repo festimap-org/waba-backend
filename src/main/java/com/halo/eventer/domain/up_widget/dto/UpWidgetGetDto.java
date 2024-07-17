@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UpWidgetGetDto {
 
-
+    private Long id;
     private String title;
     private String url;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
 
     public UpWidgetGetDto(UpWidget upWidget) {
-
+        this.id = upWidget.getId();
         this.title = upWidget.getTitle();
         this.url = upWidget.getUrl();
         this.startDateTime = upWidget.getStartDateTime();

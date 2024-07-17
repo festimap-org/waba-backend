@@ -9,6 +9,7 @@ import com.halo.eventer.domain.map.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +37,10 @@ public class MapResDto {
     private String type;
     private String icon;
 
+    private String buttonName;
+    private String url;
+    private String buttonImage;
+
     private List<DurationGetDto> durations = new ArrayList<>();
 
     public MapResDto(Map map) {
@@ -51,6 +56,9 @@ public class MapResDto {
         this.operationTime = map.getOperationType();
         map.getDurationMaps().stream().map(DurationMap::getDuration).forEach(o->durations.add(new DurationGetDto(o)));
         this.icon = map.getIcon();
+        this.buttonName = map.getButtonName();
+        this.buttonImage = map.getButtonImage();
+        this.url = map.getUrl();
     }
 
     public void setMenus(List<Menu> menus){

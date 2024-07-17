@@ -33,7 +33,6 @@ public class ConcertInfoController {
     }
 
     /** 단일 공연 정보 조회 */
-    @ConcertInfoGetApi
     @GetMapping
     public ConcertInfo getConcertInfo(@RequestParam("concertId") Long concertId){
         return concertInfoService.getConcertInfo(concertId);

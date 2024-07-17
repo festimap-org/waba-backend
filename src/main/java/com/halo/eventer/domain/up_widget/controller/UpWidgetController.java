@@ -49,4 +49,19 @@ public class UpWidgetController {
     public UpWidgetGetListDto getUpWidgetListByDateTime(@RequestParam("festivalId") Long festivalId, @RequestParam("dateTime") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime dateTime) {
         return new UpWidgetGetListDto(upWidgetService.getUpWidgetListByDateTime(festivalId, dateTime));
     }
+
+    /**
+     * 상단 위젯 수정
+     * */
+    @PatchMapping()
+    public UpWidgetGetDto updateUpWidget(@RequestParam("upWidgetId")Long upWidgetId, @RequestBody UpWidgetCreateDto widgetCreateDto) {
+        return new UpWidgetGetDto(upWidgetService.updateUpWidget(upWidgetId,widgetCreateDto));
+    }
+    /**
+     * 상단 위젯 삭제
+     * */
+    @DeleteMapping()
+    public SuccessCode deleteUpWidget(@RequestParam("upWidgetId")Long upWidgetId) {
+        return upWidgetService.deleteUpWidget(upWidgetId);
+    }
 }
