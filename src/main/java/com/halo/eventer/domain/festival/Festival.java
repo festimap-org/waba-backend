@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.festival;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.halo.eventer.domain.concert_info.ConcertInfo;
 import com.halo.eventer.domain.down_widget.DownWidget;
 import com.halo.eventer.domain.festival.dto.*;
@@ -14,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.sql.Update;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -57,22 +57,26 @@ public class Festival {
 
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<Concert> concerts = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<Notice> notices = new ArrayList<>();
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @JsonManagedReference
     private List<MapCategory> mapCategories = new ArrayList<>();
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<Duration> durations = new ArrayList<>();
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private List<Widget> widgets = new ArrayList<>();
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<ConcertInfo> concertInfos = new ArrayList<>();
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

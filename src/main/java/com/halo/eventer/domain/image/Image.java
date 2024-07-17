@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.image;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.halo.eventer.domain.concert.Concert;
 import com.halo.eventer.domain.concert_info.ConcertInfo;
 import com.halo.eventer.domain.notice.Notice;
@@ -20,14 +21,17 @@ public class Image {
     private String image_url;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "concert_id")
     private Concert concert;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "notice_id")
     private Notice notice;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "concertInfoId")
     private ConcertInfo concertInfo;
 

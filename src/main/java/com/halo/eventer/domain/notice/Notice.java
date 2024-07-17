@@ -1,5 +1,7 @@
 package com.halo.eventer.domain.notice;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.halo.eventer.global.common.ArticleType;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.image.Image;
@@ -39,6 +41,7 @@ public class Notice {
     private ArticleType type;
 
     @OneToMany(mappedBy = "notice", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
+    @JsonManagedReference
     private List<Image> images = new ArrayList<>();
 
     @CreatedDate
@@ -47,6 +50,7 @@ public class Notice {
     private Integer bannerRank;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "festival_id")
     private Festival festival;
 

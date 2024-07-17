@@ -1,6 +1,8 @@
 package com.halo.eventer.domain.duration;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.halo.eventer.domain.concert.Concert;
 import com.halo.eventer.domain.duration.dto.DurationCreateDto;
 import com.halo.eventer.domain.duration_map.DurationMap;
@@ -27,12 +29,15 @@ public class Duration {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festivalId")
+    @JsonBackReference
     private Festival festival;
 
     @OneToMany(mappedBy = "duration",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<DurationMap> durationMaps = new ArrayList<>();
 
     @OneToMany(mappedBy = "duration",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<Concert> concerts = new ArrayList<>();
 
     public Duration(DurationCreateDto durationDto, Festival festival) {

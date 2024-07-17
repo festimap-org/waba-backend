@@ -1,6 +1,8 @@
 package com.halo.eventer.domain.concert_info;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.halo.eventer.domain.concert_info.dto.ConcertInfoUpdateDto;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.image.Image;
@@ -28,10 +30,12 @@ public class ConcertInfo {
     private ConcertInfoType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "festivalId")
     private Festival festival;
 
     @OneToMany(mappedBy = "concertInfo", fetch = FetchType.LAZY,cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
+    @JsonManagedReference
     private List<Image> images;
 
 
