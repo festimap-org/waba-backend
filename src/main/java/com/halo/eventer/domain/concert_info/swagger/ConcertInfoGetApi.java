@@ -1,8 +1,7 @@
 package com.halo.eventer.domain.concert_info.swagger;
 
 
-import com.halo.eventer.domain.concert_info.ConcertInfo;
-import com.halo.eventer.domain.notice.dto.NoticeInquireListDto;
+import com.halo.eventer.domain.concert_info.dto.ConcertInfoGetDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,7 +17,7 @@ import java.lang.annotation.RetentionPolicy;
 @ApiResponses(value = {
         @ApiResponse(responseCode = "200",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = ConcertInfo.class)))
+                        schema = @Schema(implementation = ConcertInfoGetDto.class)))
 })
 public @interface ConcertInfoGetApi {
 }

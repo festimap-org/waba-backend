@@ -1,6 +1,5 @@
 package com.halo.eventer.domain.concert.controller;
 
-import com.halo.eventer.domain.concert.Concert;
 import com.halo.eventer.domain.concert.dto.*;
 import com.halo.eventer.domain.concert.service.ConcertService;
 import com.halo.eventer.domain.concert.swagger.ConcertGetApi;
@@ -34,8 +33,8 @@ public class ConcertController {
     /** 단일 공연 조회 */
     @ConcertGetApi
     @GetMapping("/{concertId}")
-    public Concert getConcert(@PathVariable("concertId") Long id) {
-        return concertService.getConcert(id);
+    public ConcertDto getConcert(@PathVariable("concertId") Long id) {
+        return new ConcertDto(concertService.getConcert(id));
     }
 
 
