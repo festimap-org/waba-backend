@@ -1,6 +1,5 @@
 package com.halo.eventer.domain.notice.controller;
 
-import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.notice.dto.*;
 import com.halo.eventer.domain.notice.swagger.*;
 import com.halo.eventer.global.common.ArticleType;
@@ -34,8 +33,8 @@ public class NoticeController {
     /** 단일 공지사항 / 이벤트 조회하기 */
     @NoticeGetApi
     @GetMapping("/{festivalId}/{noticeId}")
-    public Notice getNotice(@PathVariable("festivalId") Long festivalId, @PathVariable("noticeId") Long noticeId) {
-        return noticeService.getNotice(noticeId);
+    public NoticeDto getNotice(@PathVariable("festivalId") Long festivalId, @PathVariable("noticeId") Long noticeId) {
+        return new NoticeDto(noticeService.getNotice(noticeId));
     }
 
     /** 배너 등록, 해제 */

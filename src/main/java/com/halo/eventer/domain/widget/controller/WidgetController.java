@@ -37,8 +37,8 @@ public class WidgetController {
     /** 단일 위젯 조회 */
     @WidgetGetApi
     @GetMapping
-    public Widget getWidget(@RequestParam("widgetId") Long widgetId) {
-        return widgetService.getWidget(widgetId);
+    public WidgetDto getWidget(@RequestParam("widgetId") Long widgetId) {
+        return new WidgetDto(widgetService.getWidget(widgetId));
     }
 
     /** 위젯 업데이트 */

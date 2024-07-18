@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.notice.swagger;
 
-import com.halo.eventer.domain.notice.Notice;
+import com.halo.eventer.domain.notice.dto.NoticeDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +16,7 @@ import java.lang.annotation.RetentionPolicy;
 @ApiResponses(value = {
         @ApiResponse(responseCode = "200",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = Notice.class)))
+                        schema = @Schema(implementation = NoticeDto.class)))
 })
 public @interface NoticeGetApi {
 }
