@@ -31,7 +31,7 @@ public class Concert {
     private Duration duration;
 
 
-    @OneToMany(mappedBy = "concert", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "concert", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private List<Image> images = new ArrayList<>();
 
     public Concert(String thumbnail, Festival festival, Duration duration) {

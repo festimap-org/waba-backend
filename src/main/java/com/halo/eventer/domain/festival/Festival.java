@@ -14,8 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.sql.Update;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +27,7 @@ public class Festival {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
 
     private String name;
     private String subAddress;
@@ -90,6 +89,7 @@ public class Festival {
 
     public void setFestival(FestivalCreateDto festivalCreateDto) {
         this.name = festivalCreateDto.getName();
+        this.subAddress = festivalCreateDto.getSubAddress();
     }
 
     public void setColor(ColorReqDto colorReqDto) {
@@ -106,8 +106,11 @@ public class Festival {
     public void setMainMenu(MainMenuDto mainMenuDto) {
         this.menuName1 = mainMenuDto.getMenuName1();
         this.menuName2 = mainMenuDto.getMenuName2();
+        this.menuSummary1 = mainMenuDto.getMenuSummary1();
+        this.menuSummary2 = mainMenuDto.getMenuSummary2();
         this.menuImage1 = mainMenuDto.getMenuImage1();
         this.menuImage2 = mainMenuDto.getMenuImage2();
+
     }
 
     public void setMapCategory(List<MapCategory> mapCategories) {
