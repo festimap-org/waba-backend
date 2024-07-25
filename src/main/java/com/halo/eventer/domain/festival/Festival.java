@@ -6,6 +6,7 @@ import com.halo.eventer.domain.down_widget.DownWidget;
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.duration.Duration;
 import com.halo.eventer.domain.concert.Concert;
+import com.halo.eventer.domain.inquiry.Inquiry;
 import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.up_widget.UpWidget;
@@ -58,7 +59,6 @@ public class Festival {
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private List<Concert> concerts = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private List<Notice> notices = new ArrayList<>();
 
@@ -79,6 +79,9 @@ public class Festival {
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<DownWidget> downWidgets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Inquiry> inquiries = new ArrayList<>();
 
 
     @Builder
