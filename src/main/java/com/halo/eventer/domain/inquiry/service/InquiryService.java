@@ -66,7 +66,7 @@ public class InquiryService {
         List<InquiryListElementResDto> response = new ArrayList<>();
         for(Inquiry inquiry:inquiryList){
             if(inquiry.getIsSecret()){
-                response.add(new InquiryListElementResDto(inquiry,"secret",String.valueOf(inquiry.getTitle().indexOf(0))));
+                response.add(new InquiryListElementResDto(inquiry,"secret",inquiry.getUserId()));
             }
             else{
                 response.add(new InquiryListElementResDto(inquiry,inquiry.getTitle(),inquiry.getUserId()));
