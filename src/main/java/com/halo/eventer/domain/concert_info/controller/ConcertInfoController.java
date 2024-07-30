@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.concert_info.controller;
 
 
+import com.halo.eventer.domain.concert_info.dto.ConcertInfoDto;
 import com.halo.eventer.domain.concert_info.dto.ConcertInfoGetDto;
 import com.halo.eventer.domain.concert_info.dto.ConcertInfoGetListDto;
 import com.halo.eventer.domain.concert_info.dto.ConcertInfoUpdateDto;
@@ -35,8 +36,8 @@ public class ConcertInfoController {
     /** 단일 공연 정보 조회 */
     @ConcertInfoGetApi
     @GetMapping
-    public ConcertInfoGetDto getConcertInfo(@RequestParam("concertId") Long concertId){
-        return new ConcertInfoGetDto(concertInfoService.getConcertInfo(concertId));
+    public ConcertInfoDto getConcertInfo(@RequestParam("concertId") Long concertId){
+        return new ConcertInfoDto(concertInfoService.getConcertInfo(concertId));
     }
 
     /** 상세 이미지 등록 */
