@@ -31,8 +31,12 @@ public class Inquiry {
 
     private String userId;
     private String password;
+
+    @Column(length = 500)
     private String content;
     private boolean isAnswered;
+
+    @Column(length = 500)
     private String answer;
 
     @CreatedDate

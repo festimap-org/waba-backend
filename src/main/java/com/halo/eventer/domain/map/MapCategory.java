@@ -24,6 +24,7 @@ public class MapCategory {
 
     private String icon;
     private String pin;
+    private int category_rank;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
@@ -35,10 +36,12 @@ public class MapCategory {
     public MapCategory(Festival festival, String categoryName) {
         this.festival = festival;
         this.categoryName = categoryName;
+        this.category_rank = 11;
     }
 
     public MapCategory(String categoryName) {
         this.categoryName = categoryName;
+        this.category_rank = 11;
     }
 
     public void setImage(MapCategoryImageDto mapCategoryImageDto) {
@@ -48,5 +51,8 @@ public class MapCategory {
 
     public void setFestival(Festival festival) {
         this.festival=festival;
+    }
+    public void setRank(int rank) {
+        this.category_rank = rank;
     }
 }

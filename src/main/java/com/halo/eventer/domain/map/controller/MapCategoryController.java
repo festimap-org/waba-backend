@@ -2,11 +2,13 @@ package com.halo.eventer.domain.map.controller;
 
 
 
+import com.halo.eventer.domain.map.dto.mapcategory.CategoryEditListDto;
 import com.halo.eventer.domain.map.swagger.mapcategory.MapGetApi;
 import com.halo.eventer.domain.map.dto.map.MapListDto;
 import com.halo.eventer.domain.map.dto.mapcategory.MapCategoryImageDto;
 import com.halo.eventer.domain.map.dto.mapcategory.MapCategoryResDto;
 import com.halo.eventer.domain.map.service.MapCategoryService;
+import com.halo.eventer.domain.notice.dto.BannerEditListDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -51,4 +53,13 @@ public class MapCategoryController {
     public List<MapListDto> getMapList(@PathVariable("mapCategoryId") Long mapCategoryId){
         return mapCategoryService.getLandMarks(mapCategoryId);
     }
+
+
+    /** 배너 순서 등록 */
+    @PatchMapping("/categoryRank")
+    public String editCategoryRank(@RequestBody CategoryEditListDto categoryEditListDto){
+        return mapCategoryService.editCategoryRank(categoryEditListDto);
+    }
+
+
 }

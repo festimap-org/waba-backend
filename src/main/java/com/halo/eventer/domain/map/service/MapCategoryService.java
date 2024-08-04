@@ -1,6 +1,11 @@
 package com.halo.eventer.domain.map.service;
 
 
+import com.halo.eventer.domain.map.dto.mapcategory.CategoryEditDto;
+import com.halo.eventer.domain.map.dto.mapcategory.CategoryEditListDto;
+import com.halo.eventer.domain.notice.Notice;
+import com.halo.eventer.domain.notice.dto.BannerEditDto;
+import com.halo.eventer.domain.notice.dto.BannerEditListDto;
 import com.halo.eventer.global.exception.common.DuplicatedElementException;
 import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
@@ -55,6 +60,23 @@ public class MapCategoryService {
 
     public MapCategoryImageDto getMapCategoryImages(Long mapCategoryId) throws NoDataInDatabaseException {
         return new MapCategoryImageDto(mapCategoryRepository.findById(mapCategoryId).orElseThrow(()->new NoDataInDatabaseException("카테고리가 존재하지 않습니다.")));
+    }
+
+    /** 배너 순서 등록 */
+    @Transactional
+    public String editCategoryRank(CategoryEditListDto categoryEditListDto) {
+        List<MapCategory> categories = mapCategoryRepository.findAllById(categoryEditListDto.getCategoryEditDtos().stream()
+                .map(CategoryEditDto::getCategoryId).collect(Collectors.toList()));
+
+        for(MapCategory mapCategory : categories){
+            for(CategoryEditDto c : categoryEditListDto.getCategoryEditDtos()) {
+                if (c.getCategoryId() == mapCategory.getId()) {
+                    mapCategory.setRank(c.getRank());
+                    break;
+                }
+            }
+        }
+        return "수정완료";
     }
 
 }
