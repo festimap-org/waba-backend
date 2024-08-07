@@ -23,7 +23,7 @@ public class UpWidget {
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
     private Festival festival;
 
