@@ -46,7 +46,6 @@ public class StampService {
             case 4: stamp.updateMission4(); break;
             case 5: stamp.updateMission5(); break;
             case 6: stamp.updateMission6(); break;
-            case 7: stamp.updateMission7(); break;
             default:
                 throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
         }
@@ -59,7 +58,7 @@ public class StampService {
     public String checkFinish(StampGetDto stampGetDto) {
         Stamp stamp = getStamp(stampGetDto);
         if (stamp.isMission1() && stamp.isMission2() && stamp.isMission3() && stamp.isMission4() && stamp.isMission5()
-                && stamp.isMission6() && stamp.isMission7()) {
+                && stamp.isMission6()) {
             stamp.setFinished();
             stampRepository.save(stamp);
             return "스탬프 투어 완료";

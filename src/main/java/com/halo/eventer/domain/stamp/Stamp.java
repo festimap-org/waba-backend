@@ -27,7 +27,6 @@ public class Stamp {
     private boolean mission4;
     private boolean mission5;
     private boolean mission6;
-    private boolean mission7;
 
     private boolean finished;
 
@@ -44,7 +43,6 @@ public class Stamp {
         this.mission4 = false;
         this.mission5 = false;
         this.mission6 = false;
-        this.mission7 = false;
         this.finished = false;
     }
 
@@ -59,8 +57,6 @@ public class Stamp {
     public void updateMission5() { this.mission5 = true; }
 
     public void updateMission6() { this.mission6 = true; }
-
-    public void updateMission7() { this.mission7 = true; }
 
     public void setFinished() { this.finished = true; }
 
