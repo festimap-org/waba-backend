@@ -19,6 +19,7 @@ public class Stamp {
     @Column(nullable = false, unique = true)
     private String uuid = UUID.randomUUID().toString();
 
+    @Column(nullable = false)
     private String userInfo;        // name + phone
 
     private boolean mission1;

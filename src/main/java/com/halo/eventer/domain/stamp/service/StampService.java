@@ -1,8 +1,9 @@
 package com.halo.eventer.domain.stamp.service;
 
 import com.halo.eventer.domain.stamp.Stamp;
-import com.halo.eventer.domain.stamp.repository.StampRepository;
 import com.halo.eventer.domain.stamp.dto.MissionInfoGetDto;
+import com.halo.eventer.domain.stamp.repository.StampRepository;
+import com.halo.eventer.domain.stamp.dto.StampInfoGetDto;
 import com.halo.eventer.domain.stamp.dto.StampGetDto;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -17,27 +18,30 @@ public class StampService {
     private final StampRepository stampRepository;
     private final EncryptService encryptService;
 
-    private Stamp getStamp(StampGetDto stampGetDto) {
-        String userInfo = stampGetDto.getName() + "/" + stampGetDto.getPhone();
-        String encryptedInfo = encryptService.encryptInfo(userInfo);
-        Stamp stamp = stampRepository.findByUserInfo(encryptedInfo).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
-
+    private Stamp getStampFromUuid(String uuid) {
+        Stamp stamp = stampRepository.findByUuid(uuid).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
         return stamp;
     }
 
     @Transactional
-    public MissionInfoGetDto getMissionInfo(StampGetDto stampGetDto) {
+    public StampInfoGetDto getStampInfo(StampGetDto stampGetDto) {
         String userInfo = stampGetDto.getName() + "/" + stampGetDto.getPhone();
         String encryptedInfo = encryptService.encryptInfo(userInfo);
 
         Stamp stamp = stampRepository.findByUserInfo(encryptedInfo).orElse(new Stamp(encryptedInfo));
         stampRepository.save(stamp);
+        return new StampInfoGetDto(stamp);
+    }
+
+    public MissionInfoGetDto getMissionInfo(String uuid) {
+        Stamp stamp = getStampFromUuid(uuid);
         return new MissionInfoGetDto(stamp);
     }
 
+
     @Transactional
-    public String updateStamp(StampGetDto stampGetDto, int missionId) {
-        Stamp stamp = getStamp(stampGetDto);
+    public String updateStamp(String uuid, int missionId) {
+        Stamp stamp = getStampFromUuid(uuid);
 
         switch (missionId) {
             case 1: stamp.updateMission1(); break;
@@ -55,8 +59,8 @@ public class StampService {
     }
 
     @Transactional
-    public String checkFinish(StampGetDto stampGetDto) {
-        Stamp stamp = getStamp(stampGetDto);
+    public String checkFinish(String uuid) {
+        Stamp stamp = getStampFromUuid(uuid);
         if (stamp.isMission1() && stamp.isMission2() && stamp.isMission3() && stamp.isMission4() && stamp.isMission5()
                 && stamp.isMission6()) {
             stamp.setFinished();

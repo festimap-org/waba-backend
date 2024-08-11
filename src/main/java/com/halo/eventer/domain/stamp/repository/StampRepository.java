@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface StampRepository extends JpaRepository<Stamp, Long> {
     Optional<Stamp> findByUserInfo(String userInfo);
+
+    Optional<Stamp> findByUuid(String uuid);
 }
