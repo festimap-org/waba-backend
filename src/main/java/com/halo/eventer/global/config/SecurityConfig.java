@@ -5,6 +5,7 @@ import com.halo.eventer.global.security.exception.CustomAuthenticationEntryPoint
 import com.halo.eventer.global.security.filter.JwtAuthenticationFilter;
 import com.halo.eventer.global.security.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -29,6 +31,13 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    @Value("${aes.secret.key}")
+    private String secretKey;
+
+    @Value("${aes.salt}")
+    private String salt;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -72,5 +81,10 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public AesBytesEncryptor aesBytesEncryptor() {
+        return new AesBytesEncryptor(secretKey, salt);
     }
 }

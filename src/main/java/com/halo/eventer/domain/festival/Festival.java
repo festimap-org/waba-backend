@@ -9,6 +9,7 @@ import com.halo.eventer.domain.concert.Concert;
 import com.halo.eventer.domain.inquiry.Inquiry;
 import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.domain.notice.Notice;
+import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.up_widget.UpWidget;
 import com.halo.eventer.domain.widget.Widget;
 import lombok.AllArgsConstructor;
@@ -82,6 +83,9 @@ public class Festival {
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Inquiry> inquiries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY)       // todo: cascade
+    private List<Stamp> stamp = new ArrayList<>();
 
 
     @Builder
