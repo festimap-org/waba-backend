@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.stamp.dto;
 
-import com.halo.eventer.domain.stamp.Stamp;
+import com.halo.eventer.domain.stamp.StampInfo;
 import lombok.Getter;
 
 @Getter
@@ -12,12 +12,12 @@ public class MissionInfoGetDto {
     private boolean mission5;
     private boolean mission6;
 
-    public MissionInfoGetDto(Stamp stamp) {
-        this.mission1 = stamp.isMission1();
-        this.mission2 = stamp.isMission2();
-        this.mission3 = stamp.isMission3();
-        this.mission4 = stamp.isMission4();
-        this.mission5 = stamp.isMission5();
-        this.mission6 = stamp.isMission6();
+    public MissionInfoGetDto(StampInfo stampInfo) {
+        this.mission1 = stampInfo.isMission1();
+        this.mission2 = stampInfo.isMission2();
+        this.mission3 = stampInfo.isMission3();
+        this.mission4 = stampInfo.isMission4();
+        this.mission5 = stampInfo.isMission5();
+        this.mission6 = stampInfo.isMission6();
     }
 }
