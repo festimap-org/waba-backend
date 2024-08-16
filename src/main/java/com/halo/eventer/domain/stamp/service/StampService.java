@@ -100,4 +100,10 @@ public class StampService {
         return "삭제 완료";
     }
 
+    @Transactional
+    public String deleteStampByUuid(String uuid) {
+        Stamp stamp = getStampFromUuid(uuid);
+        stampRepository.delete(stamp);
+        return "삭제 완료";
+    }
 }
