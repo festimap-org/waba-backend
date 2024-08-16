@@ -31,6 +31,8 @@ public class Stamp {
 
     private boolean finished;
 
+    private int participantCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
     private Festival festival;
@@ -46,6 +48,7 @@ public class Stamp {
         this.mission5 = false;
         this.mission6 = false;
         this.finished = false;
+        this.participantCount = 0;
     }
 
     public void updateMission1() { this.mission1 = true; }
@@ -62,4 +65,5 @@ public class Stamp {
 
     public void setFinished() { this.finished = true; }
 
+    public void setParticipantCount(int participantCount) { this.participantCount = participantCount; }
 }

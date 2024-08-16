@@ -8,4 +8,5 @@ import lombok.NoArgsConstructor;
 public class UserInfoGetDto {
     private String name;
     private String phone;
+    private int participantCount;
 }

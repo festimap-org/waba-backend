@@ -6,6 +6,7 @@ import com.halo.eventer.domain.stamp.dto.StampInfoGetListDto;
 import com.halo.eventer.domain.stamp.dto.UserInfoGetDto;
 import com.halo.eventer.domain.stamp.service.StampService;
 import com.halo.eventer.domain.stamp.swagger.MissionInfoGetApi;
+import com.halo.eventer.domain.stamp.swagger.StampCheckApi;
 import com.halo.eventer.domain.stamp.swagger.StampGetApi;
 import com.halo.eventer.domain.stamp.swagger.StampInfoListApi;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,6 +38,7 @@ public class StampController {
         return stampService.updateStamp(uuid, missionId);
     }
 
+    @StampCheckApi
     @PatchMapping("/check/{uuid}")
     public String updateCheck(@PathVariable String uuid) {
         return stampService.checkFinish(uuid);

@@ -10,6 +10,7 @@ public class StampInfoGetDto {
     private String name;
     private String phone;
     private boolean finished;
+    private int participantCount;
 
     public StampInfoGetDto(Stamp stamp, String name, String phone) {
         this.id = stamp.getId();
@@ -17,5 +18,6 @@ public class StampInfoGetDto {
         this.name = name;
         this.phone = phone;
         this.finished = stamp.isFinished();
+        this.participantCount = stamp.getParticipantCount();
     }
 }

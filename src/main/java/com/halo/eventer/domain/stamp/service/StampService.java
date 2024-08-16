@@ -32,7 +32,9 @@ public class StampService {
         String encryptedInfo = encryptService.encryptInfo(userInfo);
 
         Stamp stamp = stampRepository.findByUserInfo(encryptedInfo).orElse(new Stamp(festivalService.getFestival(festivalId), encryptedInfo));
+        stamp.setParticipantCount(userInfoGetDto.getParticipantCount());
         stampRepository.save(stamp);
+
         return new StampGetDto(stamp);
     }
 
