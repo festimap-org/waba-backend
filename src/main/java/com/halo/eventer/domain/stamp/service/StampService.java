@@ -1,22 +1,25 @@
 package com.halo.eventer.domain.stamp.service;
 
+import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.stamp.Stamp;
-import com.halo.eventer.domain.stamp.dto.MissionInfoGetDto;
+import com.halo.eventer.domain.stamp.dto.*;
 import com.halo.eventer.domain.stamp.repository.StampRepository;
-import com.halo.eventer.domain.stamp.dto.StampInfoGetDto;
-import com.halo.eventer.domain.stamp.dto.StampGetDto;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
 public class StampService {
     private final StampRepository stampRepository;
     private final EncryptService encryptService;
+    private final FestivalService festivalService;
 
     private Stamp getStampFromUuid(String uuid) {
         Stamp stamp = stampRepository.findByUuid(uuid).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
@@ -24,13 +27,13 @@ public class StampService {
     }
 
     @Transactional
-    public StampInfoGetDto getStampInfo(StampGetDto stampGetDto) {
-        String userInfo = stampGetDto.getName() + "/" + stampGetDto.getPhone();
+    public StampGetDto getStampInfo(Long festivalId, UserInfoGetDto userInfoGetDto) {
+        String userInfo = userInfoGetDto.getName() + "/" + userInfoGetDto.getPhone();
         String encryptedInfo = encryptService.encryptInfo(userInfo);
 
-        Stamp stamp = stampRepository.findByUserInfo(encryptedInfo).orElse(new Stamp(encryptedInfo));
+        Stamp stamp = stampRepository.findByUserInfo(encryptedInfo).orElse(new Stamp(festivalService.getFestival(festivalId), encryptedInfo));
         stampRepository.save(stamp);
-        return new StampInfoGetDto(stamp);
+        return new StampGetDto(stamp);
     }
 
     public MissionInfoGetDto getMissionInfo(String uuid) {
@@ -68,6 +71,24 @@ public class StampService {
             return "스탬프 투어 완료";
         }
         else return "미완료";
+    }
+
+
+    public StampInfoGetListDto getStampInfos(Long festivalId) {
+        List<StampInfoGetDto> stampInfoGetDtos = new ArrayList<>();
+        for (Stamp stamp : stampRepository.findByFestival(festivalService.getFestival(festivalId))) {
+            String userInfo = encryptService.decryptInfo(stamp.getUserInfo());
+            String[] parts = userInfo.split("/");
+
+            stampInfoGetDtos.add(new StampInfoGetDto(stamp, parts[0], parts[1]));
+        }
+        return new StampInfoGetListDto(stampInfoGetDtos);
+    }
+
+    @Transactional
+    public String deleteStamp(Long festivalId) {
+        stampRepository.deleteByFestival(festivalService.getFestival(festivalId));
+        return "삭제 완료";
     }
 
 }

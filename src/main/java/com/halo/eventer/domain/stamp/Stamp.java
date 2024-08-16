@@ -35,7 +35,8 @@ public class Stamp {
     @JoinColumn(name = "festival_id")
     private Festival festival;
 
-    public Stamp(String encryptedUserInfo) {
+    public Stamp(Festival festival, String encryptedUserInfo) {
+        this.festival = festival;
         this.uuid = UUID.randomUUID().toString();
         this.userInfo = encryptedUserInfo;
         this.mission1 = false;
