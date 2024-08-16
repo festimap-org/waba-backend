@@ -54,4 +54,9 @@ public class StampController {
     public String deleteStampByFestival(@RequestParam Long festivalId) {
         return stampService.deleteStamp(festivalId);
     }
+
+    @DeleteMapping("/{uuid}")
+    public String deleteStampByUuid(@PathVariable String uuid) {
+        return stampService.deleteStampByUuid(uuid);
+    }
 }
