@@ -4,6 +4,8 @@ import com.halo.eventer.domain.down_widget.dto.DownWidgetDto;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.MainMenuDto;
 import com.halo.eventer.domain.festival.dto.MiddleBannerDto;
+import com.halo.eventer.domain.missing_person.MissingPerson;
+import com.halo.eventer.domain.missing_person.dto.MissingPersonPopupDto;
 import com.halo.eventer.domain.notice.dto.RegisteredBannerGetDto;
 import com.halo.eventer.domain.up_widget.UpWidget;
 import com.halo.eventer.domain.up_widget.dto.UpWidgetGetDto;
@@ -25,14 +27,15 @@ public class HomeDto {
     private List<WidgetDto> widgetDto;
     private MiddleBannerDto middleBannerDto;
     private List<DownWidgetDto> downWidgetDtos;
+    private List<MissingPersonPopupDto> missingPersonDtos;
 
-
-    public HomeDto(List<RegisteredBannerGetDto> banner, Festival festival, List<UpWidget> upWidgets) {
+    public HomeDto(List<RegisteredBannerGetDto> banner, Festival festival, List<UpWidget> upWidgets, List<MissingPerson> missingPersons) {
         this.upWidgets =upWidgets.stream().map(UpWidgetGetDto::new).collect(Collectors.toList());
         this.banner = banner;
         this.mainMenuDto = new MainMenuDto(festival);
         this.widgetDto = festival.getWidgets().stream().map(WidgetDto::new).collect(Collectors.toList());
         this.middleBannerDto = new MiddleBannerDto(festival);
         this.downWidgetDtos = festival.getDownWidgets().stream().map(DownWidgetDto::new).collect(Collectors.toList());
+        this.missingPersonDtos = missingPersons.stream().map(MissingPersonPopupDto::new).collect(Collectors.toList());
     }
 }
