@@ -6,24 +6,16 @@ import lombok.Getter;
 @Getter
 public class StampInfoGetDto {
     private String uuid;
-
-    private boolean mission1;
-    private boolean mission2;
-    private boolean mission3;
-    private boolean mission4;
-    private boolean mission5;
-    private boolean mission6;
-
+    private String name;
+    private String phone;
     private boolean finished;
+    private int participantCount;
 
-    public StampInfoGetDto(Stamp stamp) {
+    public StampInfoGetDto(Stamp stamp, String name, String phone) {
         this.uuid = stamp.getUuid();
-        this.mission1 = stamp.isMission1();
-        this.mission2 = stamp.isMission2();
-        this.mission3 = stamp.isMission3();
-        this.mission4 = stamp.isMission4();
-        this.mission5 = stamp.isMission5();
-        this.mission6 = stamp.isMission6();
+        this.name = name;
+        this.phone = phone;
         this.finished = stamp.isFinished();
+        this.participantCount = stamp.getParticipantCount();
     }
 }

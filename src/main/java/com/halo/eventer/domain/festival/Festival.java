@@ -85,8 +85,8 @@ public class Festival {
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Inquiry> inquiries = new ArrayList<>();
 
-    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY)       // todo: cascade
-    private List<Stamp> stamp = new ArrayList<>();
+    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Stamp> stamps = new ArrayList<>();
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<LostItem> lostItems = new ArrayList<>();
