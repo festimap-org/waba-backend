@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class StampInfoGetDto {
-    private Long id;
     private String uuid;
     private String name;
     private String phone;
@@ -13,7 +12,6 @@ public class StampInfoGetDto {
     private int participantCount;
 
     public StampInfoGetDto(Stamp stamp, String name, String phone) {
-        this.id = stamp.getId();
         this.uuid = stamp.getUuid();
         this.name = name;
         this.phone = phone;

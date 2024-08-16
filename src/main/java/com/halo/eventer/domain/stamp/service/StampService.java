@@ -27,16 +27,23 @@ public class StampService {
     }
 
     @Transactional
-    public StampGetDto getStampInfo(Long festivalId, UserInfoGetDto userInfoGetDto) {
-        String userInfo = userInfoGetDto.getName() + "/" + userInfoGetDto.getPhone();
-        String encryptedInfo = encryptService.encryptInfo(userInfo);
+    public StampGetDto signup(Long festivalId, SignupDto signupDto) {
+        String encryptedInfo = encryptService.encryptInfo(signupDto.getName() + "/" + signupDto.getPhone());
+        if (stampRepository.existsByFestivalIdAndUserInfo(festivalId, encryptedInfo)) throw new BaseException(ErrorCode.ELEMENT_DUPLICATED);
 
-        Stamp stamp = stampRepository.findByUserInfo(encryptedInfo).orElse(new Stamp(festivalService.getFestival(festivalId), encryptedInfo));
-        stamp.setParticipantCount(userInfoGetDto.getParticipantCount());
+        Stamp stamp = new Stamp(festivalService.getFestival(festivalId), encryptedInfo, signupDto.getParticipantCount());
         stampRepository.save(stamp);
 
         return new StampGetDto(stamp);
     }
+
+    public StampGetDto login(Long festivalId, LoginDto loginDto) {
+        String encryptedInfo = encryptService.encryptInfo(loginDto.getName() + "/" + loginDto.getPhone());
+        Stamp stamp = stampRepository.findByFestivalIdAndUserInfo(festivalId, encryptedInfo).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+
+        return new StampGetDto(stamp);
+    }
+
 
     public MissionInfoGetDto getMissionInfo(String uuid) {
         Stamp stamp = getStampFromUuid(uuid);

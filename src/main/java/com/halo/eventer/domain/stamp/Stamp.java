@@ -37,7 +37,7 @@ public class Stamp {
     @JoinColumn(name = "festival_id")
     private Festival festival;
 
-    public Stamp(Festival festival, String encryptedUserInfo) {
+    public Stamp(Festival festival, String encryptedUserInfo, int participantCount) {
         this.festival = festival;
         this.uuid = UUID.randomUUID().toString();
         this.userInfo = encryptedUserInfo;
@@ -48,7 +48,7 @@ public class Stamp {
         this.mission5 = false;
         this.mission6 = false;
         this.finished = false;
-        this.participantCount = 0;
+        this.participantCount = participantCount;
     }
 
     public void updateMission1() { this.mission1 = true; }
@@ -64,6 +64,4 @@ public class Stamp {
     public void updateMission6() { this.mission6 = true; }
 
     public void setFinished() { this.finished = true; }
-
-    public void setParticipantCount(int participantCount) { this.participantCount = participantCount; }
 }

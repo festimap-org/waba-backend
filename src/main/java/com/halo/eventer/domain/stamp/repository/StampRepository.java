@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StampRepository extends JpaRepository<Stamp, Long> {
-    Optional<Stamp> findByUserInfo(String userInfo);
+    Optional<Stamp> findByFestivalIdAndUserInfo(Long festivalId, String userInfo);
+
+    boolean existsByFestivalIdAndUserInfo(Long festivalId, String userInfo);
 
     Optional<Stamp> findByUuid(String uuid);
 

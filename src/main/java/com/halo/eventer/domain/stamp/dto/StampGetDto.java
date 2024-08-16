@@ -16,6 +16,8 @@ public class StampGetDto {
 
     private boolean finished;
 
+    private int participantCount;
+
     public StampGetDto(Stamp stamp) {
         this.uuid = stamp.getUuid();
         this.mission1 = stamp.isMission1();
@@ -25,5 +27,6 @@ public class StampGetDto {
         this.mission5 = stamp.isMission5();
         this.mission6 = stamp.isMission6();
         this.finished = stamp.isFinished();
+        this.participantCount = stamp.getParticipantCount();
     }
 }

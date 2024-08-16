@@ -1,14 +1,8 @@
 package com.halo.eventer.domain.stamp.controller;
 
-import com.halo.eventer.domain.stamp.dto.MissionInfoGetDto;
-import com.halo.eventer.domain.stamp.dto.StampGetDto;
-import com.halo.eventer.domain.stamp.dto.StampInfoGetListDto;
-import com.halo.eventer.domain.stamp.dto.UserInfoGetDto;
+import com.halo.eventer.domain.stamp.dto.*;
 import com.halo.eventer.domain.stamp.service.StampService;
-import com.halo.eventer.domain.stamp.swagger.MissionInfoGetApi;
-import com.halo.eventer.domain.stamp.swagger.StampCheckApi;
-import com.halo.eventer.domain.stamp.swagger.StampGetApi;
-import com.halo.eventer.domain.stamp.swagger.StampInfoListApi;
+import com.halo.eventer.domain.stamp.swagger.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +14,17 @@ import org.springframework.web.bind.annotation.*;
 public class StampController {
     private final StampService stampService;
 
-    /** 스탬프 처음 생성 및 조회 */
-    @StampGetApi
+    /** 스탬프 생성 */
+    @SignupApi
     @PostMapping
-    public StampGetDto getStampInfo(@RequestParam("festivalId") Long festivalId, @RequestBody UserInfoGetDto userInfoGetDto) {
-        return stampService.getStampInfo(festivalId, userInfoGetDto);
+    public StampGetDto signup(@RequestParam("festivalId") Long festivalId, @RequestBody SignupDto signupDto) {
+        return stampService.signup(festivalId, signupDto);
+    }
+
+    @LoginApi
+    @PostMapping("/login")
+    public StampGetDto login(@RequestParam("festivalId") Long festivalId, @RequestBody LoginDto loginDto) {
+        return stampService.login(festivalId, loginDto);
     }
 
     @MissionInfoGetApi

@@ -12,11 +12,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "유저 스탬프 정보 생성 및 조회", description = "처음 생성 및 조회하는 경우, user name, phone으로 조회")
+@Operation(summary = "로그인")
 @ApiResponses(value = {
         @ApiResponse(responseCode = "200",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                         schema = @Schema(implementation = StampGetDto.class)))
 })
-public @interface StampGetApi {
+public @interface LoginApi {
 }
