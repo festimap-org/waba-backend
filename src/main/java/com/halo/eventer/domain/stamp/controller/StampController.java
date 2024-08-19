@@ -18,19 +18,19 @@ public class StampController {
     @SignupApi
     @PostMapping
     public StampGetDto signup(@RequestParam("festivalId") Long festivalId, @RequestBody SignupDto signupDto) {
-        return stampService.signup(festivalId, signupDto);
+        return new StampGetDto(stampService.signup(festivalId, signupDto));
     }
 
     @LoginApi
     @PostMapping("/login")
     public StampGetDto login(@RequestParam("festivalId") Long festivalId, @RequestBody LoginDto loginDto) {
-        return stampService.login(festivalId, loginDto);
+        return new StampGetDto(stampService.login(festivalId, loginDto));
     }
 
     @MissionInfoGetApi
     @GetMapping("/{uuid}")
     public MissionInfoGetDto getMissionInfo(@PathVariable String uuid) {
-        return stampService.getMissionInfo(uuid);
+        return new MissionInfoGetDto(stampService.getMissionInfo(uuid));
     }
 
     @PatchMapping("/{uuid}/{missionId}")
