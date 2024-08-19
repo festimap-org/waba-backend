@@ -11,6 +11,7 @@ public class MissionInfoGetDto {
     private boolean mission4;
     private boolean mission5;
     private boolean mission6;
+    private boolean finished;
 
     public MissionInfoGetDto(Stamp stamp) {
         this.mission1 = stamp.isMission1();
@@ -19,5 +20,6 @@ public class MissionInfoGetDto {
         this.mission4 = stamp.isMission4();
         this.mission5 = stamp.isMission5();
         this.mission6 = stamp.isMission6();
+        this.finished = stamp.isFinished();
     }
 }
