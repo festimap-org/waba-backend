@@ -20,9 +20,9 @@ public class LostItemController {
         return new LostItemLIstDto(lostItemService.getAllLostItems());
     }
     //분실물 수정
-    @PatchMapping("/{itemId}")
+    @PatchMapping("/{lostItemId}")
     public LostItemLIstDto updateLostItem(@PathVariable(name = "lostItemId") Long lostItemId,
-                                      @RequestBody LostItemDto lostDto){
+                                          @RequestBody LostItemDto lostDto){
         lostItemService.updateLostItem(lostItemId,lostDto);
         return new LostItemLIstDto(lostItemService.getAllLostItems());
     }
@@ -33,8 +33,8 @@ public class LostItemController {
         return new LostItemLIstDto(lostItemService.getAllLostItems());
     }
     //분실물 단일 조회
-    @GetMapping("/{itemId}")
-    public LostItemDto getLostItem(@PathVariable(name="itemId") Long itemId){
+    @GetMapping("/{lostItemId}")
+    public LostItemDto getLostItem(@PathVariable(name="lostItemId") Long itemId){
         return new LostItemDto(lostItemService.getLostItem(itemId));
     }
     //분실물 전체 조회
