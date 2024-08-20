@@ -15,21 +15,22 @@ public class LostItemController {
 
     //분실물 등록
     @PostMapping()
-    public LostItemDto createLostItem(@RequestParam("festivalId") Long festivalId, @RequestBody LostItemDto lostItemDto){
-
-        return new LostItemDto(lostItemService.createLostItem(festivalId,lostItemDto));
+    public LostItemLIstDto createLostItem(@RequestParam("festivalId") Long festivalId, @RequestBody LostItemDto lostItemDto){
+        lostItemService.createLostItem(festivalId,lostItemDto);
+        return new LostItemLIstDto(lostItemService.getAllLostItems());
     }
     //분실물 수정
     @PatchMapping("/{itemId}")
-    public LostItemDto updateLostItem(@PathVariable(name = "lostItemId") Long lostItemId,
+    public LostItemLIstDto updateLostItem(@PathVariable(name = "lostItemId") Long lostItemId,
                                       @RequestBody LostItemDto lostDto){
-        return new LostItemDto((lostItemService.updateLostItem(lostItemId,lostDto)));
+        lostItemService.updateLostItem(lostItemId,lostDto);
+        return new LostItemLIstDto(lostItemService.getAllLostItems());
     }
     //분실물 삭제
     @DeleteMapping("/{itemId}")
-    public void deleteLostItem(@PathVariable(name = "itemId") Long itemId){
+    public LostItemLIstDto deleteLostItem(@PathVariable(name = "itemId") Long itemId){
         lostItemService.deleteLostItem(itemId);
-
+        return new LostItemLIstDto(lostItemService.getAllLostItems());
     }
     //분실물 단일 조회
     @GetMapping("/{itemId}")
