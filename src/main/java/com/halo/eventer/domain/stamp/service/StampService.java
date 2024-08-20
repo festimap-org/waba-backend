@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.stamp.service;
 
+import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.dto.*;
@@ -10,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,92 +18,41 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StampService {
     private final StampRepository stampRepository;
-    private final EncryptService encryptService;
     private final FestivalService festivalService;
 
-    private Stamp getStampFromUuid(String uuid) {
-        Stamp stamp = stampRepository.findByUuid(uuid).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
-        return stamp;
+    public Stamp getStamp(Long stampId) {
+        return stampRepository.findById(stampId).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
     }
 
     @Transactional
-    public Stamp signup(Long festivalId, SignupDto signupDto) {
-        String encryptedInfo = encryptService.encryptInfo(signupDto.getName() + "/" + signupDto.getPhone());
-        if (stampRepository.existsByFestivalIdAndUserInfo(festivalId, encryptedInfo)) throw new BaseException(ErrorCode.ELEMENT_DUPLICATED);
+    public String registerStamp(Long festivalId) {
+        Festival festival = festivalService.getFestival(festivalId);
+        stampRepository.save(new Stamp(festival));
 
-        Stamp stamp = new Stamp(festivalService.getFestival(festivalId), encryptedInfo, signupDto.getParticipantCount());
+        return "스탬프 생성";
+    }
+
+    public StampGetListDto getStampByFestivalId(Long festivalId) {
+        List<Stamp> stamps = stampRepository.findByFestival(festivalService.getFestival(festivalId));
+        List<StampGetDto> stampGetDtos = StampGetDto.fromStampList(stamps);
+        return new StampGetListDto(stampGetDtos);
+    }
+
+    @Transactional
+    public String updateStampOn(Long stampId) {
+        Stamp stamp = stampRepository.findById(stampId).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+        if (stamp.isStampOn()) stamp.setStampOn(false);
+        else stamp.setStampOn(true);
+
         stampRepository.save(stamp);
 
-        return stamp;
-    }
-
-    public Stamp login(Long festivalId, LoginDto loginDto) {
-        String encryptedInfo = encryptService.encryptInfo(loginDto.getName() + "/" + loginDto.getPhone());
-        Stamp stamp = stampRepository.findByFestivalIdAndUserInfo(festivalId, encryptedInfo).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
-
-        return stamp;
-    }
-
-
-    public Stamp getMissionInfo(String uuid) {
-        Stamp stamp = getStampFromUuid(uuid);
-        return stamp;
-    }
-
-
-    @Transactional
-    public String updateStamp(String uuid, int missionId) {
-        Stamp stamp = getStampFromUuid(uuid);
-
-        switch (missionId) {
-            case 1: stamp.updateMission1(); break;
-            case 2: stamp.updateMission2(); break;
-            case 3: stamp.updateMission3(); break;
-            case 4: stamp.updateMission4(); break;
-            case 5: stamp.updateMission5(); break;
-            case 6: stamp.updateMission6(); break;
-            default:
-                throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
-        }
-        stampRepository.save(stamp);
-
-        return "업데이트 성공";
+        return "스탬프 상태 변경 성공";
     }
 
     @Transactional
-    public String checkFinish(String uuid) {
-        Stamp stamp = getStampFromUuid(uuid);
-        if (stamp.isMission1() && stamp.isMission2() && stamp.isMission3() && stamp.isMission4() && stamp.isMission5()
-                && stamp.isMission6()) {
-            stamp.setFinished();
-            stampRepository.save(stamp);
-            return "스탬프 투어 완료";
-        }
-        else return "미완료";
-    }
-
-
-    public StampInfoGetListDto getStampInfos(Long festivalId) {
-        List<StampInfoGetDto> stampInfoGetDtos = new ArrayList<>();
-        for (Stamp stamp : stampRepository.findByFestival(festivalService.getFestival(festivalId))) {
-            String userInfo = encryptService.decryptInfo(stamp.getUserInfo());
-            String[] parts = userInfo.split("/");
-
-            stampInfoGetDtos.add(new StampInfoGetDto(stamp, parts[0], parts[1]));
-        }
-        return new StampInfoGetListDto(stampInfoGetDtos);
-    }
-
-    @Transactional
-    public String deleteStamp(Long festivalId) {
-        stampRepository.deleteByFestival(festivalService.getFestival(festivalId));
+    public String deleteStamp(Long stampId) {
+        stampRepository.deleteById(stampId);
         return "삭제 완료";
     }
 
-    @Transactional
-    public String deleteStampByUuid(String uuid) {
-        Stamp stamp = getStampFromUuid(uuid);
-        stampRepository.delete(stamp);
-        return "삭제 완료";
-    }
 }

@@ -2,7 +2,7 @@ package com.halo.eventer.domain.stamp.controller;
 
 import com.halo.eventer.domain.stamp.dto.*;
 import com.halo.eventer.domain.stamp.service.StampService;
-import com.halo.eventer.domain.stamp.swagger.*;
+import com.halo.eventer.domain.stamp.swagger.StampOnUpdateApi;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,49 +14,28 @@ import org.springframework.web.bind.annotation.*;
 public class StampController {
     private final StampService stampService;
 
-    /** 스탬프 생성 */
-    @SignupApi
+    /** 축제 id로 스탬프 생성 */
     @PostMapping
-    public StampGetDto signup(@RequestParam("festivalId") Long festivalId, @RequestBody SignupDto signupDto) {
-        return new StampGetDto(stampService.signup(festivalId, signupDto));
+    public String registerStamp(@RequestParam("festivalId") Long festivalId) {
+        return stampService.registerStamp(festivalId);
     }
 
-    @LoginApi
-    @PostMapping("/login")
-    public StampGetDto login(@RequestParam("festivalId") Long festivalId, @RequestBody LoginDto loginDto) {
-        return new StampGetDto(stampService.login(festivalId, loginDto));
-    }
-
-    @MissionInfoGetApi
-    @GetMapping("/{uuid}")
-    public MissionInfoGetDto getMissionInfo(@PathVariable String uuid) {
-        return new MissionInfoGetDto(stampService.getMissionInfo(uuid));
-    }
-
-    @PatchMapping("/{uuid}/{missionId}")
-    public String updateStamp(@PathVariable String uuid, @PathVariable int missionId) {
-        return stampService.updateStamp(uuid, missionId);
-    }
-
-    @StampCheckApi
-    @PatchMapping("/check/{uuid}")
-    public String updateCheck(@PathVariable String uuid) {
-        return stampService.checkFinish(uuid);
-    }
-
-    @StampInfoListApi
+    /** 축제 id로 스탬프 조회 */
     @GetMapping
-    public StampInfoGetListDto getStampInfoList(@RequestParam Long festivalId) {
-        return stampService.getStampInfos(festivalId);
+    public StampGetListDto getStampList(@RequestParam("festivalId") Long festivalId) {
+        return stampService.getStampByFestivalId(festivalId);
     }
 
+    /** 스탬프 상태 변경 */
+    @StampOnUpdateApi
+    @PatchMapping
+    public String updateStampOn(@RequestParam("stampId") Long stampId) {
+        return stampService.updateStampOn(stampId);
+    }
+
+    /** 스탬프 삭제 */
     @DeleteMapping
-    public String deleteStampByFestival(@RequestParam Long festivalId) {
-        return stampService.deleteStamp(festivalId);
-    }
-
-    @DeleteMapping("/{uuid}")
-    public String deleteStampByUuid(@PathVariable String uuid) {
-        return stampService.deleteStampByUuid(uuid);
+    public String deleteStamp(@RequestParam("stampId") Long stampId) {
+        return stampService.deleteStamp(stampId);
     }
 }
