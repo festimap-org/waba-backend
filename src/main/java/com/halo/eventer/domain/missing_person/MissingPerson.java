@@ -18,7 +18,7 @@ public class MissingPerson {
     private Long id;
 
     private String name;
-    private Integer age;
+    private String age;
     private String gender;
     private String thumbnail;
     private String missingLocation;
