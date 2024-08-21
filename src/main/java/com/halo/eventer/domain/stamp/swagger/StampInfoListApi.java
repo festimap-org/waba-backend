@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.stamp.swagger;
 
-import com.halo.eventer.domain.stamp.dto.StampInfoGetListDto;
+import com.halo.eventer.domain.stamp.dto.StampUserInfoGetListDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +16,7 @@ import java.lang.annotation.RetentionPolicy;
 @ApiResponses(value = {
         @ApiResponse(responseCode = "200",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = StampInfoGetListDto.class)))
+                        schema = @Schema(implementation = StampUserInfoGetListDto.class)))
 })
 public @interface StampInfoListApi {
 }
