@@ -31,18 +31,19 @@ public class StampUserService {
     public StampUser signup(Long stampId, SignupDto signupDto) {
         if (!stampService.getStamp(stampId).isStampOn()) throw new BaseException("종료된 스탬프 투어입니다.", ErrorCode.ELEMENT_NOT_FOUND);
 
-        String encryptedInfo = encryptService.encryptInfo(signupDto.getName() + "/" + signupDto.getPhone());
-        if (stampUserRepository.existsByStampIdAndUserInfo(stampId, encryptedInfo)) throw new BaseException(ErrorCode.ELEMENT_DUPLICATED);
+        String encryptedPhone = encryptService.encryptInfo(signupDto.getPhone());
+        String encryptedName = encryptService.encryptInfo(signupDto.getName());
+        if (stampUserRepository.existsByStampIdAndPhone(stampId, encryptedPhone)) throw new BaseException(ErrorCode.ELEMENT_DUPLICATED);
 
-        StampUser stampUser = new StampUser(stampService.getStamp(stampId), encryptedInfo, signupDto.getParticipantCount());
+        StampUser stampUser = new StampUser(stampService.getStamp(stampId), encryptedPhone, encryptedName, signupDto.getParticipantCount());
         stampUserRepository.save(stampUser);
 
         return stampUser;
     }
 
     public StampUser login(Long stampId, LoginDto loginDto) {
-        String encryptedInfo = encryptService.encryptInfo(loginDto.getName() + "/" + loginDto.getPhone());
-        StampUser stampUser = stampUserRepository.findByStampIdAndUserInfo(stampId, encryptedInfo).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+        StampUser stampUser = stampUserRepository.findByStampIdAndPhoneAndName(stampId, encryptService.encryptInfo(loginDto.getPhone()), encryptService.encryptInfo(loginDto.getName()))
+                .orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
 
         return stampUser;
     }
@@ -89,10 +90,10 @@ public class StampUserService {
     public StampUserInfoGetListDto getStampInfos(Long stampId) {
         List<StampUserInfoGetDto> stampUserInfoGetDtos = new ArrayList<>();
         for (StampUser stampUser : stampUserRepository.findByStamp(stampService.getStamp(stampId))) {
-            String userInfo = encryptService.decryptInfo(stampUser.getUserInfo());
-            String[] parts = userInfo.split("/");
+            String phone = encryptService.decryptInfo(stampUser.getPhone());
+            String name = encryptService.decryptInfo(stampUser.getName());
 
-            stampUserInfoGetDtos.add(new StampUserInfoGetDto(stampUser, parts[0], parts[1]));
+            stampUserInfoGetDtos.add(new StampUserInfoGetDto(stampUser, name, phone));
         }
         return new StampUserInfoGetListDto(stampUserInfoGetDtos);
     }

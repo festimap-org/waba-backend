@@ -10,9 +10,9 @@ import java.util.Optional;
 public interface StampUserRepository extends JpaRepository<StampUser, Long> {
     Optional<StampUser> findByUuid(String uuid);
 
-    boolean existsByStampIdAndUserInfo(Long stampId, String userInfo);
+    boolean existsByStampIdAndPhone(Long stampId, String phone);
 
-    Optional<StampUser> findByStampIdAndUserInfo(Long stampId, String userInfo);
+    Optional<StampUser> findByStampIdAndPhoneAndName(Long stampId, String phone, String name);
 
     List<StampUser> findByStamp(Stamp stamp);
 }
