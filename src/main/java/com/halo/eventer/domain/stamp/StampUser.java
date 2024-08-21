@@ -9,7 +9,9 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name = "user_stamp", indexes = {@Index(name = "idx_uuid", columnList = "uuid")})
+@Table(name = "user_stamp", indexes = {
+        @Index(name = "idx_uuid", columnList = "uuid"),
+        @Index(name = "idx_phone_name", columnList = "phone, name")})
 public class StampUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +21,10 @@ public class StampUser {
     private String uuid = UUID.randomUUID().toString();
 
     @Column(nullable = false)
-    private String userInfo;        // name + phone
+    private String phone;
+
+    @Column(nullable = false)
+    private String name;
 
     private boolean mission1;
     private boolean mission2;
@@ -36,10 +41,11 @@ public class StampUser {
     @JoinColumn(name = "stamp_id")
     private Stamp stamp;
 
-    public StampUser(Stamp stamp, String encryptedUserInfo, int participantCount) {
+    public StampUser(Stamp stamp, String encryptedPhone, String encryptedName, int participantCount) {
         this.stamp = stamp;
         this.uuid = UUID.randomUUID().toString();
-        this.userInfo = encryptedUserInfo;
+        this.phone = encryptedPhone;
+        this.name = encryptedName;
         this.mission1 = false;
         this.mission2 = false;
         this.mission3 = false;
