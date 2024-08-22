@@ -29,14 +29,14 @@ public class MissingPersonController {
         return new MissingPersonResDto(missingPersonService.getMissingPerson(missingPersonId));
     }
     //실종자 정보 수정
-    @PatchMapping("/popup")
+    @PatchMapping()
     public MissingPersonListDto updateMissingPerson(@RequestParam(name = "missingPersonId") Long missingPersonId,
                                                     @RequestBody MissingPersonReqDto missingPersonReqDto){
         missingPersonService.updateMissingPerson(missingPersonId, missingPersonReqDto);
         return new MissingPersonListDto(missingPersonService.getAllMissingPersonList());
     }
     //실종자 팝업 수정
-    @PatchMapping()
+    @PatchMapping("/popup")
     public MissingPersonListDto selectMissingPersonPopup(@RequestParam(name = "missingPersonId") Long missingPersonId,
                                          @RequestParam(name ="check") boolean check){
         missingPersonService.checkPopup(missingPersonId,check);
