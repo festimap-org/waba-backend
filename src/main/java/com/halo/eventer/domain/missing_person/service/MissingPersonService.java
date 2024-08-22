@@ -4,7 +4,7 @@ package com.halo.eventer.domain.missing_person.service;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.missing_person.MissingPerson;
-import com.halo.eventer.domain.missing_person.dto.MissingPersonDto;
+import com.halo.eventer.domain.missing_person.dto.MissingPersonReqDto;
 import com.halo.eventer.domain.missing_person.repository.MissingPersonRepository;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -21,9 +21,9 @@ public class MissingPersonService {
     private final MissingPersonRepository missingPersonRepository;
     private final FestivalService festivalService;
     // 실종자 찾기 신청
-    public void createMissingPerson(Long festivalId,MissingPersonDto missingPersonDto){
+    public void createMissingPerson(Long festivalId, MissingPersonReqDto missingPersonReqDto){
         Festival festival = festivalService.getFestival(festivalId);
-        missingPersonRepository.save(new MissingPerson(missingPersonDto,festival));
+        missingPersonRepository.save(new MissingPerson(missingPersonReqDto,festival));
     }
     // 실종자 전체 조회
     public List<MissingPerson> getAllMissingPersonList(){
@@ -32,6 +32,12 @@ public class MissingPersonService {
     //실종자 단일 조회
     public MissingPerson getMissingPerson(Long id){
         return missingPersonRepository.findById(id).orElseThrow(()->new BaseException("실종자가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
+    }
+    //실종자 수정
+    @Transactional
+    public void updateMissingPerson(Long id, MissingPersonReqDto missingPersonReqDto) {
+        MissingPerson person = missingPersonRepository.findById(id).orElseThrow(()->new BaseException("실종자가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
+        person.update(missingPersonReqDto);
     }
     //실종자 팝업 선택
     @Transactional

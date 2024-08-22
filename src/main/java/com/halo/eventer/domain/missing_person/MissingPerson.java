@@ -2,7 +2,7 @@ package com.halo.eventer.domain.missing_person;
 
 
 import com.halo.eventer.domain.festival.Festival;
-import com.halo.eventer.domain.missing_person.dto.MissingPersonDto;
+import com.halo.eventer.domain.missing_person.dto.MissingPersonReqDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,7 +33,7 @@ public class MissingPerson {
     @JoinColumn(name = "festival_id")
     private Festival festival;
 
-    public MissingPerson(MissingPersonDto m, Festival festival) {
+    public MissingPerson(MissingPersonReqDto m, Festival festival) {
         this.name = m.getName();
         this.age = m.getAge();
         this.gender = m.getGender();
@@ -47,7 +47,7 @@ public class MissingPerson {
         this.festival = festival;
     }
 
-    public void update(MissingPersonDto m) {
+    public void update(MissingPersonReqDto m) {
         this.name = m.getName();
         this.age = m.getAge();
         this.gender = m.getGender();
