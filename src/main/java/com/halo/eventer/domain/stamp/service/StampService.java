@@ -25,11 +25,13 @@ public class StampService {
     }
 
     @Transactional
-    public String registerStamp(Long festivalId) {
+    public StampGetListDto registerStamp(Long festivalId) {
         Festival festival = festivalService.getFestival(festivalId);
         stampRepository.save(new Stamp(festival));
 
-        return "스탬프 생성";
+        List<Stamp> stamps = stampRepository.findByFestival(festivalService.getFestival(festivalId));
+        List<StampGetDto> stampGetDtos = StampGetDto.fromStampList(stamps);
+        return new StampGetListDto(stampGetDtos);
     }
 
     public StampGetListDto getStampByFestivalId(Long festivalId) {

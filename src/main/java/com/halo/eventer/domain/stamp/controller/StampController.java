@@ -16,7 +16,7 @@ public class StampController {
 
     /** 축제 id로 스탬프 생성 */
     @PostMapping
-    public String registerStamp(@RequestParam("festivalId") Long festivalId) {
+    public StampGetListDto registerStamp(@RequestParam("festivalId") Long festivalId) {
         return stampService.registerStamp(festivalId);
     }
 
