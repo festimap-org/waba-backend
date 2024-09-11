@@ -20,7 +20,7 @@ public class StampUser {
     @Column(nullable = false, unique = true)
     private String uuid = UUID.randomUUID().toString();
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String phone;
 
     @Column(nullable = false)
