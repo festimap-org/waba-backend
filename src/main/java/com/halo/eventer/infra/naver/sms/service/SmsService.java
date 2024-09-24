@@ -1,13 +1,10 @@
 package com.halo.eventer.infra.naver.sms.service;
 
 import com.halo.eventer.domain.missing_person.dto.MissingPersonReqDto;
-import com.halo.eventer.infra.naver.sms.dto.MessageDto;
-import com.halo.eventer.infra.naver.sms.dto.SmsReqDto;
-import com.halo.eventer.infra.naver.sms.dto.SmsResDto;
+import com.halo.eventer.infra.naver.sms.dto.*;
 import com.halo.eventer.infra.naver.sms.util.SmsRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +30,14 @@ public class SmsService {
                 "실종 위치 : %s\n\n" +
                 "자세한 실종자 정보는 링크 확인\n" +
                 "https://m.jejulhfestival.kr";
+        List<FileDto> fileDtos = new ArrayList<>();
+        if(dto.getBase64Image() != null){
+            FileUploadResDto fileUploadResDto = smsRequest.sendFileUpload("thumbnail1.jpeg",dto.getBase64Image());
+            fileDtos.add(new FileDto(fileUploadResDto.getFileId()));
+        }
+
         String realMessage = String.format(message,dto.getName(),dto.getAge(),dto.getGender(),dto.getMissingLocation());
+
 
         //2. 관리자 리스트 수만큼 MessageDto setter로 to 필드 변경하기
         List<MessageDto> messages = new ArrayList<>();
@@ -45,9 +49,9 @@ public class SmsService {
             messages.add(messageDto);
         }
 
+
         //3. 네이버 클라우드 API 요청 보내기
-        HttpHeaders header = smsRequest.getSmsHeader();
-        SmsReqDto smsReqDto = smsRequest.getSmsBody(messages,realMessage);
-        SmsResDto smsResDto = smsRequest.sendSmsReq(header,smsReqDto);
+        SmsReqDto smsReqDto = smsRequest.getSmsBodyWithFile(messages,fileDtos,realMessage);
+        SmsResDto smsResDto = smsRequest.sendSmsReq(smsReqDto);
     }
 }

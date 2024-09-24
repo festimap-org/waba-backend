@@ -29,7 +29,6 @@ dependencies {
 	//Swagger
 	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
-
 	//lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -48,6 +47,10 @@ dependencies {
 
 	//httpClient
 	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+	//aws-s3
+	implementation(platform("software.amazon.awssdk:bom:2.27.21"))
+	implementation("software.amazon.awssdk:s3")
 
 }
 

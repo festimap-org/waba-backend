@@ -3,9 +3,7 @@ package com.halo.eventer.infra.naver.sms.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.halo.eventer.infra.naver.sms.dto.MessageDto;
-import com.halo.eventer.infra.naver.sms.dto.SmsReqDto;
-import com.halo.eventer.infra.naver.sms.dto.SmsResDto;
+import com.halo.eventer.infra.naver.sms.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,11 +40,10 @@ public class SmsRequest {
     @Value("${naver-cloud-sms.senderPhone}")
     private String phone;
 
-    public String makeSignature(Long time) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
+    public String makeSignature(Long time, String url) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
         String space = " ";
         String newLine = "\n";
         String method = "POST";
-        String url = "/sms/v2/services/"+ this.serviceId+"/messages";
         String timestamp = time.toString();
         String accessKey = this.accessKey;
         String secretKey = this.secretKey;
@@ -71,37 +68,41 @@ public class SmsRequest {
         return encodeBase64String;
     }
 
-    public HttpHeaders getSmsHeader() throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+
+
+    public HttpHeaders getSmsHeader(String url) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
         Long time = System.currentTimeMillis();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("x-ncp-apigw-timestamp", time.toString());
         headers.set("x-ncp-iam-access-key", accessKey);
-        headers.set("x-ncp-apigw-signature-v2", makeSignature(time));
+        headers.set("x-ncp-apigw-signature-v2", makeSignature(time,url));
 
         return headers;
     }
 
-    public SmsReqDto getSmsBody(List<MessageDto> messages, String content){
+    public SmsReqDto getSmsBodyWithFile(List<MessageDto> messages,List<FileDto> files, String content){
 
+        //file이 null이면 LMS로 감
         SmsReqDto request = SmsReqDto.builder()
-                .type("LMS")
+                .type("MMS")
                 .contentType("COMM")
                 .countryCode("82")
                 .from(phone)
                 .content(content)
                 .messages(messages)
+                .files(files)
                 .build();
 
         return request;
     }
 
-    public SmsResDto sendSmsReq(HttpHeaders header, SmsReqDto smsReqDto) throws JsonProcessingException, URISyntaxException {
+    public SmsResDto sendSmsReq(Object smsReqDto) throws JsonProcessingException, URISyntaxException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
         // 요청 만들기
         ObjectMapper objectMapper = new ObjectMapper();
         String body = objectMapper.writeValueAsString(smsReqDto);
-        HttpEntity<String> httpBody = new HttpEntity<>(body, header);
+        HttpEntity<String> httpBody = new HttpEntity<>(body, getSmsHeader("/sms/v2/services/"+ this.serviceId+ "/messages"));
 
         // 요청 보내기
         RestTemplate restTemplate = new RestTemplate();
@@ -110,4 +111,19 @@ public class SmsRequest {
 
         return response;
     }
+    public FileUploadResDto sendFileUpload(String fileName, String file) throws JsonProcessingException, URISyntaxException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+        FileUploadReqDto fileUploadReqDto = new FileUploadReqDto(fileName,file);
+        // 요청 만들기
+        ObjectMapper objectMapper = new ObjectMapper();
+        String body = objectMapper.writeValueAsString(fileUploadReqDto);
+        HttpEntity<String> httpBody = new HttpEntity<>(body, getSmsHeader("/sms/v2/services/"+ this.serviceId+ "/files"));
+
+        // 요청 보내기
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+        FileUploadResDto response = restTemplate.postForObject(new URI("https://sens.apigw.ntruss.com/sms/v2/services/"+ serviceId +"/files"), httpBody, FileUploadResDto.class);
+        return response;
+    }
 }
+//POST https://sens.apigw.ntruss.com/sms/v2/services/{serviceId}/messages
+//POST https://sens.apigw.ntruss.com/sms/v2/services/{serviceId}/files

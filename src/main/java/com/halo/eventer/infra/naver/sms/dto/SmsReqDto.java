@@ -16,4 +16,5 @@ public class SmsReqDto {
     String from;
     String content;
     List<MessageDto> messages;
+    List<FileDto> files;
 }

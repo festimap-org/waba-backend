@@ -12,6 +12,7 @@ public class MissingPersonReqDto {
     private String age;
     private String gender;
     private String thumbnail;
+    private String base64Image;
     private String missingLocation;
     private String missingTime;
     private String content;
