@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.festival.controller;
 
 
+import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.festival.swagger.*;
@@ -54,7 +55,6 @@ public class FestivalController {
         return festivalService.addColor(id, colorReqDto);
     }
 
-
     @FestivalLogoAddApi
     @PostMapping("/{festivalId}/logo")
     public String addLogo(@PathVariable("festivalId") Long id, @RequestBody ImageDto imageDto){
@@ -93,15 +93,10 @@ public class FestivalController {
     public FestivalConcertMenuDto getViewInfo(@PathVariable("festivalId") Long festivalId){
         return festivalService.getViewInfo(festivalId);
     }
-
-    @PatchMapping("/{festivalId}/middleBanner")
-    public String createMiddleBanner(@PathVariable("festivalId") Long festivalId,
-                                     @RequestBody MiddleBannerDto middleBannerDto){
-        return festivalService.createMiddleBanner(festivalId,middleBannerDto);
-    }
-
-    @GetMapping("/{festivalId}/middleBanner")
-    public MiddleBannerDto getMiddleBanner(@PathVariable("festivalId") Long id){
-        return festivalService.getMiddleBanner(id);
+    /** 축제 위치 등록 api */
+    @PostMapping("/{festivalId}/location")
+    public FestivalResDto updateFestivalLocation(@PathVariable("festivalId")Long festivalId,
+                                                 @RequestBody FestivalLocationDto festivalLocationDto){
+        return new FestivalResDto(festivalService.updateFestivalLocation(festivalId,festivalLocationDto));
     }
 }

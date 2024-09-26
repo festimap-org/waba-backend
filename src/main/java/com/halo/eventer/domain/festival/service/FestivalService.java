@@ -27,7 +27,6 @@ public class FestivalService {
 
     private final FestivalRepository festivalRepository;
 
-
     public String createFestival(FestivalCreateDto festivalCreateDto) {
         if(festivalRepository.findByName(festivalCreateDto.getName()).isPresent() || festivalRepository.findBySubAddress(festivalCreateDto.getSubAddress()).isPresent()){
             throw new BaseException("중복생성", ErrorCode.ELEMENT_DUPLICATED);
@@ -113,7 +112,7 @@ public class FestivalService {
         Festival festival = getFestival(id);
         return new FestivalConcertMenuDto(festival.getViewSummary(),festival.getViewIcon());
     }
-
+    //subAddress로 축제 조회
     public FestivalListDto getFestivalSubAddress(String name) {
         return new FestivalListDto(festivalRepository.findBySubAddress(name).orElseThrow(()->new BaseException("축제가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND)));
     }
@@ -123,15 +122,11 @@ public class FestivalService {
         return new MainMenuDto(festival);
     }
 
+    /** 축제 위치 등록 */
     @Transactional
-    public String createMiddleBanner(Long id, MiddleBannerDto middleBannerDto) {
-        Festival festival = getFestival(id);
-        festival.setMiddleBanner(middleBannerDto);
-        return "수정 완료";
-    }
-
-    public MiddleBannerDto getMiddleBanner(Long id) {
-        Festival festival = getFestival(id);
-        return new MiddleBannerDto(festival);
+    public Festival updateFestivalLocation(Long festivalId, FestivalLocationDto festivalLocationDto){
+        Festival festival = getFestival(festivalId);
+        festival.updateLocation(festivalLocationDto);
+        return festival;
     }
 }
