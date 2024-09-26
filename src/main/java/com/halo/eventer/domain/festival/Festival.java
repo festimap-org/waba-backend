@@ -31,32 +31,38 @@ public class Festival {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-
     private String name;
     private String subAddress;
 
+    //4가지 커스텀 색
     private String mainColor;
     private String subColor;
     private String fontColor;
     private String backgroundColor;
 
-    private String logo;
+    private String logo; //메인 페이지 최상단에 보여지는 이미지
+
+    //매인 배너 아래 2개의 컴포넌트 관련 필드
     private String menuName1;
     private String menuImage1;
     private String menuSummary1;
+    private String menuUrl1;
 
     private String menuName2;
     private String menuImage2;
     private String menuSummary2;
+    private String menuUrl2;
 
+    //2번째 컴포넌트에 들어갔을 때 나옴
     private String entrySummary;
     private String entryIcon;
     private String viewSummary;
     private String viewIcon;
 
-    private String middleBanner;
-    private String middleUrl;
+    // 축제 위치 정보
+    private double latitude; // 위도
+    private double longitude; // 경도
+
 
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
@@ -142,8 +148,8 @@ public class Festival {
         this.viewIcon = festivalConcertMenuDto.getIcon();
     }
 
-    public void setMiddleBanner(MiddleBannerDto middleBannerDto) {
-        this.middleBanner = middleBannerDto.getMiddleBanner();
-        this.middleUrl = middleBannerDto.getMiddleBannerUrl();
+    public void updateLocation(FestivalLocationDto festivalLocationDto) {
+        this.longitude = festivalLocationDto.getLongitude();
+        this.latitude = festivalLocationDto.getLatitude();
     }
 }

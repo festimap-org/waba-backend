@@ -14,6 +14,11 @@ public class MainMenuDto {
     private String menuSummary2;
     private String menuImage1;
     private String menuImage2;
+    private String menuUrl1;
+    private String menuUrl2;
+    private double latitude; // 위도
+    private double longitude; // 경도
+
 
     public MainMenuDto(Festival festival) {
         this.menuName1 = festival.getMenuName1();
@@ -22,5 +27,9 @@ public class MainMenuDto {
         this.menuImage2 = festival.getMenuImage2();
         this.menuSummary1 = festival.getMenuSummary1();
         this.menuSummary2 = festival.getMenuSummary2();
+        this.menuUrl1 = festival.getMenuUrl1();
+        this.menuUrl2 = festival.getMenuUrl2();
+        this.latitude = festival.getLatitude();
+        this.longitude = festival.getLongitude();
     }
 }
