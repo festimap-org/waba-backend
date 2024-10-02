@@ -5,6 +5,6 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class UploadImageDto {
-    private List<ImageLayerDto> imageLayers;
+public class DeleteImageDto {
+    private List<String> layerTypes;
 }
