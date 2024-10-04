@@ -3,6 +3,8 @@ package com.halo.eventer.domain.splash.service;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.splash.Splash;
+import com.halo.eventer.domain.splash.dto.DeleteImageDto;
+import com.halo.eventer.domain.splash.dto.ImageLayerDto;
 import com.halo.eventer.domain.splash.dto.UploadImageDto;
 import com.halo.eventer.domain.splash.repository.SplashRepository;
 import com.halo.eventer.global.error.ErrorCode;
@@ -10,6 +12,7 @@ import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @RequiredArgsConstructor
 @Service
@@ -23,73 +26,56 @@ public class SplashService {
         Festival festival = festivalService.getFestival(festivalId);
 
         Splash splash = splashRepository.findByFestivalId(festivalId).orElse(new Splash(festival));
-        switch (uploadImageDto.getLayerType()) {
-            case "background":
-                splash.setBackgroundImage(uploadImageDto.getUrl());
-                break;
-            case "top":
-                splash.setTopLayerImage(uploadImageDto.getUrl());
-                break;
-            case "center":
-                splash.setCenterLayerImage(uploadImageDto.getUrl());
-                break;
-            case "bottom":
-                splash.setBottomLayerImage(uploadImageDto.getUrl());
-                break;
-            default:
-                throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
+        for (ImageLayerDto layer: uploadImageDto.getImageLayers()) {
+            switch (layer.getLayerType()) {
+                case "background":
+                    splash.setBackgroundImage(layer.getUrl());
+                    break;
+                case "top":
+                    splash.setTopLayerImage(layer.getUrl());
+                    break;
+                case "center":
+                    splash.setCenterLayerImage(layer.getUrl());
+                    break;
+                case "bottom":
+                    splash.setBottomLayerImage(layer.getUrl());
+                    break;
+                default:
+                    throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
+            }
         }
 
         splashRepository.save(splash);
-        return uploadImageDto.getLayerType() + " 이미지 업로드 성공";
+        return "이미지 업로드 성공";
     }
 
-    /** 배경 레이어 이미지 삭제 */
+    /** 이미지 삭제 */
     @Transactional
-    public String deleteBackgroundImage(Long festivalId) {
-        Splash splash = splashRepository.findByFestivalId(festivalId).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
-        if (splash.getBackgroundImage() == null) throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
-        else {
-            splash.setBackgroundImage(null);
-            splashRepository.save(splash);
-            return "배경 레이어 이미지 삭제";
-        }
-    }
+    public String deleteSplashImage(Long festivalId, DeleteImageDto deleteImageDto) {
+        Festival festival = festivalService.getFestival(festivalId);
 
-    /** 상단 레이어 이미지 삭제 */
-    @Transactional
-    public String deleteTopLayerImage(Long festivalId) {
-        Splash splash = splashRepository.findByFestivalId(festivalId).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
-        if (splash.getTopLayerImage() == null) throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
-        else {
-            splash.setTopLayerImage(null);
-            splashRepository.save(splash);
-            return "상단 레이어 이미지 삭제";
+        Splash splash = splashRepository.findByFestivalId(festivalId).orElse(new Splash(festival));
+        for (String layer: deleteImageDto.getLayerTypes()) {
+            switch (layer) {
+                case "background":
+                    splash.setBackgroundImage(null);
+                    break;
+                case "top":
+                    splash.setTopLayerImage(null);
+                    break;
+                case "center":
+                    splash.setCenterLayerImage(null);
+                    break;
+                case "bottom":
+                    splash.setBottomLayerImage(null);
+                    break;
+                default:
+                    throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
+            }
         }
-    }
 
-    /** 중앙 레이어 이미지 삭제 */
-    @Transactional
-    public String deleteCenterLayerImage(Long festivalId) {
-        Splash splash = splashRepository.findByFestivalId(festivalId).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
-        if (splash.getCenterLayerImage() == null) throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
-        else {
-            splash.setCenterLayerImage(null);
-            splashRepository.save(splash);
-            return "중앙 레이어 이미지 삭제";
-        }
-    }
-
-    /** 하단 레이어 이미지 삭제 */
-    @Transactional
-    public String deleteBottomLayerImage(Long festivalId) {
-        Splash splash = splashRepository.findByFestivalId(festivalId).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
-        if (splash.getBottomLayerImage() == null) throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
-        else {
-            splash.setBottomLayerImage(null);
-            splashRepository.save(splash);
-            return "하단 레이어 이미지 삭제";
-        }
+        splashRepository.save(splash);
+        return "이미지 삭제 성공";
     }
 
     /** 전체 레이어 조회 */

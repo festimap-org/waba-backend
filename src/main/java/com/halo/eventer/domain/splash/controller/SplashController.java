@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.splash.controller;
 
 import com.halo.eventer.domain.splash.Splash;
+import com.halo.eventer.domain.splash.dto.DeleteImageDto;
 import com.halo.eventer.domain.splash.dto.SplashGetDto;
 import com.halo.eventer.domain.splash.dto.UploadImageDto;
 import com.halo.eventer.domain.splash.service.SplashService;
@@ -18,29 +19,11 @@ public class SplashController {
     public String uploadSplashImage(@RequestParam Long festivalId, @RequestBody UploadImageDto dto) {
         return splashService.uploadSplashImage(festivalId, dto);
     }
-    
-    /** 배경 레이어 이미지 삭제 */
-    @DeleteMapping("/background")
-    public String deleteBackgroundImage(@RequestParam Long festivalId) {
-        return splashService.deleteBackgroundImage(festivalId);
-    }
 
-    /** 상단 레이어 이미지 삭제 */
-    @DeleteMapping("/top")
-    public String deleteTopLayerImage(@RequestParam Long festivalId) {
-        return splashService.deleteTopLayerImage(festivalId);
-    }
-
-    /** 중앙 레이어 이미지 삭제 */
-    @DeleteMapping("/center")
-    public String deleteCenterLayerImage(@RequestParam Long festivalId) {
-        return splashService.deleteCenterLayerImage(festivalId);
-    }
-
-    /** 하단 레이어 이미지 삭제 */
-    @DeleteMapping("/bottom")
-    public String deleteBottomLayerImage(@RequestParam Long festivalId) {
-        return splashService.deleteBottomLayerImage(festivalId);
+    /** 이미지 삭제 */
+    @DeleteMapping
+    public String deleteSplashImage(@RequestParam Long festivalId, @RequestBody DeleteImageDto dto) {
+        return splashService.deleteSplashImage(festivalId, dto);
     }
 
     /** 전체 레이어 조회 */
