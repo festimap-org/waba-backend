@@ -38,6 +38,7 @@ public class MiddleBannerService {
         return  middleBannerRepository.findById(middleBannerId).orElseThrow(()->new BaseException("중간 배너가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
     }
 
+    @Transactional
     public MiddleBanner updateMiddleBanner(Long middleBannerId, MiddleBannerCreateDto middleBannerCreateDto) {
         MiddleBanner middleBanner = getMiddleBanner(middleBannerId);
         middleBanner.update(middleBannerCreateDto);
