@@ -10,6 +10,7 @@ import com.halo.eventer.domain.inquiry.Inquiry;
 import com.halo.eventer.domain.lost_item.LostItem;
 import com.halo.eventer.domain.manager.Manager;
 import com.halo.eventer.domain.map.MapCategory;
+import com.halo.eventer.domain.middle_banner.MiddleBanner;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.splash.Splash;
 import com.halo.eventer.domain.stamp.Stamp;
@@ -105,6 +106,9 @@ public class Festival {
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Splash> splashes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<MiddleBanner> middleBanners = new ArrayList<>();
+
     @Builder
     public Festival(FestivalCreateDto festivalCreateDto) {
         this.name = festivalCreateDto.getName();
@@ -134,7 +138,8 @@ public class Festival {
         this.menuSummary2 = mainMenuDto.getMenuSummary2();
         this.menuImage1 = mainMenuDto.getMenuImage1();
         this.menuImage2 = mainMenuDto.getMenuImage2();
-
+        this.menuUrl1 = mainMenuDto.getMenuUrl1();
+        this.menuUrl2 = mainMenuDto.getMenuUrl2();
     }
 
     public void setMapCategory(List<MapCategory> mapCategories) {
