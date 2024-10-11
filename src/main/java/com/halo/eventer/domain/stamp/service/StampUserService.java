@@ -1,10 +1,13 @@
 package com.halo.eventer.domain.stamp.service;
 
+import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
-import com.halo.eventer.domain.stamp.dto.LoginDto;
-import com.halo.eventer.domain.stamp.dto.SignupDto;
-import com.halo.eventer.domain.stamp.dto.StampUserInfoGetDto;
-import com.halo.eventer.domain.stamp.dto.StampUserInfoGetListDto;
+import com.halo.eventer.domain.stamp.UserMission;
+import com.halo.eventer.domain.stamp.dto.stampUser.StampUserGetDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.LoginDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.SignupDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.UserMissionInfoGetDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.UserMissionInfoGetListDto;
 import com.halo.eventer.domain.stamp.repository.StampUserRepository;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -12,8 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,58 +30,78 @@ public class StampUserService {
         return stampUser;
     }
 
+    /** 스탬프 유저 생성 */
     @Transactional
-    public StampUser signup(Long stampId, SignupDto signupDto) {
-        if (!stampService.getStamp(stampId).isStampOn()) throw new BaseException("종료된 스탬프 투어입니다.", ErrorCode.ELEMENT_NOT_FOUND);
+    public StampUserGetDto signup(Long stampId, SignupDto signupDto) {
+        Stamp stamp = stampService.getStamp(stampId);
+        if (!stamp.isStampOn()) throw new BaseException("종료된 스탬프 투어입니다.", ErrorCode.ELEMENT_NOT_FOUND);
 
         String encryptedPhone = encryptService.encryptInfo(signupDto.getPhone());
         String encryptedName = encryptService.encryptInfo(signupDto.getName());
         if (stampUserRepository.existsByStampIdAndPhone(stampId, encryptedPhone)) throw new BaseException(ErrorCode.ELEMENT_DUPLICATED);
 
+        // 사용자 생성
         StampUser stampUser = new StampUser(stampService.getStamp(stampId), encryptedPhone, encryptedName, signupDto.getParticipantCount());
+
+        // 미션 생성 후 연결
+        List<UserMission> userMissions = stamp.getMissions().stream()
+                        .map(mission -> {
+                            UserMission userMission = new UserMission();
+                            userMission.setMission(mission);
+                            userMission.setStampUser(stampUser);
+                            return userMission;
+                        })
+                .collect(Collectors.toList());
+        stampUser.setUserMission(userMissions);
+
         stampUserRepository.save(stampUser);
 
-        return stampUser;
+        List<UserMissionInfoGetDto> userMissionInfoGetDtos = userMissions.stream()
+                .map(mission -> new UserMissionInfoGetDto(mission.getId(), mission.isComplete())).collect(Collectors.toList());
+
+        StampUserGetDto stampUserGetDto = new StampUserGetDto(stampUser, new UserMissionInfoGetListDto(userMissionInfoGetDtos));
+        return stampUserGetDto;
     }
 
-    public StampUser login(Long stampId, LoginDto loginDto) {
+    /** 로그인 */
+    public StampUserGetDto login(Long stampId, LoginDto loginDto) {
         StampUser stampUser = stampUserRepository.findByStampIdAndPhoneAndName(stampId, encryptService.encryptInfo(loginDto.getPhone()), encryptService.encryptInfo(loginDto.getName()))
                 .orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
 
-        return stampUser;
+        return new StampUserGetDto(stampUser, getUserMission(stampUser.getUuid()));
     }
 
-
-    public StampUser getMissionInfo(String uuid) {
+    /** 유저 미션 전체 조회 */
+    public UserMissionInfoGetListDto getUserMission(String uuid) {
         StampUser stampUser = getStampUserFromUuid(uuid);
-        return stampUser;
+        List<UserMissionInfoGetDto> userMissionInfoGetDtos = stampUser.getUserMissions().stream()
+                .map(mission -> new UserMissionInfoGetDto(mission.getId(), mission.isComplete()))
+                .collect(Collectors.toList());
+
+        return new UserMissionInfoGetListDto(userMissionInfoGetDtos);
     }
 
-
+    /** 사용자 미션 상태 업데이트 */
     @Transactional
-    public String updateStamp(String uuid, int missionId) {
+    public String updateUserMission(String uuid, Long userMissionId) {
         StampUser stampUser = getStampUserFromUuid(uuid);
 
-        switch (missionId) {
-            case 1: stampUser.updateMission1(); break;
-            case 2: stampUser.updateMission2(); break;
-            case 3: stampUser.updateMission3(); break;
-            case 4: stampUser.updateMission4(); break;
-            case 5: stampUser.updateMission5(); break;
-            case 6: stampUser.updateMission6(); break;
-            default:
-                throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
-        }
-        stampUserRepository.save(stampUser);
+        UserMission userMission = stampUser.getUserMissions().stream()
+                        .filter(mission -> mission.getId().equals(userMissionId))
+                        .findFirst()
+                        .orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
 
+        userMission.setComplete(true);
+        stampUserRepository.save(stampUser);
         return "업데이트 성공";
     }
 
+    /** 사용자 미션 완료 상태 확인 */
     @Transactional
     public String checkFinish(String uuid) {
         StampUser stampUser = getStampUserFromUuid(uuid);
-        if (stampUser.isMission1() && stampUser.isMission2() && stampUser.isMission3() && stampUser.isMission4() && stampUser.isMission5()
-                && stampUser.isMission6()) {
+        if (stampUser.getUserMissions().stream()
+                .allMatch(UserMission::isComplete)) {
             stampUser.setFinished();
             stampUserRepository.save(stampUser);
             return "스탬프 투어 완료";
@@ -86,18 +109,7 @@ public class StampUserService {
         else return "미완료";
     }
 
-
-    public StampUserInfoGetListDto getStampInfos(Long stampId) {
-        List<StampUserInfoGetDto> stampUserInfoGetDtos = new ArrayList<>();
-        for (StampUser stampUser : stampUserRepository.findByStamp(stampService.getStamp(stampId))) {
-            String phone = encryptService.decryptInfo(stampUser.getPhone());
-            String name = encryptService.decryptInfo(stampUser.getName());
-
-            stampUserInfoGetDtos.add(new StampUserInfoGetDto(stampUser, name, phone));
-        }
-        return new StampUserInfoGetListDto(stampUserInfoGetDtos);
-    }
-
+    /** 사용자 삭제 */
     @Transactional
     public String deleteStampByUuid(String uuid) {
         StampUser stampUser = getStampUserFromUuid(uuid);

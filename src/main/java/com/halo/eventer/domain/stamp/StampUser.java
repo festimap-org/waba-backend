@@ -4,14 +4,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name = "user_stamp", indexes = {
+@Table(name = "stamp_user", indexes = {
         @Index(name = "idx_uuid", columnList = "uuid"),
-        @Index(name = "idx_phone_name", columnList = "phone, name")})
+        @Index(name = "idx_phone_name_stamp", columnList = "phone, name, stamp_id")
+})
 public class StampUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,18 +22,11 @@ public class StampUser {
     @Column(nullable = false, unique = true)
     private String uuid = UUID.randomUUID().toString();
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String phone;
 
     @Column(nullable = false)
     private String name;
-
-    private boolean mission1;
-    private boolean mission2;
-    private boolean mission3;
-    private boolean mission4;
-    private boolean mission5;
-    private boolean mission6;
 
     private boolean finished;
 
@@ -41,32 +36,19 @@ public class StampUser {
     @JoinColumn(name = "stamp_id")
     private Stamp stamp;
 
+    @OneToMany(mappedBy = "stampUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserMission> userMissions;
+
     public StampUser(Stamp stamp, String encryptedPhone, String encryptedName, int participantCount) {
         this.stamp = stamp;
         this.uuid = UUID.randomUUID().toString();
         this.phone = encryptedPhone;
         this.name = encryptedName;
-        this.mission1 = false;
-        this.mission2 = false;
-        this.mission3 = false;
-        this.mission4 = false;
-        this.mission5 = false;
-        this.mission6 = false;
         this.finished = false;
         this.participantCount = participantCount;
     }
 
-    public void updateMission1() { this.mission1 = true; }
-
-    public void updateMission2() { this.mission2 = true; }
-
-    public void updateMission3() { this.mission3 = true; }
-
-    public void updateMission4() { this.mission4 = true; }
-
-    public void updateMission5() { this.mission5 = true; }
-
-    public void updateMission6() { this.mission6 = true; }
-
     public void setFinished() { this.finished = true; }
+
+    public void setUserMission(List<UserMission> userMissions) { this.userMissions = userMissions; }
 }

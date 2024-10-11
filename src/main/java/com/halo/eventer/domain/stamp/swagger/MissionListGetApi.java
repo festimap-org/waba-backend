@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.stamp.swagger;
 
-import com.halo.eventer.domain.stamp.dto.stampUser.StampUserGetDto;
+import com.halo.eventer.domain.stamp.dto.stamp.MissionGetListDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,11 +12,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "유저 스탬프 생성")
+@Operation(summary = "미션 리스트 조회", description = "스탬프 id로 미션 리스트 조회")
 @ApiResponses(value = {
         @ApiResponse(responseCode = "200",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = StampUserGetDto.class)))
+                        schema = @Schema(implementation = MissionGetListDto.class)))
 })
-public @interface SignupApi {
+public @interface MissionListGetApi {
 }
