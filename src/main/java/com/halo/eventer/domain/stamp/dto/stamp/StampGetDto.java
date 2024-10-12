@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.stamp.dto;
+package com.halo.eventer.domain.stamp.dto.stamp;
 
 import com.halo.eventer.domain.stamp.Stamp;
 import lombok.Getter;

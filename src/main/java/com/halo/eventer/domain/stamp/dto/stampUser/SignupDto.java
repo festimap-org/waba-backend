@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.stamp.dto;
+package com.halo.eventer.domain.stamp.dto.stampUser;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

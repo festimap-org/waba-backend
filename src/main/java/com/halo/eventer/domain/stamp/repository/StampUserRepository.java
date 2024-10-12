@@ -1,10 +1,8 @@
 package com.halo.eventer.domain.stamp.repository;
 
-import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface StampUserRepository extends JpaRepository<StampUser, Long> {
@@ -13,6 +11,4 @@ public interface StampUserRepository extends JpaRepository<StampUser, Long> {
     boolean existsByStampIdAndPhone(Long stampId, String phone);
 
     Optional<StampUser> findByStampIdAndPhoneAndName(Long stampId, String phone, String name);
-
-    List<StampUser> findByStamp(Stamp stamp);
 }

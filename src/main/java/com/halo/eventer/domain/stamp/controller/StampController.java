@@ -1,7 +1,12 @@
 package com.halo.eventer.domain.stamp.controller;
 
-import com.halo.eventer.domain.stamp.dto.*;
+import com.halo.eventer.domain.stamp.dto.stamp.MissionGetListDto;
+import com.halo.eventer.domain.stamp.dto.stamp.MissionSetListDto;
+import com.halo.eventer.domain.stamp.dto.stamp.StampGetListDto;
+import com.halo.eventer.domain.stamp.dto.stamp.StampUsersGetListDto;
 import com.halo.eventer.domain.stamp.service.StampService;
+import com.halo.eventer.domain.stamp.swagger.MissionListGetApi;
+import com.halo.eventer.domain.stamp.swagger.MissionListSetApi;
 import com.halo.eventer.domain.stamp.swagger.StampOnUpdateApi;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +42,25 @@ public class StampController {
     @DeleteMapping
     public String deleteStamp(@RequestParam("stampId") Long stampId) {
         return stampService.deleteStamp(stampId);
+    }
+
+    /** 미션 생성 */
+    @MissionListSetApi
+    @PostMapping("/mission")
+    public String setMissionList(@RequestParam("stampId") Long stampId, @RequestBody MissionSetListDto dto) {
+        return stampService.setMission(stampId, dto);
+    }
+
+    /** 미션 조회 */
+    @MissionListGetApi
+    @GetMapping("/mission")
+    public MissionGetListDto getMissionList(@RequestParam("stampId") Long stampId) {
+        return stampService.getMissions(stampId);
+    }
+
+    /** 해당 스탬프 유저들 조회 */
+    @GetMapping("/users")
+    public StampUsersGetListDto getStampUsers(@RequestParam("stampId") Long stampId) {
+        return stampService.getStampUsers(stampId);
     }
 }

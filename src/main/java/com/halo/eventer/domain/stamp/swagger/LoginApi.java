@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.stamp.swagger;
 
-import com.halo.eventer.domain.stamp.dto.StampUserGetDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.StampUserGetDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
