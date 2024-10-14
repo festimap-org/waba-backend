@@ -52,6 +52,9 @@ dependencies {
 	implementation(platform("software.amazon.awssdk:bom:2.27.21"))
 	implementation("software.amazon.awssdk:s3")
 
+	// excel
+	implementation 'org.apache.poi:poi-ooxml:5.2.2'
+	implementation 'org.apache.poi:poi:5.2.2'
 }
 
 tasks.named('bootBuildImage') {

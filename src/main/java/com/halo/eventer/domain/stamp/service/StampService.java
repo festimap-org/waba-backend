@@ -4,7 +4,9 @@ import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.Stamp;
+import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.dto.stamp.*;
+import com.halo.eventer.domain.stamp.dto.stampUser.FinishedStampUserDto;
 import com.halo.eventer.domain.stamp.repository.StampRepository;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class StampService {
     private final StampRepository stampRepository;
     private final FestivalService festivalService;
+    private final EncryptService encryptService;
 
     /** 축제 id로 스탬프 조회 */
     public Stamp getStamp(Long stampId) {
@@ -108,5 +111,16 @@ public class StampService {
                 .collect(Collectors.toList());
 
         return new StampUsersGetListDto(users);
+    }
+
+    /** 모든 미션 완료한 사용자 조회 */
+    public List<FinishedStampUserDto> getFinishedStampUsers(Long stampId) {
+        Stamp stamp = getStamp(stampId);
+        List<FinishedStampUserDto> finishedUser = stamp.getStampUsers().stream()
+                .filter(StampUser::isFinished)
+                .map(user -> new FinishedStampUserDto(user.getCustom() != null ? user.getCustom().getSchoolNo() : "X", encryptService.decryptInfo(user.getName()), encryptService.decryptInfo(user.getPhone())))
+                .collect(Collectors.toList());
+
+        return finishedUser;
     }
 }

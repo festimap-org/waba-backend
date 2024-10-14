@@ -1,9 +1,6 @@
 package com.halo.eventer.domain.stamp.controller;
 
-import com.halo.eventer.domain.stamp.dto.stampUser.LoginDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.SignupDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.StampUserGetDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.UserMissionInfoGetListDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.*;
 import com.halo.eventer.domain.stamp.service.StampUserService;
 import com.halo.eventer.domain.stamp.swagger.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,11 +14,18 @@ import org.springframework.web.bind.annotation.*;
 public class StampUserController {
     private final StampUserService stampUserService;
 
-    /** 스탬프 유저 생성 */
+    /** 스탬프 유저 생성 - custom X */
     @SignupApi
     @PostMapping
-    public StampUserGetDto signup(@RequestParam("stampId") Long stampId, @RequestBody SignupDto signupDto) {
-        return stampUserService.signup(stampId, signupDto);
+    public StampUserGetDto signup(@RequestParam("stampId") Long stampId, @RequestBody SignupWithoutCustomDto signupWithoutCustomDto) {
+        return stampUserService.signup(stampId, signupWithoutCustomDto);
+    }
+
+    /** 스탬프 유저 생성 - custom O */
+    @SignupApi
+    @PostMapping("/custom")
+    public StampUserGetDto signupWithCustom(@RequestParam("stampId") Long stampId, @RequestBody SignupWithCustomDto signupWithCustomDto) {
+        return stampUserService.signup(stampId, signupWithCustomDto);
     }
 
     /** 로그인 */
