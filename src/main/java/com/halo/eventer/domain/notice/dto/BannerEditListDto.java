@@ -8,9 +8,9 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class BannerEditListDto {
-    private List<BannerEditDto> BannerEditListDto;
+    private List<BannerEditDto> bannerEditListDto;
 
     public BannerEditListDto(List<BannerEditDto> bannerEditListDto) {
-        BannerEditListDto = bannerEditListDto;
+        this.bannerEditListDto = bannerEditListDto;
     }
 }
