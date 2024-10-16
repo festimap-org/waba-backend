@@ -1,13 +1,10 @@
 package com.halo.eventer.domain.stamp.service;
 
+import com.halo.eventer.domain.stamp.Custom;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
-import com.halo.eventer.domain.stamp.dto.stampUser.StampUserGetDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.LoginDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.SignupDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.UserMissionInfoGetDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.UserMissionInfoGetListDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.*;
 import com.halo.eventer.domain.stamp.repository.StampUserRepository;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -53,6 +50,13 @@ public class StampUserService {
                         })
                 .collect(Collectors.toList());
         stampUser.setUserMission(userMissions);
+
+        if (signupDto instanceof SignupWithCustomDto) {
+            SignupWithCustomDto customDto = (SignupWithCustomDto) signupDto;
+            Custom custom = new Custom();
+            custom.setSchoolNo(customDto.getSchoolNo());
+            stampUser.setCustom(custom);
+        }
 
         stampUserRepository.save(stampUser);
 

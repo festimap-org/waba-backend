@@ -39,6 +39,9 @@ public class StampUser {
     @OneToMany(mappedBy = "stampUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserMission> userMissions;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
+    private Custom custom;
+
     public StampUser(Stamp stamp, String encryptedPhone, String encryptedName, int participantCount) {
         this.stamp = stamp;
         this.uuid = UUID.randomUUID().toString();
@@ -46,9 +49,12 @@ public class StampUser {
         this.name = encryptedName;
         this.finished = false;
         this.participantCount = participantCount;
+        this.custom = null;
     }
 
     public void setFinished() { this.finished = true; }
 
     public void setUserMission(List<UserMission> userMissions) { this.userMissions = userMissions; }
+
+    public void setCustom(Custom custom) { this.custom = custom; }
 }
