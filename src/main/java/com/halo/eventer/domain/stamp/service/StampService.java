@@ -91,23 +91,32 @@ public class StampService {
         return "미션 생성 성공";
     }
 
-    /** 미션 조회 */
-    public MissionGetListDto getMissions(Long stampId) {
+    /** 미션 리스트 조회 */
+    public MissionSummaryGetListDto getMissions(Long stampId) {
         Stamp stamp = getStamp(stampId);
-        List<MissionGetDto> missionGetDtos = stamp.getMissions().stream()
-                .map(m -> new MissionGetDto(
+        List<MissionSummaryGetDto> missionSummaryGetDtos = stamp.getMissions().stream()
+                .map(m -> new MissionSummaryGetDto(
                             m.getId(),
-                            m.getTitle()))
+                            m.getTitle(),
+                            m.getClearedThumbnail(),
+                            m.getNotClearedThumbnail()
+                        ))
                 .collect(Collectors.toList());
 
-        return new MissionGetListDto(missionGetDtos);
+        return new MissionSummaryGetListDto(missionSummaryGetDtos);
     }
 
     /** 해당 스탬프 유저들 조회 */
     public StampUsersGetListDto getStampUsers(Long stampId) {
         Stamp stamp = getStamp(stampId);
         List<StampUsersGetDto> users = stamp.getStampUsers().stream()
-                .map(user -> new StampUsersGetDto(user.getUuid()))
+                .map(user -> new StampUsersGetDto(
+                        user.getUuid(),
+                        encryptService.decryptInfo(user.getName()),
+                        encryptService.decryptInfo(user.getPhone()),
+                        user.isFinished(),
+                        user.getParticipantCount()
+                ))
                 .collect(Collectors.toList());
 
         return new StampUsersGetListDto(users);

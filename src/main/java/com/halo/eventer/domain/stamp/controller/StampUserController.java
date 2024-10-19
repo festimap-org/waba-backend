@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "유저 스탬프")
+@Tag(name = "스탬프 투어 - 유저")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/stamp/user")
