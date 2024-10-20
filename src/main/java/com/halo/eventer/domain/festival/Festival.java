@@ -11,6 +11,7 @@ import com.halo.eventer.domain.lost_item.LostItem;
 import com.halo.eventer.domain.manager.Manager;
 import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.domain.middle_banner.MiddleBanner;
+import com.halo.eventer.domain.missing_person.MissingPerson;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.splash.Splash;
 import com.halo.eventer.domain.stamp.Stamp;
@@ -108,6 +109,10 @@ public class Festival {
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MiddleBanner> middleBanners = new ArrayList<>();
+
+    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<MissingPerson> missingPersons = new ArrayList<>();
+
 
     @Builder
     public Festival(FestivalCreateDto festivalCreateDto) {

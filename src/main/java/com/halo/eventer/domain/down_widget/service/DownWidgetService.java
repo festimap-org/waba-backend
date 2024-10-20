@@ -31,9 +31,9 @@ public class DownWidgetService {
         if(downWidgetCreateDto.getDownWidgetDtos().size() > 3) {
             throw new BaseException(ErrorCode.PERMIT_THREE_ELEMENT);
         }
-        log.info("update down widget");
+
         List<DownWidget> downWidgets = downWidgetRepository.findAllByFestivalId(downWidgetCreateDto.getFestivalId());
-        log.info("update down widget count: {}", downWidgets.size());
+
         for(int i = 0; i <downWidgetCreateDto.getDownWidgetDtos().size();i++){
             downWidgets.get(i).updateDownWidget(downWidgetCreateDto.getDownWidgetDtos().get(i));
         }
