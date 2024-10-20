@@ -44,4 +44,12 @@ public class Mission {
         this.notClearedThumbnail = notClearedThumbnail;
         this.stamp = stamp;
     }
+
+    public void setBoothId(Long boothId) { this.boothId = boothId; }
+    public void setTitle(String title) { this.title = title; }
+    public void setContent(String content) { this.content = content; }
+    public void setPlace(String place) { this.place = place; }
+    public void setTime(String time) { this.time = time; }
+    public void setClearedThumbnail(String clearedThumbnail) { this.clearedThumbnail = clearedThumbnail; }
+    public void setNotClearedThumbnail(String notClearedThumbnail) { this.notClearedThumbnail = notClearedThumbnail; }
 }

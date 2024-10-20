@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.stamp.swagger;
 
-import com.halo.eventer.domain.stamp.dto.stamp.MissionSummaryGetListDto;
+import com.halo.eventer.domain.stamp.dto.mission.MissionDetailGetDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,11 +12,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "스탬프별 미션 전체 조회", description = "스탬프 id로 미션 리스트 조회")
+@Operation(summary = "단일 미션 조회", description = "missionId로 조회")
 @ApiResponses(value = {
         @ApiResponse(responseCode = "200",
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = MissionSummaryGetListDto.class)))
+                        schema = @Schema(implementation = MissionDetailGetDto.class)))
 })
-public @interface MissionListGetApi {
+public @interface MissionDetailGetApi {
 }

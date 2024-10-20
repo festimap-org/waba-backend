@@ -61,7 +61,7 @@ public class StampUserService {
         stampUserRepository.save(stampUser);
 
         List<UserMissionInfoGetDto> userMissionInfoGetDtos = userMissions.stream()
-                .map(mission -> new UserMissionInfoGetDto(mission.getId(), mission.isComplete())).collect(Collectors.toList());
+                .map(userMission -> new UserMissionInfoGetDto(userMission.getId(), userMission.getMission().getId(), userMission.isComplete())).collect(Collectors.toList());
 
         StampUserGetDto stampUserGetDto = new StampUserGetDto(stampUser, new UserMissionInfoGetListDto(userMissionInfoGetDtos));
         return stampUserGetDto;
@@ -79,7 +79,7 @@ public class StampUserService {
     public UserMissionInfoGetListDto getUserMission(String uuid) {
         StampUser stampUser = getStampUserFromUuid(uuid);
         List<UserMissionInfoGetDto> userMissionInfoGetDtos = stampUser.getUserMissions().stream()
-                .map(mission -> new UserMissionInfoGetDto(mission.getId(), mission.isComplete()))
+                .map(userMission -> new UserMissionInfoGetDto(userMission.getId(), userMission.getMission().getId(), userMission.isComplete()))
                 .collect(Collectors.toList());
 
         return new UserMissionInfoGetListDto(userMissionInfoGetDtos);
