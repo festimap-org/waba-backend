@@ -76,13 +76,20 @@ public class StampUserService {
     }
 
     /** 유저 미션 전체 조회 */
-    public UserMissionInfoGetListDto getUserMission(String uuid) {
+    private UserMissionInfoGetListDto getUserMission(String uuid) {
         StampUser stampUser = getStampUserFromUuid(uuid);
         List<UserMissionInfoGetDto> userMissionInfoGetDtos = stampUser.getUserMissions().stream()
                 .map(userMission -> new UserMissionInfoGetDto(userMission.getId(), userMission.getMission().getId(), userMission.isComplete()))
                 .collect(Collectors.toList());
 
         return new UserMissionInfoGetListDto(userMissionInfoGetDtos);
+    }
+
+    /** 유저 미션 전체 조회 + finished */
+    public UserMissionInfoWithFinishedGetListDto getUserMissionWithFinished(String uuid) {
+        StampUser stampUser = getStampUserFromUuid(uuid);
+        UserMissionInfoGetListDto userMissions = getUserMission(uuid);
+        return new UserMissionInfoWithFinishedGetListDto(stampUser.isFinished(), userMissions);
     }
 
     /** 사용자 미션 상태 업데이트 */
