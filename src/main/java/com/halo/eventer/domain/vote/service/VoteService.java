@@ -84,6 +84,7 @@ public class VoteService {
             LocalDateTime lastLikedTime = voteLike.get().getVoteTime();
             LocalDateTime now = LocalDateTime.now();
             if (lastLikedTime.plusHours(24).isAfter(now)) {
+                addLikeCookie(response, voteId);
                 throw new BaseException(ErrorCode.ALREADY_LIKE);
             }
         }
