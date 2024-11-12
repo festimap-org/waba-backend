@@ -6,6 +6,9 @@ import com.halo.eventer.domain.inquiry.dto.*;
 import com.halo.eventer.domain.inquiry.service.InquiryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value;
+
+import javax.validation.constraints.Min;
 
 @RestController
 @RequiredArgsConstructor
@@ -63,5 +66,13 @@ public class inquiryController {
     public InquiryResDto getInquiry(@PathVariable("inquiryId") Long id, @RequestBody InquiryUserReqDto dto){
         return inquiryService.getInquiryForUser(id,dto);
     }
-
+    /**
+     * 문의사항 페이징 (Offset 페이징)
+     * */
+    @GetMapping("/paging")
+    public InquiryPageResDto getInquiryByPaging(@RequestParam("festivalId") Long festivalId,
+                                                @RequestParam("page") @Min(0) Integer page,
+                                                @RequestParam("size") @Min(1) Integer size){
+        return inquiryService.getInquiryByPaging(festivalId,page,size);
+    }
 }
