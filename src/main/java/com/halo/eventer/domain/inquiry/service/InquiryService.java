@@ -114,7 +114,7 @@ public class InquiryService {
             inquiryList = inquiryRepository.getFirstPage(festivalId,size+1);
         }
         else{
-            inquiryList = inquiryRepository.getNextPageByEventIdAndLastId(festivalId, lastId,size+1);
+            inquiryList = inquiryRepository.getNextPageByInquiryIdAndLastId(festivalId, lastId,size+1);
         }
         Boolean isLast = inquiryList.size() < size + 1;
         if(!isLast){

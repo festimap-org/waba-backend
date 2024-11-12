@@ -1,13 +1,13 @@
 package com.halo.eventer.domain.vote;
 
 
+import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.vote.dto.VoteCreateReqDto;
+import com.halo.eventer.domain.vote.dto.VoteUpdateReqDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
@@ -19,4 +19,30 @@ public class Vote {
     private Long id;
 
 
+    private String title;
+
+    @Column(length = 255)
+    private String content;
+
+    @JoinColumn(name = "festival_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Festival festival;
+
+    private Long likeCnt;
+
+    public void updateVote(VoteUpdateReqDto reqDto) {
+        this.title = reqDto.getTitle();
+        this.content = reqDto.getContent();
+    }
+
+    public Vote(VoteCreateReqDto voteCreateReqDto, Festival festival) {
+        this.title = voteCreateReqDto.getTitle();
+        this.content = voteCreateReqDto.getContent();
+        this.festival = festival;
+        this.likeCnt = 0L;
+    }
+
+    public void setLikeCnt() {
+        this.likeCnt = this.likeCnt + 1;
+    }
 }
