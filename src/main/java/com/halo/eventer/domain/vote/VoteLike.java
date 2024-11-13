@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Table(name = "vote_like", indexes = {
-        @Index(name = "idx_ip_vote", columnList = "ipAddress, vote_id")
+        @Index(name = "idx_ip_vote_agent", columnList = "ipAddress, vote_id, userAgent")
 })
 public class VoteLike {
     @Id
@@ -19,15 +19,18 @@ public class VoteLike {
 
     private String ipAddress;
 
+    private String userAgent;
+
     @JoinColumn(name = "vote_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Vote vote;
 
     private LocalDateTime voteTime;
 
-    public VoteLike(String ipAddress, Vote vote) {
+    public VoteLike(String ipAddress, Vote vote, String userAgent) {
         this.ipAddress = ipAddress;
         this.vote = vote;
         this.voteTime = LocalDateTime.now();
+        this.userAgent = userAgent;
     }
 }

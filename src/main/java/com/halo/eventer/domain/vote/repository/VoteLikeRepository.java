@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface VoteLikeRepository extends JpaRepository<VoteLike, Long> {
 
-    @Query("SELECT v FROM VoteLike v WHERE v.ipAddress = :ipAddress and v.vote.id = :voteId ")
-    Optional<VoteLike> findByIpAddressAndVote_Id(String ipAddress,Long voteId);
+    @Query("SELECT v FROM VoteLike v WHERE v.ipAddress = :ipAddress and v.vote.id = :voteId and v.userAgent = :userAgent  ")
+    Optional<VoteLike> findByIpAddressAndVote_Id(String ipAddress,Long voteId,String userAgent);
 }

@@ -69,7 +69,9 @@ public class VoteService {
     @Transactional
     public Long increaseLikeCnt(Long voteId, HttpServletRequest request, HttpServletResponse response) {
         String ipAddress = getClientIp(request);
+        String userAgent = request.getHeader("User-Agent");
         log.info("ip: {}",ipAddress);
+        log.info("User-Agent: {}", userAgent);
 
         // 쿠키 검증
         boolean hasLiked = hasLikedCookie(request, voteId);
@@ -79,7 +81,7 @@ public class VoteService {
         }
 
         // ip 검증
-        Optional<VoteLike> voteLike = voteLikeRepository.findByIpAddressAndVote_Id(ipAddress, voteId);
+        Optional<VoteLike> voteLike = voteLikeRepository.findByIpAddressAndVote_Id(ipAddress, voteId,userAgent);
         if(voteLike.isPresent()) {
             log.info("ip 존재: {}", voteLike.get().getIpAddress());
             LocalDateTime lastLikedTime = voteLike.get().getVoteTime();
@@ -91,7 +93,7 @@ public class VoteService {
         }
 
         Vote vote = getVote(voteId);
-        VoteLike like = new VoteLike(ipAddress,vote);
+        VoteLike like = new VoteLike(ipAddress,vote, userAgent);
         voteLikeRepository.save(like);
         vote.setLikeCnt();
 
