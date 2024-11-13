@@ -12,6 +12,7 @@ import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -137,10 +138,14 @@ public class VoteService {
     }
 
     private void addLikeCookie(HttpServletResponse response, Long voteId) {
-        Cookie cookie = new Cookie("vote_" + voteId, "liked");
-        cookie.setSecure(true);
-        cookie.setMaxAge(60 * 60 * 24); // 24시간 동안 유효
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from("vote_" + voteId, "liked")
+                .maxAge(60 * 60 * 24)
+                .path("/")
+                .secure(true)
+                .sameSite("None")
+                .build();
+
+
+        response.addHeader("Set-Cookie",cookie.toString());
     }
 }
