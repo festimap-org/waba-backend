@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -27,6 +29,9 @@ public class Vote {
     @JoinColumn(name = "festival_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Festival festival;
+
+    @OneToMany(mappedBy = "vote", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<VoteLike> voteLikes = new ArrayList<>();
 
     private Long likeCnt;
 

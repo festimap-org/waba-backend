@@ -47,6 +47,7 @@ public class VoteService {
         return voteRepository.findById(voteId).orElseThrow(()->new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
     }
 
+    @Transactional
     public Vote updateVote(Long voteId, VoteUpdateReqDto dto) {
         Vote vote = getVote(voteId);
         vote.updateVote(dto);
