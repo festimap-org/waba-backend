@@ -70,11 +70,13 @@ public class VoteService {
     public Long increaseLikeCnt(Long voteId, HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         if(cookies != null){
+
             for (Cookie cookie : cookies) {
-                System.out.println("Cookie Name: " + cookie.getName() + ", Cookie Value: " + cookie.getValue());
+                log.info("Cookie Name: {} Cookie Value: {}",  cookie.getName() , cookie.getValue());
             }
-        } else {
-            System.out.println("No cookies sent by the client.");
+        }
+        else {
+            log.info("No cookies sent by the client.");
         }
 
         String ipAddress = getClientIp(request);
