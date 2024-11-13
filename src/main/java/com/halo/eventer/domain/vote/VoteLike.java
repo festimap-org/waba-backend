@@ -2,6 +2,7 @@ package com.halo.eventer.domain.vote;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class VoteLike {
     @ManyToOne(fetch = FetchType.LAZY)
     private Vote vote;
 
+    @Setter
     private LocalDateTime voteTime;
 
     public VoteLike(String ipAddress, Vote vote, String userAgent) {
@@ -33,4 +35,6 @@ public class VoteLike {
         this.voteTime = LocalDateTime.now();
         this.userAgent = userAgent;
     }
+
+
 }

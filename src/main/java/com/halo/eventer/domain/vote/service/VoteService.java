@@ -69,25 +69,12 @@ public class VoteService {
 
     @Transactional
     public Long increaseLikeCnt(Long voteId, HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-        if(cookies != null){
-
-            for (Cookie cookie : cookies) {
-                log.info("Cookie Name: {} Cookie Value: {}",  cookie.getName() , cookie.getValue());
-            }
-        }
-        else {
-            log.info("No cookies sent by the client.");
-        }
 
         String ipAddress = getClientIp(request);
         String userAgent = request.getHeader("User-Agent");
-        log.info("ip: {}",ipAddress);
-        log.info("User-Agent: {}", userAgent);
 
         // 쿠키 검증
         boolean hasLiked = hasLikedCookie(request, voteId);
-        log.info("쿠키 검증: {}",hasLiked);
         if (hasLiked) {
             throw new BaseException(ErrorCode.ALREADY_LIKE);
         }
@@ -95,23 +82,23 @@ public class VoteService {
         // ip 검증
         Optional<VoteLike> voteLike = voteLikeRepository.findByIpAddressAndVote_Id(ipAddress, voteId,userAgent);
         if(voteLike.isPresent()) {
-            log.info("ip 존재: {}", voteLike.get().getIpAddress());
             LocalDateTime lastLikedTime = voteLike.get().getVoteTime();
             LocalDateTime now = LocalDateTime.now();
             if (lastLikedTime.plusHours(24).isAfter(now)) {
                 addLikeCookie(response, voteId);
                 throw new BaseException(ErrorCode.ALREADY_LIKE);
             }
+            voteLike.get().setVoteTime(now);
+            return 1L;
         }
-
-        Vote vote = getVote(voteId);
-        VoteLike like = new VoteLike(ipAddress,vote, userAgent);
-        voteLikeRepository.save(like);
-        vote.setLikeCnt();
-
-        addLikeCookie(response, voteId);
-
-        return vote.getLikeCnt();
+        else{
+            Vote vote = getVote(voteId);
+            VoteLike like = new VoteLike(ipAddress,vote, userAgent);
+            voteLikeRepository.save(like);
+            vote.setLikeCnt();
+            addLikeCookie(response, voteId);
+            return 1L;
+        }
     }
 
     private boolean hasLikedCookie(HttpServletRequest request, Long voteId) {
