@@ -78,7 +78,11 @@ public class SecurityConfig {
                 "http://localhost:3000",
                 "https://localhost:3000",
                 "https://khucore.com",
-                "http://khucore.localhost:3000")
+                "http://khucore.localhost:3000",
+                "http://business.localhost:3000",
+                "http://business.localhost:3001",
+                "https://wabaa.kr",
+                "https://business.wabaa.kr")
         );
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
