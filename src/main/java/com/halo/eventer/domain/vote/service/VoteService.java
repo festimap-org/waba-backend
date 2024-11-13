@@ -68,6 +68,15 @@ public class VoteService {
 
     @Transactional
     public Long increaseLikeCnt(Long voteId, HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        if(cookies != null){
+            for (Cookie cookie : cookies) {
+                System.out.println("Cookie Name: " + cookie.getName() + ", Cookie Value: " + cookie.getValue());
+            }
+        } else {
+            System.out.println("No cookies sent by the client.");
+        }
+
         String ipAddress = getClientIp(request);
         String userAgent = request.getHeader("User-Agent");
         log.info("ip: {}",ipAddress);
