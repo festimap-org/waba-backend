@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface VoteLikeRepository extends JpaRepository<VoteLike, Long> {
 
     @Query("SELECT v FROM VoteLike v WHERE v.vote.id = :voteId and v.ulid = :ulid ")
-    Optional<VoteLike> findByUlidAndVote_Id(Long voteId,String ulid);
+    Optional<VoteLike> findByVote_IdAndUlid(Long voteId,String ulid);
 }

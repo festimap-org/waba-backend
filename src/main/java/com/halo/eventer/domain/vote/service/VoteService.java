@@ -79,8 +79,11 @@ public class VoteService {
         }
         String ulid = request.getHeader("X-ULID");
         log.info("ip: {}",ulid);
+        if(ulid == null){
+            ulid = UlidCreator.getUlid().toString();
+        }
 
-        Optional<VoteLike> voteLike = voteLikeRepository.findByUlidAndVote_Id(voteId,ulid);
+        Optional<VoteLike> voteLike = voteLikeRepository.findByVote_IdAndUlid(voteId,ulid);
         if(voteLike.isPresent()) {
             log.info("ulid 존재: {}", voteLike.get().getUlid());
             LocalDateTime lastLikedTime = voteLike.get().getVoteTime();
@@ -97,7 +100,7 @@ public class VoteService {
         }
         else{
             Vote vote = getVote(voteId);
-            VoteLike like = new VoteLike(UlidCreator.getUlid().toString(),vote);
+            VoteLike like = new VoteLike(ulid,vote);
             voteLikeRepository.save(like);
             vote.setLikeCnt();
             addLikeCookie(response, voteId);
