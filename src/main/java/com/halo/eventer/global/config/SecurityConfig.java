@@ -50,12 +50,33 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
 
+//                .authorizeRequests()
+//                .antMatchers("/", "/swagger-ui/**", "/v3/**","/swagger-ui.html").permitAll()
+//                .antMatchers(HttpMethod.POST, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.PATCH, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.DELETE, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")
+//                .anyRequest().permitAll();
                 .authorizeRequests()
-                /*.antMatchers("/", "/swagger-ui/**", "/v3/**","/swagger-ui.html").permitAll()
-                .antMatchers(HttpMethod.POST, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PATCH, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**", "/menu/**","/notice/**","/widget").hasRole("ADMIN")
-                */.anyRequest().permitAll();
+                .antMatchers("/", "/swagger-ui/**", "/v3/**","/swagger-ui.html").permitAll()
+
+                .antMatchers(HttpMethod.POST, "/widget/*","/vote", "/api/upWidgets","/stamp/user","/stamp/user/custom",
+                        "/stamp","/stamp/mission","/splash","/notice","/notice/banner","/missingPerson","/middleBanner","/map","/mapCategory/*","/menu",
+                        "/manager","/lostItem","/inquiry/forAdmin/*",
+                        "/festival","/festival/*/color","/festival/*/logo","/festival/*/main-menu","/festival/*/entry","/festival/*/view","/festival/*/location",
+                        "/duration/*","/api/downWidget","/concertInfo/*/name","/concert").hasRole("ADMIN")
+
+                .antMatchers(HttpMethod.PATCH, "/widget","/vote/backOffice/*","/api/upWidgets","/stamp","/stamp/mission","/notice/banner","/notice/*",
+                        "/missingPerson","/middleBanner","/middleBanner/rank","/map/*","/mapCategory/*","/mapCategory/categoryRank","/menu","/lostItem/*",
+                        "/inquiry/forAdmin","/festival/*","/concertInfo/*","/concert/*").hasRole("ADMIN")
+
+                .antMatchers(HttpMethod.DELETE, "/widget","/vote/backOffice/*","/api/upWidgets","/stamp/user/*","/stamp","/splash","/notice/*",
+                        "/missingPerson","/middleBanner","/map/*","/mapCategory/*","/menu/*","/manager","/lostItem/*","/inquiry/forAdmin","/festival/*",
+                        "/concertInfo/*","/concert/*").hasRole("ADMIN")
+
+                .antMatchers(HttpMethod.GET, "/vote/backOffice", "/vote/backOffice/*","/stamp/users","/inquiry/forAdmin").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/excel/stamp/download").hasAnyRole("ADMIN","USER")
+                .anyRequest().permitAll();
+
 
         http
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
