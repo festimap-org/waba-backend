@@ -70,30 +70,34 @@ public class VoteService {
     @Transactional
     public Long increaseLikeCnt(Long voteId, HttpServletRequest request, HttpServletResponse response) {
 
-        String ipAddress = getClientIp(request);
-        String userAgent = request.getHeader("User-Agent");
-
         // 쿠키 검증
         boolean hasLiked = hasLikedCookie(request, voteId);
+        log.info("쿠키 검증: {}",hasLiked);
         if (hasLiked) {
             throw new BaseException(ErrorCode.ALREADY_LIKE);
         }
+        String ulid = request.getHeader("X-ULID");
+        log.info("ip: {}",ulid);
 
-        // ip 검증
-        Optional<VoteLike> voteLike = voteLikeRepository.findByIpAddressAndVote_Id(ipAddress, voteId,userAgent);
+
+        Optional<VoteLike> voteLike = voteLikeRepository.findByUlidAndVote_Id(ulid);
         if(voteLike.isPresent()) {
+            log.info("ulid 존재: {}", voteLike.get().getUlid());
             LocalDateTime lastLikedTime = voteLike.get().getVoteTime();
             LocalDateTime now = LocalDateTime.now();
             if (lastLikedTime.plusHours(24).isAfter(now)) {
                 addLikeCookie(response, voteId);
                 throw new BaseException(ErrorCode.ALREADY_LIKE);
             }
+            Vote vote = getVote(voteId);
+            vote.setLikeCnt();
             voteLike.get().setVoteTime(now);
+            addLikeCookie(response, voteId);
             return 1L;
         }
         else{
             Vote vote = getVote(voteId);
-            VoteLike like = new VoteLike(ipAddress,vote, userAgent);
+            VoteLike like = new VoteLike(ulid,vote);
             voteLikeRepository.save(like);
             vote.setLikeCnt();
             addLikeCookie(response, voteId);
@@ -131,7 +135,6 @@ public class VoteService {
                 .secure(true)
                 .sameSite("None")
                 .build();
-
 
         response.addHeader("Set-Cookie",cookie.toString());
     }

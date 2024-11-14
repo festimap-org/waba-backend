@@ -11,16 +11,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Table(name = "vote_like", indexes = {
-        @Index(name = "idx_ip_vote_agent", columnList = "ipAddress, vote_id, userAgent")
+        @Index(name = "idx_ulid", columnList = "ulid")
 })
 public class VoteLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String ipAddress;
-
-    private String userAgent;
+    private String ulid;
 
     @JoinColumn(name = "vote_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,11 +27,10 @@ public class VoteLike {
     @Setter
     private LocalDateTime voteTime;
 
-    public VoteLike(String ipAddress, Vote vote, String userAgent) {
-        this.ipAddress = ipAddress;
+    public VoteLike(String ulid, Vote vote) {
+        this.ulid = ulid;
         this.vote = vote;
         this.voteTime = LocalDateTime.now();
-        this.userAgent = userAgent;
     }
 
 
