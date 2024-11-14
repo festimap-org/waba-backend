@@ -62,7 +62,7 @@ public class VoteController {
      * 좋아요 누르기 (client 용)
      * */
     @PostMapping("/vote/client/{voteId}/like")
-    public Long increaseLikeCnt(@PathVariable("voteId") Long voteId, HttpServletRequest request, HttpServletResponse response){
-        return voteService.increaseLikeCnt(voteId, request, response);
+    public VoteLikeUlidResDto increaseLikeCnt(@PathVariable("voteId") Long voteId, HttpServletRequest request, HttpServletResponse response){
+        return new VoteLikeUlidResDto(voteService.increaseLikeCnt(voteId, request, response));
     }
 }

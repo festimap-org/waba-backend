@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Table(name = "vote_like", indexes = {
-        @Index(name = "idx_ulid", columnList = "ulid")
+        @Index(name = "idx_vote_ulid", columnList = "vote_id, ulid")
 })
 public class VoteLike {
     @Id

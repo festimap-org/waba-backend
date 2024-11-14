@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.vote.service;
 
+import com.github.f4b6a3.ulid.UlidCreator;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.vote.Vote;
@@ -68,7 +69,7 @@ public class VoteService {
     }
 
     @Transactional
-    public Long increaseLikeCnt(Long voteId, HttpServletRequest request, HttpServletResponse response) {
+    public String increaseLikeCnt(Long voteId, HttpServletRequest request, HttpServletResponse response) {
 
         // 쿠키 검증
         boolean hasLiked = hasLikedCookie(request, voteId);
@@ -79,8 +80,7 @@ public class VoteService {
         String ulid = request.getHeader("X-ULID");
         log.info("ip: {}",ulid);
 
-
-        Optional<VoteLike> voteLike = voteLikeRepository.findByUlidAndVote_Id(ulid);
+        Optional<VoteLike> voteLike = voteLikeRepository.findByUlidAndVote_Id(voteId,ulid);
         if(voteLike.isPresent()) {
             log.info("ulid 존재: {}", voteLike.get().getUlid());
             LocalDateTime lastLikedTime = voteLike.get().getVoteTime();
@@ -93,15 +93,15 @@ public class VoteService {
             vote.setLikeCnt();
             voteLike.get().setVoteTime(now);
             addLikeCookie(response, voteId);
-            return 1L;
+            return ulid;
         }
         else{
             Vote vote = getVote(voteId);
-            VoteLike like = new VoteLike(ulid,vote);
+            VoteLike like = new VoteLike(UlidCreator.getUlid().toString(),vote);
             voteLikeRepository.save(like);
             vote.setLikeCnt();
             addLikeCookie(response, voteId);
-            return 1L;
+            return like.getUlid();
         }
     }
 
