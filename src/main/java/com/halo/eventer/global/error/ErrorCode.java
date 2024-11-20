@@ -18,6 +18,9 @@ public enum ErrorCode {
 
     // DownWidget Error
     PERMIT_THREE_ELEMENT("DW001", "Only Permit Three Element"),
+
+    // Vote Error
+    ALREADY_LIKE("C006", "Already Like Element"),;
     ;
 
     private final String code;

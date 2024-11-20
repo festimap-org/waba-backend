@@ -7,10 +7,15 @@ import com.halo.eventer.domain.inquiry.Inquiry;
 
 import com.halo.eventer.domain.inquiry.dto.*;
 import com.halo.eventer.domain.inquiry.repository.InquiryRepository;
+import com.halo.eventer.global.common.PageInfo;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +90,37 @@ public class InquiryService {
         }
         return new InquiryResDto(inquiry);
     }
+    /**
+     * 페이징 조회
+     * */
+    public InquiryPageResDto getInquiryByPaging(Long festivalId, Integer page, Integer size){
+        Page<Inquiry> inquiries = inquiryRepository.
+                findAllByFestivalId(
+                        festivalId,
+                        PageRequest.of(page,size, Sort.by(Sort.Direction.DESC, "createdDate")));
 
+        PageInfo pageInfo= new PageInfo(page,size,inquiries);
+        List<InquiryListElementResDto> list = inquiries.getContent().stream()
+                .map(InquiryListElementResDto::new).collect(Collectors.toList());
+        return new InquiryPageResDto(list,pageInfo);
+    }
+
+    /**
+     * no offset 페이징 조회
+     * */
+    public InquiryNoOffsetPagingListDto getEventPagingList(Long festivalId, Long lastId, Integer size) {
+        List<Inquiry> inquiryList;
+        if(lastId == 0){
+            inquiryList = inquiryRepository.getFirstPage(festivalId,size+1);
+        }
+        else{
+            inquiryList = inquiryRepository.getNextPageByInquiryIdAndLastId(festivalId, lastId,size+1);
+        }
+        Boolean isLast = inquiryList.size() < size + 1;
+        if(!isLast){
+            inquiryList.remove(inquiryList.size()-1);
+        }
+        return new InquiryNoOffsetPagingListDto(inquiryList,isLast);
+    }
 
 }

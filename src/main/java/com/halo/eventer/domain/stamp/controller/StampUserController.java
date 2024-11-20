@@ -35,11 +35,11 @@ public class StampUserController {
         return stampUserService.login(stampId, loginDto);
     }
 
-    /** 유저 미션 전체 조회 */
+    /** 유저 미션 전체 조회 + finished */
     @MissionInfoGetApi
     @GetMapping("/{uuid}")
-    public UserMissionInfoGetListDto getMissionInfo(@PathVariable String uuid) {
-        return stampUserService.getUserMission(uuid);
+    public UserMissionInfoWithFinishedGetListDto getMissionInfo(@PathVariable String uuid) {
+        return stampUserService.getUserMissionWithFinished(uuid);
     }
 
     /** 사용자 미션 상태 업데이트 */
