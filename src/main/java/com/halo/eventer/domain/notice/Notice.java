@@ -28,7 +28,7 @@ public class Notice {
     private String title;
     private String writer;
 
-    @Column(columnDefinition = "varchar(2000)")
+    @Column(columnDefinition = "varchar(3000)")
     private String content;
 
     private String thumbnail;
