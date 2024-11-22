@@ -43,9 +43,14 @@ public class TimestreamService {
     private final String DATABASE_NAME = "monitoringDB";
     private final String TABLE_NAME = "visitor";
 
-//    public void kstToUtc(String kst) {
-//
-//    }
+    /** utc 시간대로 변환 */
+    public String convertToUtc(String kstTimestamp) {
+        LocalDateTime localDateTime = LocalDateTime.parse(kstTimestamp, DateTimeFormatter.ISO_DATE_TIME);
+        ZonedDateTime kstZonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Seoul"));
+
+        ZonedDateTime utcZonedDateTime = kstZonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
+        return utcZonedDateTime.format(DateTimeFormatter.ISO_INSTANT);
+    }
 
     public String formatTimestamp(String isoTimestamp) {
         return Instant.parse(isoTimestamp)
@@ -53,19 +58,12 @@ public class TimestreamService {
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnnnnn"));
     }
 
-    private void validateTimestampFormat(String timestamp) {
-        try {
-            Instant.parse(timestamp);
-        } catch (BaseException e) {
-            throw new BaseException(ErrorCode.INVALID_INPUT_VALUE);
-        }
-    }
-
     @Transactional
     public void receiveData(Long festivalId, VisitorResponseDto responseDto) throws JsonProcessingException, UnsupportedEncodingException, URISyntaxException, NoSuchAlgorithmException, InvalidKeyException {
         festivalService.getFestival(festivalId);
 
-        String utcTimestamp = responseDto.getTimestamp();
+        String kstTimestamp = responseDto.getTimestamp();
+        String utcTimestamp = convertToUtc(kstTimestamp);
         String epochMillis = null;
         try {
             epochMillis = String.valueOf(Instant.parse(utcTimestamp).toEpochMilli());
@@ -95,11 +93,6 @@ public class TimestreamService {
             MonitoringData monitoringData = monitoringService.getMonitoringData(festivalId);
             monitoringData.setLatestTimestamp(formatTimestamp(utcTimestamp));
         }
-    }
-
-    private String convertToJsonString(Object object) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(object);
     }
 
     private JsonNode convertToJson(String jsonString) throws JsonProcessingException {

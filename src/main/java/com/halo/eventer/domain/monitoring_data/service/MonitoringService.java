@@ -1,7 +1,6 @@
 package com.halo.eventer.domain.monitoring_data.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.monitoring_data.AlertThreshold;
 import com.halo.eventer.domain.monitoring_data.MonitoringData;
@@ -10,12 +9,9 @@ import com.halo.eventer.domain.monitoring_data.repository.AlertThresholdReposito
 import com.halo.eventer.domain.monitoring_data.repository.MonitoringRepository;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
-import com.halo.eventer.infra.naver.sms.dto.MessageDto;
-import com.halo.eventer.infra.naver.sms.dto.SmsReqDto;
-import com.halo.eventer.infra.naver.sms.dto.SmsResDto;
-import com.halo.eventer.infra.naver.sms.util.SmsRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +21,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,13 +28,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@EnableAsync
 public class MonitoringService {
     private final MonitoringRepository monitoringRepository;
     private final AlertThresholdRepository alertThresholdRepository;
 
     private final FestivalService festivalService;
-    private final SmsRequest smsRequest;
     private final CacheService cacheService;
+    private final MonitoringSmsService monitoringSmsService;
 
     public MonitoringData getMonitoringData(Long festivalId) {
         return monitoringRepository.findByFestival(festivalService.getFestival(festivalId)).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
@@ -98,6 +94,7 @@ public class MonitoringService {
         return "문자 알림 전화번호 저장 성공";
     }
 
+    /** 문자 알림 전화번호 조회 */
     public AlertPhonesGetDto getAlertPhones(Long festivalId) {
         MonitoringData monitoringData = getMonitoringData(festivalId);
 
@@ -121,7 +118,8 @@ public class MonitoringService {
         for (AlertThreshold threshold: monitoringData.getAlertThresholds()) {
             if (cumulativeVisitor >= threshold.getThreshold() * maxCapacity &&
                     (threshold.getLastSentTime() == null || ChronoUnit.HOURS.between(threshold.getLastSentTime(), LocalDateTime.now()) >= 1)) {
-                sendAlertSms(festivalId, (int)(threshold.getThreshold()*100));
+
+                monitoringSmsService.sendAlertSms(monitoringData, festivalId, (int)(threshold.getThreshold()*100));       // 비동기로 처리
 
                 threshold.setLastSentTime(LocalDateTime.now());
                 threshold.setAlertSent(true);
@@ -136,31 +134,4 @@ public class MonitoringService {
         return (cumulativeVisitor - lastVisitorCount) >= lastVisitorCount * 0.1;      // todo: 일단 직전보다 10% 중가했을 때만 알림 체크 로직 작동하게 설정
     }
 
-
-    /** 문자 알림 전송 */
-    public void sendAlertSms(Long festivalId, int percent) throws UnsupportedEncodingException, URISyntaxException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
-        log.info("[METHOD] sendAlertSms, festivalId: {}", festivalId);
-        MonitoringData monitoringData = getMonitoringData(festivalId);
-        Festival festival = festivalService.getFestival(festivalId);
-        List<String> phones = new ArrayList<>();
-        if (monitoringData.getAlertPhone1() != null) phones.add(monitoringData.getAlertPhone1());
-        if (monitoringData.getAlertPhone2() != null) phones.add(monitoringData.getAlertPhone2());
-        if (monitoringData.getAlertPhone3() != null) phones.add(monitoringData.getAlertPhone3());
-        if (monitoringData.getAlertPhone4() != null) phones.add(monitoringData.getAlertPhone4());
-        if (monitoringData.getAlertPhone5() != null) phones.add(monitoringData.getAlertPhone5());
-
-        String message = "현재 \"" + festival.getName() + "\" 행사의 내부 인원 비율이 " + percent + "%에 도달했습니다.";
-
-        List<MessageDto> messages = new ArrayList<>();
-        for (String phone: phones) {
-            MessageDto m = MessageDto.builder()
-                    .to(phone)
-                    .content(message)
-                    .build();
-            messages.add(m);
-        }
-
-        SmsReqDto smsReqDto = smsRequest.getSmsBodyWithFile(messages, null, message);
-        SmsResDto smsResDto = smsRequest.sendSmsReq(smsReqDto);
-    }
 }

@@ -47,8 +47,6 @@ public class QueryService {
 
     /** 특정 시간만 조회 */
     public Integer bigintQueryRequestAtTime(Long festivalId, String timestamp, String measureName) {
-        log.info("[METHOD] bigintQueryRequestAtTime festivalId: {}, timestamp: {}", festivalId, timestamp);
-
         String query = String.format("SELECT measure_value::bigint FROM \"%s\".\"%s\" " +
                         "WHERE measure_name = '%s' " +
                         "AND time = '%s' " +
@@ -63,8 +61,6 @@ public class QueryService {
 
     /** 특정 시간만 조회 */
     public String stringQueryRequestAtTime(Long festivalId, String timestamp, String measureName) {
-        log.info("[METHOD] stringQueryRequestAtTime festivalId: {}, timestamp: {}", festivalId, timestamp);
-
         String query = String.format("SELECT measure_value::varchar FROM \"%s\".\"%s\" " +
                         "WHERE measure_name = '%s' " +
                         "AND time = '%s' " +
@@ -78,8 +74,6 @@ public class QueryService {
 
     /** 시간대별 조회 */
     public Integer querySumHour(Long festivalId, String timestamp, String measureName) {
-//        log.info("[METHOD] querySum festivalId: {}, timestamp: {}", festivalId, timestamp);
-
         Instant endTime = Instant.parse(timestamp).minusSeconds(1);
         Instant startTime = endTime.minus(1, ChronoUnit.HOURS).plusSeconds(1);
 
@@ -98,8 +92,6 @@ public class QueryService {
 
     /** 특정 날짜 마지막 레코드의 measureName 값 조회 */
     public Integer bigintQueryDate(Long festivalId, String date, String measureName) {
-        log.info("[METHOD] bigintQueryDate festivalId: {}, date: {}", festivalId, date);
-
         String query = String.format(
                 "SELECT measure_value::bigint AS total_sum FROM \"%s\".\"%s\" " +
                         "WHERE measure_name = '%s' " +
@@ -117,8 +109,6 @@ public class QueryService {
 
     /** 특정 날짜 마지막 레코드의 measureName 값 조회 */
     public String stringQueryDate(Long festivalId, String date, String measureName) {
-        log.info("[METHOD] stringQueryDate festivalId: {}, date: {}", festivalId, date);
-
         String query = String.format(
                 "SELECT measure_value::varchar AS total_sum FROM \"%s\".\"%s\" " +
                         "WHERE measure_name = '%s' " +
