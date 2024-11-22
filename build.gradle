@@ -61,6 +61,14 @@ dependencies {
 
 	//S3 buket
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// aws timestream
+	implementation 'software.amazon.awssdk:timestreamwrite:2.20.123'
+	implementation 'software.amazon.awssdk:timestreamquery:2.20.123'
+
+	// cache
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+  
 }
 
 tasks.named('bootBuildImage') {
