@@ -4,9 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.halo.eventer.domain.monitoring_data.dto.monitoring.*;
 import com.halo.eventer.domain.monitoring_data.dto.timestream.VisitorResponseDto;
 import com.halo.eventer.domain.monitoring_data.service.TimestreamService;
+import com.halo.eventer.global.error.ErrorCode;
+import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
@@ -18,10 +22,14 @@ import java.security.NoSuchAlgorithmException;
 public class TimestreamController {
 
     private final TimestreamService timestreamService;
+    @Value("${api.key}")
+    private String apiKey;
 
     /** 앤드포인트 */
     @PostMapping("/ai")
-    public void receiveData(@RequestParam("festivalId") Long festivalId, @RequestBody VisitorResponseDto visitorResponseDto) throws JsonProcessingException, UnsupportedEncodingException, URISyntaxException, NoSuchAlgorithmException, InvalidKeyException {
+    public void receiveData(@RequestParam("festivalId") Long festivalId, @RequestBody VisitorResponseDto visitorResponseDto, HttpServletRequest httpServletRequest) throws JsonProcessingException, UnsupportedEncodingException, URISyntaxException, NoSuchAlgorithmException, InvalidKeyException {
+        String headerApiKey = httpServletRequest.getHeader("X-API-KEY");
+        if (headerApiKey == null || !headerApiKey.equals(apiKey)) throw new BaseException(ErrorCode.INVALID_INPUT_VALUE);
         timestreamService.receiveData(festivalId, visitorResponseDto);
     }
 
@@ -48,5 +56,4 @@ public class TimestreamController {
     public DateVisitorDetailGetDto getDateVisitorDetail(@RequestParam("festivalId") Long festivalId) throws JsonProcessingException {
         return timestreamService.getDateVisitorDetailCount(festivalId);
     }
-
 }

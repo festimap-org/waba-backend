@@ -52,8 +52,8 @@ public class TimestreamService {
         return utcZonedDateTime.format(DateTimeFormatter.ISO_INSTANT);
     }
 
-    public String formatTimestamp(String isoTimestamp) {
-        return Instant.parse(isoTimestamp)
+    public String formatTimestamp(String timestamp) {
+        return Instant.parse(timestamp)
                 .atZone(ZoneId.of("UTC"))
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnnnnn"));
     }
@@ -209,7 +209,7 @@ public class TimestreamService {
     }
 
     /** 날짜별 총 인원수 */
-    @Transactional      // todo: db 내용 변경되는지 확인
+    @Transactional
     public DateVisitorListGetDto getDateVisitorCount(Long festivalId) {
         MonitoringData monitoringData = monitoringService.getMonitoringData(festivalId);
 
