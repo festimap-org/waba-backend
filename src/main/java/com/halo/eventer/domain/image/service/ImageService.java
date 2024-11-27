@@ -1,8 +1,6 @@
 package com.halo.eventer.domain.image.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+
 import com.halo.eventer.domain.image.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,10 +8,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 @Service
@@ -22,8 +24,9 @@ import java.util.Optional;
 public class ImageService {
 
     private final ImageRepository imageRepository;
-    private final AmazonS3Client amazonS3Client;
-
+    private final S3Client s3Client;
+    @Value("${cloud.aws.region.s3}")
+    private String region;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -53,12 +56,31 @@ public class ImageService {
     }
 
     private String putS3(File uploadFile, String fileName) {
-        amazonS3Client.putObject(
-                new PutObjectRequest(bucket, fileName, uploadFile)
-                        .withCannedAcl(CannedAccessControlList.PublicRead)	// PublicRead 권한으로 업로드 됨
-        );
-        return amazonS3Client.getUrl(bucket, fileName).toString();
+        try {
+            // 업로드 요청 생성
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(fileName)
+                    .acl("public-read") // PublicRead 권한 부여
+                    .build();
+
+            // S3로 파일 업로드
+            PutObjectResponse response = s3Client.putObject(putObjectRequest, Paths.get(uploadFile.getAbsolutePath()));
+
+            // 업로드된 파일의 URL 반환
+            return String.format("https://%s.s3.%s.amazonaws.com/%s", bucket, region, fileName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload file to S3", e);
+        }
     }
+
+//    private String putS3(File uploadFile, String fileName) {
+//        amazonS3Client.putObject(
+//                new PutObjectRequest(bucket, fileName, uploadFile)
+//                        .withCannedAcl(CannedAccessControlList.PublicRead)	// PublicRead 권한으로 업로드 됨
+//        );
+//        return amazonS3Client.getUrl(bucket, fileName).toString();
+//    }
 
     private void removeNewFile(File targetFile) {
         if(targetFile.delete()) {

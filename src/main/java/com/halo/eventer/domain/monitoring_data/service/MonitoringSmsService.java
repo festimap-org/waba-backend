@@ -31,7 +31,6 @@ public class MonitoringSmsService {
     /** 문자 알림 전송 */
     @Async
     public void sendAlertSms(MonitoringData monitoringData, Long festivalId, int percent) throws UnsupportedEncodingException, URISyntaxException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
-        log.info("[METHOD] sendAlertSms, festivalId: {}", festivalId);
         Festival festival = festivalService.getFestival(festivalId);
         List<String> phones = new ArrayList<>();
         if (monitoringData.getAlertPhone1() != null) phones.add(monitoringData.getAlertPhone1());
@@ -39,6 +38,8 @@ public class MonitoringSmsService {
         if (monitoringData.getAlertPhone3() != null) phones.add(monitoringData.getAlertPhone3());
         if (monitoringData.getAlertPhone4() != null) phones.add(monitoringData.getAlertPhone4());
         if (monitoringData.getAlertPhone5() != null) phones.add(monitoringData.getAlertPhone5());
+
+        if (phones.isEmpty()) return;
 
         String message = "현재 \"" + festival.getName() + "\" 행사의 내부 인원 비율이 " + percent + "%에 도달했습니다.";
 

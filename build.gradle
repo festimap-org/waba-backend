@@ -60,7 +60,8 @@ dependencies {
 	implementation 'com.github.f4b6a3:ulid-creator:5.2.3'
 
 	//S3 buket
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'software.amazon.awssdk:s3:2.20.23'
 
 	// aws timestream
 	implementation 'software.amazon.awssdk:timestreamwrite:2.20.123'

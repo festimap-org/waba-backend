@@ -133,5 +133,4 @@ public class MonitoringService {
         int lastVisitorCount = cacheService.getLastVisitorCache(festivalId, timestamp);
         return (cumulativeVisitor - lastVisitorCount) >= lastVisitorCount * 0.1;      // todo: 일단 직전보다 10% 중가했을 때만 알림 체크 로직 작동하게 설정
     }
-
 }
