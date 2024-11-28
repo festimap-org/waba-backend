@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class AlertLevelGetDto {
     private Long id;
-    private int threshold;
+    private int alertLevel;
 
-    public AlertLevelGetDto(Long id, int threshold) {
+    public AlertLevelGetDto(Long id, int alertLevel) {
         this.id = id;
-        this.threshold = threshold;
+        this.alertLevel = alertLevel;
     }
 }

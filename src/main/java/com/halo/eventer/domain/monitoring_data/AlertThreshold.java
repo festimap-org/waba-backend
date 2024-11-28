@@ -28,6 +28,7 @@ public class AlertThreshold {
         this.monitoringData = monitoringData;
     }
 
+    public void setThreshold(double threshold) { this.threshold = threshold; }
     public void setAlertSent(boolean alertSent) { this.alertSent = alertSent; }
     public void setLastSentTime(LocalDateTime lastSentTime) { this.lastSentTime = lastSentTime; }
 }

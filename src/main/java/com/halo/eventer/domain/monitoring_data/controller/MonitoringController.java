@@ -29,6 +29,12 @@ public class MonitoringController {
         return monitoringService.getAlertLevels(festivalId);
     }
 
+    /** 알림 기준 수정 */
+    @PatchMapping("/level/{levelId}")
+    public String updateAlertLevel(@PathVariable Long levelId, @RequestParam("alertLevel") int alertLevel) {
+        return monitoringService.updateAlertLevel(levelId, alertLevel);
+    }
+
     /** 알림 기준 삭제 */
     @DeleteMapping("/level/{levelId}")
     public String deleteAlertsLevel(@PathVariable Long levelId) {

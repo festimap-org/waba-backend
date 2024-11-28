@@ -72,6 +72,14 @@ public class MonitoringService {
         return new AlertLevelsGetListDto(alertLevelGetDtos);
     }
 
+    /** 알림 기준 수정 */
+    @Transactional
+    public String updateAlertLevel(Long levelId, int alertLevel) {
+        AlertThreshold alertThreshold = alertThresholdRepository.findById(levelId).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+        alertThreshold.setThreshold(alertLevel*0.01);
+        return "알림 기준 수정 성공";
+    }
+
     /** 알림 기준 삭제 */
     @Transactional
     public String deleteAlertLevel(Long levelId) {
