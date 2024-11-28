@@ -48,7 +48,7 @@ dependencies {
 	//httpClient
 	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
-	//aws-s3
+	//aws-s3, cloudfront
 	implementation(platform("software.amazon.awssdk:bom:2.27.21"))
 	implementation("software.amazon.awssdk:s3")
 
@@ -59,13 +59,9 @@ dependencies {
 	//ulid
 	implementation 'com.github.f4b6a3:ulid-creator:5.2.3'
 
-	//S3 buket
-//	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-	implementation 'software.amazon.awssdk:s3:2.20.23'
-
 	// aws timestream
-	implementation 'software.amazon.awssdk:timestreamwrite:2.20.123'
-	implementation 'software.amazon.awssdk:timestreamquery:2.20.123'
+	implementation 'software.amazon.awssdk:timestreamwrite'
+	implementation 'software.amazon.awssdk:timestreamquery'
 
 	// cache
 	implementation 'org.springframework.boot:spring-boot-starter-cache'

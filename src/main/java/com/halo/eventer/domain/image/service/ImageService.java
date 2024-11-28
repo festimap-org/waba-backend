@@ -1,124 +1,94 @@
 package com.halo.eventer.domain.image.service;
 
-
-import com.halo.eventer.domain.image.ImageRepository;
+import com.github.f4b6a3.ulid.UlidCreator;
+import com.halo.eventer.global.error.ErrorCode;
+import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Optional;
+import java.io.InputStream;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ImageService {
 
-    private final ImageRepository imageRepository;
+    private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "png", "jpeg", "webp","jgp");
+
     private final S3Client s3Client;
-    @Value("${cloud.aws.region.s3}")
-    private String region;
+    private final S3Presigner presigner;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
 
-
     /** MultipartFile을 전달받아 File로 전환한 후 S3에 업로드  */
     public String upload(MultipartFile multipartFile, String dirName) throws IOException,Exception {
 
-        File uploadFile = convert(multipartFile).orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
-        String url=uploads(uploadFile,dirName);
-
-
-
-        //log.info("url:{}",imageResDto.getImageUrl());
-        return url;
+        if(!isAllowedFileExtension(multipartFile.getOriginalFilename())){
+            throw new BaseException(ErrorCode.UNACCEPTABLE_EXTENSION);
+        }
+        return uploadFileToS3Direct(multipartFile,dirName);
     }
 
 
-    private String uploads(File uploadFile, String dirName) {
-        String fileName = dirName + "/" + uploadFile.getName();
-        String uploadImageUrl = putS3(uploadFile, fileName);
+    private String uploadFileToS3Direct(MultipartFile uploadFile, String dirName) throws IOException{
 
-        removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
+        InputStream inputStream = uploadFile.getInputStream();
 
-        return uploadImageUrl;      // 업로드된 파일의 S3 URL 주소 반환
+        String objectKey = dirName + "/" + UlidCreator.getUlid().toString() + "."+FilenameUtils.getExtension(uploadFile.getOriginalFilename());
+
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(objectKey)
+                .contentType(uploadFile.getContentType())
+                .contentLength(uploadFile.getSize())
+                .acl("public-read") // PublicRead 권한 부여
+                .build();
+
+        s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(inputStream, uploadFile.getSize()));
+
+
+        return s3Client.utilities().getUrl(b-> b.bucket(bucket).key(objectKey)).toString();     // 업로드된 파일의 S3 URL 주소 반환
     }
 
-    private String putS3(File uploadFile, String fileName) {
-        try {
-            // 업로드 요청 생성
-            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .bucket(bucket)
-                    .key(fileName)
-                    .acl("public-read") // PublicRead 권한 부여
-                    .build();
+    public String generatePresignedUploadUrl(String fileExtension) {
+        String ulid = UlidCreator.getUlid().toString();
 
-            // S3로 파일 업로드
-            PutObjectResponse response = s3Client.putObject(putObjectRequest, Paths.get(uploadFile.getAbsolutePath()));
-
-            // 업로드된 파일의 URL 반환
-            return String.format("https://%s.s3.%s.amazonaws.com/%s", bucket, region, fileName);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to upload file to S3", e);
+        if(!isAllowedFileExtension(fileExtension)){
+            throw new BaseException(ErrorCode.UNACCEPTABLE_EXTENSION);
         }
+        // 파일 확장자 추출
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key("uploads/" + ulid + "." + fileExtension)
+                .build();
+
+        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                .putObjectRequest(objectRequest)
+                .signatureDuration(Duration.ofMinutes(15))
+                .build();
+
+        return presigner.presignPutObject(presignRequest).url().toString();
     }
 
-//    private String putS3(File uploadFile, String fileName) {
-//        amazonS3Client.putObject(
-//                new PutObjectRequest(bucket, fileName, uploadFile)
-//                        .withCannedAcl(CannedAccessControlList.PublicRead)	// PublicRead 권한으로 업로드 됨
-//        );
-//        return amazonS3Client.getUrl(bucket, fileName).toString();
-//    }
-
-    private void removeNewFile(File targetFile) {
-        if(targetFile.delete()) {
-            log.info("파일이 삭제되었습니다.");
-        }else {
-            log.info("파일이 삭제되지 못했습니다.");
-        }
-    }
-    private Optional<File> convert(MultipartFile file) throws  IOException,Exception {
-        String contentType = file.getContentType();
-        String originalFileExtension;
-        // 확장자명이 존재하지 않을 경우 처리 x
-        if (ObjectUtils.isEmpty(contentType)) {
-            throw new Exception("파일 확장자 명이 존재하지 않습니다."); //BadRequest
-        }
-        else {  // 확장자가 jpeg, png인 파일들만 받아서 처리
-            if (contentType.contains("image/jpeg"))
-                originalFileExtension = ".jpg";
-            else if (contentType.contains("image/png"))
-                originalFileExtension = ".png";
-            else if (contentType.contains("image/jpg"))
-                originalFileExtension =".jpg";
-            else if(contentType.contains("image/webp")){
-                originalFileExtension =".webp";
-            }
-            else  // 다른 확장자일 경우 처리 x
-                throw new Exception("해당 파일 확장자는 지원하지 않습니다.");
-        }
-        String new_file_name = System.nanoTime() + originalFileExtension;
-
-        File convertFile = new File(new_file_name);
-        if(convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
-            }
-            return Optional.of(convertFile);
-        }
-        return Optional.empty();
+    private boolean isAllowedFileExtension(String fileName) {
+        String extension = FilenameUtils.getExtension(fileName).toLowerCase();
+        return ALLOWED_EXTENSIONS.contains(extension);
     }
 }
 

@@ -15,6 +15,7 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED("C003", "Invalid HTTP Method"),
     ELEMENT_NOT_FOUND( "C004", "Element Not Found"),
     ELEMENT_DUPLICATED("C005", "Element Duplicated"),
+    UNACCEPTABLE_EXTENSION("C007", "Unacceptable Extension"),
 
     // DownWidget Error
     PERMIT_THREE_ELEMENT("DW001", "Only Permit Three Element"),

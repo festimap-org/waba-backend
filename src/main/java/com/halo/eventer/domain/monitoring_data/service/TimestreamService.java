@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.services.timestreamwrite.TimestreamWriteClient;
 import software.amazon.awssdk.services.timestreamwrite.model.*;
+import software.amazon.awssdk.services.timestreamwrite.model.Record;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;

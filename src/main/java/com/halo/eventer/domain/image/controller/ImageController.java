@@ -1,11 +1,13 @@
 package com.halo.eventer.domain.image.controller;
 
+
 import com.halo.eventer.domain.image.service.ImageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +20,6 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    /** 해당 bucket의 aiinfo에 사진을 저장 */
     @PostMapping(value = "/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -35,4 +36,10 @@ public class ImageController {
                     .body(e.getMessage());
         }
     }
+
+    @GetMapping("/upload-url")
+    public String getUploadUrl(@RequestParam String fileExtension) {
+        return imageService.generatePresignedUploadUrl(fileExtension);
+    }
+
 }
