@@ -33,11 +33,11 @@ public class MonitoringSmsService {
     public void sendAlertSms(MonitoringData monitoringData, Long festivalId, int percent) throws UnsupportedEncodingException, URISyntaxException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
         Festival festival = festivalService.getFestival(festivalId);
         List<String> phones = new ArrayList<>();
-        if (monitoringData.getAlertPhone1() != null && !monitoringData.getAlertPhone1().equals("")) phones.add(monitoringData.getAlertPhone1());
-        if (monitoringData.getAlertPhone2() != null && !monitoringData.getAlertPhone2().equals("")) phones.add(monitoringData.getAlertPhone2());
-        if (monitoringData.getAlertPhone3() != null && !monitoringData.getAlertPhone3().equals("")) phones.add(monitoringData.getAlertPhone3());
-        if (monitoringData.getAlertPhone4() != null && !monitoringData.getAlertPhone4().equals("")) phones.add(monitoringData.getAlertPhone4());
-        if (monitoringData.getAlertPhone5() != null && !monitoringData.getAlertPhone5().equals("")) phones.add(monitoringData.getAlertPhone5());
+        if (monitoringData.getAlertPhone1() != null) phones.add(monitoringData.getAlertPhone1());
+        if (monitoringData.getAlertPhone2() != null) phones.add(monitoringData.getAlertPhone2());
+        if (monitoringData.getAlertPhone3() != null) phones.add(monitoringData.getAlertPhone3());
+        if (monitoringData.getAlertPhone4() != null) phones.add(monitoringData.getAlertPhone4());
+        if (monitoringData.getAlertPhone5() != null) phones.add(monitoringData.getAlertPhone5());
 
         if (phones.isEmpty()) return;
 

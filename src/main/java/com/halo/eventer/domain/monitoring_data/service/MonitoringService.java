@@ -11,6 +11,7 @@ import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,11 +93,13 @@ public class MonitoringService {
     @Transactional
     public String setAlertPhone(Long festivalId, AlertPhoneSetDto alertPhoneSetDto) {
         MonitoringData monitoringData = getMonitoringData(festivalId);
-        monitoringData.setAlertPhone1(alertPhoneSetDto.getPhone1());
-        monitoringData.setAlertPhone2(alertPhoneSetDto.getPhone2());
-        monitoringData.setAlertPhone3(alertPhoneSetDto.getPhone3());
-        monitoringData.setAlertPhone4(alertPhoneSetDto.getPhone4());
-        monitoringData.setAlertPhone5(alertPhoneSetDto.getPhone5());
+
+        // 비어 있거나 null인 경우 null을 설정
+        monitoringData.setAlertPhone1(StringUtils.isEmpty(alertPhoneSetDto.getPhone1()) ? null : alertPhoneSetDto.getPhone1());
+        monitoringData.setAlertPhone2(StringUtils.isEmpty(alertPhoneSetDto.getPhone2()) ? null : alertPhoneSetDto.getPhone2());
+        monitoringData.setAlertPhone3(StringUtils.isEmpty(alertPhoneSetDto.getPhone3()) ? null : alertPhoneSetDto.getPhone3());
+        monitoringData.setAlertPhone4(StringUtils.isEmpty(alertPhoneSetDto.getPhone4()) ? null : alertPhoneSetDto.getPhone4());
+        monitoringData.setAlertPhone5(StringUtils.isEmpty(alertPhoneSetDto.getPhone5()) ? null : alertPhoneSetDto.getPhone5());
 
         monitoringRepository.save(monitoringData);
         return "문자 알림 전화번호 저장 성공";
