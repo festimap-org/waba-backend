@@ -186,7 +186,7 @@ public class TimestreamService {
             // 시간대별로 realtime_total 합계 조회
             String startTimestamp = utcTime.toInstant().toString();
             int visitorCount = queryService.querySumHour(festivalId, startTimestamp, "realtime_total");
-            hourlyVisitorCounts.add(new HourVisitorGetDto(currentHour.getHour() + 1, visitorCount));
+            hourlyVisitorCounts.add(new HourVisitorGetDto(currentHour.getHour(), visitorCount));
 
             // 다음 시간대로 이동
             currentHour = currentHour.plusHours(1);
