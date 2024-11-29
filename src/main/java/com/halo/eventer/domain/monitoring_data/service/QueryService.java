@@ -40,7 +40,6 @@ public class QueryService {
                 throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
             }
         } catch (TimestreamQueryException e) {
-            log.info("[getQueryResponse] response timestamp: {}", queryRequest.queryString().toString());
             System.err.println("Query failed: " + e.getMessage());
             throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
         }

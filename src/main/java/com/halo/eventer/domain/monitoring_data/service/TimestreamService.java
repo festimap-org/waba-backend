@@ -170,7 +170,6 @@ public class TimestreamService {
      */
     public HourVisitorGetListDto getDailyHourVisitorCount(Long festivalId) {
         // 현재 KST 시간 가져오기
-//        LocalDateTime kstNow = LocalDateTime.now();
         ZonedDateTime kstZonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
         // KST 기준 오전 9시 설정 (startTime)
@@ -180,20 +179,14 @@ public class TimestreamService {
 
         // 오전 9시부터 현재 시간까지 반복
         ZonedDateTime currentHour = startZonedDateTime;     // kst timestamp
-        log.info("[GetDailyHourVisitorCount] currentHour: {}", currentHour);
-        log.info("[GetDailyHourVisitorCount] kstZonedDateTime: {}", kstZonedDateTime);
         while (currentHour.isBefore(kstZonedDateTime) || currentHour.isEqual(kstZonedDateTime)) {
             // 지금 시간을 utc 시간으로 변경
             ZonedDateTime utcTime = currentHour.withZoneSameInstant(ZoneId.of("UTC"));
-            log.info("[GetDailyHourVisitorCount] utcTime: {}", utcTime);
 
             // 시간대별로 realtime_total 합계 조회
             String startTimestamp = utcTime.toInstant().toString();
-            log.info("[GetDailyHourVisitorCount] endTimestamp: {}", startTimestamp);
             int visitorCount = queryService.querySumHour(festivalId, startTimestamp, "realtime_total");
-
-            log.info("[GetDailyHourVisitorCount] current.getHour(): {}", currentHour.getHour()-1);
-            hourlyVisitorCounts.add(new HourVisitorGetDto(currentHour.getHour()-1, visitorCount));
+            hourlyVisitorCounts.add(new HourVisitorGetDto(currentHour.getHour() + 1, visitorCount));
 
             // 다음 시간대로 이동
             currentHour = currentHour.plusHours(1);
