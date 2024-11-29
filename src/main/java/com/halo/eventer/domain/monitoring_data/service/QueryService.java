@@ -74,8 +74,8 @@ public class QueryService {
 
     /** 시간대별 조회 */
     public Integer querySumHour(Long festivalId, String timestamp, String measureName) {
-        Instant endTime = Instant.parse(timestamp).minusSeconds(1);
-        Instant startTime = endTime.minus(1, ChronoUnit.HOURS).plusSeconds(1);
+        Instant startTime = Instant.parse(timestamp);
+        Instant endTime = startTime.plus(1, ChronoUnit.HOURS).minusSeconds(1);
 
         String query = String.format("SELECT SUM(measure_value::bigint) AS total_sum FROM \"%s\".\"%s\" " +
                         "WHERE measure_name = '%s' " +

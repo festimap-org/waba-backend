@@ -170,24 +170,28 @@ public class TimestreamService {
      */
     public HourVisitorGetListDto getDailyHourVisitorCount(Long festivalId) {
         // 현재 KST 시간 가져오기
-        LocalDateTime kstDateTime = LocalDateTime.now();
-        ZonedDateTime kstZonedDateTime = kstDateTime.atZone(ZoneId.of("Asia/Seoul"));
+        LocalDateTime kstNow = LocalDateTime.now();
+        ZonedDateTime kstZonedDateTime = kstNow.atZone(ZoneId.of("Asia/Seoul"));
 
-        // KST 기준 오전 10시 설정 (endTime)
-        ZonedDateTime startZonedDateTime = kstZonedDateTime.withHour(10).withMinute(0).withSecond(0).withNano(0);
+        // KST 기준 오전 9시 설정 (startTime)
+        ZonedDateTime startZonedDateTime = kstZonedDateTime.withHour(9).withMinute(0).withSecond(0).withNano(0);
 
         List<HourVisitorGetDto> hourlyVisitorCounts = new ArrayList<>();
 
         // 오전 9시부터 현재 시간까지 반복
-        ZonedDateTime currentHour = startZonedDateTime;
+        ZonedDateTime currentHour = startZonedDateTime;     // kst timestamp
+        log.info("[GetDailyHourVisitorCount] currentHour: {}", currentHour);
         while (currentHour.isBefore(kstZonedDateTime) || currentHour.isEqual(kstZonedDateTime)) {
-            // 각 시간대의 시작과 끝 시간을 UTC로 변환
-            ZonedDateTime utcStartTime = currentHour.withZoneSameInstant(ZoneId.of("UTC"));
+            // 지금 시간을 utc 시간으로 변경
+            ZonedDateTime utcTime = currentHour.withZoneSameInstant(ZoneId.of("UTC"));
+            log.info("[GetDailyHou rVisitorCount] utcTime: {}", utcTime);
 
             // 시간대별로 realtime_total 합계 조회
-            String timestamp = utcStartTime.toInstant().toString();
-            int visitorCount = queryService.querySumHour(festivalId, timestamp, "realtime_total");
+            String startTimestamp = utcTime.toInstant().toString();
+            log.info("[GetDailyHourVisitorCount] endTimestamp: {}", startTimestamp);
+            int visitorCount = queryService.querySumHour(festivalId, startTimestamp, "realtime_total");
 
+            log.info("[GetDailyHourVisitorCount] current.getHour(): {}", currentHour.getHour()-1);
             hourlyVisitorCounts.add(new HourVisitorGetDto(currentHour.getHour()-1, visitorCount));
 
             // 다음 시간대로 이동
