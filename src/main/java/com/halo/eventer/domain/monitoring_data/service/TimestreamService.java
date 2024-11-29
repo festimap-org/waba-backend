@@ -170,8 +170,8 @@ public class TimestreamService {
      */
     public HourVisitorGetListDto getDailyHourVisitorCount(Long festivalId) {
         // 현재 KST 시간 가져오기
-        LocalDateTime kstNow = LocalDateTime.now();
-        ZonedDateTime kstZonedDateTime = kstNow.atZone(ZoneId.of("Asia/Seoul"));
+//        LocalDateTime kstNow = LocalDateTime.now();
+        ZonedDateTime kstZonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
         // KST 기준 오전 9시 설정 (startTime)
         ZonedDateTime startZonedDateTime = kstZonedDateTime.withHour(9).withMinute(0).withSecond(0).withNano(0);
@@ -222,7 +222,7 @@ public class TimestreamService {
         List<Duration> durationList = festivalService.getFestival(festivalId).getDurations();
         List<DateVisitorGetDto> dateVisitorGetDtos = new ArrayList<>();
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         for (Duration duration : durationList) {
             if (duration.getDate().isBefore(today) || duration.getDate().isEqual(today)) {
                 int count = queryService.bigintQueryDate(festivalId, duration.getDate().toString(), "cumulative_total");
@@ -244,7 +244,7 @@ public class TimestreamService {
     public DateVisitorDetailGetDto getDateVisitorDetailCount(Long festivalId) throws JsonProcessingException {
         List<Duration> durationList = festivalService.getFestival(festivalId).getDurations();
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
 
         int[] ages = new int[4];
         int[] genders = new int[3];
