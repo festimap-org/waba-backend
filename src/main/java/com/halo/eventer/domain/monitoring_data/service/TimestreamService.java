@@ -181,10 +181,11 @@ public class TimestreamService {
         // 오전 9시부터 현재 시간까지 반복
         ZonedDateTime currentHour = startZonedDateTime;     // kst timestamp
         log.info("[GetDailyHourVisitorCount] currentHour: {}", currentHour);
+        log.info("[GetDailyHourVisitorCount] kstZonedDateTime: {}", kstZonedDateTime);
         while (currentHour.isBefore(kstZonedDateTime) || currentHour.isEqual(kstZonedDateTime)) {
             // 지금 시간을 utc 시간으로 변경
             ZonedDateTime utcTime = currentHour.withZoneSameInstant(ZoneId.of("UTC"));
-            log.info("[GetDailyHou rVisitorCount] utcTime: {}", utcTime);
+            log.info("[GetDailyHourVisitorCount] utcTime: {}", utcTime);
 
             // 시간대별로 realtime_total 합계 조회
             String startTimestamp = utcTime.toInstant().toString();
