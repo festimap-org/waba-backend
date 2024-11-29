@@ -92,11 +92,11 @@ public class MonitoringService {
     @Transactional
     public String setAlertPhone(Long festivalId, AlertPhoneSetDto alertPhoneSetDto) {
         MonitoringData monitoringData = getMonitoringData(festivalId);
-        if (alertPhoneSetDto.getPhone1() != null) monitoringData.setAlertPhone1(alertPhoneSetDto.getPhone1());
-        if (alertPhoneSetDto.getPhone2() != null) monitoringData.setAlertPhone2(alertPhoneSetDto.getPhone2());
-        if (alertPhoneSetDto.getPhone3() != null) monitoringData.setAlertPhone3(alertPhoneSetDto.getPhone3());
-        if (alertPhoneSetDto.getPhone4() != null) monitoringData.setAlertPhone4(alertPhoneSetDto.getPhone4());
-        if (alertPhoneSetDto.getPhone5() != null) monitoringData.setAlertPhone5(alertPhoneSetDto.getPhone5());
+        monitoringData.setAlertPhone1(alertPhoneSetDto.getPhone1());
+        monitoringData.setAlertPhone2(alertPhoneSetDto.getPhone2());
+        monitoringData.setAlertPhone3(alertPhoneSetDto.getPhone3());
+        monitoringData.setAlertPhone4(alertPhoneSetDto.getPhone4());
+        monitoringData.setAlertPhone5(alertPhoneSetDto.getPhone5());
 
         monitoringRepository.save(monitoringData);
         return "문자 알림 전화번호 저장 성공";
