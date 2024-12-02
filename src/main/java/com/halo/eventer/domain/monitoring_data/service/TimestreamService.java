@@ -232,21 +232,15 @@ public class TimestreamService {
         List<DateVisitorGetDto> dateVisitorGetDtos = new ArrayList<>();
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        if (today.isAfter(durationList.get(durationList.size()-1).getDate())) {
-            for (Duration duration : durationList) {
-                log.info("FestivalId: {}, Duration date: {}", festivalId, duration.getDate().toString());
+        LocalDate lastDate = durationList.get(durationList.size() - 1).getDate();
+        for (Duration duration : durationList) {
+            if (today.isAfter(lastDate) || duration.getDate().isBefore(today) || duration.getDate().isEqual(today)) {
                 int count = queryService.bigintQueryDate(festivalId, duration.getDate().toString(), "cumulative_total");
+                if (!today.isAfter(lastDate)) {
+                    setMaxCount(monitoringData, count); // 최다 방문 인원 설정
+                }
                 DateVisitorGetDto dto = new DateVisitorGetDto(duration.getDate(), count);
                 dateVisitorGetDtos.add(dto);
-            }
-        } else {
-            for (Duration duration : durationList) {
-                if (duration.getDate().isBefore(today) || duration.getDate().isEqual(today)) {
-                    int count = queryService.bigintQueryDate(festivalId, duration.getDate().toString(), "cumulative_total");
-                    setMaxCount(monitoringData, count);     // 최다 방문 인원 설정
-                    DateVisitorGetDto dto = new DateVisitorGetDto(duration.getDate(), count);
-                    dateVisitorGetDtos.add(dto);
-                }
             }
         }
         return new DateVisitorListGetDto(cacheService.getMaxCapacityCache(festivalId, monitoringData), monitoringData.getMaxCount(), dateVisitorGetDtos);
@@ -264,16 +258,11 @@ public class TimestreamService {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         int[] ages = new int[4];
         int[] genders = new int[3];
-        if (today.isAfter(durationList.get(durationList.size()-1).getDate())) {
-            for (Duration duration : durationList) {
+        LocalDate lastDate = durationList.get(durationList.size() - 1).getDate();
+        for (Duration duration : durationList) {
+            if (today.isAfter(lastDate) || duration.getDate().isBefore(today) || duration.getDate().isEqual(today)) {
                 log.info("FestivalId: {}, Duration date: {}", festivalId, duration.getDate().toString());
                 accumulateAgeAndGender(ages, genders, festivalId, duration.getDate().toString());
-            }
-        } else {
-            for (Duration duration : durationList) {
-                if (duration.getDate().isBefore(today) || duration.getDate().isEqual(today)) {
-                    accumulateAgeAndGender(ages, genders, festivalId, duration.getDate().toString());
-                }
             }
         }
 
