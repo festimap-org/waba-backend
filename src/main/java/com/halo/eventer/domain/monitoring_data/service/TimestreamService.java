@@ -262,7 +262,6 @@ public class TimestreamService {
         LocalDate lastDate = durationList.get(durationList.size() - 1).getDate();
         for (Duration duration : durationList) {
             if (today.isAfter(lastDate) || duration.getDate().isBefore(today) || duration.getDate().isEqual(today)) {
-                log.info("FestivalId: {}, Duration date: {}", festivalId, duration.getDate().toString());
                 accumulateAgeAndGender(ages, genders, festivalId, duration.getDate().toString());
             }
         }

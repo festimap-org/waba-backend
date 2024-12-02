@@ -123,6 +123,9 @@ public class QueryService {
 
         String result = getQueryResponse(queryRequest);
         if (result == null) throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
+        else if (result.equals("0") && measureName.equals("cumulative_ageCount")) result = "{\"teenager\":0,\"twenties_and_thirties\":0,\"forties_and_fifties\":0,\"sixties_and_above\":0}\n";
+        else if (result.equals("0") && measureName.equals("cumulative_genderCount")) result = "{\"male\":0,\"female\":0,\"none\":0}";
+
         return result;
     }
 }
