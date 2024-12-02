@@ -234,6 +234,7 @@ public class TimestreamService {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         if (today.isAfter(durationList.get(durationList.size()-1).getDate())) {
             for (Duration duration : durationList) {
+                log.info("FestivalId: {}, Duration date: {}", festivalId, duration.getDate().toString());
                 int count = queryService.bigintQueryDate(festivalId, duration.getDate().toString(), "cumulative_total");
                 DateVisitorGetDto dto = new DateVisitorGetDto(duration.getDate(), count);
                 dateVisitorGetDtos.add(dto);
@@ -265,6 +266,7 @@ public class TimestreamService {
         int[] genders = new int[3];
         if (today.isAfter(durationList.get(durationList.size()-1).getDate())) {
             for (Duration duration : durationList) {
+                log.info("FestivalId: {}, Duration date: {}", festivalId, duration.getDate().toString());
                 accumulateAgeAndGender(ages, genders, festivalId, duration.getDate().toString());
             }
         } else {

@@ -36,6 +36,7 @@ public class QueryService {
             if (!rows.isEmpty() && rows.get(0).data().get(0) != null) {
                 return rows.get(0).data().get(0).scalarValue();
             } else {
+                log.info("queryRequest: {}", queryRequest.queryString());
                 System.out.println("No data found for the given timestamp and festivalId.");
                 throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
             }
