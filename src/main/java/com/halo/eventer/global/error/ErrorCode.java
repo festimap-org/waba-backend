@@ -21,7 +21,12 @@ public enum ErrorCode {
     PERMIT_THREE_ELEMENT("DW001", "Only Permit Three Element"),
 
     // Vote Error
-    ALREADY_LIKE("C006", "Already Like Element"),;
+    ALREADY_LIKE("C006", "Already Like Element"),
+
+    // Monitoring Error
+    FESTIVAL_EXPIRED("M001", "Festival Expired"),
+
+
     ;
 
     private final String code;

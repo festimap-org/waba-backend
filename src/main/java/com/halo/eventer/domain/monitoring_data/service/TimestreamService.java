@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.duration.Duration;
+import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.monitoring_data.MonitoringData;
 import com.halo.eventer.domain.monitoring_data.dto.monitoring.*;
@@ -166,7 +167,7 @@ public class TimestreamService {
 
     /** 시간대별 인원 수 */
     /**
-     * todo: 일단 오전 9시를 시작시간으로 고정
+     * todo: 일단 오전 9시를 시작시간으로 고정, 현재 날짜가 행사가 끝난 시점이면 조회 X
      */
     public HourVisitorGetListDto getDailyHourVisitorCount(Long festivalId) {
         // 현재 KST 시간 가져오기
@@ -175,10 +176,17 @@ public class TimestreamService {
         // KST 기준 오전 9시 설정 (startTime)
         ZonedDateTime startZonedDateTime = kstZonedDateTime.withHour(9).withMinute(0).withSecond(0).withNano(0);
 
-        List<HourVisitorGetDto> hourlyVisitorCounts = new ArrayList<>();
-
         // 오전 9시부터 현재 시간까지 반복
         ZonedDateTime currentHour = startZonedDateTime;     // kst timestamp
+
+        List<HourVisitorGetDto> hourlyVisitorCounts = new ArrayList<>();
+
+        // 행사 기간이 지난 경우
+        LocalDate localDate = kstZonedDateTime.toLocalDate();
+        Festival festival = festivalService.getFestival(festivalId);
+        if (localDate.isAfter(festival.getDurations().get(festival.getDurations().size()-1).getDate())) {
+            throw new BaseException(ErrorCode.FESTIVAL_EXPIRED);
+        }
         while (currentHour.isBefore(kstZonedDateTime) || currentHour.isEqual(kstZonedDateTime)) {
             // 지금 시간을 utc 시간으로 변경
             ZonedDateTime utcTime = currentHour.withZoneSameInstant(ZoneId.of("UTC"));
@@ -198,6 +206,14 @@ public class TimestreamService {
     public DailyVisitorDetailGetDto getDailyVisitorDetailCount(Long festivalId) throws JsonProcessingException {
         MonitoringData monitoringData = monitoringService.getMonitoringData(festivalId);
 
+        // 행사 기간이 지난 경우
+        ZonedDateTime kstZonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        LocalDate localDate = kstZonedDateTime.toLocalDate();
+        Festival festival = festivalService.getFestival(festivalId);
+        if (localDate.isAfter(festival.getDurations().get(festival.getDurations().size()-1).getDate())) {
+            throw new BaseException(ErrorCode.FESTIVAL_EXPIRED);
+        }
+
         String formatTimestamp = monitoringData.getLatestTimestamp();
         int cumulativeTotal = queryService.bigintQueryRequestAtTime(festivalId, formatTimestamp, "cumulative_total");
         String cumulativeAge = queryService.stringQueryRequestAtTime(festivalId, formatTimestamp, "cumulative_ageCount");
@@ -216,15 +232,22 @@ public class TimestreamService {
         List<DateVisitorGetDto> dateVisitorGetDtos = new ArrayList<>();
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        for (Duration duration : durationList) {
-            if (duration.getDate().isBefore(today) || duration.getDate().isEqual(today)) {
+        if (today.isAfter(durationList.get(durationList.size()-1).getDate())) {
+            for (Duration duration : durationList) {
                 int count = queryService.bigintQueryDate(festivalId, duration.getDate().toString(), "cumulative_total");
-                setMaxCount(monitoringData, count);     // 최다 방문 인원 설정
                 DateVisitorGetDto dto = new DateVisitorGetDto(duration.getDate(), count);
                 dateVisitorGetDtos.add(dto);
             }
+        } else {
+            for (Duration duration : durationList) {
+                if (duration.getDate().isBefore(today) || duration.getDate().isEqual(today)) {
+                    int count = queryService.bigintQueryDate(festivalId, duration.getDate().toString(), "cumulative_total");
+                    setMaxCount(monitoringData, count);     // 최다 방문 인원 설정
+                    DateVisitorGetDto dto = new DateVisitorGetDto(duration.getDate(), count);
+                    dateVisitorGetDtos.add(dto);
+                }
+            }
         }
-
         return new DateVisitorListGetDto(cacheService.getMaxCapacityCache(festivalId, monitoringData), monitoringData.getMaxCount(), dateVisitorGetDtos);
     }
 
@@ -238,24 +261,33 @@ public class TimestreamService {
         List<Duration> durationList = festivalService.getFestival(festivalId).getDurations();
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-
         int[] ages = new int[4];
         int[] genders = new int[3];
-        for (Duration duration : durationList) {
-            if (duration.getDate().isBefore(today) || duration.getDate().isEqual(today)) {
-                ages[0] += getCumulativeAge(festivalId, duration.getDate().toString(), "teenager");
-                ages[1] += getCumulativeAge(festivalId, duration.getDate().toString(), "twenties_and_thirties");
-                ages[2] += getCumulativeAge(festivalId, duration.getDate().toString(), "forties_and_fifties");
-                ages[3] += getCumulativeAge(festivalId, duration.getDate().toString(), "sixties_and_above");
-
-                genders[0] += getCumulativeGender(festivalId, duration.getDate().toString(), "male");
-                genders[1] += getCumulativeGender(festivalId, duration.getDate().toString(), "female");
-                genders[2] += getCumulativeGender(festivalId, duration.getDate().toString(), "none");
+        if (today.isAfter(durationList.get(durationList.size()-1).getDate())) {
+            for (Duration duration : durationList) {
+                accumulateAgeAndGender(ages, genders, festivalId, duration.getDate().toString());
+            }
+        } else {
+            for (Duration duration : durationList) {
+                if (duration.getDate().isBefore(today) || duration.getDate().isEqual(today)) {
+                    accumulateAgeAndGender(ages, genders, festivalId, duration.getDate().toString());
+                }
             }
         }
 
         DateVisitorDetailGetDto dateVisitorDetailGetDto = new DateVisitorDetailGetDto(ages[0], ages[1], ages[2], ages[3], genders[0], genders[1], genders[2]);
         return dateVisitorDetailGetDto;
+    }
+
+    private void accumulateAgeAndGender(int[] ages, int[] genders, Long festivalId, String date) throws JsonProcessingException {
+        ages[0] += getCumulativeAge(festivalId, date, "teenager");
+        ages[1] += getCumulativeAge(festivalId, date, "twenties_and_thirties");
+        ages[2] += getCumulativeAge(festivalId, date, "forties_and_fifties");
+        ages[3] += getCumulativeAge(festivalId, date, "sixties_and_above");
+
+        genders[0] += getCumulativeGender(festivalId, date, "male");
+        genders[1] += getCumulativeGender(festivalId, date, "female");
+        genders[2] += getCumulativeGender(festivalId, date, "none");
     }
 
     private Integer getCumulativeAge(Long festivalId, String date, String type) throws JsonProcessingException {
