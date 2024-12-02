@@ -33,15 +33,16 @@ public class QueryService {
             QueryResponse response = queryClient.query(queryRequest);
             List<Row> rows = response.rows();
 
-            if (!rows.isEmpty() && rows.get(0).data().get(0) != null) {
+            if (rows.isEmpty()) {
+                return "0";     // 해당 시간대에 방문자 수가 0명
+            } else if (rows.get(0).data().get(0) != null) {
                 return rows.get(0).data().get(0).scalarValue();
-            } else {
-                log.info("queryRequest: {}", queryRequest.queryString());
-                System.out.println("No data found for the given timestamp and festivalId.");
+            }else {
+                log.info("No data found for the given timestamp and festivalId.");
                 throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
             }
         } catch (TimestreamQueryException e) {
-            System.err.println("Query failed: " + e.getMessage());
+            log.info("Query failed: {}" + e.getMessage());
             throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }

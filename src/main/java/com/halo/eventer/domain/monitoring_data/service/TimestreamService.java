@@ -233,6 +233,7 @@ public class TimestreamService {
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         LocalDate lastDate = durationList.get(durationList.size() - 1).getDate();
+
         for (Duration duration : durationList) {
             if (today.isAfter(lastDate) || duration.getDate().isBefore(today) || duration.getDate().isEqual(today)) {
                 int count = queryService.bigintQueryDate(festivalId, duration.getDate().toString(), "cumulative_total");
