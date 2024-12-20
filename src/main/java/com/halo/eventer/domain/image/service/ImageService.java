@@ -18,8 +18,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -27,7 +26,13 @@ import java.util.List;
 @Slf4j
 public class ImageService {
 
-    private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "png", "jpeg", "webp","jgp");
+    private static final Map<String, String> EXTENSION_TO_CONTENT_TYPE = Map.of(
+            "jpg", "image/jpeg",
+            "jpeg", "image/jpeg",
+            "png", "image/png",
+            "webp", "image/webp"
+    );
+
 
     private final S3Client s3Client;
     private final S3Presigner presigner;
@@ -39,7 +44,7 @@ public class ImageService {
     /** MultipartFile을 전달받아 File로 전환한 후 S3에 업로드  */
     public String upload(MultipartFile multipartFile, String dirName) throws IOException,Exception {
 
-        if(!isAllowedFileExtension(multipartFile.getOriginalFilename())){
+        if(!isAllowedExtension(multipartFile.getOriginalFilename())){
             throw new BaseException(ErrorCode.UNACCEPTABLE_EXTENSION);
         }
         return uploadFileToS3Direct(multipartFile,dirName);
@@ -57,7 +62,6 @@ public class ImageService {
                 .key(objectKey)
                 .contentType(uploadFile.getContentType())
                 .contentLength(uploadFile.getSize())
-                .acl("public-read") // PublicRead 권한 부여
                 .build();
 
         s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(inputStream, uploadFile.getSize()));
@@ -69,13 +73,14 @@ public class ImageService {
     public String generatePresignedUploadUrl(String fileExtension) {
         String ulid = UlidCreator.getUlid().toString();
 
-        if(!isAllowedFileExtension(fileExtension)){
+        if(!isAllowedExtension(fileExtension)){
             throw new BaseException(ErrorCode.UNACCEPTABLE_EXTENSION);
         }
-        // 파일 확장자 추출
+
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
-                .key("uploads/" + ulid + "." + fileExtension)
+                .key("uploads/" + ulid  +"."+ fileExtension)
+                .contentType(EXTENSION_TO_CONTENT_TYPE.get(fileExtension))
                 .build();
 
         PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
@@ -86,9 +91,19 @@ public class ImageService {
         return presigner.presignPutObject(presignRequest).url().toString();
     }
 
-    private boolean isAllowedFileExtension(String fileName) {
-        String extension = FilenameUtils.getExtension(fileName).toLowerCase();
-        return ALLOWED_EXTENSIONS.contains(extension);
+    // Extension 검증 메서드
+    public static boolean isAllowedExtension(String extension) {
+        return EXTENSION_TO_CONTENT_TYPE.containsKey(extension.toLowerCase());
+    }
+
+
+    // Content-Type 반환 메서드
+    public static String getContentType(String extension) {
+        String lowerExt = extension.toLowerCase();
+        if (!EXTENSION_TO_CONTENT_TYPE.containsKey(lowerExt)) {
+            throw new IllegalArgumentException("Unsupported file extension: " + extension);
+        }
+        return EXTENSION_TO_CONTENT_TYPE.get(lowerExt);
     }
 }
 
