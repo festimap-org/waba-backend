@@ -44,7 +44,7 @@ public class ImageService {
     /** MultipartFile을 전달받아 File로 전환한 후 S3에 업로드  */
     public String upload(MultipartFile multipartFile, String dirName) throws IOException,Exception {
 
-        if(!isAllowedExtension(multipartFile.getOriginalFilename())){
+        if(!isAllowedExtension(FilenameUtils.getExtension(multipartFile.getOriginalFilename()))){
             throw new BaseException(ErrorCode.UNACCEPTABLE_EXTENSION);
         }
         return uploadFileToS3Direct(multipartFile,dirName);
@@ -65,8 +65,9 @@ public class ImageService {
                 .build();
 
         s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(inputStream, uploadFile.getSize()));
-
-
+        if (inputStream != null) {
+            inputStream.close();
+        }
         return s3Client.utilities().getUrl(b-> b.bucket(bucket).key(objectKey)).toString();     // 업로드된 파일의 S3 URL 주소 반환
     }
 
