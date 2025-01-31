@@ -105,7 +105,9 @@ public class SecurityConfig {
                 "https://wabaa.kr",
                 "https://business.wabaa.kr",
                 "https://adelante.wabauniv.com",
-                "http://m.localhost:3000")
+                "http://m.localhost:3000",
+                "https://firefestivaljeju.com",
+                "https://m.firefestivaljeju.com")
         );
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
