@@ -41,7 +41,7 @@ public class ImageService {
     private String bucket;
 
 
-    /** MultipartFile을 전달받아 File로 전환한 후 S3에 업로드  */
+
     public String upload(MultipartFile multipartFile, String dirName) throws IOException,Exception {
 
         if(!isAllowedExtension(FilenameUtils.getExtension(multipartFile.getOriginalFilename()))){

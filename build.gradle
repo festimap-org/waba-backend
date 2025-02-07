@@ -48,23 +48,15 @@ dependencies {
 	//httpClient
 	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
-	//aws-s3, cloudfront
+	//aws-s3
 	implementation(platform("software.amazon.awssdk:bom:2.27.21"))
 	implementation("software.amazon.awssdk:s3")
 
-	// excel
-	implementation 'org.apache.poi:poi-ooxml:5.2.2'
-	implementation 'org.apache.poi:poi:5.2.2'
+	//io
+	implementation 'commons-io:commons-io:2.18.0'
 
 	//ulid
 	implementation 'com.github.f4b6a3:ulid-creator:5.2.3'
-
-	// aws timestream
-	implementation 'software.amazon.awssdk:timestreamwrite'
-	implementation 'software.amazon.awssdk:timestreamquery'
-
-	// cache
-	implementation 'org.springframework.boot:spring-boot-starter-cache'
   
 }
 
