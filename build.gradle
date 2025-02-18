@@ -57,7 +57,12 @@ dependencies {
 
 	//ulid
 	implementation 'com.github.f4b6a3:ulid-creator:5.2.3'
-  
+
+//	//actuator
+//	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+//
+//	//prometheus-micrometer
+//	implementation 'io.micrometer:micrometer-registry-prometheus' //추가
 }
 
 tasks.named('bootBuildImage') {
