@@ -12,6 +12,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.io.IOException;
+
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -41,6 +43,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleElementNotFoundException(BaseException e) {
         final ErrorResponse response = ErrorResponse.of(e.getMessage(),e.getErrorCode());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+    /**
+     * IOException
+     * */
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<String> handleIOException(IOException ex) {
+        // 로깅 또는 추가 처리를 할 수 있습니다.
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("입출력 예외가 발생했습니다: " + ex.getMessage());
     }
 
     @ExceptionHandler({DuplicatedElementException.class})

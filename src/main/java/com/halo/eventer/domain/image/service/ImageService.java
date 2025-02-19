@@ -33,6 +33,12 @@ public class ImageService {
             "webp", "image/webp"
     );
 
+    private static final Map<String, String> CONTENT_TYPE_TO_EXTENSION = Map.of(
+            "image/jpeg", "jpg",
+            "image/png", "png",
+            "image/webp", "webp"
+    );
+
 
     private final S3Client s3Client;
     private final S3Presigner presigner;
@@ -40,22 +46,36 @@ public class ImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    public String uploadStream(InputStream inputStream,
+                               long contentLength,
+                               String contentType) throws IOException {
 
+        String fileExtension = CONTENT_TYPE_TO_EXTENSION.get(contentType);
+        String objectKey = "test/file_" + UlidCreator.getUlid().toString() + "." + fileExtension;
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(objectKey)
+                .contentLength(contentLength)
+                .contentType(contentType)
+                .build();
 
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException,Exception {
+        s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(inputStream, contentLength));
+
+        return s3Client.utilities().getUrl(b-> b.bucket(bucket).key(objectKey)).toString();
+    }
+
+    public String upload(MultipartFile multipartFile) throws IOException {
 
         if(!isAllowedExtension(FilenameUtils.getExtension(multipartFile.getOriginalFilename()))){
             throw new BaseException(ErrorCode.UNACCEPTABLE_EXTENSION);
         }
-        return uploadFileToS3Direct(multipartFile,dirName);
+        return uploadFileToS3Direct(multipartFile);
     }
 
 
-    private String uploadFileToS3Direct(MultipartFile uploadFile, String dirName) throws IOException{
+    private String uploadFileToS3Direct(MultipartFile uploadFile) throws IOException{
 
-        InputStream inputStream = uploadFile.getInputStream();
-
-        String objectKey = dirName + "/" + UlidCreator.getUlid().toString() + "."+FilenameUtils.getExtension(uploadFile.getOriginalFilename());
+        String objectKey =  "test/file_" + UlidCreator.getUlid().toString() + "."+FilenameUtils.getExtension(uploadFile.getOriginalFilename());
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
@@ -64,14 +84,15 @@ public class ImageService {
                 .contentLength(uploadFile.getSize())
                 .build();
 
-        s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(inputStream, uploadFile.getSize()));
-        if (inputStream != null) {
-            inputStream.close();
+        try (InputStream inputStream = uploadFile.getInputStream()) {
+            s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(inputStream, uploadFile.getSize()));
         }
         return s3Client.utilities().getUrl(b-> b.bucket(bucket).key(objectKey)).toString();     // 업로드된 파일의 S3 URL 주소 반환
     }
 
-    public String generatePresignedUploadUrl(String fileExtension) {
+
+
+    public String generatePreSignedUploadUrl(String fileExtension) {
         String ulid = UlidCreator.getUlid().toString();
 
         if(!isAllowedExtension(fileExtension)){
