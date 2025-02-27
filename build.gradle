@@ -51,8 +51,6 @@ dependencies {
 	//aws-s3
 	implementation(platform("software.amazon.awssdk:bom:2.27.21"))
 	implementation("software.amazon.awssdk:s3")
-	implementation("software.amazon.awssdk:auth")
-	implementation("software.amazon.awssdk:sdk-core")
 
 	//io
 	implementation 'commons-io:commons-io:2.18.0'
