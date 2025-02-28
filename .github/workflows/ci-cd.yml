@@ -22,7 +22,7 @@ jobs:
       # (2)-1 Logback config 주입    
       - name: Decode logback-spring.xml
         run: |
-          echo ${{ secrets.LOGBACK_CONFIG }} | base64 --decode > src/main/resources/logback-spring.xml
+          echo "${{ secrets.LOGBACK_CONFIG }}" | base64 --decode > src/main/resources/logback-spring.xml
           
       # (3) JDK 설정
       - name: Set up Java
