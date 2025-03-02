@@ -12,10 +12,12 @@ import java.util.stream.Collectors;
 public class StampGetDto {
     private Long stampId;
     private boolean stampOn;
+    private Integer stampFinishCnt;
 
     public StampGetDto(Stamp stamp) {
         this.stampId = stamp.getId();
         this.stampOn = stamp.isStampOn();
+        this.stampFinishCnt = stamp.getStampFinishCnt();
     }
 
     public static List<StampGetDto> fromStampList(List<Stamp> stampList) {

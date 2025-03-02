@@ -65,4 +65,12 @@ public class StampController {
     public StampUsersGetListDto getStampUsers(@RequestParam("stampId") Long stampId) {
         return stampService.getStampUsers(stampId);
     }
+
+    /** 스탬프 완료 기준 설정*/
+
+    @PostMapping("/finishCnt")
+    public String setFinishCnt(@RequestParam("stampId") Long stampId,
+                               @RequestParam("cnt") Integer cnt) {
+        return stampService.setFinishCnt(stampId, cnt);
+    }
 }

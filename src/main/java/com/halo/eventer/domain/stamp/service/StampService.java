@@ -132,4 +132,12 @@ public class StampService {
 
         return finishedUser;
     }
+
+    /** 미션 성공 기준 정하기 */
+    @Transactional
+    public String setFinishCnt(Long stampId, Integer cnt) {
+        Stamp stamp = getStamp(stampId);
+        stamp.setStampFinishCnt(cnt);
+        return "변경 완료";
+    }
 }

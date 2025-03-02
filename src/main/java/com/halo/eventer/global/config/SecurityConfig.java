@@ -59,7 +59,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/", "/swagger-ui/**", "/v3/**","/swagger-ui.html").permitAll()
 
-                .antMatchers(HttpMethod.POST, "/widget/*","/vote", "/api/upWidgets","/stamp/user",
+                .antMatchers(HttpMethod.POST, "/widget/*","/vote", "/api/upWidgets",
                         "/stamp","/stamp/mission","/splash","/notice","/notice/banner","/missingPerson","/middleBanner","/map","/mapCategory/*","/menu",
                         "/manager","/lostItem","/inquiry/forAdmin/*",
                         "/festival","/festival/*/color","/festival/*/logo","/festival/*/main-menu","/festival/*/entry","/festival/*/view","/festival/*/location",

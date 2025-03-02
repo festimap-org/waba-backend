@@ -55,6 +55,12 @@ public class StampUserController {
         return stampUserService.checkFinish(uuid);
     }
 
+    /** 스탬프 완료 기준 확인 v2*/
+    @PatchMapping("/check/v2/{uuid}")
+    public String checkV2Finish(@PathVariable String uuid) {
+        return stampUserService.checkV2Finish(uuid);
+    }
+
     /** 사용자 삭제 */
     @DeleteMapping("/{uuid}")
     public String deleteStampByUuid(@PathVariable String uuid) {

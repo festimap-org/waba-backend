@@ -120,6 +120,19 @@ public class StampUserService {
         else return "미완료";
     }
 
+    @Transactional
+    public String checkV2Finish(String uuid){
+        StampUser stampUser = getStampUserFromUuid(uuid);
+        long count = stampUser.getUserMissions().stream()
+                .filter(UserMission::isComplete)
+                .count();
+        if(count < stampUser.getStamp().getStampFinishCnt()){
+            return "미완료";
+        }
+        stampUser.setFinished();
+        return "스탬프 투어 완료";
+    }
+
     /** 사용자 삭제 */
     @Transactional
     public String deleteStampByUuid(String uuid) {

@@ -18,6 +18,9 @@ public class Stamp {
 
     private boolean stampOn;
 
+    @Column(nullable = false)
+    private Integer stampFinishCnt = 0;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
     private Festival festival;
@@ -37,4 +40,5 @@ public class Stamp {
     public void setStampOn(boolean status) { this.stampOn = status; }
     public void setMissions(List<Mission> missions) { this.missions = missions; }
     public void setStampUsers(StampUser stampUser) { this.stampUsers.add(stampUser); }
+    public void setStampFinishCnt(Integer cnt) { this.stampFinishCnt = cnt; }
 }
