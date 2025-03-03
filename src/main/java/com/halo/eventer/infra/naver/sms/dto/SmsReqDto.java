@@ -10,11 +10,11 @@ import java.util.List;
 @Getter
 @Builder
 public class SmsReqDto {
-    String type;
-    String contentType;
-    String countryCode;
-    String from;
-    String content;
-    List<MessageDto> messages;
-    List<FileDto> files;
+  String type;
+  String contentType;
+  String countryCode;
+  String from;
+  String content;
+  List<MessageDto> messages;
+  List<FileDto> files;
 }

@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class VoteGetResDto {
-    private Long id;
-    private String title;
-    private String content;
+  private Long id;
+  private String title;
+  private String content;
 
-    public VoteGetResDto(Vote vote) {
-        this.id = vote.getId();
-        this.title = vote.getTitle();
-        this.content = vote.getContent();
-    }
+  public VoteGetResDto(Vote vote) {
+    this.id = vote.getId();
+    this.title = vote.getTitle();
+    this.content = vote.getContent();
+  }
 }

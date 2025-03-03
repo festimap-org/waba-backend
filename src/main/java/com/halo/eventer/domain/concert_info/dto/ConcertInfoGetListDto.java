@@ -1,16 +1,15 @@
 package com.halo.eventer.domain.concert_info.dto;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
 public class ConcertInfoGetListDto {
-    private List<ConcertInfoGetDto> concertInfoGetDto;
+  private List<ConcertInfoGetDto> concertInfoGetDto;
 
-    public ConcertInfoGetListDto(List<ConcertInfoGetDto> concertInfoGetDto) {
-        this.concertInfoGetDto = concertInfoGetDto;
-    }
+  public ConcertInfoGetListDto(List<ConcertInfoGetDto> concertInfoGetDto) {
+    this.concertInfoGetDto = concertInfoGetDto;
+  }
 }

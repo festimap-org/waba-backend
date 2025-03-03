@@ -8,9 +8,9 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class NoticeInquireListDto {
-    private List<NoticeInquireDto> noticeInquireListDto;
+  private List<NoticeInquireDto> noticeInquireListDto;
 
-    public NoticeInquireListDto(List<NoticeInquireDto> noticeInquireListDto) {
-        this.noticeInquireListDto = noticeInquireListDto;
-    }
+  public NoticeInquireListDto(List<NoticeInquireDto> noticeInquireListDto) {
+    this.noticeInquireListDto = noticeInquireListDto;
+  }
 }

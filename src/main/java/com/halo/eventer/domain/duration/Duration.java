@@ -5,13 +5,12 @@ import com.halo.eventer.domain.concert.Concert;
 import com.halo.eventer.domain.duration.dto.DurationCreateDto;
 import com.halo.eventer.domain.duration_map.DurationMap;
 import com.halo.eventer.domain.festival.Festival;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor

@@ -18,59 +18,59 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/stamp")
 public class StampController {
-    private final StampService stampService;
+  private final StampService stampService;
 
-    /** 축제 id로 스탬프 생성 */
-    @PostMapping
-    public StampGetListDto registerStamp(@RequestParam("festivalId") Long festivalId) {
-        return stampService.registerStamp(festivalId);
-    }
+  /** 축제 id로 스탬프 생성 */
+  @PostMapping
+  public StampGetListDto registerStamp(@RequestParam("festivalId") Long festivalId) {
+    return stampService.registerStamp(festivalId);
+  }
 
-    /** 축제 id로 스탬프 조회 */
-    @GetMapping
-    public StampGetListDto getStampList(@RequestParam("festivalId") Long festivalId) {
-        return stampService.getStampByFestivalId(festivalId);
-    }
+  /** 축제 id로 스탬프 조회 */
+  @GetMapping
+  public StampGetListDto getStampList(@RequestParam("festivalId") Long festivalId) {
+    return stampService.getStampByFestivalId(festivalId);
+  }
 
-    /** 스탬프 상태 변경 */
-    @StampOnUpdateApi
-    @PatchMapping
-    public String updateStampOn(@RequestParam("stampId") Long stampId) {
-        return stampService.updateStampOn(stampId);
-    }
+  /** 스탬프 상태 변경 */
+  @StampOnUpdateApi
+  @PatchMapping
+  public String updateStampOn(@RequestParam("stampId") Long stampId) {
+    return stampService.updateStampOn(stampId);
+  }
 
-    /** 스탬프 삭제 */
-    @DeleteMapping
-    public String deleteStamp(@RequestParam("stampId") Long stampId) {
-        return stampService.deleteStamp(stampId);
-    }
+  /** 스탬프 삭제 */
+  @DeleteMapping
+  public String deleteStamp(@RequestParam("stampId") Long stampId) {
+    return stampService.deleteStamp(stampId);
+  }
 
-    /** 미션 생성 */
-    @MissionListSetApi
-    @PostMapping("/mission")
-    public String setMissionList(@RequestParam("stampId") Long stampId, @RequestBody MissionSetListDto dto) {
-        return stampService.setMission(stampId, dto);
-    }
+  /** 미션 생성 */
+  @MissionListSetApi
+  @PostMapping("/mission")
+  public String setMissionList(
+      @RequestParam("stampId") Long stampId, @RequestBody MissionSetListDto dto) {
+    return stampService.setMission(stampId, dto);
+  }
 
-    /** 미션 리스트 조회 */
-    @MissionListGetApi
-    @GetMapping("/missions")
-    public MissionSummaryGetListDto getMissionList(@RequestParam("stampId") Long stampId) {
-        return stampService.getMissions(stampId);
-    }
+  /** 미션 리스트 조회 */
+  @MissionListGetApi
+  @GetMapping("/missions")
+  public MissionSummaryGetListDto getMissionList(@RequestParam("stampId") Long stampId) {
+    return stampService.getMissions(stampId);
+  }
 
-    /** 해당 스탬프 유저들 조회 */
-    @StampUsersListGetApi
-    @GetMapping("/users")
-    public StampUsersGetListDto getStampUsers(@RequestParam("stampId") Long stampId) {
-        return stampService.getStampUsers(stampId);
-    }
+  /** 해당 스탬프 유저들 조회 */
+  @StampUsersListGetApi
+  @GetMapping("/users")
+  public StampUsersGetListDto getStampUsers(@RequestParam("stampId") Long stampId) {
+    return stampService.getStampUsers(stampId);
+  }
 
-    /** 스탬프 완료 기준 설정*/
-
-    @PostMapping("/finishCnt")
-    public String setFinishCnt(@RequestParam("stampId") Long stampId,
-                               @RequestParam("cnt") Integer cnt) {
-        return stampService.setFinishCnt(stampId, cnt);
-    }
+  /** 스탬프 완료 기준 설정 */
+  @PostMapping("/finishCnt")
+  public String setFinishCnt(
+      @RequestParam("stampId") Long stampId, @RequestParam("cnt") Integer cnt) {
+    return stampService.setFinishCnt(stampId, cnt);
+  }
 }

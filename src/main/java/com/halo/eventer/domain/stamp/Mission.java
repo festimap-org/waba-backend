@@ -1,9 +1,8 @@
 package com.halo.eventer.domain.stamp;
 
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Entity
 @Getter

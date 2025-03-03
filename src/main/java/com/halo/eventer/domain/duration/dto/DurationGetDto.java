@@ -2,14 +2,12 @@ package com.halo.eventer.domain.duration.dto;
 
 
 import com.halo.eventer.domain.duration.Duration;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @NoArgsConstructor

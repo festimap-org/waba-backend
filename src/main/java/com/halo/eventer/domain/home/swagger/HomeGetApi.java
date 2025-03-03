@@ -7,10 +7,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.MediaType;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import org.springframework.http.MediaType;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(summary = "메인 페이지 조회", description = "축제 id로 축제 메인페이지 조회 (메인 배너에 들어갈 게시글이 response")

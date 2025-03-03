@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class VoteLikeUlidResDto {
-    private String ulid;
+  private String ulid;
 
-    public VoteLikeUlidResDto(String ulid) {
-        this.ulid = ulid;
-    }
+  public VoteLikeUlidResDto(String ulid) {
+    this.ulid = ulid;
+  }
 }

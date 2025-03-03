@@ -10,11 +10,10 @@ import com.halo.eventer.domain.notice.dto.RegisteredBannerGetDto;
 import com.halo.eventer.domain.up_widget.UpWidget;
 import com.halo.eventer.domain.up_widget.dto.UpWidgetGetDto;
 import com.halo.eventer.domain.widget.dto.WidgetDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor

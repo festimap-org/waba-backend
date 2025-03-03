@@ -2,13 +2,12 @@ package com.halo.eventer.domain.inquiry;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.inquiry.dto.InquiryCreateReqDto;
+import java.time.LocalDateTime;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter

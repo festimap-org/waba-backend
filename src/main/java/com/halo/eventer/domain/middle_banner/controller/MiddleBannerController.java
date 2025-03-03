@@ -12,37 +12,47 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/middleBanner")
 public class MiddleBannerController {
-    private final MiddleBannerService middleBannerService;
-    /** 중간 배너 생성 */
-    @PostMapping()
-    public MiddleBannerResDto createMiddleBanner(@RequestParam("festivalId") Long festivalId,
-                                                 @RequestBody MiddleBannerCreateDto middleBannerCreateDto){
-        return new MiddleBannerResDto(middleBannerService.createMiddleBanner(festivalId, middleBannerCreateDto));
-    }
-    /** 전체조회 */
-    @GetMapping()
-    public MiddleBannerListDto getMiddleBannerList(@RequestParam("festivalId") Long festivalId){
-        return new MiddleBannerListDto(middleBannerService.getMiddleBannerList(festivalId));
-    }
-    /** 단일조회 */
-    @GetMapping("/{middleBannerId}")
-    public MiddleBannerResDto getMiddleBanner(@PathVariable("middleBannerId") Long middleBannerId){
-        return new MiddleBannerResDto(middleBannerService.getMiddleBanner(middleBannerId));
-    }
-    /** 수정 */
-    @PatchMapping()
-    public MiddleBannerResDto updateMiddleBanner(@RequestParam("middleBannerId") Long middleBannerId,
-                                                 @RequestBody MiddleBannerCreateDto middleBannerCreateDto){
-        return new MiddleBannerResDto(middleBannerService.updateMiddleBanner(middleBannerId,middleBannerCreateDto));
-    }
-    /** 순서 수정 */
-    @PatchMapping("/rank")
-    public String updateRank(@RequestBody MiddleBannerEditListDto middleBannerEditListDto){
-        return middleBannerService.updateRank(middleBannerEditListDto);
-    }
-    /** 삭제 */
-    @DeleteMapping()
-    public String deleteMiddleBanner(@RequestParam("middleBannerId") Long middleBannerId){
-        return middleBannerService.deleteMiddleBanner(middleBannerId);
-    }
+  private final MiddleBannerService middleBannerService;
+
+  /** 중간 배너 생성 */
+  @PostMapping()
+  public MiddleBannerResDto createMiddleBanner(
+      @RequestParam("festivalId") Long festivalId,
+      @RequestBody MiddleBannerCreateDto middleBannerCreateDto) {
+    return new MiddleBannerResDto(
+        middleBannerService.createMiddleBanner(festivalId, middleBannerCreateDto));
+  }
+
+  /** 전체조회 */
+  @GetMapping()
+  public MiddleBannerListDto getMiddleBannerList(@RequestParam("festivalId") Long festivalId) {
+    return new MiddleBannerListDto(middleBannerService.getMiddleBannerList(festivalId));
+  }
+
+  /** 단일조회 */
+  @GetMapping("/{middleBannerId}")
+  public MiddleBannerResDto getMiddleBanner(@PathVariable("middleBannerId") Long middleBannerId) {
+    return new MiddleBannerResDto(middleBannerService.getMiddleBanner(middleBannerId));
+  }
+
+  /** 수정 */
+  @PatchMapping()
+  public MiddleBannerResDto updateMiddleBanner(
+      @RequestParam("middleBannerId") Long middleBannerId,
+      @RequestBody MiddleBannerCreateDto middleBannerCreateDto) {
+    return new MiddleBannerResDto(
+        middleBannerService.updateMiddleBanner(middleBannerId, middleBannerCreateDto));
+  }
+
+  /** 순서 수정 */
+  @PatchMapping("/rank")
+  public String updateRank(@RequestBody MiddleBannerEditListDto middleBannerEditListDto) {
+    return middleBannerService.updateRank(middleBannerEditListDto);
+  }
+
+  /** 삭제 */
+  @DeleteMapping()
+  public String deleteMiddleBanner(@RequestParam("middleBannerId") Long middleBannerId) {
+    return middleBannerService.deleteMiddleBanner(middleBannerId);
+  }
 }

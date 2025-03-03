@@ -2,10 +2,9 @@ package com.halo.eventer.domain.inquiry.dto;
 
 
 import com.halo.eventer.global.common.PageInfo;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Getter
 @NoArgsConstructor

@@ -2,10 +2,9 @@ package com.halo.eventer.domain.inquiry.dto;
 
 
 import com.halo.eventer.domain.inquiry.Inquiry;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor

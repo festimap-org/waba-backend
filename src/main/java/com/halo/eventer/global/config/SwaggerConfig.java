@@ -10,28 +10,24 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
-    @Bean
-    public OpenAPI openAPI() {
-        return new OpenAPI()
-                .components(new Components())
-                .info(apiInfo())
-                .components(new Components().addSecuritySchemes("bearer-key",
-                        new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")))
-                .info(apiInfo())
-                .addSecurityItem(new SecurityRequirement().addList("bearer-key"));
+  @Bean
+  public OpenAPI openAPI() {
+    return new OpenAPI()
+        .components(new Components())
+        .info(apiInfo())
+        .components(
+            new Components()
+                .addSecuritySchemes(
+                    "bearer-key",
+                    new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")))
+        .info(apiInfo())
+        .addSecurityItem(new SecurityRequirement().addList("bearer-key"));
+  }
 
-
-
-    }
-
-    private Info apiInfo() {
-        return new Info()
-                .title("whatever API 명세서")
-                .description("Springdoc을 사용한 명세서")
-                .version("1.0.0");
-    }
-
-
-
-
+  private Info apiInfo() {
+    return new Info().title("whatever API 명세서").description("Springdoc을 사용한 명세서").version("1.0.0");
+  }
 }

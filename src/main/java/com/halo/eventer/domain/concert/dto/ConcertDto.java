@@ -3,11 +3,10 @@ package com.halo.eventer.domain.concert.dto;
 import com.halo.eventer.domain.concert.Concert;
 import com.halo.eventer.domain.duration.dto.DurationGetDto;
 import com.halo.eventer.domain.image.dto.ImageUpdateDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter

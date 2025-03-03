@@ -9,9 +9,9 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class WidgetGetListDto {
-    private List<Widget> widgets;
+  private List<Widget> widgets;
 
-    public WidgetGetListDto(List<Widget> widgets) {
-        this.widgets = widgets;
-    }
+  public WidgetGetListDto(List<Widget> widgets) {
+    this.widgets = widgets;
+  }
 }

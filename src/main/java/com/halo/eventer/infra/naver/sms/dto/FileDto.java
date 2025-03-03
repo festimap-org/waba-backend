@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class FileDto {
-    private String fileId;
+  private String fileId;
 
-    public FileDto(String fileId) {
-        this.fileId = fileId;
-    }
+  public FileDto(String fileId) {
+    this.fileId = fileId;
+  }
 }

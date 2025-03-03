@@ -13,76 +13,78 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @RequiredArgsConstructor
 @Service
 public class SplashService {
-    private final FestivalService festivalService;
-    private final SplashRepository splashRepository;
+  private final FestivalService festivalService;
+  private final SplashRepository splashRepository;
 
-    /** 이미지 업로드 + 수정 */
-    @Transactional
-    public String uploadSplashImage(Long festivalId, UploadImageDto uploadImageDto) {
-        Festival festival = festivalService.getFestival(festivalId);
+  /** 이미지 업로드 + 수정 */
+  @Transactional
+  public String uploadSplashImage(Long festivalId, UploadImageDto uploadImageDto) {
+    Festival festival = festivalService.getFestival(festivalId);
 
-        Splash splash = splashRepository.findByFestivalId(festivalId).orElse(new Splash(festival));
-        for (ImageLayerDto layer: uploadImageDto.getImageLayers()) {
-            switch (layer.getLayerType()) {
-                case "background":
-                    splash.setBackgroundImage(layer.getUrl());
-                    break;
-                case "top":
-                    splash.setTopLayerImage(layer.getUrl());
-                    break;
-                case "center":
-                    splash.setCenterLayerImage(layer.getUrl());
-                    break;
-                case "bottom":
-                    splash.setBottomLayerImage(layer.getUrl());
-                    break;
-                default:
-                    throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
-            }
-        }
-
-        splashRepository.save(splash);
-        return "이미지 업로드 성공";
+    Splash splash = splashRepository.findByFestivalId(festivalId).orElse(new Splash(festival));
+    for (ImageLayerDto layer : uploadImageDto.getImageLayers()) {
+      switch (layer.getLayerType()) {
+        case "background":
+          splash.setBackgroundImage(layer.getUrl());
+          break;
+        case "top":
+          splash.setTopLayerImage(layer.getUrl());
+          break;
+        case "center":
+          splash.setCenterLayerImage(layer.getUrl());
+          break;
+        case "bottom":
+          splash.setBottomLayerImage(layer.getUrl());
+          break;
+        default:
+          throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
+      }
     }
 
-    /** 이미지 삭제 */
-    @Transactional
-    public String deleteSplashImage(Long festivalId, DeleteImageDto deleteImageDto) {
-        Festival festival = festivalService.getFestival(festivalId);
+    splashRepository.save(splash);
+    return "이미지 업로드 성공";
+  }
 
-        Splash splash = splashRepository.findByFestivalId(festivalId).orElse(new Splash(festival));
-        for (String layer: deleteImageDto.getLayerTypes()) {
-            switch (layer) {
-                case "background":
-                    splash.setBackgroundImage(null);
-                    break;
-                case "top":
-                    splash.setTopLayerImage(null);
-                    break;
-                case "center":
-                    splash.setCenterLayerImage(null);
-                    break;
-                case "bottom":
-                    splash.setBottomLayerImage(null);
-                    break;
-                default:
-                    throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
-            }
-        }
+  /** 이미지 삭제 */
+  @Transactional
+  public String deleteSplashImage(Long festivalId, DeleteImageDto deleteImageDto) {
+    Festival festival = festivalService.getFestival(festivalId);
 
-        splashRepository.save(splash);
-        return "이미지 삭제 성공";
+    Splash splash = splashRepository.findByFestivalId(festivalId).orElse(new Splash(festival));
+    for (String layer : deleteImageDto.getLayerTypes()) {
+      switch (layer) {
+        case "background":
+          splash.setBackgroundImage(null);
+          break;
+        case "top":
+          splash.setTopLayerImage(null);
+          break;
+        case "center":
+          splash.setCenterLayerImage(null);
+          break;
+        case "bottom":
+          splash.setBottomLayerImage(null);
+          break;
+        default:
+          throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
+      }
     }
 
-    /** 전체 레이어 조회 */
-    public Splash getSplash(Long festivalId) {
-        Festival festival = festivalService.getFestival(festivalId);
-        Splash splash = splashRepository.findByFestivalId(festivalId).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+    splashRepository.save(splash);
+    return "이미지 삭제 성공";
+  }
 
-        return splash;
-    }
+  /** 전체 레이어 조회 */
+  public Splash getSplash(Long festivalId) {
+    Festival festival = festivalService.getFestival(festivalId);
+    Splash splash =
+        splashRepository
+            .findByFestivalId(festivalId)
+            .orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+
+    return splash;
+  }
 }

@@ -8,9 +8,9 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class ConcertGetListDto {
-    private List<ConcertGetDto> concertGetListDto;
+  private List<ConcertGetDto> concertGetListDto;
 
-    public ConcertGetListDto(List<ConcertGetDto> concertGetListDto) {
-        this.concertGetListDto = concertGetListDto;
-    }
+  public ConcertGetListDto(List<ConcertGetDto> concertGetListDto) {
+    this.concertGetListDto = concertGetListDto;
+  }
 }

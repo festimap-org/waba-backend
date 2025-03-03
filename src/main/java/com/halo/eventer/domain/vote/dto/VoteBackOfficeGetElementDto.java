@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class VoteBackOfficeGetElementDto {
-    private Long id;
-    private String title;
-    private Long likeCnt;
+  private Long id;
+  private String title;
+  private Long likeCnt;
 
-    public VoteBackOfficeGetElementDto(Vote vote) {
-        this.id = vote.getId();
-        this.title = vote.getTitle();
-        this.likeCnt = vote.getLikeCnt();
-    }
+  public VoteBackOfficeGetElementDto(Vote vote) {
+    this.id = vote.getId();
+    this.title = vote.getTitle();
+    this.likeCnt = vote.getLikeCnt();
+  }
 }
