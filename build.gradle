@@ -27,7 +27,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	//Swagger
-	implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
+	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
 	//lombok
 	compileOnly 'org.projectlombok:lombok'
@@ -45,6 +45,24 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	testImplementation 'org.springframework.security:spring-security-test'
 
+	//httpClient
+	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+	//aws-s3
+	implementation(platform("software.amazon.awssdk:bom:2.27.21"))
+	implementation("software.amazon.awssdk:s3")
+
+	//io
+	implementation 'commons-io:commons-io:2.18.0'
+
+	//ulid
+	implementation 'com.github.f4b6a3:ulid-creator:5.2.3'
+
+	//actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	//prometheus-micrometer
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('bootBuildImage') {
