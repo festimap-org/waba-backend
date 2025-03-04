@@ -4,12 +4,11 @@ package com.halo.eventer.domain.vote;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.vote.dto.VoteCreateReqDto;
 import com.halo.eventer.domain.vote.dto.VoteUpdateReqDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor

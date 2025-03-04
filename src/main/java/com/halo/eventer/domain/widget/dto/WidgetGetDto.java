@@ -2,11 +2,10 @@ package com.halo.eventer.domain.widget.dto;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.widget.Widget;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor

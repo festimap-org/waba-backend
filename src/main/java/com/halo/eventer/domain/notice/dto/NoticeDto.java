@@ -3,12 +3,11 @@ package com.halo.eventer.domain.notice.dto;
 import com.halo.eventer.domain.image.dto.ImageUpdateDto;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.global.common.ArticleType;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor

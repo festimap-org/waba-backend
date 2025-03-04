@@ -1,9 +1,8 @@
 package com.halo.eventer.domain.duration.repository;
 
 import com.halo.eventer.domain.duration.Duration;
-import org.springframework.data.repository.CrudRepository;
-
 import java.util.List;
+import org.springframework.data.repository.CrudRepository;
 
 public interface DurationRepository extends CrudRepository<Duration, Long> {
 

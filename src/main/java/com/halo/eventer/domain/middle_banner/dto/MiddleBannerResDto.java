@@ -8,17 +8,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MiddleBannerResDto {
 
-    private Long id;
-    private String name;
-    private String url;
-    private String image;
-    private Integer bannerRank;
+  private Long id;
+  private String name;
+  private String url;
+  private String image;
+  private Integer bannerRank;
 
-    public MiddleBannerResDto(MiddleBanner middleBanner) {
-        this.id = middleBanner.getId();
-        this.name = middleBanner.getName();
-        this.url = middleBanner.getUrl();
-        this.image = middleBanner.getImage();
-        this.bannerRank = middleBanner.getBannerRank();
-    }
+  public MiddleBannerResDto(MiddleBanner middleBanner) {
+    this.id = middleBanner.getId();
+    this.name = middleBanner.getName();
+    this.url = middleBanner.getUrl();
+    this.image = middleBanner.getImage();
+    this.bannerRank = middleBanner.getBannerRank();
+  }
 }

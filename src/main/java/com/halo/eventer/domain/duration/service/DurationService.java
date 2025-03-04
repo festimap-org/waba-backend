@@ -2,21 +2,16 @@ package com.halo.eventer.domain.duration.service;
 
 
 import com.halo.eventer.domain.duration.Duration;
-import com.halo.eventer.domain.duration.dto.DurationCreateDto;
 import com.halo.eventer.domain.duration.dto.DurationCreateListDto;
 import com.halo.eventer.domain.duration.dto.DurationGetDto;
 import com.halo.eventer.domain.duration.dto.DurationGetListDto;
 import com.halo.eventer.domain.duration.repository.DurationRepository;
-import com.halo.eventer.domain.festival.service.FestivalService;
-import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.domain.festival.Festival;
-import com.halo.eventer.domain.festival.repository.FestivalRepository;
+import com.halo.eventer.domain.festival.service.FestivalService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

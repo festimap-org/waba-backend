@@ -1,12 +1,11 @@
 package com.halo.eventer.domain.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.*;
 
 @Entity
 @Getter

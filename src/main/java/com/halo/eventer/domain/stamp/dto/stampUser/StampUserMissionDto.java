@@ -2,9 +2,8 @@ package com.halo.eventer.domain.stamp.dto.stampUser;
 
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
-import lombok.Getter;
-
 import java.util.List;
+import lombok.Getter;
 
 @Getter
 public class StampUserMissionDto {

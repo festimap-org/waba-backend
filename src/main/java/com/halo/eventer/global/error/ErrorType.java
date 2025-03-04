@@ -1,5 +1,9 @@
 package com.halo.eventer.global.error;
 
 public enum ErrorType {
-    TOAST,POPUP,INLINE,MODAL,BANNER
+  TOAST,
+  POPUP,
+  INLINE,
+  MODAL,
+  BANNER
 }

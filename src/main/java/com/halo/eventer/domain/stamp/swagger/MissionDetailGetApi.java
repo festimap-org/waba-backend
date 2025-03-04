@@ -13,10 +13,13 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(summary = "단일 미션 조회", description = "missionId로 조회")
-@ApiResponses(value = {
-        @ApiResponse(responseCode = "200",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = MissionDetailGetDto.class)))
-})
-public @interface MissionDetailGetApi {
-}
+@ApiResponses(
+    value = {
+      @ApiResponse(
+          responseCode = "200",
+          content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = MissionDetailGetDto.class)))
+    })
+public @interface MissionDetailGetApi {}

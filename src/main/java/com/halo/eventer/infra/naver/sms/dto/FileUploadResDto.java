@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @ToString
 public class FileUploadResDto {
-    private String fileId;
-    private String createTime;
-    private String expireTime;
+  private String fileId;
+  private String createTime;
+  private String expireTime;
 }

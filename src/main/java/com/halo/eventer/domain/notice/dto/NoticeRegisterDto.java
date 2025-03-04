@@ -2,9 +2,8 @@ package com.halo.eventer.domain.notice.dto;
 
 
 import com.halo.eventer.global.common.ArticleType;
-import lombok.*;
-
 import java.util.List;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor

@@ -9,10 +9,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.MediaType;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import org.springframework.http.MediaType;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(summary = "고정 부스 조회용 + 부스 관리 기능용", description = "부스 추가에서 고정 부스 조회와, 부스관리에서 부스 카테고리 ID로 부스를 조회할 수 있다.")

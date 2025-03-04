@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class VoteCreateReqDto {
-    private Long festivalId;
-    private String title;
-    private String content;
+  private Long festivalId;
+  private String title;
+  private String content;
 }

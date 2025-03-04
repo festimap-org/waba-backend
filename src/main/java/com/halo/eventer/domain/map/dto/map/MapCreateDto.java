@@ -1,10 +1,8 @@
 package com.halo.eventer.domain.map.dto.map;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor

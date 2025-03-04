@@ -1,10 +1,9 @@
 package com.halo.eventer.domain.manager;
 
 import com.halo.eventer.domain.festival.Festival;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor

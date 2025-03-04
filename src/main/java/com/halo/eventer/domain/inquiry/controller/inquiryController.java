@@ -4,11 +4,9 @@ package com.halo.eventer.domain.inquiry.controller;
 
 import com.halo.eventer.domain.inquiry.dto.*;
 import com.halo.eventer.domain.inquiry.service.InquiryService;
+import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import software.amazon.awssdk.services.s3.endpoints.internal.Value;
-
-import javax.validation.constraints.Min;
 
 @RestController
 @RequiredArgsConstructor

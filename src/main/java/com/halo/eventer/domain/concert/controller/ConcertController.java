@@ -15,42 +15,40 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/concert")
 public class ConcertController {
 
-    private final ConcertService concertService;
+  private final ConcertService concertService;
 
-    /** 공연 등록 */
-    @PostMapping
-    public String registerConcert(@RequestBody ConcertRegisterDto registerDto, @RequestParam("festivalId") Long id) {
-        return concertService.registerConcert(registerDto, id);
-    }
+  /** 공연 등록 */
+  @PostMapping
+  public String registerConcert(
+      @RequestBody ConcertRegisterDto registerDto, @RequestParam("festivalId") Long id) {
+    return concertService.registerConcert(registerDto, id);
+  }
 
-    /** 공연 전체 조회 */
-    @ConcertGetListApi
-    @GetMapping
-    public ConcertGetListDto getConcertList(@RequestParam("festivalId") Long id) {
-        return concertService.getConcertList(id);
-    }
+  /** 공연 전체 조회 */
+  @ConcertGetListApi
+  @GetMapping
+  public ConcertGetListDto getConcertList(@RequestParam("festivalId") Long id) {
+    return concertService.getConcertList(id);
+  }
 
-    /** 단일 공연 조회 */
-    @ConcertGetApi
-    @GetMapping("/{concertId}")
-    public ConcertDto getConcert(@PathVariable("concertId") Long id) {
-        return new ConcertDto(concertService.getConcert(id));
-    }
+  /** 단일 공연 조회 */
+  @ConcertGetApi
+  @GetMapping("/{concertId}")
+  public ConcertDto getConcert(@PathVariable("concertId") Long id) {
+    return new ConcertDto(concertService.getConcert(id));
+  }
 
+  /** 공연 정보 업데이트 */
+  @ConcertUpdateApi
+  @PatchMapping("/{concertId}")
+  public ConcertUpdateResponseDto updateConcert(
+      @PathVariable("concertId") Long id, @RequestBody ConcertUpdateDto updateDto) {
+    return concertService.updateConcert(id, updateDto);
+  }
 
-    /** 공연 정보 업데이트 */
-    @ConcertUpdateApi
-    @PatchMapping("/{concertId}")
-    public ConcertUpdateResponseDto updateConcert(@PathVariable("concertId") Long id, @RequestBody ConcertUpdateDto updateDto) {
-        return concertService.updateConcert(id, updateDto);
-    }
-
-    /** 공연 삭제 */
-    @DeleteMapping("/{concertId}")
-    public String deleteConcert(@PathVariable("concertId") Long id){
-        return concertService.deleteConcert(id);
-    }
-
-
-
+  /** 공연 삭제 */
+  @DeleteMapping("/{concertId}")
+  public String deleteConcert(@PathVariable("concertId") Long id) {
+    return concertService.deleteConcert(id);
+  }
 }

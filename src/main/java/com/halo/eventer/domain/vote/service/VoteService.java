@@ -29,116 +29,119 @@ import java.util.Optional;
 @Slf4j
 public class VoteService {
 
-    private final VoteRepository voteRepository;
-    private final FestivalService festivalService;
-    private final VoteLikeRepository voteLikeRepository;
+  private final VoteRepository voteRepository;
+  private final FestivalService festivalService;
+  private final VoteLikeRepository voteLikeRepository;
 
-    @Transactional
-    public List<Vote> createVote(VoteCreateReqDto dto){
-        Festival festival = festivalService.getFestival(dto.getFestivalId());
-        voteRepository.save(new Vote(dto,festival));
-        return voteRepository.findAllByFestival(festival);
+  @Transactional
+  public List<Vote> createVote(VoteCreateReqDto dto) {
+    Festival festival = festivalService.getFestival(dto.getFestivalId());
+    voteRepository.save(new Vote(dto, festival));
+    return voteRepository.findAllByFestival(festival);
+  }
+
+  public List<Vote> getVoteListForBackOffice(Long festivalId) {
+    Festival festival = festivalService.getFestival(festivalId);
+    return voteRepository.findAllByFestival(festival);
+  }
+
+  public Vote getVote(Long voteId) {
+    return voteRepository
+        .findById(voteId)
+        .orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+  }
+
+  @Transactional
+  public Vote updateVote(Long voteId, VoteUpdateReqDto dto) {
+    Vote vote = getVote(voteId);
+    vote.updateVote(dto);
+    return vote;
+  }
+
+  @Transactional
+  public List<Vote> deleteVoteId(Long voteId, Long festivalId) {
+    voteRepository.deleteById(voteId);
+    Festival festival = festivalService.getFestival(festivalId);
+    return voteRepository.findAllByFestival(festival);
+  }
+
+  public List<Vote> getVoteListForClient(Long festivalId) {
+    Festival festival = festivalService.getFestival(festivalId);
+    return voteRepository.findAllByFestival(festival);
+  }
+
+  @Transactional
+  public String increaseLikeCnt(
+      Long voteId, HttpServletRequest request, HttpServletResponse response) {
+
+    // 쿠키 검증
+    boolean hasLiked = hasLikedCookie(request, voteId);
+    log.info("쿠키 검증: {}", hasLiked);
+    if (hasLiked) {
+      throw new BaseException(ErrorCode.ALREADY_LIKE);
+    }
+    String ulid = request.getHeader("X-ULID");
+    log.info("ip: {}", ulid);
+    if (ulid == null) {
+      ulid = UlidCreator.getUlid().toString();
     }
 
-    public List<Vote> getVoteListForBackOffice(Long festivalId) {
-        Festival festival = festivalService.getFestival(festivalId);
-        return voteRepository.findAllByFestival(festival);
+    Optional<VoteLike> voteLike = voteLikeRepository.findByVote_IdAndUlid(voteId, ulid);
+    if (voteLike.isPresent()) {
+      log.info("ulid 존재: {}", voteLike.get().getUlid());
+      LocalDateTime lastLikedTime = voteLike.get().getVoteTime();
+      LocalDateTime now = LocalDateTime.now();
+      if (lastLikedTime.plusHours(24).isAfter(now)) {
+        addLikeCookie(response, voteId);
+        throw new BaseException(ErrorCode.ALREADY_LIKE);
+      }
+      Vote vote = getVote(voteId);
+      vote.setLikeCnt();
+      voteLike.get().setVoteTime(now);
+      addLikeCookie(response, voteId);
+      return ulid;
+    } else {
+      Vote vote = getVote(voteId);
+      VoteLike like = new VoteLike(ulid, vote);
+      voteLikeRepository.save(like);
+      vote.setLikeCnt();
+      addLikeCookie(response, voteId);
+      return like.getUlid();
     }
+  }
 
-    public Vote getVote(Long voteId) {
-        return voteRepository.findById(voteId).orElseThrow(()->new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
-    }
-
-    @Transactional
-    public Vote updateVote(Long voteId, VoteUpdateReqDto dto) {
-        Vote vote = getVote(voteId);
-        vote.updateVote(dto);
-        return vote;
-    }
-
-    @Transactional
-    public List<Vote> deleteVoteId(Long voteId,Long festivalId) {
-        voteRepository.deleteById(voteId);
-        Festival festival = festivalService.getFestival(festivalId);
-        return voteRepository.findAllByFestival(festival);
-    }
-
-    public List<Vote> getVoteListForClient(Long festivalId) {
-        Festival festival = festivalService.getFestival(festivalId);
-        return voteRepository.findAllByFestival(festival);
-    }
-
-    @Transactional
-    public String increaseLikeCnt(Long voteId, HttpServletRequest request, HttpServletResponse response) {
-
-        // 쿠키 검증
-        boolean hasLiked = hasLikedCookie(request, voteId);
-        log.info("쿠키 검증: {}",hasLiked);
-        if (hasLiked) {
-            throw new BaseException(ErrorCode.ALREADY_LIKE);
+  private boolean hasLikedCookie(HttpServletRequest request, Long voteId) {
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+      for (Cookie cookie : cookies) {
+        if (("vote_" + voteId).equals(cookie.getName()) && "liked".equals(cookie.getValue())) {
+          return true;
         }
-        String ulid = request.getHeader("X-ULID");
-        log.info("ip: {}",ulid);
-        if(ulid == null){
-            ulid = UlidCreator.getUlid().toString();
-        }
-
-        Optional<VoteLike> voteLike = voteLikeRepository.findByVote_IdAndUlid(voteId,ulid);
-        if(voteLike.isPresent()) {
-            log.info("ulid 존재: {}", voteLike.get().getUlid());
-            LocalDateTime lastLikedTime = voteLike.get().getVoteTime();
-            LocalDateTime now = LocalDateTime.now();
-            if (lastLikedTime.plusHours(24).isAfter(now)) {
-                addLikeCookie(response, voteId);
-                throw new BaseException(ErrorCode.ALREADY_LIKE);
-            }
-            Vote vote = getVote(voteId);
-            vote.setLikeCnt();
-            voteLike.get().setVoteTime(now);
-            addLikeCookie(response, voteId);
-            return ulid;
-        }
-        else{
-            Vote vote = getVote(voteId);
-            VoteLike like = new VoteLike(ulid,vote);
-            voteLikeRepository.save(like);
-            vote.setLikeCnt();
-            addLikeCookie(response, voteId);
-            return like.getUlid();
-        }
+      }
     }
+    return false;
+  }
 
-    private boolean hasLikedCookie(HttpServletRequest request, Long voteId) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (("vote_" + voteId).equals(cookie.getName()) && "liked".equals(cookie.getValue())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+  private String getClientIp(HttpServletRequest request) {
+    String ipAddress = request.getHeader("X-Forwarded-For");
+    if (ipAddress == null || ipAddress.isEmpty()) {
+      ipAddress = request.getRemoteAddr();
+    } else {
+      // 다중 프록시 환경에서는 첫 번째 IP가 클라이언트 IP
+      ipAddress = ipAddress.split(",")[0];
     }
+    return ipAddress;
+  }
 
-    private String getClientIp(HttpServletRequest request) {
-        String ipAddress = request.getHeader("X-Forwarded-For");
-        if (ipAddress == null || ipAddress.isEmpty()) {
-            ipAddress = request.getRemoteAddr();
-        } else {
-            // 다중 프록시 환경에서는 첫 번째 IP가 클라이언트 IP
-            ipAddress = ipAddress.split(",")[0];
-        }
-        return ipAddress;
-    }
+  private void addLikeCookie(HttpServletResponse response, Long voteId) {
+    ResponseCookie cookie =
+        ResponseCookie.from("vote_" + voteId, "liked")
+            .maxAge(60 * 60 * 24)
+            .path("/")
+            .secure(true)
+            .sameSite("None")
+            .build();
 
-    private void addLikeCookie(HttpServletResponse response, Long voteId) {
-        ResponseCookie cookie = ResponseCookie.from("vote_" + voteId, "liked")
-                .maxAge(60 * 60 * 24)
-                .path("/")
-                .secure(true)
-                .sameSite("None")
-                .build();
-
-        response.addHeader("Set-Cookie",cookie.toString());
-    }
+    response.addHeader("Set-Cookie", cookie.toString());
+  }
 }

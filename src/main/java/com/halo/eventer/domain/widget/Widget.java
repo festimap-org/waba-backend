@@ -3,10 +3,9 @@ package com.halo.eventer.domain.widget;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.widget.dto.WidgetDto;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Entity
 @Getter

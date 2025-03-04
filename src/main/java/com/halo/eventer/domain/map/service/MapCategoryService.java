@@ -1,26 +1,22 @@
 package com.halo.eventer.domain.map.service;
 
 
-import com.halo.eventer.domain.map.dto.mapcategory.CategoryEditDto;
-import com.halo.eventer.domain.map.dto.mapcategory.CategoryEditListDto;
-import com.halo.eventer.domain.notice.Notice;
-import com.halo.eventer.domain.notice.dto.BannerEditDto;
-import com.halo.eventer.domain.notice.dto.BannerEditListDto;
-import com.halo.eventer.global.exception.common.DuplicatedElementException;
-import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.domain.map.dto.map.MapListDto;
+import com.halo.eventer.domain.map.dto.mapcategory.CategoryEditDto;
+import com.halo.eventer.domain.map.dto.mapcategory.CategoryEditListDto;
 import com.halo.eventer.domain.map.dto.mapcategory.MapCategoryImageDto;
 import com.halo.eventer.domain.map.dto.mapcategory.MapCategoryResDto;
 import com.halo.eventer.domain.map.repository.MapCategoryRepository;
 import com.halo.eventer.domain.map.repository.MapRepository;
+import com.halo.eventer.global.exception.common.DuplicatedElementException;
+import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

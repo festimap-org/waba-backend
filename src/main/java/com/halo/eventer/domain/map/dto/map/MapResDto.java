@@ -2,17 +2,15 @@ package com.halo.eventer.domain.map.dto.map;
 
 import com.halo.eventer.domain.duration.dto.DurationGetDto;
 import com.halo.eventer.domain.duration_map.DurationMap;
+import com.halo.eventer.domain.map.Map;
+import com.halo.eventer.domain.map.Menu;
 import com.halo.eventer.domain.map.dto.menu.MenuResDto;
 import com.halo.eventer.domain.map.enumtype.OperationTime;
-import com.halo.eventer.domain.map.Menu;
-import com.halo.eventer.domain.map.Map;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor

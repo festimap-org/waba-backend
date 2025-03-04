@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MiddleBannerRankEditDto {
-    private Long middleBannerId;
-    private Integer rank;
+  private Long middleBannerId;
+  private Integer rank;
 }
