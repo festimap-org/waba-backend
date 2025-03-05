@@ -28,14 +28,6 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
   }
 
-  /** HttpMessageConverter가 binding 하지 못할 경우 발생 */
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
-      MethodArgumentNotValidException e) {
-    final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE);
-    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-  }
-
   // @RequestBody JSON 파싱 에러
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ErrorResponse> handleJsonParseException(HttpMessageNotReadableException e) {
@@ -64,28 +56,11 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
   }
 
-
-
   /** IOException */
   @ExceptionHandler(IOException.class)
   public ResponseEntity<String> handleIOException(IOException ex) {
     // 로깅 또는 추가 처리를 할 수 있습니다.
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body("입출력 예외가 발생했습니다: " + ex.getMessage());
-  }
-
-  @ExceptionHandler({DuplicatedElementException.class})
-  public ResponseEntity<String> handleDuplicatedElement(DuplicatedElementException e) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-  }
-
-  @ExceptionHandler({NoDataInDatabaseException.class})
-  public ResponseEntity<String> handleNoDataInDatabase(NoDataInDatabaseException e) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-  }
-
-  @ExceptionHandler({AccessDenyException.class})
-  public ResponseEntity<String> handleAccessDenyException(AccessDenyException e) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
   }
 }
