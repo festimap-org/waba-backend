@@ -14,6 +14,10 @@ public enum ErrorCode {
   ELEMENT_NOT_FOUND("C004", "Element Not Found"),
   ELEMENT_DUPLICATED("C005", "Element Duplicated"),
   UNACCEPTABLE_EXTENSION("C007", "Unacceptable Extension"),
+  INVALID_JSON_FORMAT("C008", "Invalid JSON Format"),
+  MISSING_PARAMETER("C009", "Missing Parameter"),
+  INVALID_PARAMETER_TYPE("C010", "Invalid Parameter Type"),
+  MISSING_PATH_VARIABLE("C011", "Missing Path Variable"),
 
   // DownWidget Error
   PERMIT_THREE_ELEMENT("DW001", "Only Permit Three Element"),
