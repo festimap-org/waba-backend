@@ -1,0 +1,21 @@
+name: Codacy Analysis
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  codacy-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run Codacy Analysis CLI
+        run: |
+          curl -Ls -o codacy-coverage-reporter https://github.com/codacy/codacy-coverage-reporter/releases/latest/download/codacy-coverage-reporter-linux
+          chmod +x codacy-coverage-reporter
+          ./codacy-coverage-reporter report --project-token ${{ secrets.CODACY_PROJECT_TOKEN }}
