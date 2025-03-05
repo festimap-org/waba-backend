@@ -31,7 +31,7 @@ public class InquiryService {
   public String createInquiry(Long festivalId, InquiryCreateReqDto inquiryCreateReqDto) {
     inquiryCreateReqDto.setPassword(passwordEncoder.encode(inquiryCreateReqDto.getPassword()));
     inquiryRepository.save(
-        new Inquiry(festivalService.getFestival(festivalId), inquiryCreateReqDto));
+        new Inquiry(festivalService.findById(festivalId), inquiryCreateReqDto));
     return "저장완료";
   }
 

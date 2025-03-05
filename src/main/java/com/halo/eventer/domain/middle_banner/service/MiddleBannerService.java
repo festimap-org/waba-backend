@@ -26,7 +26,7 @@ public class MiddleBannerService {
   @Transactional
   public MiddleBanner createMiddleBanner(
       Long festivalId, MiddleBannerCreateDto middleBannerCreateDto) {
-    Festival festival = festivalService.getFestival(festivalId);
+    Festival festival = festivalService.findById(festivalId);
     return middleBannerRepository.save(new MiddleBanner(middleBannerCreateDto, festival));
   }
 

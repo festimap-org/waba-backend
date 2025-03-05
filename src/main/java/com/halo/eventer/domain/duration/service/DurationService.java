@@ -22,7 +22,7 @@ public class DurationService {
     /** 축제 기간 등록 */
     @Transactional
     public String createDuration(Long festivalId, DurationCreateListDto durationCreateListDto) {
-        Festival festival = festivalService.getFestival(festivalId);
+        Festival festival = festivalService.findById(festivalId);
 
         durationCreateListDto.getDurationCreateDtos().stream().map(o->new Duration(o,festival)).forEach(durationRepository::save);
 

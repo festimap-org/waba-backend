@@ -26,13 +26,13 @@ public class WidgetService {
     /** 위젯 생성 */
     @Transactional
     public SuccessCode createWidget(Long festivalId, WidgetDto widgetDto) {
-        widgetRepository.save(new Widget(widgetDto,festivalService.getFestival(festivalId)));
+        widgetRepository.save(new Widget(widgetDto,festivalService.findById(festivalId)));
         return SuccessCode.SAVE_SUCCESS;
     }
 
     /** 위젯 전체 조회 */
     public WidgetGetListDto getWidgets(Long festivalId) {
-        Festival festival = festivalService.getFestival(festivalId);
+        Festival festival = festivalService.findById(festivalId);
         List<Widget> festivalList = widgetRepository.findAllByFestival(festival);
         return new WidgetGetListDto(festivalList);
     }

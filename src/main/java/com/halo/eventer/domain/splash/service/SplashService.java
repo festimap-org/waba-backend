@@ -21,7 +21,7 @@ public class SplashService {
   /** 이미지 업로드 + 수정 */
   @Transactional
   public String uploadSplashImage(Long festivalId, UploadImageDto uploadImageDto) {
-    Festival festival = festivalService.getFestival(festivalId);
+    Festival festival = festivalService.findById(festivalId);
 
     Splash splash = splashRepository.findByFestivalId(festivalId).orElse(new Splash(festival));
     for (ImageLayerDto layer : uploadImageDto.getImageLayers()) {
@@ -48,7 +48,7 @@ public class SplashService {
   /** 이미지 삭제 */
   @Transactional
   public String deleteSplashImage(Long festivalId, DeleteImageDto deleteImageDto) {
-    Festival festival = festivalService.getFestival(festivalId);
+    Festival festival = festivalService.findById(festivalId);
 
     Splash splash = splashRepository.findByFestivalId(festivalId).orElse(new Splash(festival));
     for (String layer : deleteImageDto.getLayerTypes()) {
@@ -74,7 +74,7 @@ public class SplashService {
 
   /** 전체 레이어 조회 */
   public Splash getSplash(Long festivalId) {
-    Festival festival = festivalService.getFestival(festivalId);
+    Festival festival = festivalService.findById(festivalId);
     Splash splash = splashRepository.findByFestivalId(festivalId)
             .orElseThrow(SplashNotFoundException::new);
     return splash;

@@ -29,7 +29,7 @@ public class ConcertService {
     /** 공연 등록 */
     @Transactional
     public String registerConcert(ConcertRegisterDto registerDto, Long id) {
-        Festival festival = festivalService.getFestival(id);
+        Festival festival = festivalService.findById(id);
     Concert concert = new Concert(
             registerDto.getThumbnail(),
             festival,
@@ -42,7 +42,7 @@ public class ConcertService {
 
     /** 공연 전체 조회 */
     public ConcertGetListDto getConcertList(Long festivalId) {
-        Festival festival = festivalService.getFestival(festivalId);
+        Festival festival = festivalService.findById(festivalId);
 
         List<Concert> concerts = concertRepository.findAllByFestival(festival);
         List<ConcertGetDto> concertListDto = ConcertGetDto.fromConcertList(concerts);

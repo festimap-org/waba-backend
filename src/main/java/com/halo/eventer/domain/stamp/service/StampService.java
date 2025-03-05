@@ -33,17 +33,17 @@ public class StampService {
     /** 축제 id로 스탬프 생성 */
     @Transactional
     public StampGetListDto registerStamp(Long festivalId) {
-        Festival festival = festivalService.getFestival(festivalId);
+        Festival festival = festivalService.findById(festivalId);
         stampRepository.save(new Stamp(festival));
 
-        List<Stamp> stamps = stampRepository.findByFestival(festivalService.getFestival(festivalId));
+        List<Stamp> stamps = stampRepository.findByFestival(festivalService.findById(festivalId));
         List<StampGetDto> stampGetDtos = StampGetDto.fromStampList(stamps);
         return new StampGetListDto(stampGetDtos);
     }
 
     /** 축제 id로 스탬프 조회 */
     public StampGetListDto getStampByFestivalId(Long festivalId) {
-        List<Stamp> stamps = stampRepository.findByFestival(festivalService.getFestival(festivalId));
+        List<Stamp> stamps = stampRepository.findByFestival(festivalService.findById(festivalId));
         List<StampGetDto> stampGetDtos = StampGetDto.fromStampList(stamps);
         return new StampGetListDto(stampGetDtos);
     }

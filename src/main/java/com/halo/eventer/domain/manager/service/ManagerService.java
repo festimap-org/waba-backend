@@ -19,7 +19,7 @@ public class ManagerService {
 
     @Transactional
     public void createManager(Long festivalId, ManagerCreateReqDto managerCreateReqDto) {
-        Festival festival = festivalService.getFestival(festivalId);
+        Festival festival = festivalService.findById(festivalId);
         managerRepository.save(new Manager(managerCreateReqDto.getPhoneNo(), festival));
     }
 

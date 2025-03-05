@@ -28,7 +28,7 @@ public class ConcertInfoService {
   /** 공연 정보 생성 */
   @Transactional
   public String createInfoName(Long festivalId, String name, ConcertInfoType type) {
-    Festival festival = festivalService.getFestival(festivalId);
+    Festival festival = festivalService.findById(festivalId);
     ConcertInfo concertInfo = new ConcertInfo(name, type, festival);
     concertInfoRepository.save(concertInfo);
     return "저장완료";

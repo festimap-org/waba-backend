@@ -24,13 +24,13 @@ public class UpWidgetService {
   /** 상단 팝업 생성 */
   public SuccessCode createUpWidget(Long festivalId, UpWidgetCreateDto upWidgetCreateDto) {
     upWidgetRepository.save(
-        new UpWidget(upWidgetCreateDto, festivalService.getFestival(festivalId)));
+        new UpWidget(upWidgetCreateDto, festivalService.findById(festivalId)));
     return SuccessCode.SAVE_SUCCESS;
   }
 
   /** 상단 팝업 리스트 조회 */
   public List<UpWidget> getUpWidgetList(Long festivalId) {
-    return upWidgetRepository.findAllByFestival(festivalService.getFestival(festivalId));
+    return upWidgetRepository.findAllByFestival(festivalService.findById(festivalId));
   }
 
   /** 상단 팝업 리스트 단일 조회 */
@@ -43,7 +43,7 @@ public class UpWidgetService {
   /** 유저용 datetime으로 팝업 리스트 조회 */
   public List<UpWidget> getUpWidgetListByDateTime(Long id, LocalDateTime dateTime) {
     return upWidgetRepository.findAllByFestivalWithDateTime(
-        festivalService.getFestival(id), dateTime);
+        festivalService.findById(id), dateTime);
   }
 
   /** 상단 위젯 수정 */

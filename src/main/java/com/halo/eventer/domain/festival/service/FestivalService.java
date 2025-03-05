@@ -22,7 +22,7 @@ public class FestivalService {
 
   private final FestivalRepository festivalRepository;
 
-  public String createFestival(FestivalCreateDto festivalCreateDto) {
+  public String create(FestivalCreateDto festivalCreateDto) {
     if (festivalRepository.findByName(festivalCreateDto.getName()).isPresent()
         || festivalRepository.findBySubAddress(festivalCreateDto.getSubAddress()).isPresent()) {
       throw new FestivalAlreadyExistsException();
@@ -38,53 +38,53 @@ public class FestivalService {
   }
 
   @Transactional(readOnly = true)
-  public Festival getFestival(Long id) {
+  public Festival findById(Long id) {
     return festivalRepository.findById(id).orElseThrow(() -> new FestivalNotFoundException(id));
   }
 
-  public List<FestivalListDto> getFestivals() {
+  public List<FestivalListDto> findAll() {
     return festivalRepository.findAll().stream()
         .map(FestivalListDto::new)
         .collect(Collectors.toList());
   }
 
   @Transactional
-  public FestivalResDto updateFestival(Long id, FestivalCreateDto festivalCreateDto) {
+  public FestivalResDto update(Long id, FestivalCreateDto festivalCreateDto) {
     Festival festival = loadFestivalOrThrow(id);
     festival.setFestival(festivalCreateDto);
     return new FestivalResDto(festival);
   }
 
   @Transactional
-  public String deleteFestival(Long id) {
+  public String delete(Long id) {
     Festival festival = loadFestivalOrThrow(id);
     festivalRepository.delete(festival);
     return "삭제완료";
   }
 
   @Transactional
-  public String addColor(Long id, ColorReqDto colorReqDto) {
+  public String updateColor(Long id, ColorReqDto colorReqDto) {
     Festival festival = loadFestivalOrThrow(id);
     festival.setColor(colorReqDto);
     return "색 등록 완료";
   }
 
   @Transactional
-  public String addLogo(Long id, ImageDto imageDto) {
+  public String updateLogo(Long id, ImageDto imageDto) {
     Festival festival = loadFestivalOrThrow(id);
     festival.setLogo(imageDto.getImage());
     return "로고 등록 완료";
   }
 
   @Transactional
-  public String addMainMenu(Long id, MainMenuDto mainMenuDto) {
+  public String updateMainMenu(Long id, MainMenuDto mainMenuDto) {
     Festival festival = loadFestivalOrThrow(id);
     festival.setMainMenu(mainMenuDto);
     return "메인 메뉴 정보 등록";
   }
 
   @Transactional
-  public String addEntryInfo(Long id, FestivalConcertMenuDto festivalConcertMenuDto) {
+  public String updateEntryInfo(Long id, FestivalConcertMenuDto festivalConcertMenuDto) {
     Festival festival =loadFestivalOrThrow(id);
     festival.setEntry(festivalConcertMenuDto);
     festivalRepository.save(festival);
@@ -92,7 +92,7 @@ public class FestivalService {
   }
 
   @Transactional
-  public String addViewInfo(Long id, FestivalConcertMenuDto festivalConcertMenuDto) {
+  public String updateViewInfo(Long id, FestivalConcertMenuDto festivalConcertMenuDto) {
     Festival festival = loadFestivalOrThrow(id);
     festival.setView(festivalConcertMenuDto);
     festivalRepository.save(festival);
@@ -110,7 +110,7 @@ public class FestivalService {
   }
 
   // subAddress로 축제 조회
-  public FestivalListDto getFestivalSubAddress(String subAddress) {
+  public FestivalListDto findBySubAddress(String subAddress) {
     return new FestivalListDto(
         festivalRepository
             .findBySubAddress(subAddress)
@@ -124,7 +124,7 @@ public class FestivalService {
 
   /** 축제 위치 등록 */
   @Transactional
-  public Festival updateFestivalLocation(Long id, FestivalLocationDto festivalLocationDto) {
+  public Festival updateLocation(Long id, FestivalLocationDto festivalLocationDto) {
     Festival festival = loadFestivalOrThrow(id);
     festival.updateLocation(festivalLocationDto);
     return festival;

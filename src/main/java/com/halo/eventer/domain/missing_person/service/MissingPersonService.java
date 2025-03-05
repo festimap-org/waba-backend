@@ -21,7 +21,7 @@ public class MissingPersonService {
 
   // 실종자 찾기 신청
   public void createMissingPerson(Long festivalId, MissingPersonReqDto missingPersonReqDto) {
-    Festival festival = festivalService.getFestival(festivalId);
+    Festival festival = festivalService.findById(festivalId);
     missingPersonRepository.save(new MissingPerson(missingPersonReqDto, festival));
   }
 

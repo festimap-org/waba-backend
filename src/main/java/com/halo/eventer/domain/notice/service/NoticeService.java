@@ -28,7 +28,7 @@ public class NoticeService {
   /** 공지사항 등록 */
   @Transactional
   public String registerNotice(NoticeRegisterDto NoticeRegisterDto, Long id) {
-    Festival festival = festivalService.getFestival(id);
+    Festival festival = festivalService.findById(id);
     Notice notice = new Notice(NoticeRegisterDto);
     notice.setFestival(festival);
     notice.setImages(
@@ -41,7 +41,7 @@ public class NoticeService {
   @Transactional
   public NoticeInquireListDto inquireNoticeList(Long festivalId, ArticleType type) {
     List<Notice> notices =
-        noticeRepository.findAllByFestivalAndType(festivalService.getFestival(festivalId), type);
+        noticeRepository.findAllByFestivalAndType(festivalService.findById(festivalId), type);
 
     return new NoticeInquireListDto(
         notices.stream().map(NoticeInquireDto::new).collect(Collectors.toList()));

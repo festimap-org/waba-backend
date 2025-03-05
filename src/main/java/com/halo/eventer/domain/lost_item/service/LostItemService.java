@@ -21,7 +21,7 @@ public class LostItemService {
   // 분실물 등록
   @Transactional
   public LostItem createLostItem(Long festivalId, LostItemDto lostDto) {
-    Festival festival = festivalService.getFestival(festivalId);
+    Festival festival = festivalService.findById(festivalId);
     return lostItemRepository.save(new LostItem(lostDto, festival));
   }
 
