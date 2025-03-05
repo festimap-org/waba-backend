@@ -2,6 +2,8 @@ package com.halo.eventer.domain.festival.service;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.*;
+import com.halo.eventer.domain.festival.exception.FestivalAlreadyExistsException;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.global.common.ImageDto;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -62,7 +64,7 @@ public class FestivalServiceTest {
     given(festivalRepository.findByName(anyString())).willReturn(Optional.of(festival));
 
     //when & then
-    assertThatThrownBy(() -> festivalService.createFestival(festivalCreateDto)).isInstanceOf(BaseException.class);
+    assertThatThrownBy(() -> festivalService.createFestival(festivalCreateDto)).isInstanceOf(FestivalAlreadyExistsException.class);
   }
 
   @Test
@@ -71,7 +73,7 @@ public class FestivalServiceTest {
     given(festivalRepository.findBySubAddress(anyString())).willReturn(Optional.of(festival));
 
     //when & then
-    assertThatThrownBy(() -> festivalService.createFestival(festivalCreateDto)).isInstanceOf(BaseException.class);
+    assertThatThrownBy(() -> festivalService.createFestival(festivalCreateDto)).isInstanceOf(FestivalAlreadyExistsException.class);
   }
 
   @Test
@@ -92,7 +94,7 @@ public class FestivalServiceTest {
     given(festivalRepository.findById(1L)).willReturn(Optional.empty());
 
     //when & then
-    assertThatThrownBy(()-> festivalService.getFestival(1L)).isInstanceOf(BaseException.class);
+    assertThatThrownBy(()-> festivalService.getFestival(1L)).isInstanceOf(FestivalNotFoundException.class);
   }
 
   @Test
@@ -273,7 +275,7 @@ public class FestivalServiceTest {
     given(festivalRepository.findBySubAddress("univ")).willReturn(Optional.empty());
 
     //when & then
-    assertThatThrownBy(()->festivalService.getFestivalSubAddress("univ")).isInstanceOf(BaseException.class);
+    assertThatThrownBy(()->festivalService.getFestivalSubAddress("univ")).isInstanceOf(FestivalNotFoundException.class);
   }
 
   @Test
