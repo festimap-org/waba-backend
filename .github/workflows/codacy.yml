@@ -2,20 +2,39 @@ name: Codacy Analysis
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "develop" ]
 
 jobs:
-  codacy-analysis:
+  build-and-test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Run Codacy Analysis CLI
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'  
+
+      - name: Build, test, and generate JaCoCo report
         run: |
-          curl -Ls -o codacy-coverage-reporter https://github.com/codacy/codacy-coverage-reporter/releases/latest/download/codacy-coverage-reporter-linux
-          chmod +x codacy-coverage-reporter
-          ./codacy-coverage-reporter report --project-token ${{ secrets.CODACY_PROJECT_TOKEN }}
+          ./gradlew clean test jacocoTestReport
+
+      - name: Download Codacy Coverage Reporter
+        run: |
+          wget https://github.com/codacy/codacy-coverage-reporter/releases/download/12.1.4/codacy-coverage-reporter-linux 
+          chmod +x codacy-coverage-reporter-linux
+
+      - name: Upload coverage to Codacy
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        run: |
+          # JaCoCo 리포트의 경로를 -r 옵션으로 지정 (Gradle에서 생성되는 XML 위치)
+          ./codacy-coverage-reporter-linux \
+            report \
+            --language Java \
+            --coverage-reporter jacoco \
+            --report-path build/reports/jacoco/test/jacocoTestReport.xml
