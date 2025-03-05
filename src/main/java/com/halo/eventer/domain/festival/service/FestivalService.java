@@ -37,12 +37,10 @@ public class FestivalService {
     return "저장완료";
   }
 
+  @Transactional(readOnly = true)
   public Festival getFestival(Long id) {
-    Festival festival =
-        festivalRepository
-            .findById(id)
+    return festivalRepository.findById(id)
             .orElseThrow(() -> new BaseException("축제가 존재하지 않습니다", ErrorCode.ELEMENT_NOT_FOUND));
-    return festival;
   }
 
   public List<FestivalListDto> getFestivals() {
@@ -53,42 +51,42 @@ public class FestivalService {
 
   @Transactional
   public FestivalResDto updateFestival(Long id, FestivalCreateDto festivalCreateDto) {
-    Festival festival = getFestival(id);
+    Festival festival = loadFestivalOrThrow(id);
     festival.setFestival(festivalCreateDto);
     return new FestivalResDto(festival);
   }
 
   @Transactional
   public String deleteFestival(Long id) {
-    Festival festival = getFestival(id);
+    Festival festival = loadFestivalOrThrow(id);
     festivalRepository.delete(festival);
     return "삭제완료";
   }
 
   @Transactional
   public String addColor(Long id, ColorReqDto colorReqDto) {
-    Festival festival = getFestival(id);
+    Festival festival = loadFestivalOrThrow(id);
     festival.setColor(colorReqDto);
     return "색 등록 완료";
   }
 
   @Transactional
   public String addLogo(Long id, ImageDto imageDto) {
-    Festival festival = getFestival(id);
+    Festival festival = loadFestivalOrThrow(id);
     festival.setLogo(imageDto.getImage());
     return "로고 등록 완료";
   }
 
   @Transactional
   public String addMainMenu(Long id, MainMenuDto mainMenuDto) {
-    Festival festival = getFestival(id);
+    Festival festival = loadFestivalOrThrow(id);
     festival.setMainMenu(mainMenuDto);
     return "메인 메뉴 정보 등록";
   }
 
   @Transactional
   public String addEntryInfo(Long id, FestivalConcertMenuDto festivalConcertMenuDto) {
-    Festival festival = getFestival(id);
+    Festival festival =loadFestivalOrThrow(id);
     festival.setEntry(festivalConcertMenuDto);
     festivalRepository.save(festival);
     return "입장방법 등록";
@@ -96,19 +94,19 @@ public class FestivalService {
 
   @Transactional
   public String addViewInfo(Long id, FestivalConcertMenuDto festivalConcertMenuDto) {
-    Festival festival = getFestival(id);
+    Festival festival = loadFestivalOrThrow(id);
     festival.setView(festivalConcertMenuDto);
     festivalRepository.save(festival);
     return "관람안내 등록";
   }
 
   public FestivalConcertMenuDto getEntryInfo(Long id) {
-    Festival festival = getFestival(id);
+    Festival festival = loadFestivalOrThrow(id);
     return new FestivalConcertMenuDto(festival.getEntrySummary(), festival.getEntryIcon());
   }
 
   public FestivalConcertMenuDto getViewInfo(Long id) {
-    Festival festival = getFestival(id);
+    Festival festival = loadFestivalOrThrow(id);
     return new FestivalConcertMenuDto(festival.getViewSummary(), festival.getViewIcon());
   }
 
@@ -121,15 +119,20 @@ public class FestivalService {
   }
 
   public MainMenuDto getMainMenu(Long id) {
-    Festival festival = getFestival(id);
+    Festival festival = loadFestivalOrThrow(id);
     return new MainMenuDto(festival);
   }
 
   /** 축제 위치 등록 */
   @Transactional
-  public Festival updateFestivalLocation(Long festivalId, FestivalLocationDto festivalLocationDto) {
-    Festival festival = getFestival(festivalId);
+  public Festival updateFestivalLocation(Long id, FestivalLocationDto festivalLocationDto) {
+    Festival festival = loadFestivalOrThrow(id);
     festival.updateLocation(festivalLocationDto);
     return festival;
+  }
+
+  private Festival loadFestivalOrThrow(Long id) {
+    return festivalRepository.findById(id)
+            .orElseThrow(() -> new BaseException("축제가 존재하지 않습니다", ErrorCode.ELEMENT_NOT_FOUND));
   }
 }
