@@ -2,14 +2,14 @@ package com.halo.eventer.domain.concert.service;
 
 import com.halo.eventer.domain.concert.Concert;
 import com.halo.eventer.domain.concert.dto.*;
+import com.halo.eventer.domain.concert.exception.ConcertNotFoundException;
+import com.halo.eventer.domain.duration.exception.DurationNotFoundException;
 import com.halo.eventer.domain.concert.repository.ConcertRepository;
 import com.halo.eventer.domain.duration.repository.DurationRepository;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.image.Image;
 import com.halo.eventer.domain.image.ImageRepository;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,11 @@ public class ConcertService {
     @Transactional
     public String registerConcert(ConcertRegisterDto registerDto, Long id) {
         Festival festival = festivalService.getFestival(id);
-        Concert concert = new Concert(registerDto.getThumbnail(), festival,durationRepository.findById(registerDto.getDurationId()).orElseThrow(()->new BaseException("설정한 기간이 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND)));
+    Concert concert = new Concert(
+            registerDto.getThumbnail(),
+            festival,
+            durationRepository.findById(registerDto.getDurationId())
+                .orElseThrow(() -> new DurationNotFoundException(id)));
         concert.setImages(registerDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
         concertRepository.save(concert);
         return "저장완료";
@@ -47,8 +51,7 @@ public class ConcertService {
 
     /** 단일 공연 조회 */
     public Concert getConcert(Long id) {
-        Concert concert = concertRepository.findById(id).orElseThrow(() -> new BaseException("공연 정보가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
-        return concert;
+    return concertRepository.findById(id).orElseThrow(() -> new ConcertNotFoundException(id));
     }
 
     /** 공연 정보 업데이트 */
@@ -58,7 +61,8 @@ public class ConcertService {
 
         concertUpdateDto.getDeletedImages().forEach(imageRepository::deleteById);
         concert.setImages(concertUpdateDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
-        concert.setAll(concertUpdateDto.getThumbnail(), durationRepository.findById(concertUpdateDto.getDurationId()).orElseThrow(() -> new BaseException("기간이 존재하지 않습니다", ErrorCode.ELEMENT_NOT_FOUND)));
+        concert.setAll(concertUpdateDto.getThumbnail(), durationRepository.findById(concertUpdateDto.getDurationId())
+                .orElseThrow(() -> new DurationNotFoundException(concertUpdateDto.getDurationId())));
 
         ConcertUpdateResponseDto response = new ConcertUpdateResponseDto(concert);
         return response;
@@ -71,6 +75,4 @@ public class ConcertService {
         concertRepository.delete(concert);
         return "삭제완료";
     }
-
-
 }

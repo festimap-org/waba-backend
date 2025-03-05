@@ -4,16 +4,15 @@ import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.inquiry.Inquiry;
 
 import com.halo.eventer.domain.inquiry.dto.*;
+import com.halo.eventer.domain.inquiry.exception.InquiryNotFoundException;
 import com.halo.eventer.domain.inquiry.repository.InquiryRepository;
 import com.halo.eventer.global.common.PageInfo;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
-import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +46,7 @@ public class InquiryService {
   public Inquiry getInquiryForAdmin(Long id) {
     return inquiryRepository
         .findById(id)
-        .orElseThrow(() -> new NoDataInDatabaseException("해당 문의가 존재하지 않습니다."));
+        .orElseThrow(() -> new InquiryNotFoundException(id));
   }
 
   @Transactional
@@ -80,7 +79,7 @@ public class InquiryService {
     Inquiry inquiry =
         inquiryRepository
             .findById(id)
-            .orElseThrow(() -> new NoDataInDatabaseException("해당 문의가 존재하지 않습니다."));
+            .orElseThrow(() -> new InquiryNotFoundException(id));
 
     if (inquiry.getIsSecret()) {
       if (!dto.getUserId().equals(inquiry.getUserId())

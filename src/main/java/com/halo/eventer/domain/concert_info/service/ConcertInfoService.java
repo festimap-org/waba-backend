@@ -5,12 +5,12 @@ import com.halo.eventer.domain.concert_info.ConcertInfoType;
 import com.halo.eventer.domain.concert_info.dto.ConcertInfoGetDto;
 import com.halo.eventer.domain.concert_info.dto.ConcertInfoGetListDto;
 import com.halo.eventer.domain.concert_info.dto.ConcertInfoUpdateDto;
+import com.halo.eventer.domain.concert_info.exception.ConcertInfoNotFoundException;
 import com.halo.eventer.domain.concert_info.repository.ConcertInfoRepository;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.image.ImageRepository;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,13 +44,8 @@ public class ConcertInfoService {
   }
 
   /** 단일 공연 정보 조회 */
-  public ConcertInfo getConcertInfo(Long concertId) {
-    ConcertInfo concertInfo =
-        concertInfoRepository
-            .findById(concertId)
-            .orElseThrow(
-                () -> new BaseException("공연 부가 정보가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
-    return concertInfo;
+  public ConcertInfo getConcertInfo(Long id) {
+    return concertInfoRepository.findById(id).orElseThrow(() -> new ConcertInfoNotFoundException(id));
   }
 
   /** 상세 이미지 등록 */

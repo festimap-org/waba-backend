@@ -1,13 +1,13 @@
 package com.halo.eventer.domain.member.service;
 
 
+import com.halo.eventer.domain.member.Exception.LoginFailedException;
+import com.halo.eventer.domain.member.Exception.MemberNotFoundException;
 import com.halo.eventer.domain.member.Member;
 import com.halo.eventer.domain.member.dto.LoginDto;
 import com.halo.eventer.domain.member.dto.TokenDto;
 import com.halo.eventer.domain.member.repository.MemberRepository;
 import com.halo.eventer.global.error.exception.BaseException;
-import com.halo.eventer.global.exception.common.AccessDenyException;
-import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.global.security.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,10 +21,10 @@ public class MemberService {
     private final JwtProvider jwtProvider;
 
     public TokenDto login(LoginDto loginDto) throws BaseException {
-        Member member = memberRepository.findByLoginId(loginDto.getLoginId())
-                .orElseThrow(() -> new NoDataInDatabaseException("잘못된 아이디 혹은 비밀번호"));
+    Member member = memberRepository.findByLoginId(loginDto.getLoginId())
+            .orElseThrow(MemberNotFoundException::new);
         if(!encoder.matches(loginDto.getPassword(), member.getPassword())) {
-            throw new AccessDenyException("비밀번호가 틀렸거나 아이디가 올바르지 않습니다."); // 401
+      throw new LoginFailedException();
         }
 
         return new TokenDto(jwtProvider.createToken(member.getLoginId(),member.getAuthorities()));

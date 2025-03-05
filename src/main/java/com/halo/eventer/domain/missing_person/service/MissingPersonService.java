@@ -4,9 +4,9 @@ import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.missing_person.MissingPerson;
 import com.halo.eventer.domain.missing_person.dto.MissingPersonReqDto;
+import com.halo.eventer.domain.missing_person.exception.MissingPersonNotFoundException;
 import com.halo.eventer.domain.missing_person.repository.MissingPersonRepository;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class MissingPersonService {
   public MissingPerson getMissingPerson(Long id) {
     return missingPersonRepository
         .findById(id)
-        .orElseThrow(() -> new BaseException("실종자가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
+        .orElseThrow(() -> new MissingPersonNotFoundException(id));
   }
 
   // 실종자 수정
@@ -43,7 +43,7 @@ public class MissingPersonService {
     MissingPerson person =
         missingPersonRepository
             .findById(id)
-            .orElseThrow(() -> new BaseException("실종자가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
+            .orElseThrow(() -> new MissingPersonNotFoundException(id));
     person.update(missingPersonReqDto);
   }
 
@@ -53,7 +53,7 @@ public class MissingPersonService {
     MissingPerson person =
         missingPersonRepository
             .findById(id)
-            .orElseThrow(() -> new BaseException("실종자가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
+            .orElseThrow(() -> new MissingPersonNotFoundException(id));
     person.setPopup(check);
   }
 
@@ -63,7 +63,7 @@ public class MissingPersonService {
     missingPersonRepository.delete(
         missingPersonRepository
             .findById(missingId)
-            .orElseThrow(() -> new BaseException("실종자가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND)));
+            .orElseThrow(() -> new MissingPersonNotFoundException(missingId)));
   }
 
   // 팝업 리스트 조회

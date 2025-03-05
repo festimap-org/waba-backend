@@ -1,7 +1,7 @@
 package com.halo.eventer.global.security;
 
+import com.halo.eventer.domain.member.Exception.MemberNotFoundException;
 import com.halo.eventer.domain.member.repository.MemberRepository;
-import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,10 +13,10 @@ public class CustomUserDetailsService implements UserDetailsService {
   private final MemberRepository memberRepository;
 
   @Override
-  public UserDetails loadUserByUsername(String loginId) throws NoDataInDatabaseException {
+  public UserDetails loadUserByUsername(String loginId) {
     return new CustomUserDetails(
         memberRepository
             .findByLoginId(loginId)
-            .orElseThrow(() -> new NoDataInDatabaseException("해당 유저 정보다 존재하지 않습니다.")));
+            .orElseThrow(MemberNotFoundException::new));
   }
 }

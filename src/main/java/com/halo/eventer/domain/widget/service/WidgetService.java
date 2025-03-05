@@ -6,6 +6,7 @@ import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.widget.Widget;
 import com.halo.eventer.domain.widget.dto.WidgetDto;
 import com.halo.eventer.domain.widget.dto.WidgetGetListDto;
+import com.halo.eventer.domain.widget.exception.WidgetNotFoundException;
 import com.halo.eventer.domain.widget.repository.WidgetRepository;
 import com.halo.eventer.global.common.response.SuccessCode;
 import com.halo.eventer.global.error.ErrorCode;
@@ -37,8 +38,8 @@ public class WidgetService {
     }
 
     /** 단일 위젯 조회 */
-    public Widget getWidget(Long widgetId) {
-        return widgetRepository.findById(widgetId).orElseThrow(()->new BaseException("축제 정보가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
+    public Widget getWidget(Long id) {
+        return widgetRepository.findById(id).orElseThrow(() -> new WidgetNotFoundException(id));
     }
 
     /** 위젯 업데이트 */

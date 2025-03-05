@@ -15,7 +15,6 @@ import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.splash.Splash;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.up_widget.UpWidget;
-import com.halo.eventer.domain.vote.Vote;
 import com.halo.eventer.domain.widget.Widget;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,9 +113,6 @@ public class Festival {
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<MissingPerson> missingPersons = new ArrayList<>();
-
-  @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private List<Vote> votes = new ArrayList<>();
 
   @Builder
   public Festival(FestivalCreateDto festivalCreateDto) {

@@ -1,18 +1,10 @@
 package com.halo.eventer.global.error;
 
 import com.halo.eventer.global.error.exception.BaseException;
-import com.halo.eventer.global.exception.common.AccessDenyException;
-import com.halo.eventer.global.exception.common.DuplicatedElementException;
-import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
-import java.io.IOException;
-
 import org.springframework.beans.TypeMismatchException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,8 +30,8 @@ public class GlobalExceptionHandler {
   // 필수 @RequestParam 누락
   @ExceptionHandler(MissingServletRequestParameterException.class)
   public ResponseEntity<ErrorResponse> handleMissingParam(MissingServletRequestParameterException e) {
-    final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_JSON_FORMAT);
-    return ResponseEntity.status(ErrorCode.INVALID_JSON_FORMAT.getStatus()).body(response);
+    final ErrorResponse response = ErrorResponse.of(ErrorCode.MISSING_PARAMETER);
+    return ResponseEntity.status(ErrorCode.MISSING_PARAMETER.getStatus()).body(response);
   }
 
   // @RequestParam 타입 불일치

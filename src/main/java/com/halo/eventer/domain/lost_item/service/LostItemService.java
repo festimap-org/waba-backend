@@ -4,9 +4,9 @@ import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.lost_item.LostItem;
 import com.halo.eventer.domain.lost_item.dto.LostItemDto;
+import com.halo.eventer.domain.lost_item.exception.LostItemNotFoundException;
 import com.halo.eventer.domain.lost_item.repository.LostItemRepository;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class LostItemService {
         lostItemRepository
             .findById(id)
             .orElseThrow(
-                () -> new BaseException("해당 분실물이 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
+                () -> new LostItemNotFoundException(id));
     item.updateItem(lostDto);
     return item;
   }
@@ -44,14 +44,14 @@ public class LostItemService {
         lostItemRepository
             .findById(id)
             .orElseThrow(
-                () -> new BaseException("해당 분실물이 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND)));
+                () -> new LostItemNotFoundException(id)));
   }
 
   // 분실물 단일 조회
   public LostItem getLostItem(Long id) {
     return lostItemRepository
         .findById(id)
-        .orElseThrow(() -> new BaseException("해당 분실물이 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
+        .orElseThrow(() -> new LostItemNotFoundException(id));
   }
 
   // 분실물 전체 조회

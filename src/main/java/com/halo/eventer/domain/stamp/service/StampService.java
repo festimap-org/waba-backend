@@ -7,6 +7,8 @@ import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.dto.stamp.*;
 import com.halo.eventer.domain.stamp.dto.stampUser.FinishedStampUserDto;
+import com.halo.eventer.domain.stamp.exception.StampClosedException;
+import com.halo.eventer.domain.stamp.exception.StampNotFoundException;
 import com.halo.eventer.domain.stamp.repository.StampRepository;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -25,7 +27,7 @@ public class StampService {
 
     /** 축제 id로 스탬프 조회 */
     public Stamp getStamp(Long stampId) {
-        return stampRepository.findById(stampId).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+        return stampRepository.findById(stampId).orElseThrow(() -> new StampNotFoundException(stampId));
     }
 
     /** 축제 id로 스탬프 생성 */
@@ -49,7 +51,7 @@ public class StampService {
     /** 스탬프 상태 변경 */
     @Transactional
     public String updateStampOn(Long stampId) {
-        Stamp stamp = stampRepository.findById(stampId).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+        Stamp stamp = stampRepository.findById(stampId).orElseThrow(() -> new StampNotFoundException(stampId));
         if (stamp.isStampOn()) stamp.setStampOn(false);
         else stamp.setStampOn(true);
 
@@ -69,7 +71,7 @@ public class StampService {
     @Transactional
     public String setMission(Long stampId, MissionSetListDto dto) {
         Stamp stamp = getStamp(stampId);
-        if (!stamp.isStampOn()) throw new BaseException("종료된 스탬프 투어입니다.", ErrorCode.ELEMENT_NOT_FOUND);
+        if (!stamp.isStampOn()) throw new StampClosedException(stampId);
 
         List<Mission> missions = dto.getMissionSets().stream()
                 .map(m -> new Mission(

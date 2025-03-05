@@ -6,9 +6,9 @@ import com.halo.eventer.domain.middle_banner.MiddleBanner;
 import com.halo.eventer.domain.middle_banner.dto.MiddleBannerCreateDto;
 import com.halo.eventer.domain.middle_banner.dto.MiddleBannerEditListDto;
 import com.halo.eventer.domain.middle_banner.dto.MiddleBannerRankEditDto;
+import com.halo.eventer.domain.middle_banner.exception.MiddleBannerNotFoundException;
 import com.halo.eventer.domain.middle_banner.repository.MiddleBannerRepository;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class MiddleBannerService {
   public MiddleBanner getMiddleBanner(Long middleBannerId) {
     return middleBannerRepository
         .findById(middleBannerId)
-        .orElseThrow(() -> new BaseException("중간 배너가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
+        .orElseThrow(() -> new MiddleBannerNotFoundException(middleBannerId));
   }
 
   @Transactional
