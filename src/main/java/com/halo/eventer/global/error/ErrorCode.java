@@ -8,32 +8,34 @@ import lombok.Getter;
 public enum ErrorCode {
 
   // Common Error
-  INTERNAL_SERVER_ERROR("C001", "Server Error"),
-  INVALID_INPUT_VALUE("C002", "Invalid Input Value"),
-  METHOD_NOT_ALLOWED("C003", "Invalid HTTP Method"),
-  ELEMENT_NOT_FOUND("C004", "Element Not Found"),
-  ELEMENT_DUPLICATED("C005", "Element Duplicated"),
-  UNACCEPTABLE_EXTENSION("C007", "Unacceptable Extension"),
-  INVALID_JSON_FORMAT("C008", "Invalid JSON Format"),
-  MISSING_PARAMETER("C009", "Missing Parameter"),
-  INVALID_PARAMETER_TYPE("C010", "Invalid Parameter Type"),
-  MISSING_PATH_VARIABLE("C011", "Missing Path Variable"),
+  INTERNAL_SERVER_ERROR("C001", "Server Error",500),
+  INVALID_INPUT_VALUE("C002", "Invalid Input Value",400),
+  METHOD_NOT_ALLOWED("C003", "Invalid HTTP Method",405),
+  ELEMENT_NOT_FOUND("C004", "Element Not Found",400),
+  ELEMENT_DUPLICATED("C005", "Element Duplicated",400),
+  UNACCEPTABLE_EXTENSION("C007", "Unacceptable Extension",400),
+  INVALID_JSON_FORMAT("C008", "Invalid JSON Format",400),
+  MISSING_PARAMETER("C009", "Missing Parameter",400),
+  INVALID_PARAMETER_TYPE("C010", "Invalid Parameter Type",400),
+  MISSING_PATH_VARIABLE("C011", "Missing Path Variable",400),
 
   // DownWidget Error
-  PERMIT_THREE_ELEMENT("DW001", "Only Permit Three Element"),
+  PERMIT_THREE_ELEMENT("DW001", "Only Permit Three Element",400),
 
   // Vote Error
-  ALREADY_LIKE("C006", "Already Like Element"),
+  ALREADY_LIKE("C006", "Already Like Element",400),
 
   // Monitoring Error
-  FESTIVAL_EXPIRED("M001", "Festival Expired"),
+  FESTIVAL_EXPIRED("M001", "Festival Expired",400),
   ;
 
   private final String code;
   private final String message;
+  private final int status;
 
-  ErrorCode(final String code, final String message) {
+  ErrorCode(final String code, final String message, final int status) {
     this.message = message;
     this.code = code;
+    this.status = status;
   }
 }
