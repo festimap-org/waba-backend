@@ -6,9 +6,8 @@ import com.halo.eventer.domain.splash.Splash;
 import com.halo.eventer.domain.splash.dto.DeleteImageDto;
 import com.halo.eventer.domain.splash.dto.ImageLayerDto;
 import com.halo.eventer.domain.splash.dto.UploadImageDto;
+import com.halo.eventer.domain.splash.exception.SplashNotFoundException;
 import com.halo.eventer.domain.splash.repository.SplashRepository;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +38,6 @@ public class SplashService {
         case "bottom":
           splash.setBottomLayerImage(layer.getUrl());
           break;
-        default:
-          throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
       }
     }
 
@@ -68,8 +65,6 @@ public class SplashService {
         case "bottom":
           splash.setBottomLayerImage(null);
           break;
-        default:
-          throw new BaseException(ErrorCode.ELEMENT_NOT_FOUND);
       }
     }
 
@@ -80,11 +75,8 @@ public class SplashService {
   /** 전체 레이어 조회 */
   public Splash getSplash(Long festivalId) {
     Festival festival = festivalService.getFestival(festivalId);
-    Splash splash =
-        splashRepository
-            .findByFestivalId(festivalId)
-            .orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
-
+    Splash splash = splashRepository.findByFestivalId(festivalId)
+            .orElseThrow(SplashNotFoundException::new);
     return splash;
   }
 }

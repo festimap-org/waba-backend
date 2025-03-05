@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.map.service;
 
 
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.domain.map.dto.map.MapListDto;
@@ -8,10 +9,9 @@ import com.halo.eventer.domain.map.dto.mapcategory.CategoryEditDto;
 import com.halo.eventer.domain.map.dto.mapcategory.CategoryEditListDto;
 import com.halo.eventer.domain.map.dto.mapcategory.MapCategoryImageDto;
 import com.halo.eventer.domain.map.dto.mapcategory.MapCategoryResDto;
+import com.halo.eventer.domain.map.exception.MapCategoryNotFoundException;
 import com.halo.eventer.domain.map.repository.MapCategoryRepository;
 import com.halo.eventer.domain.map.repository.MapRepository;
-import com.halo.eventer.global.exception.common.DuplicatedElementException;
-import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +27,10 @@ public class MapCategoryService {
     private final FestivalRepository festivalRepository;
 
     @Transactional
-    public List<MapCategoryResDto> createMapCategory(Long festivalId, String categoryName) throws DuplicatedElementException, NoDataInDatabaseException{
-        mapCategoryRepository.save(new MapCategory(festivalRepository.findById(festivalId).orElseThrow(()->new NoDataInDatabaseException("축제가 존재하지 않습니다.")),categoryName));
+    public List<MapCategoryResDto> createMapCategory(Long festivalId, String categoryName) {
+    mapCategoryRepository.save(new MapCategory(festivalRepository
+                .findById(festivalId)
+                .orElseThrow(() -> new FestivalNotFoundException(festivalId)), categoryName));
         return mapCategoryRepository.findAllByFestival_Id(festivalId).stream().map(MapCategoryResDto::new).collect(Collectors.toList());
     }
 
@@ -37,8 +39,11 @@ public class MapCategoryService {
     }
 
     @Transactional
-    public String addIcon(Long categoryId, MapCategoryImageDto mapCategoryImageDto) throws DuplicatedElementException, NoDataInDatabaseException {
-        MapCategory mapCategory = mapCategoryRepository.findById(categoryId).orElseThrow(() -> new NoDataInDatabaseException("축제 정보가 존재하지 않습니다."));
+    public String addIcon(Long mapCategoryId, MapCategoryImageDto mapCategoryImageDto) {
+    MapCategory mapCategory =
+        mapCategoryRepository
+            .findById(mapCategoryId)
+            .orElseThrow(() -> new MapCategoryNotFoundException(mapCategoryId));
         mapCategory.setImage(mapCategoryImageDto);
         return "아이콘, 핀 등록 완료";
     }
@@ -54,8 +59,8 @@ public class MapCategoryService {
                 .orElseThrow().getMaps().stream().map(MapListDto::new).collect(Collectors.toList());
     }
 
-    public MapCategoryImageDto getMapCategoryImages(Long mapCategoryId) throws NoDataInDatabaseException {
-        return new MapCategoryImageDto(mapCategoryRepository.findById(mapCategoryId).orElseThrow(()->new NoDataInDatabaseException("카테고리가 존재하지 않습니다.")));
+    public MapCategoryImageDto getMapCategoryImages(Long mapCategoryId) {
+        return new MapCategoryImageDto(mapCategoryRepository.findById(mapCategoryId).orElseThrow(()->new MapCategoryNotFoundException(mapCategoryId)));
     }
 
     /** 배너 순서 등록 */

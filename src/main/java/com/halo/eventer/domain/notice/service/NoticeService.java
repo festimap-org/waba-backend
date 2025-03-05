@@ -6,10 +6,10 @@ import com.halo.eventer.domain.image.Image;
 import com.halo.eventer.domain.image.ImageRepository;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.notice.dto.*;
+import com.halo.eventer.domain.notice.exception.NoticeNotFoundException;
 import com.halo.eventer.domain.notice.repository.NoticeRepository;
 import com.halo.eventer.global.common.ArticleType;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -50,14 +50,7 @@ public class NoticeService {
   /** 단일 공지사항 / 이벤트 조회하기 */
   @Transactional
   public Notice getNotice(Long id) {
-    Notice notice =
-        noticeRepository
-            .findById(id)
-            .orElseThrow(
-                () ->
-                    new BaseException(id + "에 해당하는 공지사항이 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
-
-    return notice;
+    return noticeRepository.findById(id).orElseThrow(() -> new NoticeNotFoundException(id));
   }
 
   /** 배너 등록, 해제 */

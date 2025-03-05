@@ -2,9 +2,8 @@ package com.halo.eventer.domain.stamp.service;
 
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
+import com.halo.eventer.domain.stamp.exception.MissionNotFoundException;
 import com.halo.eventer.domain.stamp.repository.MissionRepository;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +17,7 @@ public class MissionService {
   public Mission getMission(Long missionId) {
     return missionRepository
         .findById(missionId)
-        .orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+        .orElseThrow(() -> new MissionNotFoundException(missionId));
   }
 
   /** 미션 단일 수정 */

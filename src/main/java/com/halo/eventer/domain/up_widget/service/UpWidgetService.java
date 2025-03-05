@@ -3,6 +3,7 @@ package com.halo.eventer.domain.up_widget.service;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.up_widget.UpWidget;
 import com.halo.eventer.domain.up_widget.dto.UpWidgetCreateDto;
+import com.halo.eventer.domain.up_widget.exception.UpWidgetNotFoundException;
 import com.halo.eventer.domain.up_widget.repository.UpWidgetRepository;
 import com.halo.eventer.global.common.response.SuccessCode;
 import com.halo.eventer.global.error.ErrorCode;
@@ -33,10 +34,10 @@ public class UpWidgetService {
   }
 
   /** 상단 팝업 리스트 단일 조회 */
-  public UpWidget getUpWidget(Long upWidgetId) {
+  public UpWidget getUpWidget(Long id) {
     return upWidgetRepository
-        .findById(upWidgetId)
-        .orElseThrow(() -> new BaseException("상단 팝업이 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
+        .findById(id)
+        .orElseThrow(() -> new UpWidgetNotFoundException(id));
   }
 
   /** 유저용 datetime으로 팝업 리스트 조회 */
@@ -47,11 +48,11 @@ public class UpWidgetService {
 
   /** 상단 위젯 수정 */
   @Transactional
-  public UpWidget updateUpWidget(Long upWidgetId, UpWidgetCreateDto widgetCreateDto) {
+  public UpWidget updateUpWidget(Long id, UpWidgetCreateDto widgetCreateDto) {
     UpWidget upWidget =
         upWidgetRepository
-            .findById(upWidgetId)
-            .orElseThrow(() -> new BaseException("상단 위젯이 찾을 수 없습니다.", ErrorCode.ELEMENT_NOT_FOUND));
+            .findById(id)
+            .orElseThrow(() -> new UpWidgetNotFoundException(id));
     upWidget.update(widgetCreateDto);
     return upWidget;
   }

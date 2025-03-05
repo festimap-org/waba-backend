@@ -1,63 +1,57 @@
 package com.halo.eventer.global.error;
 
 import com.halo.eventer.global.error.exception.BaseException;
-import com.halo.eventer.global.exception.common.AccessDenyException;
-import com.halo.eventer.global.exception.common.DuplicatedElementException;
-import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
-import java.io.IOException;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-  /** 지원하지 않는 HTTP Method로 요청시 발생 */
+  // HTTP Method 불일치 에러
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(
-      HttpRequestMethodNotSupportedException e) {
+          HttpRequestMethodNotSupportedException e) {
     final ErrorResponse response = ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED);
-    return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+    return ResponseEntity.status(ErrorCode.METHOD_NOT_ALLOWED.getStatus()).body(response);
   }
 
-  /** HttpMessageConverter가 binding 하지 못할 경우 발생 */
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
-      MethodArgumentNotValidException e) {
-    final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE);
-    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+  // @RequestBody JSON 파싱 에러
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ErrorResponse> handleJsonParseException(HttpMessageNotReadableException e) {
+    final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_JSON_FORMAT);
+    return ResponseEntity.status(ErrorCode.INVALID_JSON_FORMAT.getStatus()).body(response);
   }
 
-  /** 기타 에러 예외 처리시 발생 -> 400에러로 메시지 커스텀 하고 싶을 때 사용 */
+  // 필수 @RequestParam 누락
+  @ExceptionHandler(MissingServletRequestParameterException.class)
+  public ResponseEntity<ErrorResponse> handleMissingParam(MissingServletRequestParameterException e) {
+    final ErrorResponse response = ErrorResponse.of(ErrorCode.MISSING_PARAMETER);
+    return ResponseEntity.status(ErrorCode.MISSING_PARAMETER.getStatus()).body(response);
+  }
+
+  // @RequestParam 타입 불일치
+  @ExceptionHandler(TypeMismatchException.class)
+  public ResponseEntity<ErrorResponse> handleTypeMismatchException(TypeMismatchException e) {
+    final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_PARAMETER_TYPE);
+    return ResponseEntity.status(ErrorCode.INVALID_PARAMETER_TYPE.getStatus()).body(response);
+  }
+
+  // 최상위 domain error
   @ExceptionHandler(BaseException.class)
   public ResponseEntity<ErrorResponse> handleElementNotFoundException(BaseException e) {
-    final ErrorResponse response = ErrorResponse.of(e.getMessage(), e.getErrorCode());
-    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    final ErrorResponse response = ErrorResponse.of(e.getErrorCode());
+    return ResponseEntity.status(response.getStatus()).body(response);
   }
 
-  /** IOException */
-  @ExceptionHandler(IOException.class)
-  public ResponseEntity<String> handleIOException(IOException ex) {
-    // 로깅 또는 추가 처리를 할 수 있습니다.
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body("입출력 예외가 발생했습니다: " + ex.getMessage());
-  }
-
-  @ExceptionHandler({DuplicatedElementException.class})
-  public ResponseEntity<String> handleDuplicatedElement(DuplicatedElementException e) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-  }
-
-  @ExceptionHandler({NoDataInDatabaseException.class})
-  public ResponseEntity<String> handleNoDataInDatabase(NoDataInDatabaseException e) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-  }
-
-  @ExceptionHandler({AccessDenyException.class})
-  public ResponseEntity<String> handleAccessDenyException(AccessDenyException e) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+  // Exception 핸들링
+  @ExceptionHandler(Exception.class)
+  protected ResponseEntity<ErrorResponse> handleException(Exception e) {
+    final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
+    return ResponseEntity.status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus()).body(response);
   }
 }
