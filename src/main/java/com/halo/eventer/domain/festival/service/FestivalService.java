@@ -3,11 +3,11 @@ package com.halo.eventer.domain.festival.service;
 import com.halo.eventer.domain.down_widget.DownWidget;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.*;
+import com.halo.eventer.domain.festival.exception.FestivalAlreadyExistsException;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.global.common.ImageDto;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class FestivalService {
   public String createFestival(FestivalCreateDto festivalCreateDto) {
     if (festivalRepository.findByName(festivalCreateDto.getName()).isPresent()
         || festivalRepository.findBySubAddress(festivalCreateDto.getSubAddress()).isPresent()) {
-      throw new BaseException("중복생성", ErrorCode.ELEMENT_DUPLICATED);
+      throw new FestivalAlreadyExistsException();
     }
 
     Festival festival = new Festival(festivalCreateDto);
@@ -39,8 +39,7 @@ public class FestivalService {
 
   @Transactional(readOnly = true)
   public Festival getFestival(Long id) {
-    return festivalRepository.findById(id)
-            .orElseThrow(() -> new BaseException("축제가 존재하지 않습니다", ErrorCode.ELEMENT_NOT_FOUND));
+    return festivalRepository.findById(id).orElseThrow(() -> new FestivalNotFoundException(id));
   }
 
   public List<FestivalListDto> getFestivals() {
@@ -111,11 +110,11 @@ public class FestivalService {
   }
 
   // subAddress로 축제 조회
-  public FestivalListDto getFestivalSubAddress(String name) {
+  public FestivalListDto getFestivalSubAddress(String subAddress) {
     return new FestivalListDto(
         festivalRepository
-            .findBySubAddress(name)
-            .orElseThrow(() -> new BaseException("축제가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND)));
+            .findBySubAddress(subAddress)
+            .orElseThrow(() -> new FestivalNotFoundException(subAddress)));
   }
 
   public MainMenuDto getMainMenu(Long id) {
@@ -132,7 +131,6 @@ public class FestivalService {
   }
 
   private Festival loadFestivalOrThrow(Long id) {
-    return festivalRepository.findById(id)
-            .orElseThrow(() -> new BaseException("축제가 존재하지 않습니다", ErrorCode.ELEMENT_NOT_FOUND));
+    return festivalRepository.findById(id).orElseThrow(() -> new FestivalNotFoundException(id));
   }
 }
