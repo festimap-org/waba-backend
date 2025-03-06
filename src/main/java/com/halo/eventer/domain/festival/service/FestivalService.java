@@ -39,13 +39,11 @@ public class FestivalService {
 
   @Transactional(readOnly = true)
   public Festival findById(Long id) {
-    return festivalRepository.findById(id).orElseThrow(() -> new FestivalNotFoundException(id));
+    return loadFestivalOrThrow(id);
   }
 
   public List<FestivalListDto> findAll() {
-    return festivalRepository.findAll().stream()
-        .map(FestivalListDto::new)
-        .collect(Collectors.toList());
+    return festivalRepository.findAll().stream().map(FestivalListDto::new).collect(Collectors.toList());
   }
 
   @Transactional
