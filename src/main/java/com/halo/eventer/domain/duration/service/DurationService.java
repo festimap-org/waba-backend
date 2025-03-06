@@ -7,6 +7,8 @@ import com.halo.eventer.domain.duration.dto.DurationGetDto;
 import com.halo.eventer.domain.duration.dto.DurationGetListDto;
 import com.halo.eventer.domain.duration.repository.DurationRepository;
 import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DurationService {
     private final DurationRepository durationRepository;
-    private final FestivalService festivalService;
+    private final FestivalRepository festivalRepository;
 
     /** 축제 기간 등록 */
     @Transactional
     public String createDuration(Long festivalId, DurationCreateListDto durationCreateListDto) {
-        Festival festival = festivalService.getFestival(festivalId);
+        Festival festival = festivalRepository
+                .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
 
         durationCreateListDto.getDurationCreateDtos().stream().map(o->new Duration(o,festival)).forEach(durationRepository::save);
 

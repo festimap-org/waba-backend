@@ -2,9 +2,10 @@ package com.halo.eventer.domain.festival.service;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.*;
+import com.halo.eventer.domain.festival.exception.FestivalAlreadyExistsException;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.global.common.ImageDto;
-import com.halo.eventer.global.error.exception.BaseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +26,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
+@SuppressWarnings("NonAsciiCharacters")
 public class FestivalServiceTest {
 
   @Mock
@@ -50,7 +52,7 @@ public class FestivalServiceTest {
     given(festivalRepository.save(any())).willReturn(festival);
 
     // when
-    String result = festivalService.createFestival(festivalCreateDto);
+    String result = festivalService.create(festivalCreateDto);
 
     // then
     assertThat(result).isEqualTo("저장완료");
@@ -62,7 +64,7 @@ public class FestivalServiceTest {
     given(festivalRepository.findByName(anyString())).willReturn(Optional.of(festival));
 
     //when & then
-    assertThatThrownBy(() -> festivalService.createFestival(festivalCreateDto)).isInstanceOf(BaseException.class);
+    assertThatThrownBy(() -> festivalService.create(festivalCreateDto)).isInstanceOf(FestivalAlreadyExistsException.class);
   }
 
   @Test
@@ -71,7 +73,7 @@ public class FestivalServiceTest {
     given(festivalRepository.findBySubAddress(anyString())).willReturn(Optional.of(festival));
 
     //when & then
-    assertThatThrownBy(() -> festivalService.createFestival(festivalCreateDto)).isInstanceOf(BaseException.class);
+    assertThatThrownBy(() -> festivalService.create(festivalCreateDto)).isInstanceOf(FestivalAlreadyExistsException.class);
   }
 
   @Test
@@ -80,10 +82,10 @@ public class FestivalServiceTest {
     given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
 
     //when
-    Festival festival = festivalService.getFestival(1L);
+    FestivalResDto result = festivalService.findById(1L);
 
     //then
-    assertThat(festival).isEqualTo(festival);
+    assertThat(result.getName()).isEqualTo(festival.getName());
   }
 
   @Test
@@ -92,7 +94,7 @@ public class FestivalServiceTest {
     given(festivalRepository.findById(1L)).willReturn(Optional.empty());
 
     //when & then
-    assertThatThrownBy(()-> festivalService.getFestival(1L)).isInstanceOf(BaseException.class);
+    assertThatThrownBy(()-> festivalService.findById(1L)).isInstanceOf(FestivalNotFoundException.class);
   }
 
   @Test
@@ -101,7 +103,7 @@ public class FestivalServiceTest {
     given(festivalRepository.findAll()).willReturn(List.of(festival));
 
     //when
-    List<FestivalListDto> result = festivalService.getFestivals();
+    List<FestivalListDto> result = festivalService.findAll();
 
     //then
     assertThat(result.size()).isEqualTo(1);
@@ -115,7 +117,7 @@ public class FestivalServiceTest {
     given(festivalRepository.findAll()).willReturn(Collections.emptyList());
 
     //when
-    List<FestivalListDto> result = festivalService.getFestivals();
+    List<FestivalListDto> result = festivalService.findAll();
 
     //then
     assertThat(result).isEmpty();
@@ -128,7 +130,7 @@ public class FestivalServiceTest {
     given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
 
     //when
-    FestivalResDto result = festivalService.updateFestival(1L, updateDto);
+    FestivalResDto result = festivalService.update(1L, updateDto);
 
     //then
     assertThat(result.getName()).isEqualTo("업데이트된 축제");
@@ -140,7 +142,7 @@ public class FestivalServiceTest {
     given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
 
     //when
-    String result = festivalService.deleteFestival(1L);
+    String result = festivalService.delete(1L);
 
     //then
     assertThat(result).isEqualTo("삭제완료");
@@ -149,18 +151,18 @@ public class FestivalServiceTest {
   @Test
   void 축제색등록_성공(){
     //given
-    ColorReqDto colorReqDto = new ColorReqDto();
+    ColorDto colorDto = new ColorDto();
     given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
 
     //when
-    String result = festivalService.addColor(1L, colorReqDto);
+    String result = festivalService.updateColor(1L, colorDto);
 
     //then
     assertThat(result).isEqualTo("색 등록 완료");
-    assertThat(festival.getBackgroundColor()).isEqualTo(colorReqDto.getBackgroundColor());
-    assertThat(festival.getSubColor()).isEqualTo(colorReqDto.getSubColor());
-    assertThat(festival.getMainColor()).isEqualTo(colorReqDto.getMainColor());
-    assertThat(festival.getFontColor()).isEqualTo(colorReqDto.getFontColor());
+    assertThat(festival.getBackgroundColor()).isEqualTo(colorDto.getBackgroundColor());
+    assertThat(festival.getSubColor()).isEqualTo(colorDto.getSubColor());
+    assertThat(festival.getMainColor()).isEqualTo(colorDto.getMainColor());
+    assertThat(festival.getFontColor()).isEqualTo(colorDto.getFontColor());
   }
 
   @Test
@@ -170,7 +172,7 @@ public class FestivalServiceTest {
     ImageDto imageDto = new ImageDto();
 
     //when
-    String result = festivalService.addLogo(1L, imageDto);
+    String result = festivalService.updateLogo(1L, imageDto);
 
     //then
     assertThat(result).isEqualTo("로고 등록 완료");
@@ -184,7 +186,7 @@ public class FestivalServiceTest {
     MainMenuDto mainMenuDto = new MainMenuDto();
 
     //when
-    String result = festivalService.addMainMenu(1L, mainMenuDto);
+    String result = festivalService.updateMainMenu(1L, mainMenuDto);
 
     //then
     assertThat(result).isEqualTo("메인 메뉴 정보 등록");
@@ -205,7 +207,7 @@ public class FestivalServiceTest {
     FestivalConcertMenuDto dto = new FestivalConcertMenuDto();
 
     //when
-    String result = festivalService.addEntryInfo(1L, dto);
+    String result = festivalService.updateEntryInfo(1L, dto);
 
     //then
     assertThat(result).isEqualTo("입장방법 등록");
@@ -220,7 +222,7 @@ public class FestivalServiceTest {
     FestivalConcertMenuDto dto = new FestivalConcertMenuDto();
 
     //when
-    String result = festivalService.addViewInfo(1L, dto);
+    String result = festivalService.updateViewInfo(1L, dto);
 
     //then
     assertThat(result).isEqualTo("관람안내 등록");
@@ -260,7 +262,7 @@ public class FestivalServiceTest {
     given(festivalRepository.findBySubAddress("univ")).willReturn(Optional.of(festival));
 
     //when
-    FestivalListDto festivalListDto = festivalService.getFestivalSubAddress("univ");
+    FestivalListDto festivalListDto = festivalService.findBySubAddress("univ");
 
     //then
     assertThat(festivalListDto).isNotNull();
@@ -273,7 +275,7 @@ public class FestivalServiceTest {
     given(festivalRepository.findBySubAddress("univ")).willReturn(Optional.empty());
 
     //when & then
-    assertThatThrownBy(()->festivalService.getFestivalSubAddress("univ")).isInstanceOf(BaseException.class);
+    assertThatThrownBy(()->festivalService.findBySubAddress("univ")).isInstanceOf(FestivalNotFoundException.class);
   }
 
   @Test
@@ -303,7 +305,7 @@ public class FestivalServiceTest {
     FestivalLocationDto festivalLocationDto = new FestivalLocationDto();
 
     //when
-    Festival result = festivalService.updateFestivalLocation(1L,festivalLocationDto);
+    Festival result = festivalService.updateLocation(1L,festivalLocationDto);
 
     //then
     assertThat(result).isNotNull();

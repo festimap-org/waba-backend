@@ -32,7 +32,7 @@ public class HomeController {
     @FestivalGetListApi
     @GetMapping("/univ")
     public FestivalListDto getFestivalSubAddress(@RequestParam("subAddress") String name) {
-        return festivalService.getFestivalSubAddress(name);
+        return festivalService.findBySubAddress(name);
     }
 
     @GetMapping("/")

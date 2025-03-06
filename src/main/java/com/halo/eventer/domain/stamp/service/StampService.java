@@ -1,6 +1,8 @@
 package com.halo.eventer.domain.stamp.service;
 
 import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.Stamp;
@@ -22,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class StampService {
     private final StampRepository stampRepository;
-    private final FestivalService festivalService;
+    private final FestivalRepository festivalRepository;
     private final EncryptService encryptService;
 
     /** 축제 id로 스탬프 조회 */
@@ -33,17 +35,20 @@ public class StampService {
     /** 축제 id로 스탬프 생성 */
     @Transactional
     public StampGetListDto registerStamp(Long festivalId) {
-        Festival festival = festivalService.getFestival(festivalId);
+        Festival festival = festivalRepository
+                .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
         stampRepository.save(new Stamp(festival));
 
-        List<Stamp> stamps = stampRepository.findByFestival(festivalService.getFestival(festivalId));
+        List<Stamp> stamps = stampRepository.findByFestival(festival);
         List<StampGetDto> stampGetDtos = StampGetDto.fromStampList(stamps);
         return new StampGetListDto(stampGetDtos);
     }
 
     /** 축제 id로 스탬프 조회 */
     public StampGetListDto getStampByFestivalId(Long festivalId) {
-        List<Stamp> stamps = stampRepository.findByFestival(festivalService.getFestival(festivalId));
+        Festival festival = festivalRepository
+                .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
+        List<Stamp> stamps = stampRepository.findByFestival(festival);
         List<StampGetDto> stampGetDtos = StampGetDto.fromStampList(stamps);
         return new StampGetListDto(stampGetDtos);
     }

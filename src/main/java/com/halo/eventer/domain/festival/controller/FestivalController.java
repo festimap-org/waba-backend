@@ -21,50 +21,50 @@ public class FestivalController {
   @FestivalCreateApi
   @PostMapping()
   public String createFestival(@RequestBody FestivalCreateDto festivalCreateDto) {
-    return festivalService.createFestival(festivalCreateDto);
+    return festivalService.create(festivalCreateDto);
   }
 
   @GetFestivalApi
   @GetMapping("/{id}")
   public FestivalResDto getFestival(@PathVariable("id") Long id) {
-    return new FestivalResDto(festivalService.getFestival(id));
+    return festivalService.findById(id);
   }
 
   @GetMapping
   public List<FestivalListDto> getFestivals() {
-    return festivalService.getFestivals();
+    return festivalService.findAll();
   }
 
   @FestivalUpdateApi
   @PatchMapping("/{id}")
   public FestivalResDto updateFestival(
       @PathVariable("id") Long id, @RequestBody FestivalCreateDto festivalCreateDto) {
-    return festivalService.updateFestival(id, festivalCreateDto);
+    return festivalService.update(id, festivalCreateDto);
   }
 
   @FestivalDeleteApi
   @DeleteMapping("/{id}")
   public String deleteFestival(@PathVariable("id") Long id) {
-    return festivalService.deleteFestival(id);
+    return festivalService.delete(id);
   }
 
   @FestivalColorAddApi
   @PostMapping("/{festivalId}/color")
   public String addColor(
-      @PathVariable("festivalId") Long id, @RequestBody ColorReqDto colorReqDto) {
-    return festivalService.addColor(id, colorReqDto);
+      @PathVariable("festivalId") Long id, @RequestBody ColorDto colorDto) {
+    return festivalService.updateColor(id, colorDto);
   }
 
   @FestivalLogoAddApi
   @PostMapping("/{festivalId}/logo")
   public String addLogo(@PathVariable("festivalId") Long id, @RequestBody ImageDto imageDto) {
-    return festivalService.addLogo(id, imageDto);
+    return festivalService.updateLogo(id, imageDto);
   }
 
   @PostMapping("/{festivalId}/main-menu")
   public String addMainMenu(
       @PathVariable("festivalId") Long id, @RequestBody MainMenuDto mainMenuDto) {
-    return festivalService.addMainMenu(id, mainMenuDto);
+    return festivalService.updateMainMenu(id, mainMenuDto);
   }
 
   @GetMapping("/{festivalId}/main-menu")
@@ -76,14 +76,14 @@ public class FestivalController {
   public String addEntryInfo(
       @PathVariable("festivalId") Long festivalId,
       @RequestBody FestivalConcertMenuDto festivalConcertMenuDto) {
-    return festivalService.addEntryInfo(festivalId, festivalConcertMenuDto);
+    return festivalService.updateEntryInfo(festivalId, festivalConcertMenuDto);
   }
 
   @PostMapping("/{festivalId}/view")
   public String addViewInfo(
       @PathVariable("festivalId") Long festivalId,
       @RequestBody FestivalConcertMenuDto festivalConcertMenuDto) {
-    return festivalService.addViewInfo(festivalId, festivalConcertMenuDto);
+    return festivalService.updateViewInfo(festivalId, festivalConcertMenuDto);
   }
 
   @GetMapping("/{festivalId}/entry")
@@ -101,7 +101,6 @@ public class FestivalController {
   public FestivalResDto updateFestivalLocation(
       @PathVariable("festivalId") Long festivalId,
       @RequestBody FestivalLocationDto festivalLocationDto) {
-    return new FestivalResDto(
-        festivalService.updateFestivalLocation(festivalId, festivalLocationDto));
+      return FestivalResDto.from(festivalService.updateLocation(festivalId, festivalLocationDto));
   }
 }

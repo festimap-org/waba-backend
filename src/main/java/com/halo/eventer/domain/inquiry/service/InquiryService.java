@@ -1,5 +1,8 @@
 package com.halo.eventer.domain.inquiry.service;
 
+import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.inquiry.Inquiry;
 
@@ -26,12 +29,13 @@ import java.util.stream.Collectors;
 public class InquiryService {
   private final InquiryRepository inquiryRepository;
   private final PasswordEncoder passwordEncoder;
-  private final FestivalService festivalService;
+  private final FestivalRepository festivalRepository;
 
   public String createInquiry(Long festivalId, InquiryCreateReqDto inquiryCreateReqDto) {
     inquiryCreateReqDto.setPassword(passwordEncoder.encode(inquiryCreateReqDto.getPassword()));
-    inquiryRepository.save(
-        new Inquiry(festivalService.getFestival(festivalId), inquiryCreateReqDto));
+    Festival festival = festivalRepository
+            .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
+    inquiryRepository.save(new Inquiry(festival, inquiryCreateReqDto));
     return "저장완료";
   }
 

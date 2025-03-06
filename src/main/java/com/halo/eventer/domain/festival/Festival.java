@@ -125,11 +125,11 @@ public class Festival {
     this.subAddress = festivalCreateDto.getSubAddress();
   }
 
-  public void setColor(ColorReqDto colorReqDto) {
-    this.mainColor = colorReqDto.getMainColor();
-    this.subColor = colorReqDto.getSubColor();
-    this.fontColor = colorReqDto.getFontColor();
-    this.backgroundColor = colorReqDto.getBackgroundColor();
+  public void setColor(ColorDto colorDto) {
+    this.mainColor = colorDto.getMainColor();
+    this.subColor = colorDto.getSubColor();
+    this.fontColor = colorDto.getFontColor();
+    this.backgroundColor = colorDto.getBackgroundColor();
   }
 
   public void setLogo(String logo) {

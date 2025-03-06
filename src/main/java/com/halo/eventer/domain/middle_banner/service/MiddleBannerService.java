@@ -1,6 +1,8 @@
 package com.halo.eventer.domain.middle_banner.service;
 
 import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.middle_banner.MiddleBanner;
 import com.halo.eventer.domain.middle_banner.dto.MiddleBannerCreateDto;
@@ -20,13 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class MiddleBannerService {
 
   private final MiddleBannerRepository middleBannerRepository;
-  private final FestivalService festivalService;
+  private final FestivalRepository festivalRepository;
 
   /** 중간 배너 생성 */
   @Transactional
-  public MiddleBanner createMiddleBanner(
-      Long festivalId, MiddleBannerCreateDto middleBannerCreateDto) {
-    Festival festival = festivalService.getFestival(festivalId);
+  public MiddleBanner createMiddleBanner(Long festivalId, MiddleBannerCreateDto middleBannerCreateDto) {
+    Festival festival = festivalRepository
+            .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
     return middleBannerRepository.save(new MiddleBanner(middleBannerCreateDto, festival));
   }
 

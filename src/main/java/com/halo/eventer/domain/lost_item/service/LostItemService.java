@@ -1,6 +1,8 @@
 package com.halo.eventer.domain.lost_item.service;
 
 import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.lost_item.LostItem;
 import com.halo.eventer.domain.lost_item.dto.LostItemDto;
@@ -16,12 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LostItemService {
   private final LostItemRepository lostItemRepository;
-  private final FestivalService festivalService;
+  private final FestivalRepository festivalRepository;
 
   // 분실물 등록
   @Transactional
   public LostItem createLostItem(Long festivalId, LostItemDto lostDto) {
-    Festival festival = festivalService.getFestival(festivalId);
+    Festival festival = festivalRepository
+            .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
     return lostItemRepository.save(new LostItem(lostDto, festival));
   }
 
