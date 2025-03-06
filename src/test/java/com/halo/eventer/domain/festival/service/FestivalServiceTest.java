@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -150,6 +152,19 @@ public class FestivalServiceTest {
 
     //then
     verify(festivalRepository, times(1)).delete(festival);
+  }
+
+  @Test
+  void 축제삭제_실패_DataIntegrityViolationException() {
+    // given
+    Long festivalId = 1L;
+    given(festivalRepository.findById(festivalId)).willReturn(Optional.of(festival));
+    willThrow(new DataIntegrityViolationException("삭제 실패")).given(festivalRepository).delete(festival);
+
+    // when & then
+    assertThatThrownBy(() -> festivalService.delete(festivalId))
+            .isInstanceOf(DataIntegrityViolationException.class)
+            .hasMessageContaining("삭제 실패");
   }
 
   @Test
