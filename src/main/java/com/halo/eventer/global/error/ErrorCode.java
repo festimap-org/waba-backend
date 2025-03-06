@@ -19,6 +19,7 @@ public enum ErrorCode {
   INVALID_PARAMETER_TYPE("C010", "Invalid Parameter Type",400),
   MISSING_PATH_VARIABLE("C011", "Missing Path Variable",400),
   FORBIDDEN("C012", "Forbidden",400),
+  ERR_DATA_INTEGRITY_VIOLATION("E001", "Data integrity violation",409),
 
   //Festival
   SUB_ADDRESS_ALREADY_EXISTS("F001", "subAddress Already Exists",400),
