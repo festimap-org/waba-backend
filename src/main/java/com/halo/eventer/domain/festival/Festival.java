@@ -19,6 +19,8 @@ import com.halo.eventer.domain.widget.Widget;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
+
+import com.halo.eventer.global.common.ImageDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -120,23 +122,23 @@ public class Festival {
     this.subAddress = festivalCreateDto.getSubAddress();
   }
 
-  public void setFestival(FestivalCreateDto festivalCreateDto) {
+  public void updateFestival(FestivalCreateDto festivalCreateDto) {
     this.name = festivalCreateDto.getName();
     this.subAddress = festivalCreateDto.getSubAddress();
   }
 
-  public void setColor(ColorDto colorDto) {
+  public void updateColor(ColorDto colorDto) {
     this.mainColor = colorDto.getMainColor();
     this.subColor = colorDto.getSubColor();
     this.fontColor = colorDto.getFontColor();
     this.backgroundColor = colorDto.getBackgroundColor();
   }
 
-  public void setLogo(String logo) {
-    this.logo = logo;
+  public void updateLogo(ImageDto imageDto) {
+    this.logo = imageDto.getImage();
   }
 
-  public void setMainMenu(MainMenuDto mainMenuDto) {
+  public void updateMainMenu(MainMenuDto mainMenuDto) {
     this.menuName1 = mainMenuDto.getMenuName1();
     this.menuName2 = mainMenuDto.getMenuName2();
     this.menuSummary1 = mainMenuDto.getMenuSummary1();
@@ -152,12 +154,12 @@ public class Festival {
     mapCategories.forEach(o -> o.setFestival(this));
   }
 
-  public void setEntry(FestivalConcertMenuDto festivalConcertMenuDto) {
+  public void updateEntry(FestivalConcertMenuDto festivalConcertMenuDto) {
     this.entrySummary = festivalConcertMenuDto.getSummary();
     this.entryIcon = festivalConcertMenuDto.getIcon();
   }
 
-  public void setView(FestivalConcertMenuDto festivalConcertMenuDto) {
+  public void updateView(FestivalConcertMenuDto festivalConcertMenuDto) {
     this.viewSummary = festivalConcertMenuDto.getSummary();
     this.viewIcon = festivalConcertMenuDto.getIcon();
   }

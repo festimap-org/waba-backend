@@ -30,7 +30,7 @@ public class HomeDto {
     public HomeDto(List<RegisteredBannerGetDto> banner, Festival festival, List<UpWidget> upWidgets, List<MissingPerson> missingPersons) {
         this.upWidgets =upWidgets.stream().map(UpWidgetGetDto::new).collect(Collectors.toList());
         this.banner = banner;
-        this.mainMenuDto = new MainMenuDto(festival);
+        this.mainMenuDto = MainMenuDto.from(festival);
         this.widgetDto = festival.getWidgets().stream().map(WidgetDto::new).collect(Collectors.toList());
         this.downWidgetDtos = festival.getDownWidgets().stream().map(DownWidgetDto::new).collect(Collectors.toList());
         this.missingPersonDtos = missingPersons.stream().map(MissingPersonPopupDto::new).collect(Collectors.toList());
