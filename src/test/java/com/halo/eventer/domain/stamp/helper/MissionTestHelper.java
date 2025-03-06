@@ -10,13 +10,13 @@ public class MissionTestHelper {
     public static Mission setUpMission(){
         Mission mission = new Mission();
         setField(mission, "id", 1L);
-//        setField(mission, "boothId", 1L);
-//        setField(mission, "title", "mission title");
-//        setField(mission, "content", "mission content");
-//        setField(mission, "place", "mission place");
-//        setField(mission, "time", "mission time");
-//        setField(mission, "clearedThumbnail", "mission cleared thumbnail");
-//        setField(mission, "notClearedThumbnail", "mission not cleared thumbnail");
+        setField(mission, "boothId", 1L);
+        setField(mission, "title", "mission title");
+        setField(mission, "content", "mission content");
+        setField(mission, "place", "mission place");
+        setField(mission, "time", "mission time");
+        setField(mission, "clearedThumbnail", "mission cleared thumbnail");
+        setField(mission, "notClearedThumbnail", "mission not cleared thumbnail");
         return mission;
     }
 

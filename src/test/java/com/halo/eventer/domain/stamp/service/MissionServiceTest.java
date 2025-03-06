@@ -35,10 +35,12 @@ public class MissionServiceTest {
     private MissionService missionService;
 
     private Mission mission;
+    private MissionUpdateDto missionUpdateDto;
 
     @BeforeEach
     public void setUp() {
-        mission = new Mission();
+        mission = MissionTestHelper.setUpMission();
+        missionUpdateDto = MissionTestHelper.setUpMissionUpdateDto();
     }
 
     @Test
@@ -66,11 +68,10 @@ public class MissionServiceTest {
     @Test
     void 미션수정_성공(){
         //given
-        MissionUpdateDto updateDto = new MissionUpdateDto();
         given(missionRepository.findById(1L)).willReturn(Optional.of(mission));
 
         //when
-        String result = missionService.updateMission(mission.getId(), updateDto);
+        String result = missionService.updateMission(mission.getId(), missionUpdateDto);
 
         //then
         assertThat(result).isEqualTo("미션 수정 완료");
