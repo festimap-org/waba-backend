@@ -7,6 +7,8 @@ import com.halo.eventer.domain.map.dto.mapcategory.MapCategoryImageDto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
+
+import com.halo.eventer.domain.map.enumtype.MapCategoryType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,9 +40,17 @@ public class MapCategory {
         this.category_rank = 11;
     }
 
-    public MapCategory(String categoryName) {
-        this.categoryName = categoryName;
+    private MapCategory(MapCategoryType mapCategoryType) {
+        this.categoryName = mapCategoryType.getDisplayName();
         this.category_rank = 11;
+    }
+
+    public static MapCategory createFixedBooth() {
+        return new MapCategory(MapCategoryType.FIXED_BOOTH);
+    }
+
+    public static MapCategory of(MapCategoryType mapCategoryType) {
+        return new MapCategory(mapCategoryType);
     }
 
     public void setImage(MapCategoryImageDto mapCategoryImageDto) {
@@ -48,7 +58,7 @@ public class MapCategory {
         this.pin = mapCategoryImageDto.getPin();
     }
 
-    public void setFestival(Festival festival) {
+    public void assignFestival(Festival festival) {
         this.festival=festival;
     }
     public void setRank(int rank) {

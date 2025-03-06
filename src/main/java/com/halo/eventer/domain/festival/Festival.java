@@ -9,6 +9,7 @@ import com.halo.eventer.domain.inquiry.Inquiry;
 import com.halo.eventer.domain.lost_item.LostItem;
 import com.halo.eventer.domain.manager.Manager;
 import com.halo.eventer.domain.map.MapCategory;
+import com.halo.eventer.domain.map.enumtype.MapCategoryType;
 import com.halo.eventer.domain.middle_banner.MiddleBanner;
 import com.halo.eventer.domain.missing_person.MissingPerson;
 import com.halo.eventer.domain.notice.Notice;
@@ -19,6 +20,8 @@ import com.halo.eventer.domain.widget.Widget;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
+
+import com.halo.eventer.global.common.ImageDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -114,29 +117,45 @@ public class Festival {
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<MissingPerson> missingPersons = new ArrayList<>();
 
-  @Builder
-  public Festival(FestivalCreateDto festivalCreateDto) {
+  private Festival(String name, String subAddress) {
+    this.name = name;
+    this.subAddress = subAddress;
+  }
+
+  public static Festival from(FestivalCreateDto festivalCreateDto) {
+    return new Festival(festivalCreateDto.getName(), festivalCreateDto.getSubAddress());
+  }
+
+  public void applyDefaultMapCategory() {
+    MapCategory mapCategory = MapCategory.createFixedBooth();
+    this.mapCategories.add(mapCategory);
+    mapCategory.assignFestival(this);
+  }
+
+  public void applyThreeDownWidgets(){
+    for (int i = 0; i < 3; i++) {
+      DownWidget widget = DownWidget.from(this);
+      getDownWidgets().add(widget);
+    }
+  }
+
+  public void updateFestival(FestivalCreateDto festivalCreateDto) {
     this.name = festivalCreateDto.getName();
     this.subAddress = festivalCreateDto.getSubAddress();
   }
 
-  public void setFestival(FestivalCreateDto festivalCreateDto) {
-    this.name = festivalCreateDto.getName();
-    this.subAddress = festivalCreateDto.getSubAddress();
-  }
-
-  public void setColor(ColorDto colorDto) {
+  public void updateColor(ColorDto colorDto) {
     this.mainColor = colorDto.getMainColor();
     this.subColor = colorDto.getSubColor();
     this.fontColor = colorDto.getFontColor();
     this.backgroundColor = colorDto.getBackgroundColor();
   }
 
-  public void setLogo(String logo) {
-    this.logo = logo;
+  public void updateLogo(ImageDto imageDto) {
+    this.logo = imageDto.getImage();
   }
 
-  public void setMainMenu(MainMenuDto mainMenuDto) {
+  public void updateMainMenu(MainMenuDto mainMenuDto) {
     this.menuName1 = mainMenuDto.getMenuName1();
     this.menuName2 = mainMenuDto.getMenuName2();
     this.menuSummary1 = mainMenuDto.getMenuSummary1();
@@ -147,17 +166,12 @@ public class Festival {
     this.menuUrl2 = mainMenuDto.getMenuUrl2();
   }
 
-  public void setMapCategory(List<MapCategory> mapCategories) {
-    this.mapCategories = mapCategories;
-    mapCategories.forEach(o -> o.setFestival(this));
-  }
-
-  public void setEntry(FestivalConcertMenuDto festivalConcertMenuDto) {
+  public void updateEntry(FestivalConcertMenuDto festivalConcertMenuDto) {
     this.entrySummary = festivalConcertMenuDto.getSummary();
     this.entryIcon = festivalConcertMenuDto.getIcon();
   }
 
-  public void setView(FestivalConcertMenuDto festivalConcertMenuDto) {
+  public void updateView(FestivalConcertMenuDto festivalConcertMenuDto) {
     this.viewSummary = festivalConcertMenuDto.getSummary();
     this.viewIcon = festivalConcertMenuDto.getIcon();
   }

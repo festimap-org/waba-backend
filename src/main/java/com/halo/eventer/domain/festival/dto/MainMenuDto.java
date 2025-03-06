@@ -16,14 +16,20 @@ public class MainMenuDto {
   private String menuUrl1;
   private String menuUrl2;
 
-  public MainMenuDto(Festival festival) {
-    this.menuName1 = festival.getMenuName1();
-    this.menuName2 = festival.getMenuName2();
-    this.menuImage1 = festival.getMenuImage1();
-    this.menuImage2 = festival.getMenuImage2();
-    this.menuSummary1 = festival.getMenuSummary1();
-    this.menuSummary2 = festival.getMenuSummary2();
-    this.menuUrl1 = festival.getMenuUrl1();
-    this.menuUrl2 = festival.getMenuUrl2();
+  private MainMenuDto(String menuName1, String menuName2, String menuSummary1, String menuSummary2,
+                     String menuImage1, String menuImage2, String menuUrl1, String menuUrl2) {
+    this.menuName1 = menuName1;
+    this.menuName2 = menuName2;
+    this.menuSummary1 = menuSummary1;
+    this.menuSummary2 = menuSummary2;
+    this.menuImage1 = menuImage1;
+    this.menuImage2 = menuImage2;
+    this.menuUrl1 = menuUrl1;
+    this.menuUrl2 = menuUrl2;
+  }
+  public static MainMenuDto from(Festival festival) {
+    return new MainMenuDto(festival.getMenuName1(),festival.getMenuName2(),festival.getMenuSummary1(),
+            festival.getMenuSummary2(), festival.getMenuImage1(), festival.getMenuImage2(),
+            festival.getMenuUrl1(), festival.getMenuUrl2());
   }
 }

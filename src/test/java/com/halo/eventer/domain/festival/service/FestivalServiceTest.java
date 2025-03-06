@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
@@ -20,9 +21,11 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -41,7 +44,7 @@ public class FestivalServiceTest {
   @BeforeEach
   void setUp() {
     festivalCreateDto = new FestivalCreateDto("축제","univ");
-    festival = new Festival(festivalCreateDto);
+    festival = Festival.from(festivalCreateDto);
   }
 
   @Test
@@ -52,10 +55,13 @@ public class FestivalServiceTest {
     given(festivalRepository.save(any())).willReturn(festival);
 
     // when
-    String result = festivalService.create(festivalCreateDto);
+    festivalService.create(festivalCreateDto);
 
     // then
-    assertThat(result).isEqualTo("저장완료");
+    verify(festivalRepository, times(1))
+            .save(argThat(savedFestival -> savedFestival.getName().equals(festivalCreateDto.getName()) &&
+                    savedFestival.getSubAddress().equals(festivalCreateDto.getSubAddress())
+    ));
   }
 
   @Test()
@@ -142,10 +148,23 @@ public class FestivalServiceTest {
     given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
 
     //when
-    String result = festivalService.delete(1L);
+    festivalService.delete(1L);
 
     //then
-    assertThat(result).isEqualTo("삭제완료");
+    verify(festivalRepository, times(1)).delete(festival);
+  }
+
+  @Test
+  void 축제삭제_실패_DataIntegrityViolationException() {
+    // given
+    Long festivalId = 1L;
+    given(festivalRepository.findById(festivalId)).willReturn(Optional.of(festival));
+    willThrow(new DataIntegrityViolationException("삭제 실패")).given(festivalRepository).delete(festival);
+
+    // when & then
+    assertThatThrownBy(() -> festivalService.delete(festivalId))
+            .isInstanceOf(DataIntegrityViolationException.class)
+            .hasMessageContaining("삭제 실패");
   }
 
   @Test
@@ -155,10 +174,9 @@ public class FestivalServiceTest {
     given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
 
     //when
-    String result = festivalService.updateColor(1L, colorDto);
+    festivalService.updateColor(1L, colorDto);
 
     //then
-    assertThat(result).isEqualTo("색 등록 완료");
     assertThat(festival.getBackgroundColor()).isEqualTo(colorDto.getBackgroundColor());
     assertThat(festival.getSubColor()).isEqualTo(colorDto.getSubColor());
     assertThat(festival.getMainColor()).isEqualTo(colorDto.getMainColor());
@@ -172,10 +190,9 @@ public class FestivalServiceTest {
     ImageDto imageDto = new ImageDto();
 
     //when
-    String result = festivalService.updateLogo(1L, imageDto);
+    festivalService.updateLogo(1L, imageDto);
 
     //then
-    assertThat(result).isEqualTo("로고 등록 완료");
     assertThat(festival.getLogo()).isEqualTo(imageDto.getImage());
   }
 
@@ -186,10 +203,9 @@ public class FestivalServiceTest {
     MainMenuDto mainMenuDto = new MainMenuDto();
 
     //when
-    String result = festivalService.updateMainMenu(1L, mainMenuDto);
+    festivalService.updateMainMenu(1L, mainMenuDto);
 
     //then
-    assertThat(result).isEqualTo("메인 메뉴 정보 등록");
     assertThat(festival.getMenuName1()).isEqualTo(mainMenuDto.getMenuName1());
     assertThat(festival.getMenuName2()).isEqualTo(mainMenuDto.getMenuName2());
     assertThat(festival.getMenuImage1()).isEqualTo(mainMenuDto.getMenuImage1());
@@ -207,10 +223,9 @@ public class FestivalServiceTest {
     FestivalConcertMenuDto dto = new FestivalConcertMenuDto();
 
     //when
-    String result = festivalService.updateEntryInfo(1L, dto);
+    festivalService.updateEntryInfo(1L, dto);
 
     //then
-    assertThat(result).isEqualTo("입장방법 등록");
     assertThat(festival.getEntrySummary()).isEqualTo(dto.getSummary());
     assertThat(festival.getEntryIcon()).isEqualTo(dto.getIcon());
   }
@@ -222,10 +237,9 @@ public class FestivalServiceTest {
     FestivalConcertMenuDto dto = new FestivalConcertMenuDto();
 
     //when
-    String result = festivalService.updateViewInfo(1L, dto);
+    festivalService.updateViewInfo(1L, dto);
 
     //then
-    assertThat(result).isEqualTo("관람안내 등록");
     assertThat(festival.getViewSummary()).isEqualTo(dto.getSummary());
     assertThat(festival.getViewIcon()).isEqualTo(dto.getIcon());
   }

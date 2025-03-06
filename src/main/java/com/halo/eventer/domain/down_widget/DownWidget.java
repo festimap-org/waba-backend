@@ -28,8 +28,12 @@ public class DownWidget {
     this.festival = festival;
   }
 
-  public DownWidget(Festival festival) {
+  private DownWidget(Festival festival) {
     this.festival = festival;
+  }
+
+  public static DownWidget from(Festival festival){
+    return new DownWidget(festival);
   }
 
   public void updateDownWidget(DownWidgetDto dto) {

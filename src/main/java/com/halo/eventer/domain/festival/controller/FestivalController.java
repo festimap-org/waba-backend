@@ -20,8 +20,8 @@ public class FestivalController {
 
   @FestivalCreateApi
   @PostMapping()
-  public String createFestival(@RequestBody FestivalCreateDto festivalCreateDto) {
-    return festivalService.create(festivalCreateDto);
+  public void createFestival(@RequestBody FestivalCreateDto festivalCreateDto) {
+    festivalService.create(festivalCreateDto);
   }
 
   @GetFestivalApi
@@ -44,27 +44,27 @@ public class FestivalController {
 
   @FestivalDeleteApi
   @DeleteMapping("/{id}")
-  public String deleteFestival(@PathVariable("id") Long id) {
-    return festivalService.delete(id);
+  public void deleteFestival(@PathVariable("id") Long id) {
+    festivalService.delete(id);
   }
 
   @FestivalColorAddApi
   @PostMapping("/{festivalId}/color")
-  public String addColor(
+  public void addColor(
       @PathVariable("festivalId") Long id, @RequestBody ColorDto colorDto) {
-    return festivalService.updateColor(id, colorDto);
+    festivalService.updateColor(id, colorDto);
   }
 
   @FestivalLogoAddApi
   @PostMapping("/{festivalId}/logo")
-  public String addLogo(@PathVariable("festivalId") Long id, @RequestBody ImageDto imageDto) {
-    return festivalService.updateLogo(id, imageDto);
+  public void addLogo(@PathVariable("festivalId") Long id, @RequestBody ImageDto imageDto) {
+    festivalService.updateLogo(id, imageDto);
   }
 
   @PostMapping("/{festivalId}/main-menu")
-  public String addMainMenu(
+  public void addMainMenu(
       @PathVariable("festivalId") Long id, @RequestBody MainMenuDto mainMenuDto) {
-    return festivalService.updateMainMenu(id, mainMenuDto);
+    festivalService.updateMainMenu(id, mainMenuDto);
   }
 
   @GetMapping("/{festivalId}/main-menu")
@@ -73,17 +73,17 @@ public class FestivalController {
   }
 
   @PostMapping("/{festivalId}/entry")
-  public String addEntryInfo(
+  public void addEntryInfo(
       @PathVariable("festivalId") Long festivalId,
       @RequestBody FestivalConcertMenuDto festivalConcertMenuDto) {
-    return festivalService.updateEntryInfo(festivalId, festivalConcertMenuDto);
+    festivalService.updateEntryInfo(festivalId, festivalConcertMenuDto);
   }
 
   @PostMapping("/{festivalId}/view")
-  public String addViewInfo(
+  public void addViewInfo(
       @PathVariable("festivalId") Long festivalId,
       @RequestBody FestivalConcertMenuDto festivalConcertMenuDto) {
-    return festivalService.updateViewInfo(festivalId, festivalConcertMenuDto);
+    festivalService.updateViewInfo(festivalId, festivalConcertMenuDto);
   }
 
   @GetMapping("/{festivalId}/entry")
