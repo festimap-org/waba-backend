@@ -10,8 +10,4 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
   Optional<Festival> findByName(String name);
 
   Optional<Festival> findBySubAddress(String subAddress);
-
-  @Query(
-      "SELECT f FROM Festival f join FETCH f.missingPersons m where f.id = :id and m.popup= :status ")
-  Optional<Festival> findMissingPersonWidgetById(Long id, Boolean status);
 }
