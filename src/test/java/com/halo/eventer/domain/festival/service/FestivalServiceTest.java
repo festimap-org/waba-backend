@@ -6,7 +6,6 @@ import com.halo.eventer.domain.festival.exception.FestivalAlreadyExistsException
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.global.common.ImageDto;
-import com.halo.eventer.global.error.exception.BaseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +26,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
+@SuppressWarnings("NonAsciiCharacters")
 public class FestivalServiceTest {
 
   @Mock
@@ -82,10 +82,10 @@ public class FestivalServiceTest {
     given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
 
     //when
-    Festival festival = festivalService.findById(1L);
+    FestivalResDto result = festivalService.findById(1L);
 
     //then
-    assertThat(festival).isEqualTo(festival);
+    assertThat(result.getName()).isEqualTo(festival.getName());
   }
 
   @Test
@@ -151,18 +151,18 @@ public class FestivalServiceTest {
   @Test
   void 축제색등록_성공(){
     //given
-    ColorReqDto colorReqDto = new ColorReqDto();
+    ColorDto colorDto = new ColorDto();
     given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
 
     //when
-    String result = festivalService.updateColor(1L, colorReqDto);
+    String result = festivalService.updateColor(1L, colorDto);
 
     //then
     assertThat(result).isEqualTo("색 등록 완료");
-    assertThat(festival.getBackgroundColor()).isEqualTo(colorReqDto.getBackgroundColor());
-    assertThat(festival.getSubColor()).isEqualTo(colorReqDto.getSubColor());
-    assertThat(festival.getMainColor()).isEqualTo(colorReqDto.getMainColor());
-    assertThat(festival.getFontColor()).isEqualTo(colorReqDto.getFontColor());
+    assertThat(festival.getBackgroundColor()).isEqualTo(colorDto.getBackgroundColor());
+    assertThat(festival.getSubColor()).isEqualTo(colorDto.getSubColor());
+    assertThat(festival.getMainColor()).isEqualTo(colorDto.getMainColor());
+    assertThat(festival.getFontColor()).isEqualTo(colorDto.getFontColor());
   }
 
   @Test

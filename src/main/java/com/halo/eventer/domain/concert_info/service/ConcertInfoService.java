@@ -8,6 +8,8 @@ import com.halo.eventer.domain.concert_info.dto.ConcertInfoUpdateDto;
 import com.halo.eventer.domain.concert_info.exception.ConcertInfoNotFoundException;
 import com.halo.eventer.domain.concert_info.repository.ConcertInfoRepository;
 import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.image.ImageRepository;
 
@@ -23,12 +25,13 @@ public class ConcertInfoService {
   private final ConcertInfoRepository concertInfoRepository;
   private final ImageRepository imageRepository;
 
-  private final FestivalService festivalService;
+  private final FestivalRepository festivalRepository;
 
   /** 공연 정보 생성 */
   @Transactional
   public String createInfoName(Long festivalId, String name, ConcertInfoType type) {
-    Festival festival = festivalService.findById(festivalId);
+    Festival festival = festivalRepository
+            .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
     ConcertInfo concertInfo = new ConcertInfo(name, type, festival);
     concertInfoRepository.save(concertInfo);
     return "저장완료";

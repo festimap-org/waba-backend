@@ -1,6 +1,8 @@
 package com.halo.eventer.domain.notice.service;
 
 import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.image.Image;
 import com.halo.eventer.domain.image.ImageRepository;
@@ -23,12 +25,12 @@ public class NoticeService {
   private final NoticeRepository noticeRepository;
   private final ImageRepository imageRepository;
 
-  private final FestivalService festivalService;
+  private final FestivalRepository festivalRepository;
 
   /** 공지사항 등록 */
   @Transactional
-  public String registerNotice(NoticeRegisterDto NoticeRegisterDto, Long id) {
-    Festival festival = festivalService.findById(id);
+  public String registerNotice(NoticeRegisterDto NoticeRegisterDto, Long festivalId) {
+    Festival festival = festivalRepository.findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
     Notice notice = new Notice(NoticeRegisterDto);
     notice.setFestival(festival);
     notice.setImages(
@@ -40,8 +42,8 @@ public class NoticeService {
   /** 공지사항 타입별로 조회 */
   @Transactional
   public NoticeInquireListDto inquireNoticeList(Long festivalId, ArticleType type) {
-    List<Notice> notices =
-        noticeRepository.findAllByFestivalAndType(festivalService.findById(festivalId), type);
+    Festival festival = festivalRepository.findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
+    List<Notice> notices = noticeRepository.findAllByFestivalAndType(festival, type);
 
     return new NoticeInquireListDto(
         notices.stream().map(NoticeInquireDto::new).collect(Collectors.toList()));

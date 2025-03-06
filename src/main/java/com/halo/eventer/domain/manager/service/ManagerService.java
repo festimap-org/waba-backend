@@ -1,6 +1,8 @@
 package com.halo.eventer.domain.manager.service;
 
 import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.manager.Manager;
 import com.halo.eventer.domain.manager.dto.ManagerCreateReqDto;
@@ -15,11 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ManagerService {
 
     private final ManagerRepository managerRepository;
-    private final FestivalService festivalService;
+    private final FestivalRepository festivalRepository;
 
     @Transactional
     public void createManager(Long festivalId, ManagerCreateReqDto managerCreateReqDto) {
-        Festival festival = festivalService.findById(festivalId);
+        Festival festival = festivalRepository
+                .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
         managerRepository.save(new Manager(managerCreateReqDto.getPhoneNo(), festival));
     }
 

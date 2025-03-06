@@ -1,5 +1,8 @@
 package com.halo.eventer.domain.up_widget.service;
 
+import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.up_widget.UpWidget;
 import com.halo.eventer.domain.up_widget.dto.UpWidgetCreateDto;
@@ -19,18 +22,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class UpWidgetService {
 
   private final UpWidgetRepository upWidgetRepository;
-  private final FestivalService festivalService;
+  private final FestivalRepository festivalRepository;
 
   /** 상단 팝업 생성 */
   public SuccessCode createUpWidget(Long festivalId, UpWidgetCreateDto upWidgetCreateDto) {
-    upWidgetRepository.save(
-        new UpWidget(upWidgetCreateDto, festivalService.findById(festivalId)));
+    Festival festival = festivalRepository
+            .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
+    upWidgetRepository.save(new UpWidget(upWidgetCreateDto,festival));
     return SuccessCode.SAVE_SUCCESS;
   }
 
   /** 상단 팝업 리스트 조회 */
   public List<UpWidget> getUpWidgetList(Long festivalId) {
-    return upWidgetRepository.findAllByFestival(festivalService.findById(festivalId));
+    Festival festival = festivalRepository
+            .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
+    return upWidgetRepository.findAllByFestival(festival);
   }
 
   /** 상단 팝업 리스트 단일 조회 */
@@ -41,9 +47,10 @@ public class UpWidgetService {
   }
 
   /** 유저용 datetime으로 팝업 리스트 조회 */
-  public List<UpWidget> getUpWidgetListByDateTime(Long id, LocalDateTime dateTime) {
-    return upWidgetRepository.findAllByFestivalWithDateTime(
-        festivalService.findById(id), dateTime);
+  public List<UpWidget> getUpWidgetListByDateTime(Long festivalId, LocalDateTime dateTime) {
+    Festival festival = festivalRepository
+            .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
+    return upWidgetRepository.findAllByFestivalWithDateTime(festival, dateTime);
   }
 
   /** 상단 위젯 수정 */

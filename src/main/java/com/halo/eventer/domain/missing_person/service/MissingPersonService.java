@@ -1,6 +1,8 @@
 package com.halo.eventer.domain.missing_person.service;
 
 import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.missing_person.MissingPerson;
 import com.halo.eventer.domain.missing_person.dto.MissingPersonReqDto;
@@ -17,11 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class MissingPersonService {
 
   private final MissingPersonRepository missingPersonRepository;
-  private final FestivalService festivalService;
+  private final FestivalRepository festivalRepository;
 
   // 실종자 찾기 신청
   public void createMissingPerson(Long festivalId, MissingPersonReqDto missingPersonReqDto) {
-    Festival festival = festivalService.findById(festivalId);
+    Festival festival = festivalRepository
+            .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
     missingPersonRepository.save(new MissingPerson(missingPersonReqDto, festival));
   }
 

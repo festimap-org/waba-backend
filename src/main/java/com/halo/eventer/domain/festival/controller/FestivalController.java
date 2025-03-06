@@ -27,7 +27,7 @@ public class FestivalController {
   @GetFestivalApi
   @GetMapping("/{id}")
   public FestivalResDto getFestival(@PathVariable("id") Long id) {
-    return new FestivalResDto(festivalService.findById(id));
+    return festivalService.findById(id);
   }
 
   @GetMapping
@@ -51,8 +51,8 @@ public class FestivalController {
   @FestivalColorAddApi
   @PostMapping("/{festivalId}/color")
   public String addColor(
-      @PathVariable("festivalId") Long id, @RequestBody ColorReqDto colorReqDto) {
-    return festivalService.updateColor(id, colorReqDto);
+      @PathVariable("festivalId") Long id, @RequestBody ColorDto colorDto) {
+    return festivalService.updateColor(id, colorDto);
   }
 
   @FestivalLogoAddApi
@@ -101,7 +101,6 @@ public class FestivalController {
   public FestivalResDto updateFestivalLocation(
       @PathVariable("festivalId") Long festivalId,
       @RequestBody FestivalLocationDto festivalLocationDto) {
-    return new FestivalResDto(
-        festivalService.updateLocation(festivalId, festivalLocationDto));
+      return FestivalResDto.from(festivalService.updateLocation(festivalId, festivalLocationDto));
   }
 }

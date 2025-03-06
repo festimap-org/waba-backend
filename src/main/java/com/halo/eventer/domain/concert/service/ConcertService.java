@@ -7,6 +7,8 @@ import com.halo.eventer.domain.duration.exception.DurationNotFoundException;
 import com.halo.eventer.domain.concert.repository.ConcertRepository;
 import com.halo.eventer.domain.duration.repository.DurationRepository;
 import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.image.Image;
 import com.halo.eventer.domain.image.ImageRepository;
@@ -24,17 +26,18 @@ public class ConcertService {
     private final DurationRepository durationRepository;
     private final ImageRepository imageRepository;
 
-    private final FestivalService festivalService;
+    private final FestivalRepository festivalRepository;
 
     /** 공연 등록 */
     @Transactional
-    public String registerConcert(ConcertRegisterDto registerDto, Long id) {
-        Festival festival = festivalService.findById(id);
-    Concert concert = new Concert(
+    public String registerConcert(ConcertRegisterDto registerDto, Long festivalId) {
+        Festival festival = festivalRepository
+                .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
+        Concert concert = new Concert(
             registerDto.getThumbnail(),
             festival,
             durationRepository.findById(registerDto.getDurationId())
-                .orElseThrow(() -> new DurationNotFoundException(id)));
+                    .orElseThrow(() -> new DurationNotFoundException(registerDto.getDurationId())));
         concert.setImages(registerDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
         concertRepository.save(concert);
         return "저장완료";
@@ -42,7 +45,8 @@ public class ConcertService {
 
     /** 공연 전체 조회 */
     public ConcertGetListDto getConcertList(Long festivalId) {
-        Festival festival = festivalService.findById(festivalId);
+        Festival festival = festivalRepository
+                .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
 
         List<Concert> concerts = concertRepository.findAllByFestival(festival);
         List<ConcertGetDto> concertListDto = ConcertGetDto.fromConcertList(concerts);

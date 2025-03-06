@@ -1,6 +1,8 @@
 package com.halo.eventer.domain.splash.service;
 
 import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.splash.Splash;
 import com.halo.eventer.domain.splash.dto.DeleteImageDto;
@@ -15,13 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class SplashService {
-  private final FestivalService festivalService;
+  private final FestivalRepository festivalRepository;
   private final SplashRepository splashRepository;
 
   /** 이미지 업로드 + 수정 */
   @Transactional
   public String uploadSplashImage(Long festivalId, UploadImageDto uploadImageDto) {
-    Festival festival = festivalService.findById(festivalId);
+    Festival festival = festivalRepository
+            .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
 
     Splash splash = splashRepository.findByFestivalId(festivalId).orElse(new Splash(festival));
     for (ImageLayerDto layer : uploadImageDto.getImageLayers()) {
@@ -48,7 +51,8 @@ public class SplashService {
   /** 이미지 삭제 */
   @Transactional
   public String deleteSplashImage(Long festivalId, DeleteImageDto deleteImageDto) {
-    Festival festival = festivalService.findById(festivalId);
+    Festival festival = festivalRepository
+            .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
 
     Splash splash = splashRepository.findByFestivalId(festivalId).orElse(new Splash(festival));
     for (String layer : deleteImageDto.getLayerTypes()) {
@@ -74,7 +78,8 @@ public class SplashService {
 
   /** 전체 레이어 조회 */
   public Splash getSplash(Long festivalId) {
-    Festival festival = festivalService.findById(festivalId);
+    Festival festival = festivalRepository
+            .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
     Splash splash = splashRepository.findByFestivalId(festivalId)
             .orElseThrow(SplashNotFoundException::new);
     return splash;

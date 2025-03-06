@@ -38,8 +38,9 @@ public class FestivalService {
   }
 
   @Transactional(readOnly = true)
-  public Festival findById(Long id) {
-    return loadFestivalOrThrow(id);
+  public FestivalResDto findById(Long id) {
+    Festival festival = loadFestivalOrThrow(id);
+    return FestivalResDto.from(festival);
   }
 
   public List<FestivalListDto> findAll() {
@@ -50,7 +51,7 @@ public class FestivalService {
   public FestivalResDto update(Long id, FestivalCreateDto festivalCreateDto) {
     Festival festival = loadFestivalOrThrow(id);
     festival.setFestival(festivalCreateDto);
-    return new FestivalResDto(festival);
+    return FestivalResDto.from(festival);
   }
 
   @Transactional
@@ -61,9 +62,9 @@ public class FestivalService {
   }
 
   @Transactional
-  public String updateColor(Long id, ColorReqDto colorReqDto) {
+  public String updateColor(Long id, ColorDto colorDto) {
     Festival festival = loadFestivalOrThrow(id);
-    festival.setColor(colorReqDto);
+    festival.setColor(colorDto);
     return "색 등록 완료";
   }
 
