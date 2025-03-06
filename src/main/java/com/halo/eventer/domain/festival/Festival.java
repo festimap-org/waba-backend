@@ -9,6 +9,7 @@ import com.halo.eventer.domain.inquiry.Inquiry;
 import com.halo.eventer.domain.lost_item.LostItem;
 import com.halo.eventer.domain.manager.Manager;
 import com.halo.eventer.domain.map.MapCategory;
+import com.halo.eventer.domain.map.enumtype.MapCategoryType;
 import com.halo.eventer.domain.middle_banner.MiddleBanner;
 import com.halo.eventer.domain.missing_person.MissingPerson;
 import com.halo.eventer.domain.notice.Notice;
@@ -116,10 +117,26 @@ public class Festival {
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<MissingPerson> missingPersons = new ArrayList<>();
 
-  @Builder
-  public Festival(FestivalCreateDto festivalCreateDto) {
-    this.name = festivalCreateDto.getName();
-    this.subAddress = festivalCreateDto.getSubAddress();
+  private Festival(String name, String subAddress) {
+    this.name = name;
+    this.subAddress = subAddress;
+  }
+
+  public static Festival from(FestivalCreateDto festivalCreateDto) {
+    return new Festival(festivalCreateDto.getName(), festivalCreateDto.getSubAddress());
+  }
+
+  public void applyDefaultMapCategory() {
+    MapCategory mapCategory = MapCategory.createFixedBooth();
+    this.mapCategories.add(mapCategory);
+    mapCategory.assignFestival(this);
+  }
+
+  public void applyThreeDownWidgets(){
+    for (int i = 0; i < 3; i++) {
+      DownWidget widget = DownWidget.from(this);
+      getDownWidgets().add(widget);
+    }
   }
 
   public void updateFestival(FestivalCreateDto festivalCreateDto) {
@@ -147,11 +164,6 @@ public class Festival {
     this.menuImage2 = mainMenuDto.getMenuImage2();
     this.menuUrl1 = mainMenuDto.getMenuUrl1();
     this.menuUrl2 = mainMenuDto.getMenuUrl2();
-  }
-
-  public void setMapCategory(List<MapCategory> mapCategories) {
-    this.mapCategories = mapCategories;
-    mapCategories.forEach(o -> o.setFestival(this));
   }
 
   public void updateEntry(FestivalConcertMenuDto festivalConcertMenuDto) {

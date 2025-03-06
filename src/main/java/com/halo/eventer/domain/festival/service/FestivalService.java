@@ -1,12 +1,10 @@
 package com.halo.eventer.domain.festival.service;
 
-import com.halo.eventer.domain.down_widget.DownWidget;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.festival.exception.FestivalAlreadyExistsException;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.global.common.ImageDto;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,17 +20,12 @@ public class FestivalService {
 
   private final FestivalRepository festivalRepository;
 
+  @Transactional
   public void create(FestivalCreateDto festivalCreateDto) {
-    if (festivalRepository.findByName(festivalCreateDto.getName()).isPresent()
-        || festivalRepository.findBySubAddress(festivalCreateDto.getSubAddress()).isPresent()) {
-      throw new FestivalAlreadyExistsException();
-    }
-
-    Festival festival = new Festival(festivalCreateDto);
-    festival.setMapCategory(List.of(new MapCategory("고정 부스")));
-    for (int i = 0; i < 3; i++) {
-      festival.getDownWidgets().add(new DownWidget(festival));
-    }
+    validateUniqueFestival(festivalCreateDto);
+    Festival festival = Festival.from(festivalCreateDto);
+    festival.applyDefaultMapCategory();
+    festival.applyThreeDownWidgets();
     festivalRepository.save(festival);
   }
 
@@ -118,5 +111,12 @@ public class FestivalService {
 
   private Festival loadFestivalOrThrow(Long id) {
     return festivalRepository.findById(id).orElseThrow(() -> new FestivalNotFoundException(id));
+  }
+
+  private void validateUniqueFestival(FestivalCreateDto festivalCreateDto) {
+    if (festivalRepository.findByName(festivalCreateDto.getName()).isPresent() ||
+            festivalRepository.findBySubAddress(festivalCreateDto.getSubAddress()).isPresent()) {
+      throw new FestivalAlreadyExistsException();
+    }
   }
 }

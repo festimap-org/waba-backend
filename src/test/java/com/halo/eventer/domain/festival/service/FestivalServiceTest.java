@@ -44,7 +44,7 @@ public class FestivalServiceTest {
   @BeforeEach
   void setUp() {
     festivalCreateDto = new FestivalCreateDto("축제","univ");
-    festival = new Festival(festivalCreateDto);
+    festival = Festival.from(festivalCreateDto);
   }
 
   @Test
