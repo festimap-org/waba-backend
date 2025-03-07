@@ -50,19 +50,6 @@ public class SecurityConfig {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
 
-        //                .authorizeRequests()
-        //                .antMatchers("/", "/swagger-ui/**",
-        // "/v3/**","/swagger-ui.html").permitAll()
-        //                .antMatchers(HttpMethod.POST, "/concert","/concertInfo/**","/duration/**",
-        // "/festival/**","/mapCategory/**","/map/**",
-        // "/menu/**","/notice/**","/widget").hasRole("ADMIN")
-        //                .antMatchers(HttpMethod.PATCH,
-        // "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**",
-        // "/menu/**","/notice/**","/widget").hasRole("ADMIN")
-        //                .antMatchers(HttpMethod.DELETE,
-        // "/concert","/concertInfo/**","/duration/**", "/festival/**","/mapCategory/**","/map/**",
-        // "/menu/**","/notice/**","/widget").hasRole("ADMIN")
-        //                .anyRequest().permitAll();
         .authorizeRequests()
         .antMatchers("/", "/swagger-ui/**", "/v3/**", "/swagger-ui.html")
         .permitAll()
