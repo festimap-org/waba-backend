@@ -1,6 +1,10 @@
 package com.halo.eventer.domain.stamp;
 
 import javax.persistence.*;
+
+import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
+import com.halo.eventer.domain.stamp.dto.stamp.MissionSetDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,7 +37,17 @@ public class Mission {
     @JoinColumn(name = "stamp_id")
     private Stamp stamp;
 
-    public Mission(Long boothId, String title, String content, String place, String time, String clearedThumbnail, String notClearedThumbnail, Stamp stamp) {
+    @Builder
+    public Mission(
+            Long boothId,
+            String title,
+            String content,
+            String place,
+            String time,
+            String clearedThumbnail,
+            String notClearedThumbnail,
+            Stamp stamp
+    ) {
         this.boothId = boothId;
         this.title = title;
         this.content = content;
@@ -44,11 +58,25 @@ public class Mission {
         this.stamp = stamp;
     }
 
-    public void setBoothId(Long boothId) { this.boothId = boothId; }
-    public void setTitle(String title) { this.title = title; }
-    public void setContent(String content) { this.content = content; }
-    public void setPlace(String place) { this.place = place; }
-    public void setTime(String time) { this.time = time; }
-    public void setClearedThumbnail(String clearedThumbnail) { this.clearedThumbnail = clearedThumbnail; }
-    public void setNotClearedThumbnail(String notClearedThumbnail) { this.notClearedThumbnail = notClearedThumbnail; }
+    public void updateMission(MissionUpdateDto request) {
+        this.boothId = request.getBoothId();
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        this.place = request.getPlace();
+        this.time = request.getTime();
+        this.clearedThumbnail = request.getClearedThumbnail();
+        this.notClearedThumbnail = request.getNotClearedThumbnail();
+    }
+
+    public static Mission from(MissionSetDto request) {
+        return Mission.builder()
+                .boothId(request.getBoothId())
+                .title(request.getTitle())
+                .content(request.getContent())
+                .place(request.getPlace())
+                .time(request.getTime())
+                .clearedThumbnail(request.getClearedThumbnail())
+                .notClearedThumbnail(request.getNotClearedThumbnail())
+                .build();
+    }
 }

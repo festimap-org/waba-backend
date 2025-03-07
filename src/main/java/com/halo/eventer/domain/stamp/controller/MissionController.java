@@ -20,14 +20,15 @@ public class MissionController {
   @MissionDetailGetApi
   @GetMapping
   public MissionDetailGetDto getMission(@RequestParam("missionId") Long missionId) {
-    return new MissionDetailGetDto(missionService.getMission(missionId));
+    return missionService.getMission(missionId);
   }
 
   /** 미션 단일 수정 */
   @MissionUpdateApi
   @PatchMapping
-  public String updateMission(
-      @RequestParam("missionId") Long missionId, @RequestBody MissionUpdateDto missionUpdateDto) {
-    return missionService.updateMission(missionId, missionUpdateDto);
+  public void updateMission(
+          @RequestParam("missionId") Long missionId,
+          @RequestBody MissionUpdateDto missionUpdateDto) {
+    missionService.updateMission(missionId, missionUpdateDto);
   }
 }
