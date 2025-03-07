@@ -55,4 +55,5 @@ public class Mission {
     public void setTime(String time) { this.time = time; }
     public void setClearedThumbnail(String clearedThumbnail) { this.clearedThumbnail = clearedThumbnail; }
     public void setNotClearedThumbnail(String notClearedThumbnail) { this.notClearedThumbnail = notClearedThumbnail; }
+    public void setDetailThumbnail(String detailThumbnail) { this.detailThumbnail = detailThumbnail; }
 }

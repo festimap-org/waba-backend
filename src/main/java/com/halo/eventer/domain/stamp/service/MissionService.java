@@ -31,6 +31,7 @@ public class MissionService {
         mission.setTime(missionUpdateDto.getTime());
         mission.setClearedThumbnail(missionUpdateDto.getClearedThumbnail());
         mission.setNotClearedThumbnail(missionUpdateDto.getNotClearedThumbnail());
+        mission.setDetailThumbnail(missionUpdateDto.getDetailThumbnail());
 
         missionRepository.save(mission);
         return "미션 수정 완료";
