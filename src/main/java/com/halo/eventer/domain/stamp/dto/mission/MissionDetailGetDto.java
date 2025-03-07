@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class MissionDetailResDto {
+public class MissionDetailGetDto {
   private Long boothId;
   private String title;
   private String content;
@@ -17,8 +17,8 @@ public class MissionDetailResDto {
   private String clearedThumbnail;
   private String notClearedThumbnail;
 
-  public static MissionDetailResDto from(Mission mission) {
-    return MissionDetailResDto.builder()
+  public static MissionDetailGetDto from(Mission mission) {
+    return MissionDetailGetDto.builder()
             .boothId(mission.getBoothId())
             .title(mission.getTitle())
             .content(mission.getContent())
