@@ -10,7 +10,7 @@ public class FestivalConcertMenuDto {
   private String summary;
   private String icon;
 
-  private FestivalConcertMenuDto(String summary, String icon) {
+  public FestivalConcertMenuDto(String summary, String icon) {
     this.summary = summary;
     this.icon = icon;
   }
