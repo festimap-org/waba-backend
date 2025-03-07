@@ -30,11 +30,13 @@ public class Mission {
 
     private String notClearedThumbnail;
 
+    private String detailThumbnail;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stamp_id")
     private Stamp stamp;
 
-    public Mission(Long boothId, String title, String content, String place, String time, String clearedThumbnail, String notClearedThumbnail, Stamp stamp) {
+    public Mission(Long boothId, String title, String content, String place, String time, String clearedThumbnail, String notClearedThumbnail, Stamp stamp, String detailThumbnail) {
         this.boothId = boothId;
         this.title = title;
         this.content = content;
@@ -43,6 +45,7 @@ public class Mission {
         this.clearedThumbnail = clearedThumbnail;
         this.notClearedThumbnail = notClearedThumbnail;
         this.stamp = stamp;
+        this.detailThumbnail = detailThumbnail;
     }
 
     public void setBoothId(Long boothId) { this.boothId = boothId; }

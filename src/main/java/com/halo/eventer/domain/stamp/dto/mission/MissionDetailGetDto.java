@@ -14,6 +14,7 @@ public class MissionDetailGetDto {
     private String time;
     private String clearedThumbnail;
     private String notClearedThumbnail;
+    private String detailThumbnail;
 
     public MissionDetailGetDto(Mission mission) {
         this.boothId = mission.getBoothId();
@@ -23,5 +24,6 @@ public class MissionDetailGetDto {
         this.time = mission.getTime();
         this.clearedThumbnail = mission.getClearedThumbnail();
         this.notClearedThumbnail = mission.getNotClearedThumbnail();
+        this.detailThumbnail = mission.getDetailThumbnail();
     }
 }

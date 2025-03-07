@@ -11,10 +11,11 @@ public class MissionSetDto {
     private String time;
     private String clearedThumbnail;
     private String notClearedThumbnail;
+    private String detailThumbnail;
 
     public MissionSetDto() {}
 
-    public MissionSetDto(Long boothId, String title, String content, String place, String time, String clearedThumbnail, String notClearedThumbnail) {
+    public MissionSetDto(Long boothId, String title, String content, String place, String time, String clearedThumbnail, String notClearedThumbnail, String detailThumbnail) {
         this.boothId = boothId;
         this.title = title;
         this.content = content;
@@ -22,5 +23,6 @@ public class MissionSetDto {
         this.time = time;
         this.clearedThumbnail = clearedThumbnail;
         this.notClearedThumbnail = notClearedThumbnail;
+        this.detailThumbnail = detailThumbnail;
     }
 }

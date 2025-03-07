@@ -11,4 +11,5 @@ public class MissionUpdateDto {
     private String time;
     private String clearedThumbnail;
     private String notClearedThumbnail;
+    private String detailThumbnail;
 }

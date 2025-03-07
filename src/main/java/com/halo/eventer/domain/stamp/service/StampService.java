@@ -82,7 +82,8 @@ public class StampService {
                         m.getTime(),
                         m.getClearedThumbnail(),
                         m.getNotClearedThumbnail(),
-                        stamp))
+                        stamp,
+                        m.getDetailThumbnail()))
                 .collect(Collectors.toList());
         stamp.setMissions(missions);
 
