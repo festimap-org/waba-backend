@@ -319,7 +319,7 @@ public class FestivalServiceTest {
     FestivalLocationDto festivalLocationDto = new FestivalLocationDto();
 
     //when
-    Festival result = festivalService.updateLocation(1L,festivalLocationDto);
+    FestivalResDto result = festivalService.updateLocation(1L,festivalLocationDto);
 
     //then
     assertThat(result).isNotNull();

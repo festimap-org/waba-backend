@@ -37,8 +37,8 @@ public class FestivalController {
 
   @FestivalUpdateApi
   @PatchMapping("/{id}")
-  public FestivalResDto updateFestival(
-      @PathVariable("id") Long id, @RequestBody FestivalCreateDto festivalCreateDto) {
+  public FestivalResDto updateFestival(@PathVariable("id") Long id,
+                                       @RequestBody FestivalCreateDto festivalCreateDto) {
     return festivalService.update(id, festivalCreateDto);
   }
 
@@ -101,6 +101,6 @@ public class FestivalController {
   public FestivalResDto updateFestivalLocation(
       @PathVariable("festivalId") Long festivalId,
       @RequestBody FestivalLocationDto festivalLocationDto) {
-      return FestivalResDto.from(festivalService.updateLocation(festivalId, festivalLocationDto));
+      return festivalService.updateLocation(festivalId, festivalLocationDto);
   }
 }

@@ -1,11 +1,13 @@
 package com.halo.eventer.domain.festival.dto;
 
 import com.halo.eventer.domain.festival.Festival;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class FestivalListDto {
 
   private Long id;

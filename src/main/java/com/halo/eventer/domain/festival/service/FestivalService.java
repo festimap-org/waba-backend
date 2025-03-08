@@ -103,10 +103,10 @@ public class FestivalService {
   }
 
   @Transactional
-  public Festival updateLocation(Long id, FestivalLocationDto festivalLocationDto) {
+  public FestivalResDto updateLocation(Long id, FestivalLocationDto festivalLocationDto) {
     Festival festival = loadFestivalOrThrow(id);
     festival.updateLocation(festivalLocationDto);
-    return festival;
+    return FestivalResDto.from(festival);
   }
 
   private Festival loadFestivalOrThrow(Long id) {
