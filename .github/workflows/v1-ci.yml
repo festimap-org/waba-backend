@@ -53,5 +53,16 @@ jobs:
             build/libs/eventer-0.0.1-SNAPSHOT.jar \
             s3://${{ secrets.BUCKET_NAME }}/backend/eventer-0.0.1-SNAPSHOT.jar
 
+      # # (7) Code Deploy 실행
+      # - name: Trigger CodeDeploy Deployment
+      #   uses: aws-actions/aws-cli-action@v4
+      #   with:
+      #     command: deploy create-deployment
+      #     args: >
+      #       --application-name waba-backend-cd
+      #       --deployment-group-name MyDeploymentGroup
+      #       --s3-location bucket=${{ secrets.AWS_S3_BUCKET }},bundleType=jar,key=backend/eventer-0.0.1-SNAPSHOT.jar
+
+
         env:
           BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
