@@ -19,6 +19,7 @@ public class ErrorResponse {
   private ErrorResponse(final String message, final ErrorCode code) {
     this.code = code.getCode();
     this.message = message;
+    this.status = code.getStatus();
   }
 
   public static ErrorResponse of(final ErrorCode code) {

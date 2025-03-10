@@ -9,8 +9,9 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
   // HTTP Method 불일치 에러
@@ -52,7 +53,9 @@ public class GlobalExceptionHandler {
   // 최상위 domain error
   @ExceptionHandler(BaseException.class)
   public ResponseEntity<ErrorResponse> handleElementNotFoundException(BaseException e) {
-    final ErrorResponse response = ErrorResponse.of(e.getErrorCode());
+    final ErrorResponse response = e.getMessage().equals(e.getErrorCode().getMessage())
+            ? ErrorResponse.of(e.getErrorCode())
+            : ErrorResponse.of(e.getMessage(), e.getErrorCode());
     return ResponseEntity.status(response.getStatus()).body(response);
   }
 
