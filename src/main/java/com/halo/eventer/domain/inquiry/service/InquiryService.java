@@ -3,20 +3,19 @@ package com.halo.eventer.domain.inquiry.service;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.inquiry.Inquiry;
 
 import com.halo.eventer.domain.inquiry.dto.*;
 import com.halo.eventer.domain.inquiry.exception.InquiryNotFoundException;
 import com.halo.eventer.domain.inquiry.repository.InquiryRepository;
 import com.halo.eventer.global.common.PageInfo;
+import com.halo.eventer.global.security.PasswordService;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,14 +27,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class InquiryService {
   private final InquiryRepository inquiryRepository;
-  private final PasswordEncoder passwordEncoder;
+  private final PasswordService passwordService;
   private final FestivalRepository festivalRepository;
 
   public String createInquiry(Long festivalId, InquiryCreateReqDto inquiryCreateReqDto) {
-    inquiryCreateReqDto.setPassword(passwordEncoder.encode(inquiryCreateReqDto.getPassword()));
     Festival festival = festivalRepository
             .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
-    inquiryRepository.save(new Inquiry(festival, inquiryCreateReqDto));
+    String encodedPassword = passwordService.encode(inquiryCreateReqDto.getPassword());
+    Inquiry inquiry = new Inquiry(festival,inquiryCreateReqDto,encodedPassword);
+    inquiryRepository.save(inquiry);
     return "저장완료";
   }
 
@@ -87,7 +87,7 @@ public class InquiryService {
 
     if (inquiry.isSecret()) {
       if (!dto.getUserId().equals(inquiry.getUserId())
-          || !passwordEncoder.matches(dto.getPassword(), inquiry.getPassword())) {
+          || !passwordService.matches(dto.getPassword(), inquiry.getPassword())) {
         throw new BaseException("비밀번호가 틀렸거나 아이디가 올바르지 않습니다.", ErrorCode.INVALID_INPUT_VALUE);
       }
     }

@@ -51,14 +51,14 @@ public class Inquiry {
     @Column(name = "create_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public Inquiry(Festival festival,InquiryCreateReqDto inquiryCreateReqDto) {
+    public Inquiry(Festival festival,InquiryCreateReqDto inquiryCreateReqDto, String password) {
         this.festival = festival;
         this.title = inquiryCreateReqDto.getTitle();
         this.isSecret = inquiryCreateReqDto.getIsSecret();
         this.userId = inquiryCreateReqDto.getUserId();
-        this.password = inquiryCreateReqDto.getPassword();
         this.content = inquiryCreateReqDto.getContent();
         this.isAnswered = false;
+        this.password = password;
     }
 
     public void registerAnswer(String answer) {
