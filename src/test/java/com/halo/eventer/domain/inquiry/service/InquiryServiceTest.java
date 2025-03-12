@@ -88,14 +88,15 @@ public class InquiryServiceTest {
     @Test
     void 관리자용_문의_전체조회(){
         //given
-        given(inquiryRepository.findAllByFestivalId(festivalId)).willReturn(List.of(secretInquiry,unSecretInquiry));
+        List<Inquiry> inquiries = createMockInquiries(20);
+        given(inquiryRepository.getPageByFestivalIdAndLastId(festivalId,0L, InquiryConstants.INQUIRY_PAGE_SIZE+1)).willReturn(inquiries);
 
         //when
-        List<InquiryItemDto> results = inquiryService.findAllInquiryForAdmin(festivalId);
+        InquiryNoOffsetPageDto results = inquiryService.getAllInquiryForAdmin(festivalId,0L);
 
         //then
-        assertThat(results).hasSize(2);
-        assertThat(results.get(0))
+        assertThat(results.getInquiryList()).hasSize(20);
+        assertThat(results.getInquiryList().get(0))
                 .usingRecursiveComparison()
                 .comparingOnlyFields("title","isSecret","isAnswered","userId","content")
                 .isEqualTo(secretInquiry);
@@ -104,13 +105,13 @@ public class InquiryServiceTest {
     @Test
     void 관리자용_문의_전체조회_빈리스트_반환(){
         //given
-        given(inquiryRepository.findAllByFestivalId(festivalId)).willReturn(List.of());
+        given(inquiryRepository.getPageByFestivalIdAndLastId(festivalId,0L, InquiryConstants.INQUIRY_PAGE_SIZE+1)).willReturn(List.of());
 
         //when
-        List<InquiryItemDto> results = inquiryService.findAllInquiryForAdmin(festivalId);
+        InquiryNoOffsetPageDto results = inquiryService.getAllInquiryForAdmin(festivalId,0L);
 
         //then
-        assertThat(results).isEmpty();
+        assertThat(results.getInquiryList()).isEmpty();
     }
 
     @Test
@@ -140,7 +141,7 @@ public class InquiryServiceTest {
         InquiryAnswerReqDto dto = new InquiryAnswerReqDto("답변");
 
         //when
-        Inquiry result = inquiryService.updateInquiry(inquiryId,dto);
+        Inquiry result = inquiryService.updateInquiryAnswer(inquiryId,dto);
 
         //then
         assertThat(result.getAnswer()).isEqualTo(dto.getAnswer());
@@ -159,23 +160,22 @@ public class InquiryServiceTest {
     void 유저용_문의리스트_조회(){
         //given
         List<Inquiry> inquiries = List.of(secretInquiry, unSecretInquiry);
-
-        given(inquiryRepository.findAllByFestivalId(festivalId)).willReturn(inquiries);
+        given(inquiryRepository.getPageByFestivalIdAndLastId(festivalId,0L, InquiryConstants.INQUIRY_PAGE_SIZE+1)).willReturn(inquiries);
 
         //when
-        List<InquiryItemDto> results = inquiryService.findAllInquiryForUser(festivalId);
+        InquiryNoOffsetPageDto results = inquiryService.getAllInquiryForUser(festivalId,0L);
 
         //then
-        assertThat(results).hasSize(2);
-        assertThat(results.get(0).getTitle()).isEqualTo("HIDDEN");
-        assertThat(results.get(1).getTitle()).isEqualTo("제목");
+        assertThat(results.getInquiryList()).hasSize(2);
+        assertThat(results.getInquiryList().get(0).getTitle()).isEqualTo("HIDDEN");
+        assertThat(results.getInquiryList().get(1).getTitle()).isEqualTo("제목");
     }
 
     @Test
     void 유저용_단일문의_비밀글_조회(){
         //given
         given(inquiryRepository.findById(inquiryId)).willReturn(Optional.of(secretInquiry));
-        InquiryUserReqDto dto = new InquiryUserReqDto("aaa","1234");
+        InquiryUserReqDto dto = new InquiryUserReqDto("aaa","password");
         given(passwordService.matches(any(),any())).willReturn(true);
 
         //when

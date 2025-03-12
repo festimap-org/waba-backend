@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,10 +32,8 @@ public class InquiryService {
     inquiryRepository.save(inquiry);
   }
 
-  public List<InquiryItemDto> findAllInquiryForAdmin(Long festivalId) {
-    return findAllByFestivalId(festivalId).stream()
-            .map(InquiryItemDto::new)
-            .collect(Collectors.toList());
+  public InquiryNoOffsetPageDto getAllInquiryForAdmin(Long festivalId, Long lastId) {
+    return getInquiriesWithNoOffsetPaging(festivalId,lastId);
   }
 
   public Inquiry findInquiryForAdmin(Long id) {
@@ -44,7 +41,7 @@ public class InquiryService {
   }
 
   @Transactional
-  public Inquiry updateInquiry(Long id, InquiryAnswerReqDto dto) {
+  public Inquiry updateInquiryAnswer(Long id, InquiryAnswerReqDto dto) {
     Inquiry inquiry = inquiryRepository.findById(id).orElseThrow(() -> new InquiryNotFoundException(id));
     inquiry.registerAnswer(dto.getAnswer());
     return inquiry;
@@ -54,15 +51,16 @@ public class InquiryService {
     inquiryRepository.deleteById(id);
   }
 
-  public List<InquiryItemDto> findAllInquiryForUser(Long festivalId) {
-    return findAllByFestivalId(festivalId).stream()
-            .map(this::createInquiryItemDtoWithTitleVisibility)
-            .collect(Collectors.toList());
+  public InquiryNoOffsetPageDto getAllInquiryForUser(Long festivalId,Long lastId) {
+    InquiryNoOffsetPageDto inquiryNoOffsetPageDto = getInquiriesWithNoOffsetPaging(festivalId,lastId);
+
+    inquiryNoOffsetPageDto.updateInquiryItemDtoWithTitleVisibility();
+
+    return  inquiryNoOffsetPageDto;
   }
 
   public InquiryResDto getInquiryForUser(Long id, InquiryUserReqDto dto) {
-    Inquiry inquiry = inquiryRepository.findById(id)
-            .orElseThrow(() -> new InquiryNotFoundException(id));
+    Inquiry inquiry = inquiryRepository.findById(id).orElseThrow(() -> new InquiryNotFoundException(id));
 
     validateAccess(inquiry, dto);
 
@@ -71,8 +69,7 @@ public class InquiryService {
 
   public InquiryNoOffsetPageDto getInquiriesWithNoOffsetPaging(Long festivalId, Long lastId) {
     int pageSize = InquiryConstants.INQUIRY_PAGE_SIZE;
-    List<Inquiry> inquiries = inquiryRepository.getPageByFestivalIdAndLastId(
-            festivalId, lastId, pageSize + 1);
+    List<Inquiry> inquiries = inquiryRepository.getPageByFestivalIdAndLastId(festivalId, lastId, pageSize + 1);
 
     boolean isLast = inquiries.size() <= pageSize;
     if (!isLast)
@@ -81,28 +78,14 @@ public class InquiryService {
     return new InquiryNoOffsetPageDto(inquiries, isLast);
   }
 
-  private List<Inquiry> findAllByFestivalId(Long festivalId){
-    return inquiryRepository.findAllByFestivalId(festivalId);
-  }
-
-  private InquiryItemDto createInquiryItemDtoWithTitleVisibility(Inquiry inquiry) {
-    String title = getDisplayableTitle(inquiry);
-    return new InquiryItemDto(inquiry, title, inquiry.getUserId());
-  }
-
-  private String getDisplayableTitle(Inquiry inquiry) {
-    return inquiry.isSecret() ? InquiryConstants.PRIVATE_INQUIRY_TITLE : inquiry.getTitle();
-  }
-
   private void validateAccess(Inquiry inquiry, InquiryUserReqDto dto) {
     if (!inquiry.isSecret()) {
       return;
     }
 
-    boolean isOwner = dto.getUserId().equals(inquiry.getUserId());
     boolean isPasswordCorrect = passwordService.matches(dto.getPassword(), inquiry.getPassword());
 
-    if (!isOwner || !isPasswordCorrect) {
+    if (!inquiry.isOwner(dto) || !isPasswordCorrect) {
       throw new InquiryUnauthorizedAccessException();
     }
   }

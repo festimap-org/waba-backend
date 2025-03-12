@@ -5,6 +5,7 @@ import com.halo.eventer.domain.inquiry.dto.InquiryCreateReqDto;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 
+import com.halo.eventer.domain.inquiry.dto.InquiryUserReqDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -64,5 +65,9 @@ public class Inquiry {
     public void registerAnswer(String answer) {
         this.answer = answer;
         this.isAnswered = true;
+    }
+
+    public boolean isOwner(InquiryUserReqDto inquiryUserReqDto) {
+        return this.userId.equals(inquiryUserReqDto.getUserId());
     }
 }

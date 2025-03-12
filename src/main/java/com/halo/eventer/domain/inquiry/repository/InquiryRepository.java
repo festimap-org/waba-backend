@@ -21,8 +21,7 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
                   + "AND (:lastId = 0 OR i.id < :lastId) "
                   + "ORDER BY i.id DESC "
                   + "LIMIT :size ",
-          nativeQuery = true
-  )
+          nativeQuery = true)
   List<Inquiry> getPageByFestivalIdAndLastId(
           @Param("festivalId") Long festivalId, @Param("lastId") Long lastId, @Param("size") int size);
 }
