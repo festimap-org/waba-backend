@@ -20,9 +20,9 @@ public class inquiryController {
      * 문의사항 등록
      * */
     @PostMapping
-    public String createInquiry(@RequestParam("festivalId") Long festivalId ,
+    public void createInquiry(@RequestParam("festivalId") Long festivalId ,
                                 @RequestBody InquiryCreateReqDto inquiryCreateReqDto){
-        return inquiryService.create(festivalId,inquiryCreateReqDto);
+        inquiryService.create(festivalId,inquiryCreateReqDto);
     }
     /**
      *  문의사항 전체 조회 (admin 용)
@@ -48,7 +48,7 @@ public class inquiryController {
 
     @DeleteMapping("/forAdmin")
     public void deleteInquiry(@RequestParam("inquiryId") Long id){
-        inquiryService.deleteInquiry(id);
+        inquiryService.delete(id);
     }
 
     /**

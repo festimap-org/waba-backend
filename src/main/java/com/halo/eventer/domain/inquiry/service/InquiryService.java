@@ -25,13 +25,12 @@ public class InquiryService {
   private final PasswordService passwordService;
   private final FestivalRepository festivalRepository;
 
-  public String create(Long festivalId, InquiryCreateReqDto inquiryCreateReqDto) {
+  public void create(Long festivalId, InquiryCreateReqDto inquiryCreateReqDto) {
     Festival festival = festivalRepository
             .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
     String encodedPassword = passwordService.encode(inquiryCreateReqDto.getPassword());
     Inquiry inquiry = new Inquiry(festival,inquiryCreateReqDto,encodedPassword);
     inquiryRepository.save(inquiry);
-    return "저장완료";
   }
 
   public List<InquiryItemDto> findAllInquiryForAdmin(Long festivalId) {
@@ -51,7 +50,7 @@ public class InquiryService {
     return inquiry;
   }
 
-  public void deleteInquiry(Long id) {
+  public void delete(Long id) {
     inquiryRepository.deleteById(id);
   }
 

@@ -14,12 +14,12 @@ public class InquiryItemDto {
     private Boolean isAnswered;
     private Boolean isSecret;
     private String userId;
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
 
     public InquiryItemDto(Inquiry inquiry, String title, String userId) {
         this.id = inquiry.getId();
         this.isAnswered = inquiry.isAnswered();
-        this.createdDate = inquiry.getCreatedAt();
+        this.createdAt = inquiry.getCreatedAt();
         this.isSecret = inquiry.isSecret();
         this.title = title;
         this.userId = userId;
@@ -28,7 +28,7 @@ public class InquiryItemDto {
     public InquiryItemDto(Inquiry inquiry) {
         this.id = inquiry.getId();
         this.isAnswered = inquiry.isAnswered();
-        this.createdDate = inquiry.getCreatedAt();
+        this.createdAt = inquiry.getCreatedAt();
         this.isSecret = inquiry.isSecret();
         this.title = inquiry.getTitle();
         this.userId = inquiry.getUserId();

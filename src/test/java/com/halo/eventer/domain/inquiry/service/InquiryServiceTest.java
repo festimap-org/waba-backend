@@ -4,10 +4,10 @@ import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.inquiry.Inquiry;
-import com.halo.eventer.domain.inquiry.dto.InquiryAnswerReqDto;
-import com.halo.eventer.domain.inquiry.dto.InquiryCreateReqDto;
-import com.halo.eventer.domain.inquiry.dto.InquiryItemDto;
+import com.halo.eventer.domain.inquiry.InquiryConstants;
+import com.halo.eventer.domain.inquiry.dto.*;
 import com.halo.eventer.domain.inquiry.exception.InquiryNotFoundException;
+import com.halo.eventer.domain.inquiry.exception.InquiryUnauthorizedAccessException;
 import com.halo.eventer.domain.inquiry.repository.InquiryRepository;
 import com.halo.eventer.global.security.PasswordService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,66 +45,69 @@ public class InquiryServiceTest {
     @InjectMocks
     private InquiryService inquiryService;
 
-    private Inquiry inquiry;
+    private Inquiry secretInquiry;
+    private Inquiry unSecretInquiry;
     private Festival festival;
     private InquiryCreateReqDto secretInquiryCreateReqDto;
+    private InquiryCreateReqDto unSecretInquiryCreateReqDto;
+    private final Long inquiryId = 1L;
+    private final Long festivalId = 1L;
 
     @BeforeEach
     void setUp() {
         secretInquiryCreateReqDto = new InquiryCreateReqDto("제목",true,"aaa","1234","내용");
+        unSecretInquiryCreateReqDto = new InquiryCreateReqDto("제목",false,"aaa","1234","내용");
         festival = new Festival();
-        inquiry = new Inquiry(festival, secretInquiryCreateReqDto,"1234");
+        secretInquiry = new Inquiry(festival, secretInquiryCreateReqDto,"password");
+        unSecretInquiry = new Inquiry(festival, unSecretInquiryCreateReqDto,"password");
     }
 
     @Test
     void 문의생성_성공(){
         // given
-        given(passwordService.encode(anyString())).willReturn("password");
-        given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
-        given(inquiryRepository.save(any())).willReturn(inquiry);
+        given(passwordService.encode(anyString())).willReturn("1234");
+        given(festivalRepository.findById(festivalId)).willReturn(Optional.of(festival));
+        given(inquiryRepository.save(any())).willReturn(secretInquiry);
 
         // when
-        String result = inquiryService.create(1L,secretInquiryCreateReqDto);
+        inquiryService.create(inquiryId,secretInquiryCreateReqDto);
 
         // then
-        assertThat(secretInquiryCreateReqDto.getPassword()).isEqualTo("password");
         verify(inquiryRepository, times(1)).save(any(Inquiry.class));
-        assertThat(result).isEqualTo("저장완료");
     }
 
     @Test
     void 축제가_없는_경우_문의생성_실패(){
         // given
-        given(festivalRepository.findById(1L)).willReturn(Optional.empty());
-        given(passwordService.encode(anyString())).willReturn("password");
+        given(festivalRepository.findById(festivalId)).willReturn(Optional.empty());
 
         //when & then
-        assertThatThrownBy(() -> inquiryService.create(1L,secretInquiryCreateReqDto)).isInstanceOf(FestivalNotFoundException.class);
+        assertThatThrownBy(() -> inquiryService.create(festivalId,secretInquiryCreateReqDto)).isInstanceOf(FestivalNotFoundException.class);
     }
 
     @Test
     void 관리자용_문의_전체조회(){
         //given
-        given(inquiryRepository.findAllByFestivalId(1L)).willReturn(List.of(inquiry));
+        given(inquiryRepository.findAllByFestivalId(festivalId)).willReturn(List.of(secretInquiry,unSecretInquiry));
 
         //when
-        List<InquiryItemDto> results = inquiryService.findAllInquiryForAdmin(1L);
+        List<InquiryItemDto> results = inquiryService.findAllInquiryForAdmin(festivalId);
 
         //then
-        assertThat(results).hasSize(1);
+        assertThat(results).hasSize(2);
         assertThat(results.get(0))
                 .usingRecursiveComparison()
-                .comparingOnlyFields("title","isAnswered","userId","createdDate")
-                .isEqualTo(inquiry);
+                .comparingOnlyFields("title","isSecret","isAnswered","userId","content")
+                .isEqualTo(secretInquiry);
     }
 
     @Test
     void 관리자용_문의_전체조회_빈리스트_반환(){
         //given
-        given(inquiryRepository.findAllByFestivalId(1L)).willReturn(List.of());
+        given(inquiryRepository.findAllByFestivalId(festivalId)).willReturn(List.of());
 
         //when
-        List<InquiryItemDto> results = inquiryService.findAllInquiryForAdmin(1L);
+        List<InquiryItemDto> results = inquiryService.findAllInquiryForAdmin(festivalId);
 
         //then
         assertThat(results).isEmpty();
@@ -112,31 +116,31 @@ public class InquiryServiceTest {
     @Test
     void 관리자용_문의_단일조회(){
         //given
-        given(inquiryRepository.findById(1L)).willReturn(Optional.of(inquiry));
+        given(inquiryRepository.findById(inquiryId)).willReturn(Optional.of(secretInquiry));
 
         //when
-        Inquiry result = inquiryService.getInquiryForAdmin(1L);
+        Inquiry result = inquiryService.findInquiryForAdmin(inquiryId);
 
         //then
-        assertThat(result).isEqualTo(inquiry);
+        assertThat(result).isEqualTo(secretInquiry);
     }
 
     @Test
     void 관리자용_문의_단일조회_문의가_없는_경우(){
-        given(inquiryRepository.findById(1L)).willReturn(Optional.empty());
+        given(inquiryRepository.findById(inquiryId)).willReturn(Optional.empty());
 
         //when & then
-        assertThatThrownBy(()-> inquiryService.getInquiryForAdmin(1L)).isInstanceOf(InquiryNotFoundException.class);
+        assertThatThrownBy(()-> inquiryService.findInquiryForAdmin(inquiryId)).isInstanceOf(InquiryNotFoundException.class);
     }
 
     @Test
     void 관리자용_문의_답변등록(){
         //given
-        given(inquiryRepository.findById(1L)).willReturn(Optional.of(inquiry));
+        given(inquiryRepository.findById(inquiryId)).willReturn(Optional.of(secretInquiry));
         InquiryAnswerReqDto dto = new InquiryAnswerReqDto("답변");
 
         //when
-        Inquiry result = inquiryService.updateInquiry(1L,dto);
+        Inquiry result = inquiryService.updateInquiry(inquiryId,dto);
 
         //then
         assertThat(result.getAnswer()).isEqualTo(dto.getAnswer());
@@ -144,13 +148,90 @@ public class InquiryServiceTest {
 
     @Test
     void 관리자용_문의_삭제(){
-        // given
-        Long inquiryId = 1L;
-
         // when
-        inquiryService.deleteInquiry(inquiryId);
+        inquiryService.delete(inquiryId);
 
         // then
         verify(inquiryRepository, times(1)).deleteById(inquiryId);
+    }
+
+    @Test
+    void 유저용_문의리스트_조회(){
+        //given
+        List<Inquiry> inquiries = List.of(secretInquiry, unSecretInquiry);
+
+        given(inquiryRepository.findAllByFestivalId(festivalId)).willReturn(inquiries);
+
+        //when
+        List<InquiryItemDto> results = inquiryService.findAllInquiryForUser(festivalId);
+
+        //then
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0).getTitle()).isEqualTo("HIDDEN");
+        assertThat(results.get(1).getTitle()).isEqualTo("제목");
+    }
+
+    @Test
+    void 유저용_단일문의_비밀글_조회(){
+        //given
+        given(inquiryRepository.findById(inquiryId)).willReturn(Optional.of(secretInquiry));
+        InquiryUserReqDto dto = new InquiryUserReqDto("aaa","1234");
+        given(passwordService.matches(any(),any())).willReturn(true);
+
+        //when
+        InquiryResDto inquiryResDto = inquiryService.getInquiryForUser(inquiryId,dto);
+
+        //then
+        assertThat(inquiryResDto).isNotNull();
+        assertThat(inquiryResDto.getTitle()).isEqualTo("제목");
+    }
+
+    @Test
+    void 유저용_단일문의_비밀글_접근제한(){
+        //given
+        given(inquiryRepository.findById(inquiryId)).willReturn(Optional.of(secretInquiry));
+        InquiryUserReqDto dto = new InquiryUserReqDto("aaa","1234");
+        given(passwordService.matches(any(),any())).willReturn(false);
+
+        //when & then
+        assertThatThrownBy(()->inquiryService.getInquiryForUser(inquiryId,dto))
+                .isInstanceOf(InquiryUnauthorizedAccessException.class);
+    }
+
+    @Test
+    void 문의_페이징조회_마지막페이지(){
+        //given
+        List<Inquiry> inquiries = createMockInquiries(20);
+        given(inquiryRepository.getPageByFestivalIdAndLastId(festivalId,0L, InquiryConstants.INQUIRY_PAGE_SIZE+1)).willReturn(inquiries);
+
+        //when
+        InquiryNoOffsetPageDto dto = inquiryService.getInquiriesWithNoOffsetPaging(festivalId,0L);
+
+        //then
+        assertThat(dto).isNotNull();
+        assertThat(dto.getInquiryList().size()).isEqualTo(20);
+        assertThat(dto.getIsLast()).isTrue();
+    }
+
+    @Test
+    void 문의_페이징조회_중간페이지(){
+        List<Inquiry> inquiries = createMockInquiries(21);
+        given(inquiryRepository.getPageByFestivalIdAndLastId(festivalId,0L, InquiryConstants.INQUIRY_PAGE_SIZE+1)).willReturn(inquiries);
+
+        //when
+        InquiryNoOffsetPageDto dto = inquiryService.getInquiriesWithNoOffsetPaging(festivalId,0L);
+
+        //then
+        assertThat(dto).isNotNull();
+        assertThat(dto.getInquiryList().size()).isEqualTo(20);
+        assertThat(dto.getIsLast()).isFalse();
+    }
+
+    private List<Inquiry> createMockInquiries(int count) {
+        List<Inquiry> inquiries = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            inquiries.add(secretInquiry);
+        }
+        return inquiries;
     }
 }
