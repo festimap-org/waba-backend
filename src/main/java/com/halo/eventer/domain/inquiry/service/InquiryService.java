@@ -10,18 +10,11 @@ import com.halo.eventer.domain.inquiry.dto.*;
 import com.halo.eventer.domain.inquiry.exception.InquiryNotFoundException;
 import com.halo.eventer.domain.inquiry.exception.InquiryUnauthorizedAccessException;
 import com.halo.eventer.domain.inquiry.repository.InquiryRepository;
-import com.halo.eventer.global.common.PageInfo;
 import com.halo.eventer.global.security.PasswordService;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,30 +70,16 @@ public class InquiryService {
     return new InquiryResDto(inquiry);
   }
 
-  /** 페이징 조회 */
-  public InquiryPageResDto getInquiryByPaging(Long festivalId, Integer page, Integer size) {
-    Page<Inquiry> inquiries =
-        inquiryRepository.findAllByFestivalId(
-            festivalId, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate")));
-
-    PageInfo pageInfo = new PageInfo(page, size, inquiries);
-    List<InquiryItemDto> list =
-        inquiries.getContent().stream()
-            .map(InquiryItemDto::new)
-            .collect(Collectors.toList());
-    return new InquiryPageResDto(list, pageInfo);
-  }
-
-  /** no offset 페이징 조회 */
-  public InquiryNoOffsetPagingListDto getEventPagingList(Long festivalId, Long lastId, Integer size) {
+  public InquiryNoOffsetPageDto getInquiriesWithNoOffsetPaging(Long festivalId, Long lastId) {
+    int pageSize = InquiryConstants.INQUIRY_PAGE_SIZE;
     List<Inquiry> inquiries = inquiryRepository.getPageByFestivalIdAndLastId(
-            festivalId, lastId, Math.max(size, 1) + 1);
+            festivalId, lastId, pageSize + 1);
 
-    boolean isLast = inquiries.size() <= size;
+    boolean isLast = inquiries.size() <= pageSize;
     if (!isLast)
       inquiries.remove(inquiries.size() - 1);
 
-    return new InquiryNoOffsetPagingListDto(inquiries, isLast);
+    return new InquiryNoOffsetPageDto(inquiries, isLast);
   }
 
   private List<Inquiry> findAllByFestivalId(Long festivalId){

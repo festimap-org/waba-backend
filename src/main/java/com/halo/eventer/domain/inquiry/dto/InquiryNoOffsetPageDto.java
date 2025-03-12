@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class InquiryNoOffsetPagingListDto {
+public class InquiryNoOffsetPageDto {
     private List<InquiryItemDto> inquiryList;
     private Boolean isLast;
 
-    public InquiryNoOffsetPagingListDto(List<Inquiry> inquiryList, Boolean isLast) {
+    public InquiryNoOffsetPageDto(List<Inquiry> inquiryList, Boolean isLast) {
         this.inquiryList = inquiryList.stream().map(InquiryItemDto::new).collect(Collectors.toList());
         this.isLast = isLast;
     }
