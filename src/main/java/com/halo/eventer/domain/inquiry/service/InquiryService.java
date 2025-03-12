@@ -45,15 +45,13 @@ public class InquiryService {
             .collect(Collectors.toList());
   }
 
-  public Inquiry getInquiryForAdmin(Long id) {
-    return inquiryRepository
-        .findById(id)
-        .orElseThrow(() -> new InquiryNotFoundException(id));
+  public Inquiry findInquiryForAdmin(Long id) {
+    return inquiryRepository.findById(id).orElseThrow(() -> new InquiryNotFoundException(id));
   }
 
   @Transactional
   public Inquiry updateInquiry(Long id, InquiryAnswerReqDto dto) {
-    Inquiry inquiry = getInquiryForAdmin(id);
+    Inquiry inquiry = inquiryRepository.findById(id).orElseThrow(() -> new InquiryNotFoundException(id));
     inquiry.registerAnswer(dto.getAnswer());
     return inquiry;
   }

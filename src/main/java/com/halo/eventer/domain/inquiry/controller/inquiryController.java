@@ -35,7 +35,7 @@ public class inquiryController {
      * */
     @PostMapping("/forAdmin/{inquiryId}")
     public InquiryResDto getInquiryForAdmin(@PathVariable("inquiryId") Long id){
-        return new InquiryResDto(inquiryService.getInquiryForAdmin(id));
+        return new InquiryResDto(inquiryService.findInquiryForAdmin(id));
     }
 
     @PatchMapping("/forAdmin")
