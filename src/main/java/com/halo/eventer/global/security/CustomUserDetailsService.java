@@ -1,6 +1,6 @@
 package com.halo.eventer.global.security;
 
-import com.halo.eventer.domain.member.Exception.MemberNotFoundException;
+import com.halo.eventer.domain.member.exception.MemberNotFoundException;
 import com.halo.eventer.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,8 +1,8 @@
 package com.halo.eventer.domain.member.service;
 
 
-import com.halo.eventer.domain.member.Exception.LoginFailedException;
-import com.halo.eventer.domain.member.Exception.MemberNotFoundException;
+import com.halo.eventer.domain.member.exception.LoginFailedException;
+import com.halo.eventer.domain.member.exception.MemberNotFoundException;
 import com.halo.eventer.domain.member.Member;
 import com.halo.eventer.domain.member.dto.LoginDto;
 import com.halo.eventer.domain.member.dto.TokenDto;
