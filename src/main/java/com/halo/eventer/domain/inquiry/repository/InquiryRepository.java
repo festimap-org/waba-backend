@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
   @Query("SELECT i FROM Inquiry i WHERE i.festival.id = :festivalId ")
-  List<Inquiry> findAllWithFestivalId(@Param("festivalId") Long festivalId);
+  List<Inquiry> findAllByFestivalId(@Param("festivalId") Long festivalId);
 
   @Query("SELECT i FROM Inquiry i WHERE i.festival.id = :festivalId")
   Page<Inquiry> findAllByFestivalId(@Param("festivalId") Long festivalId, Pageable pageable);

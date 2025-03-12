@@ -20,14 +20,14 @@ public class inquiryController {
     @PostMapping
     public String createInquiry(@RequestParam("festivalId") Long festivalId ,
                                 @RequestBody InquiryCreateReqDto inquiryCreateReqDto){
-        return inquiryService.createInquiry(festivalId,inquiryCreateReqDto);
+        return inquiryService.create(festivalId,inquiryCreateReqDto);
     }
     /**
      *  문의사항 전체 조회 (admin 용)
      * */
     @GetMapping("/forAdmin")
     public InquiryListResDto getAllInquiryForAdmin(@RequestParam("festivalId") Long festivalId){
-        return new InquiryListResDto(inquiryService.getAllInquiryForAdmin(festivalId));
+        return new InquiryListResDto(inquiryService.findAllInquiryForAdmin(festivalId));
     }
 
     /**

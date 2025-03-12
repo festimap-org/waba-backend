@@ -50,7 +50,7 @@ public class InquiryRepositoryTest {
     @Test
     void 축제ID로_문의_전체조회(){
         //when
-        List<Inquiry> results = inquiryRepository.findAllWithFestivalId(festival.getId());
+        List<Inquiry> results = inquiryRepository.findAllByFestivalId(festival.getId());
     System.out.println(festival.getId());
 
         //then
@@ -97,7 +97,7 @@ public class InquiryRepositoryTest {
         Long lastId = firstPage.get(4).getId();
 
         //when
-        List<Inquiry> secondPage = inquiryRepository.getPageByFestivalIdAndLastId(1L, lastId, 10);
+        List<Inquiry> secondPage = inquiryRepository.getPageByFestivalIdAndLastId(festival.getId(), lastId, 10);
         assertThat(secondPage).hasSize(5);
         assertThat(secondPage.get(0).getTitle()).isEqualTo("제목_4");
     }
@@ -105,7 +105,7 @@ public class InquiryRepositoryTest {
     private void addInquiries(){
         for(int i =0;i<10;i++){
             secretInquiryCreateReqDto = new InquiryCreateReqDto(String.format("제목_%d", i),true,"aaa","1234","내용");
-            inquiry = new Inquiry(festival, secretInquiryCreateReqDto);
+            inquiry = new Inquiry(festival, secretInquiryCreateReqDto,"password");
             inquiryRepository.save(inquiry);
         }
     }

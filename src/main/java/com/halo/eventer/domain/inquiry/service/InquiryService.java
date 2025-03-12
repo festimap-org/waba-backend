@@ -30,7 +30,7 @@ public class InquiryService {
   private final PasswordService passwordService;
   private final FestivalRepository festivalRepository;
 
-  public String createInquiry(Long festivalId, InquiryCreateReqDto inquiryCreateReqDto) {
+  public String create(Long festivalId, InquiryCreateReqDto inquiryCreateReqDto) {
     Festival festival = festivalRepository
             .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
     String encodedPassword = passwordService.encode(inquiryCreateReqDto.getPassword());
@@ -39,14 +39,12 @@ public class InquiryService {
     return "저장완료";
   }
 
-  /** Admin용 전체조회 */
-  public List<InquiryListElementResDto> getAllInquiryForAdmin(Long festivalId) {
-    return inquiryRepository.findAllWithFestivalId(festivalId).stream()
-        .map(InquiryListElementResDto::new)
-        .collect(Collectors.toList());
+  public List<InquiryItemDto> findAllInquiryForAdmin(Long festivalId) {
+    return inquiryRepository.findAllByFestivalId(festivalId).stream()
+            .map(InquiryItemDto::new)
+            .collect(Collectors.toList());
   }
 
-  /** Admin용 단일조회 */
   public Inquiry getInquiryForAdmin(Long id) {
     return inquiryRepository
         .findById(id)
@@ -65,15 +63,15 @@ public class InquiryService {
   }
 
   /** 유저용 전체조회 */
-  public List<InquiryListElementResDto> getAllInquiryForUser(Long festivalId) {
-    List<Inquiry> inquiryList = inquiryRepository.findAllWithFestivalId(festivalId);
-    List<InquiryListElementResDto> response = new ArrayList<>();
+  public List<InquiryItemDto> getAllInquiryForUser(Long festivalId) {
+    List<Inquiry> inquiryList = inquiryRepository.findAllByFestivalId(festivalId);
+    List<InquiryItemDto> response = new ArrayList<>();
     for (Inquiry inquiry : inquiryList) {
       if (inquiry.isSecret()) {
-        response.add(new InquiryListElementResDto(inquiry, "secret", inquiry.getUserId()));
+        response.add(new InquiryItemDto(inquiry, "secret", inquiry.getUserId()));
       } else {
         response.add(
-            new InquiryListElementResDto(inquiry, inquiry.getTitle(), inquiry.getUserId()));
+            new InquiryItemDto(inquiry, inquiry.getTitle(), inquiry.getUserId()));
       }
     }
     return response;
@@ -101,9 +99,9 @@ public class InquiryService {
             festivalId, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate")));
 
     PageInfo pageInfo = new PageInfo(page, size, inquiries);
-    List<InquiryListElementResDto> list =
+    List<InquiryItemDto> list =
         inquiries.getContent().stream()
-            .map(InquiryListElementResDto::new)
+            .map(InquiryItemDto::new)
             .collect(Collectors.toList());
     return new InquiryPageResDto(list, pageInfo);
   }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class InquiryListElementResDto {
+public class InquiryItemDto {
     private Long id;
     private String title;
     private Boolean isAnswered;
@@ -16,7 +16,7 @@ public class InquiryListElementResDto {
     private String userId;
     private LocalDateTime createdDate;
 
-    public InquiryListElementResDto(Inquiry inquiry, String title, String userId) {
+    public InquiryItemDto(Inquiry inquiry, String title, String userId) {
         this.id = inquiry.getId();
         this.isAnswered = inquiry.isAnswered();
         this.createdDate = inquiry.getCreatedAt();
@@ -25,7 +25,7 @@ public class InquiryListElementResDto {
         this.userId = userId;
     }
 
-    public InquiryListElementResDto(Inquiry inquiry) {
+    public InquiryItemDto(Inquiry inquiry) {
         this.id = inquiry.getId();
         this.isAnswered = inquiry.isAnswered();
         this.createdDate = inquiry.getCreatedAt();

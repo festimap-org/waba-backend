@@ -19,13 +19,13 @@ public class InquiryTest {
     void setUp(){
         Festival festival = new Festival();
         inquiryCreateReqDto = new InquiryCreateReqDto("제목", false,"아이디","1234","문의내용");
-        inquiry = new Inquiry(festival, inquiryCreateReqDto);
+        inquiry = new Inquiry(festival, inquiryCreateReqDto,"1234");
     }
 
     @Test
     void 문의객체_생성(){
         //when
-        Inquiry target = new Inquiry(festival, inquiryCreateReqDto);
+        Inquiry target = new Inquiry(festival, inquiryCreateReqDto,"1234");
 
         //then
         assertThat(target).usingRecursiveComparison()
