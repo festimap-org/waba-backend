@@ -5,8 +5,10 @@ import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.inquiry.Inquiry;
 
+import com.halo.eventer.domain.inquiry.InquiryConstants;
 import com.halo.eventer.domain.inquiry.dto.*;
 import com.halo.eventer.domain.inquiry.exception.InquiryNotFoundException;
+import com.halo.eventer.domain.inquiry.exception.InquiryUnauthorizedAccessException;
 import com.halo.eventer.domain.inquiry.repository.InquiryRepository;
 import com.halo.eventer.global.common.PageInfo;
 import com.halo.eventer.global.security.PasswordService;
@@ -40,7 +42,7 @@ public class InquiryService {
   }
 
   public List<InquiryItemDto> findAllInquiryForAdmin(Long festivalId) {
-    return inquiryRepository.findAllByFestivalId(festivalId).stream()
+    return findAllByFestivalId(festivalId).stream()
             .map(InquiryItemDto::new)
             .collect(Collectors.toList());
   }
@@ -60,33 +62,18 @@ public class InquiryService {
     inquiryRepository.deleteById(id);
   }
 
-  /** 유저용 전체조회 */
-  public List<InquiryItemDto> getAllInquiryForUser(Long festivalId) {
-    List<Inquiry> inquiryList = inquiryRepository.findAllByFestivalId(festivalId);
-    List<InquiryItemDto> response = new ArrayList<>();
-    for (Inquiry inquiry : inquiryList) {
-      if (inquiry.isSecret()) {
-        response.add(new InquiryItemDto(inquiry, "secret", inquiry.getUserId()));
-      } else {
-        response.add(
-            new InquiryItemDto(inquiry, inquiry.getTitle(), inquiry.getUserId()));
-      }
-    }
-    return response;
+  public List<InquiryItemDto> findAllInquiryForUser(Long festivalId) {
+    return findAllByFestivalId(festivalId).stream()
+            .map(this::createInquiryItemDtoWithTitleVisibility)
+            .collect(Collectors.toList());
   }
 
   public InquiryResDto getInquiryForUser(Long id, InquiryUserReqDto dto) {
-    Inquiry inquiry =
-        inquiryRepository
-            .findById(id)
+    Inquiry inquiry = inquiryRepository.findById(id)
             .orElseThrow(() -> new InquiryNotFoundException(id));
 
-    if (inquiry.isSecret()) {
-      if (!dto.getUserId().equals(inquiry.getUserId())
-          || !passwordService.matches(dto.getPassword(), inquiry.getPassword())) {
-        throw new BaseException("비밀번호가 틀렸거나 아이디가 올바르지 않습니다.", ErrorCode.INVALID_INPUT_VALUE);
-      }
-    }
+    validateAccess(inquiry, dto);
+
     return new InquiryResDto(inquiry);
   }
 
@@ -114,5 +101,31 @@ public class InquiryService {
       inquiries.remove(inquiries.size() - 1);
 
     return new InquiryNoOffsetPagingListDto(inquiries, isLast);
+  }
+
+  private List<Inquiry> findAllByFestivalId(Long festivalId){
+    return inquiryRepository.findAllByFestivalId(festivalId);
+  }
+
+  private InquiryItemDto createInquiryItemDtoWithTitleVisibility(Inquiry inquiry) {
+    String title = getDisplayableTitle(inquiry);
+    return new InquiryItemDto(inquiry, title, inquiry.getUserId());
+  }
+
+  private String getDisplayableTitle(Inquiry inquiry) {
+    return inquiry.isSecret() ? InquiryConstants.PRIVATE_INQUIRY_TITLE : inquiry.getTitle();
+  }
+
+  private void validateAccess(Inquiry inquiry, InquiryUserReqDto dto) {
+    if (!inquiry.isSecret()) {
+      return;
+    }
+
+    boolean isOwner = dto.getUserId().equals(inquiry.getUserId());
+    boolean isPasswordCorrect = passwordService.matches(dto.getPassword(), inquiry.getPassword());
+
+    if (!isOwner || !isPasswordCorrect) {
+      throw new InquiryUnauthorizedAccessException();
+    }
   }
 }

@@ -8,6 +8,8 @@ import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/inquiry")
@@ -26,8 +28,8 @@ public class inquiryController {
      *  문의사항 전체 조회 (admin 용)
      * */
     @GetMapping("/forAdmin")
-    public InquiryListResDto getAllInquiryForAdmin(@RequestParam("festivalId") Long festivalId){
-        return new InquiryListResDto(inquiryService.findAllInquiryForAdmin(festivalId));
+    public List<InquiryItemDto> getAllInquiryForAdmin(@RequestParam("festivalId") Long festivalId){
+        return inquiryService.findAllInquiryForAdmin(festivalId);
     }
 
     /**
@@ -54,7 +56,7 @@ public class inquiryController {
      * */
     @GetMapping("/forUser")
     public InquiryListResDto getAllInquiryForUser(@RequestParam("festivalId") Long festivalId){
-        return new InquiryListResDto(inquiryService.getAllInquiryForUser(festivalId));
+        return new InquiryListResDto(inquiryService.findAllInquiryForUser(festivalId));
     }
 
     /**
