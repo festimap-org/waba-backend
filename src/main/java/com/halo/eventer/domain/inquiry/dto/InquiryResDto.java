@@ -19,7 +19,7 @@ public class InquiryResDto {
     public InquiryResDto(Inquiry inquiry) {
         this.title = inquiry.getTitle();
         this.userId = inquiry.getUserId();
-        this.createdDate = inquiry.getCreatedDate();
+        this.createdDate = inquiry.getCreatedAt();
         this.content = inquiry.getContent();
         this.answer = inquiry.getAnswer();
         this.isAnswered = inquiry.isAnswered();

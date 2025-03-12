@@ -19,8 +19,8 @@ public class InquiryListElementResDto {
     public InquiryListElementResDto(Inquiry inquiry, String title, String userId) {
         this.id = inquiry.getId();
         this.isAnswered = inquiry.isAnswered();
-        this.createdDate = inquiry.getCreatedDate();
-        this.isSecret = inquiry.getIsSecret();
+        this.createdDate = inquiry.getCreatedAt();
+        this.isSecret = inquiry.isSecret();
         this.title = title;
         this.userId = userId;
     }
@@ -28,8 +28,8 @@ public class InquiryListElementResDto {
     public InquiryListElementResDto(Inquiry inquiry) {
         this.id = inquiry.getId();
         this.isAnswered = inquiry.isAnswered();
-        this.createdDate = inquiry.getCreatedDate();
-        this.isSecret = inquiry.getIsSecret();
+        this.createdDate = inquiry.getCreatedAt();
+        this.isSecret = inquiry.isSecret();
         this.title = inquiry.getTitle();
         this.userId = inquiry.getUserId();
     }

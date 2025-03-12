@@ -56,7 +56,7 @@ public class InquiryService {
   @Transactional
   public Inquiry updateInquiry(Long id, InquiryAnswerReqDto dto) {
     Inquiry inquiry = getInquiryForAdmin(id);
-    inquiry.setAnswer(dto.getAnswer());
+    inquiry.registerAnswer(dto.getAnswer());
     return inquiry;
   }
 
@@ -69,7 +69,7 @@ public class InquiryService {
     List<Inquiry> inquiryList = inquiryRepository.findAllWithFestivalId(festivalId);
     List<InquiryListElementResDto> response = new ArrayList<>();
     for (Inquiry inquiry : inquiryList) {
-      if (inquiry.getIsSecret()) {
+      if (inquiry.isSecret()) {
         response.add(new InquiryListElementResDto(inquiry, "secret", inquiry.getUserId()));
       } else {
         response.add(
@@ -85,7 +85,7 @@ public class InquiryService {
             .findById(id)
             .orElseThrow(() -> new InquiryNotFoundException(id));
 
-    if (inquiry.getIsSecret()) {
+    if (inquiry.isSecret()) {
       if (!dto.getUserId().equals(inquiry.getUserId())
           || !passwordEncoder.matches(dto.getPassword(), inquiry.getPassword())) {
         throw new BaseException("비밀번호가 틀렸거나 아이디가 올바르지 않습니다.", ErrorCode.INVALID_INPUT_VALUE);
@@ -109,18 +109,14 @@ public class InquiryService {
   }
 
   /** no offset 페이징 조회 */
-  public InquiryNoOffsetPagingListDto getEventPagingList(
-      Long festivalId, Long lastId, Integer size) {
-    List<Inquiry> inquiryList;
-    if (lastId == 0) {
-      inquiryList = inquiryRepository.getFirstPage(festivalId, size + 1);
-    } else {
-      inquiryList = inquiryRepository.getNextPageByInquiryIdAndLastId(festivalId, lastId, size + 1);
-    }
-    Boolean isLast = inquiryList.size() < size + 1;
-    if (!isLast) {
-      inquiryList.remove(inquiryList.size() - 1);
-    }
-    return new InquiryNoOffsetPagingListDto(inquiryList, isLast);
+  public InquiryNoOffsetPagingListDto getEventPagingList(Long festivalId, Long lastId, Integer size) {
+    List<Inquiry> inquiries = inquiryRepository.getPageByFestivalIdAndLastId(
+            festivalId, lastId, Math.max(size, 1) + 1);
+
+    boolean isLast = inquiries.size() <= size;
+    if (!isLast)
+      inquiries.remove(inquiries.size() - 1);
+
+    return new InquiryNoOffsetPagingListDto(inquiries, isLast);
   }
 }
