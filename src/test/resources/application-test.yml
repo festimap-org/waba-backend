@@ -22,3 +22,5 @@ logging:
     org:
       hibernate:
         type: trace
+      springframework:
+        security: trace

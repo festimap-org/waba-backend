@@ -28,12 +28,6 @@ public class SecurityConfig {
     this.securityFilterConfig = securityFilterConfig;
   }
 
-  @Value("${aes.secret.key}")
-  private String secretKey;
-
-  @Value("${aes.salt}")
-  private String salt;
-
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
@@ -47,15 +41,5 @@ public class SecurityConfig {
     securityFilterConfig.configure(http);
 
     return http.build();
-  }
-
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
-
-  @Bean
-  public AesBytesEncryptor aesBytesEncryptor() {
-    return new AesBytesEncryptor(secretKey, salt);
   }
 }
