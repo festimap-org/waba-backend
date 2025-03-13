@@ -12,6 +12,7 @@ import com.halo.eventer.domain.widget.entity.UpWidget;
 
 import com.halo.eventer.domain.widget.util.WidgetPageHelper;
 import com.halo.eventer.global.common.SortOption;
+import com.halo.eventer.global.common.WidgetType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,7 +44,7 @@ public class UpWidgetService {
 
   @Transactional(readOnly = true)
   public UpWidgetResDto getUpWidget(Long id) {
-    UpWidget upWidget = upWidgetRepository.findById(id).orElseThrow(() -> new WidgetNotFoundException(id));
+    UpWidget upWidget = upWidgetRepository.findById(id).orElseThrow(() -> new WidgetNotFoundException(id, WidgetType.UP));
 
     return UpWidgetResDto.from(upWidget);
   }
@@ -61,7 +62,7 @@ public class UpWidgetService {
 
   @Transactional
   public UpWidgetResDto update(Long id, UpWidgetCreateDto widgetCreateDto) {
-    UpWidget upWidget = upWidgetRepository.findById(id).orElseThrow(() -> new WidgetNotFoundException(id));
+    UpWidget upWidget = upWidgetRepository.findById(id).orElseThrow(() -> new WidgetNotFoundException(id,WidgetType.UP));
 
     upWidget.updateUpWidget(widgetCreateDto);
 

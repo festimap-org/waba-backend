@@ -18,7 +18,7 @@ import javax.persistence.*;
 @DiscriminatorValue("Square")
 @NoArgsConstructor
 @Getter
-public class SquareWidget extends BaseWidget {
+public class SquareWidget extends BaseWidget implements DisplayOrderUpdatable{
 
     @Embedded
     @AttributeOverride(name = "image", column = @Column(name = "image"))

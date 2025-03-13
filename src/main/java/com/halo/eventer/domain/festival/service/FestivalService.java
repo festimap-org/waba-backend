@@ -25,7 +25,6 @@ public class FestivalService {
     validateUniqueFestival(festivalCreateDto);
     Festival festival = Festival.from(festivalCreateDto);
     festival.applyDefaultMapCategory();
-    festival.applyThreeDownWidgets();
     festivalRepository.save(festival);
   }
 

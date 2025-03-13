@@ -13,6 +13,7 @@ import com.halo.eventer.domain.widget.repository.SquareWidgetRepository;
 import com.halo.eventer.domain.widget.util.WidgetPageHelper;
 
 import com.halo.eventer.global.common.SortOption;
+import com.halo.eventer.global.common.WidgetType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,7 +45,7 @@ public class SquareWidgetService {
   @Transactional(readOnly = true)
   public SquareWidgetResDto getSquareWidget(Long id) {
     SquareWidget squareWidget = squareWidgetRepository.findById(id)
-            .orElseThrow(() -> new WidgetNotFoundException(id));
+            .orElseThrow(() -> new WidgetNotFoundException(id, WidgetType.SQUARE));
 
     return SquareWidgetResDto.from(squareWidget);
   }
@@ -64,7 +65,7 @@ public class SquareWidgetService {
   @Transactional
   public SquareWidgetResDto update(Long id, SquareWidgetCreateDto squareWidgetCreateDto) {
     SquareWidget squareWidget = squareWidgetRepository.findById(id)
-            .orElseThrow(() -> new WidgetNotFoundException(id));
+            .orElseThrow(() -> new WidgetNotFoundException(id,WidgetType.SQUARE));
     squareWidget.updateSquareWidget(squareWidgetCreateDto);
     return SquareWidgetResDto.from(squareWidget);
   }

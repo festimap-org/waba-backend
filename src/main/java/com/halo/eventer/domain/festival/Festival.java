@@ -1,8 +1,6 @@
 package com.halo.eventer.domain.festival;
 
-import com.halo.eventer.domain.concert.Concert;
 import com.halo.eventer.domain.concert_info.ConcertInfo;
-import com.halo.eventer.domain.down_widget.DownWidget1;
 import com.halo.eventer.domain.duration.Duration;
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.inquiry.Inquiry;
@@ -11,6 +9,7 @@ import com.halo.eventer.domain.manager.Manager;
 import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.domain.middle_banner.MiddleBanner;
 import com.halo.eventer.domain.missing_person.MissingPerson;
+import com.halo.eventer.domain.widget.entity.DownWidget;
 import com.halo.eventer.domain.widget.entity.SquareWidget;
 import com.halo.eventer.domain.widget.entity.UpWidget;
 import com.halo.eventer.domain.notice.Notice;
@@ -68,9 +67,6 @@ public class Festival {
   private double longitude; // 경도
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-  private List<Concert> concerts = new ArrayList<>();
-
-  @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   private List<Notice> notices = new ArrayList<>();
 
   @OneToMany(
@@ -92,7 +88,7 @@ public class Festival {
   private List<UpWidget> upWidgets = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private List<DownWidget1> downWidget1s = new ArrayList<>();
+  private List<DownWidget> downWidget1s = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<Inquiry> inquiries = new ArrayList<>();
@@ -128,13 +124,6 @@ public class Festival {
     MapCategory mapCategory = MapCategory.createFixedBooth();
     this.mapCategories.add(mapCategory);
     mapCategory.assignFestival(this);
-  }
-
-  public void applyThreeDownWidgets(){
-    for (int i = 0; i < 3; i++) {
-      DownWidget1 widget = DownWidget1.from(this);
-      getDownWidget1s().add(widget);
-    }
   }
 
   public void updateFestival(FestivalCreateDto festivalCreateDto) {

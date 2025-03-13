@@ -1,6 +1,5 @@
 package com.halo.eventer.domain.image;
 
-import com.halo.eventer.domain.concert.Concert;
 import com.halo.eventer.domain.concert_info.ConcertInfo;
 import com.halo.eventer.domain.notice.Notice;
 import lombok.Getter;
@@ -20,10 +19,6 @@ public class Image {
   private String image_url;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "concert_id")
-  private Concert concert;
-
-  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "notice_id")
   private Notice notice;
 
@@ -37,10 +32,6 @@ public class Image {
 
   public void setImage(String image_url) {
     this.image_url = image_url;
-  }
-
-  public void setConcert(Concert concert) {
-    this.concert = concert;
   }
 
   public void setNotice(Notice notice) {
