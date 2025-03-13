@@ -14,7 +14,11 @@ public class DescriptionFeature {
     @Column(name = "description")
     private String description;
 
-    public DescriptionFeature(String description) {
+    private DescriptionFeature(String description) {
         this.description = description;
+    }
+
+    public static DescriptionFeature of(String description) {
+        return new DescriptionFeature(description);
     }
 }

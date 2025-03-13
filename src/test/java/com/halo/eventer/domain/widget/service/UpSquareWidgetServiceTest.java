@@ -41,7 +41,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 @SuppressWarnings("NonAsciiCharacters")
-public class UpWidgetServiceTest {
+public class UpSquareWidgetServiceTest {
 
     @Mock
     private FestivalRepository festivalRepository;

@@ -11,11 +11,11 @@ import com.halo.eventer.domain.manager.Manager;
 import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.domain.middle_banner.MiddleBanner;
 import com.halo.eventer.domain.missing_person.MissingPerson;
+import com.halo.eventer.domain.widget.entity.SquareWidget;
 import com.halo.eventer.domain.widget.entity.UpWidget;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.splash.Splash;
 import com.halo.eventer.domain.stamp.Stamp;
-import com.halo.eventer.domain.fake_widget.Widget;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
@@ -83,7 +83,7 @@ public class Festival {
   private List<Duration> durations = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-  private List<Widget> widgets = new ArrayList<>();
+  private List<SquareWidget> widgets = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   private List<ConcertInfo> concertInfos = new ArrayList<>();

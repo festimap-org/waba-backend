@@ -5,6 +5,7 @@ import com.halo.eventer.domain.widget.dto.up_widget.UpWidgetCreateDto;
 import com.halo.eventer.domain.widget.dto.up_widget.UpWidgetResDto;
 import com.halo.eventer.domain.widget.service.UpWidgetService;
 import com.halo.eventer.global.common.SortOption;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/upWidgets")
 @Validated
+@Tag(name = "상단 위젯 API")
 public class UpWidgetController {
 
   private final UpWidgetService upWidgetService;
@@ -36,9 +38,9 @@ public class UpWidgetController {
 
   @GetMapping
   public PagedResponse<UpWidgetResDto> getUpWidgets(@RequestParam(name = "festivalId") Long festivalId,
-                                                       @RequestParam(name = "sortOption") SortOption sortOption,
-                                                       @RequestParam(defaultValue="0") @Min(0) int page,
-                                                       @RequestParam @Min(1) @Max(50) int size) {
+                                                    @RequestParam(name = "sortOption") SortOption sortOption,
+                                                    @RequestParam(defaultValue="0") @Min(0) int page,
+                                                    @RequestParam @Min(1) @Max(50) int size) {
     return upWidgetService.getUpWidgetsWithOffsetPaging(festivalId, sortOption, page, size);
   }
 

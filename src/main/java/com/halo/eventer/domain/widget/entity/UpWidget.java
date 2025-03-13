@@ -19,13 +19,12 @@ import java.time.LocalDateTime;
                 @Index(name = "idx_festival_period", columnList = "festival_id, period_start, period_end")
         }
 )
-
 public class UpWidget extends BaseWidget {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "periodStart", column = @Column(name = "period_start", nullable = false)),
-            @AttributeOverride(name = "periodEnd", column = @Column(name = "period_end", nullable = false))
+            @AttributeOverride(name = "periodStart", column = @Column(name = "period_start")),
+            @AttributeOverride(name = "periodEnd", column = @Column(name = "period_end"))
     })
     private PeriodFeature periodFeature;
 

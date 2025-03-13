@@ -12,9 +12,14 @@ import javax.persistence.Embeddable;
 public class DisplayOrderFeature {
 
     @Column(name = "display_order")
-    private Integer displayOrder;  // bannerRank 같은 필드
+    private Integer displayOrder;
 
-    public DisplayOrderFeature(Integer displayOrder) {
+    private DisplayOrderFeature(Integer displayOrder) {
         this.displayOrder = displayOrder;
     }
+
+    public static DisplayOrderFeature of(Integer displayOrder) {
+        return new DisplayOrderFeature(displayOrder);
+    }
+
 }
