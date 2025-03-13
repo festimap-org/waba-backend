@@ -1,7 +1,7 @@
 package com.halo.eventer.domain.festival.entity;
 
 
-import com.halo.eventer.domain.down_widget.DownWidget;
+import com.halo.eventer.domain.down_widget.DownWidget1;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.map.MapCategory;
@@ -54,10 +54,10 @@ public class FestivalTest {
     void 하단위젯_3개추가(){
         //when
         festival.applyThreeDownWidgets();
-        List<DownWidget> downWidgets = festival.getDownWidgets();
+        List<DownWidget1> downWidget1s = festival.getDownWidget1s();
 
         //then
-        assertThat(downWidgets).hasSize(3);
+        assertThat(downWidget1s).hasSize(3);
     }
 
     @Test

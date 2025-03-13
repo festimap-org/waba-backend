@@ -2,28 +2,26 @@ package com.halo.eventer.domain.festival;
 
 import com.halo.eventer.domain.concert.Concert;
 import com.halo.eventer.domain.concert_info.ConcertInfo;
-import com.halo.eventer.domain.down_widget.DownWidget;
+import com.halo.eventer.domain.down_widget.DownWidget1;
 import com.halo.eventer.domain.duration.Duration;
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.inquiry.Inquiry;
 import com.halo.eventer.domain.lost_item.LostItem;
 import com.halo.eventer.domain.manager.Manager;
 import com.halo.eventer.domain.map.MapCategory;
-import com.halo.eventer.domain.map.enumtype.MapCategoryType;
 import com.halo.eventer.domain.middle_banner.MiddleBanner;
 import com.halo.eventer.domain.missing_person.MissingPerson;
+import com.halo.eventer.domain.widget.entity.UpWidget;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.splash.Splash;
 import com.halo.eventer.domain.stamp.Stamp;
-import com.halo.eventer.domain.up_widget.UpWidget;
-import com.halo.eventer.domain.widget.Widget;
+import com.halo.eventer.domain.fake_widget.Widget;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
 import com.halo.eventer.global.common.ImageDto;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -94,7 +92,7 @@ public class Festival {
   private List<UpWidget> upWidgets = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private List<DownWidget> downWidgets = new ArrayList<>();
+  private List<DownWidget1> downWidget1s = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<Inquiry> inquiries = new ArrayList<>();
@@ -134,8 +132,8 @@ public class Festival {
 
   public void applyThreeDownWidgets(){
     for (int i = 0; i < 3; i++) {
-      DownWidget widget = DownWidget.from(this);
-      getDownWidgets().add(widget);
+      DownWidget1 widget = DownWidget1.from(this);
+      getDownWidget1s().add(widget);
     }
   }
 

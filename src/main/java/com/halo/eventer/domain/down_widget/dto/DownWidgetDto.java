@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.down_widget.dto;
 
-import com.halo.eventer.domain.down_widget.DownWidget;
+import com.halo.eventer.domain.down_widget.DownWidget1;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,8 +10,8 @@ public class DownWidgetDto {
   private String name;
   private String url;
 
-  public DownWidgetDto(DownWidget downWidget) {
-    this.name = downWidget.getName();
-    this.url = downWidget.getUrl();
+  public DownWidgetDto(DownWidget1 downWidget1) {
+    this.name = downWidget1.getName();
+    this.url = downWidget1.getUrl();
   }
 }

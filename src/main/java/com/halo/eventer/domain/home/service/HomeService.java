@@ -6,10 +6,10 @@ import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.home.dto.HomeDto;
 import com.halo.eventer.domain.missing_person.MissingPerson;
 import com.halo.eventer.domain.missing_person.service.MissingPersonService;
+import com.halo.eventer.domain.widget.entity.UpWidget;
 import com.halo.eventer.domain.notice.dto.RegisteredBannerGetDto;
 import com.halo.eventer.domain.notice.repository.NoticeRepository;
-import com.halo.eventer.domain.up_widget.UpWidget;
-import com.halo.eventer.domain.up_widget.service.UpWidgetService;
+import com.halo.eventer.domain.widget.service.UpWidgetService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +35,7 @@ public class HomeService {
         festivalRepository
             .findById(festivalId)
             .orElseThrow(() -> new FestivalNotFoundException(festivalId));
-    List<UpWidget> upWidgets = upWidgetService.getUpWidgetListByDateTime(festivalId, dateTime);
+    List<UpWidget> upWidgets = List.of();//upWidgetService.getUpWidgetListByDateTime(festivalId, dateTime);
     List<MissingPerson> missingPersonList = missingPersonService.getPopupList(festivalId);
     return new HomeDto(banner, festival, upWidgets, missingPersonList);
   }
