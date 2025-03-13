@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class InquiryPageResDto {
-    private List<InquiryListElementResDto> inquiryList;
+    private List<InquiryItemDto> inquiryList;
     private PageInfo pageInfo;
 
-    public InquiryPageResDto(List<InquiryListElementResDto> inquiryList, PageInfo pageInfo) {
+    public InquiryPageResDto(List<InquiryItemDto> inquiryList, PageInfo pageInfo) {
         this.inquiryList = inquiryList;
         this.pageInfo = pageInfo;
     }

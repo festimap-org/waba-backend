@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.member.Exception;
+package com.halo.eventer.domain.member.exception;
 
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.AuthException;

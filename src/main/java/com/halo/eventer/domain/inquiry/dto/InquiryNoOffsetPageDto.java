@@ -1,0 +1,25 @@
+package com.halo.eventer.domain.inquiry.dto;
+
+
+import com.halo.eventer.domain.inquiry.Inquiry;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+public class InquiryNoOffsetPageDto {
+    private List<InquiryItemDto> inquiryList;
+    private Boolean isLast;
+
+    public InquiryNoOffsetPageDto(List<Inquiry> inquiryList, Boolean isLast) {
+        this.inquiryList = inquiryList.stream().map(InquiryItemDto::new).collect(Collectors.toList());
+        this.isLast = isLast;
+    }
+
+    public void updateInquiryItemDtoWithTitleVisibility() {
+        this.inquiryList.forEach(InquiryItemDto::changeTitleToSecretValue);
+    }
+}

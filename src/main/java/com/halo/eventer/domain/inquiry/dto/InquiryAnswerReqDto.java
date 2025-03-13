@@ -7,4 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class InquiryAnswerReqDto {
   private String answer;
+
+  public InquiryAnswerReqDto(String answer) {
+    this.answer = answer;
+  }
 }
