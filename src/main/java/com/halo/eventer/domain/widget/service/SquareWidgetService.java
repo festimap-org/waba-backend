@@ -5,11 +5,14 @@ import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.widget.dto.PagedResponse;
 import com.halo.eventer.domain.widget.dto.WidgetOrderUpdateRequest;
+import com.halo.eventer.domain.widget.dto.down_widget.DownWidgetResDto;
 import com.halo.eventer.domain.widget.dto.square_widget.SquareWidgetCreateDto;
 import com.halo.eventer.domain.widget.dto.square_widget.SquareWidgetResDto;
+import com.halo.eventer.domain.widget.entity.DownWidget;
 import com.halo.eventer.domain.widget.entity.SquareWidget;
 import com.halo.eventer.domain.widget.exception.WidgetNotFoundException;
 import com.halo.eventer.domain.widget.repository.SquareWidgetRepository;
+import com.halo.eventer.domain.widget.util.DisplayOrderUtils;
 import com.halo.eventer.domain.widget.util.WidgetPageHelper;
 
 import com.halo.eventer.global.common.SortOption;
@@ -22,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,28 +79,18 @@ public class SquareWidgetService {
 
   @Transactional
   public List<SquareWidgetResDto> updateDisplayOrder(Long festivalId, List<WidgetOrderUpdateRequest> orderRequests){
-      Map<Long, Integer> orderMap = orderRequests.stream()
-              .collect(Collectors.toMap(WidgetOrderUpdateRequest::getId, WidgetOrderUpdateRequest::getDisplayOrder));
-
       List<SquareWidget> widgets = squareWidgetRepository.findAllByFestivalId(festivalId);
 
-      changeDisplayOrder(widgets, orderMap);
+      DisplayOrderUtils.updateDisplayOrder(widgets, orderRequests);
 
-      return widgets.stream().map(SquareWidgetResDto::from).collect(Collectors.toList());
+      return widgets.stream()
+              .map(SquareWidgetResDto::from)
+              .collect(Collectors.toList());
   }
 
   private void validateFestival(Long festivalId) {
     if (!festivalRepository.existsById(festivalId)) {
       throw new FestivalNotFoundException(festivalId);
     }
-  }
-
-  private void changeDisplayOrder(List<SquareWidget> widgets, Map<Long, Integer> orderMap) {
-      widgets.stream().filter(widget -> orderMap.containsKey(widget.getId()))
-              .forEach(widget -> {
-                  Integer newOrder = orderMap.get(widget.getId());
-                  widget.updateDisplayOrder(newOrder);
-              });
-
   }
 }
