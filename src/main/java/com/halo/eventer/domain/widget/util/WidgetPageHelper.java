@@ -1,7 +1,7 @@
 package com.halo.eventer.domain.widget.util;
 
 import com.halo.eventer.domain.widget.BaseWidget;
-import com.halo.eventer.domain.widget.dto.PagedResponse;
+import com.halo.eventer.global.common.PagedResponse;
 import com.halo.eventer.domain.widget.exception.SortOptionNotFoundException;
 import com.halo.eventer.domain.widget.repository.BaseWidgetRepository;
 import com.halo.eventer.global.common.PageInfo;
