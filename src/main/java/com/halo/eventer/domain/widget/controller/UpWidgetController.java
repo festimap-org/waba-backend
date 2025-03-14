@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.widget.controller;
 
-import com.halo.eventer.domain.widget.dto.PagedResponse;
+import com.halo.eventer.global.common.PagedResponse;
 import com.halo.eventer.domain.widget.dto.up_widget.UpWidgetCreateDto;
 import com.halo.eventer.domain.widget.dto.up_widget.UpWidgetResDto;
 import com.halo.eventer.domain.widget.service.UpWidgetService;

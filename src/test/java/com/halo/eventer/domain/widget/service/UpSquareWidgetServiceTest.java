@@ -4,7 +4,7 @@ import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 
-import com.halo.eventer.domain.widget.dto.PagedResponse;
+import com.halo.eventer.global.common.PagedResponse;
 import com.halo.eventer.domain.widget.dto.up_widget.UpWidgetCreateDto;
 import com.halo.eventer.domain.widget.dto.up_widget.UpWidgetResDto;
 import com.halo.eventer.domain.widget.exception.WidgetNotFoundException;

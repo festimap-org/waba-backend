@@ -1,12 +1,13 @@
 package com.halo.eventer.domain.widget.controller;
 
-import com.halo.eventer.domain.widget.dto.PagedResponse;
+import com.halo.eventer.global.common.PagedResponse;
 import com.halo.eventer.domain.widget.dto.WidgetOrderUpdateRequest;
 import com.halo.eventer.domain.widget.dto.middle_widget.*;
 import com.halo.eventer.domain.widget.service.MiddleWidgetService;
 import com.halo.eventer.global.common.SortOption;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/api/middleWidget")
 @Tag(name = "중간 위젯 API")
 public class MiddleWidgetController {
