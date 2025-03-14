@@ -1,78 +1,97 @@
-package com.halo.eventer.domain.middle_banner.service;
+package com.halo.eventer.domain.widget.service;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.festival.service.FestivalService;
-import com.halo.eventer.domain.middle_banner.MiddleBanner;
-import com.halo.eventer.domain.middle_banner.dto.MiddleBannerCreateDto;
-import com.halo.eventer.domain.middle_banner.dto.MiddleBannerEditListDto;
-import com.halo.eventer.domain.middle_banner.dto.MiddleBannerRankEditDto;
-import com.halo.eventer.domain.middle_banner.exception.MiddleBannerNotFoundException;
-import com.halo.eventer.domain.middle_banner.repository.MiddleBannerRepository;
+import com.halo.eventer.domain.widget.dto.PagedResponse;
+import com.halo.eventer.domain.widget.dto.WidgetOrderUpdateRequest;
+import com.halo.eventer.domain.widget.dto.middle_widget.MiddleWidgetCreateDto;
+import com.halo.eventer.domain.widget.dto.middle_widget.MiddleWidgetResDto;
+import com.halo.eventer.domain.widget.entity.MiddleWidget;
+import com.halo.eventer.domain.widget.exception.WidgetNotFoundException;
+import com.halo.eventer.domain.widget.repository.MiddleWidgetRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.halo.eventer.domain.widget.util.DisplayOrderUtils;
+import com.halo.eventer.domain.widget.util.WidgetPageHelper;
+import com.halo.eventer.global.common.SortOption;
+import com.halo.eventer.global.common.WidgetType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class MiddleBannerService {
+public class MiddleWidgetService {
 
-  private final MiddleBannerRepository middleBannerRepository;
+  private final MiddleWidgetRepository middleWidgetRepository;
   private final FestivalRepository festivalRepository;
-
-  /** 중간 배너 생성 */
-  @Transactional
-  public MiddleBanner createMiddleBanner(Long festivalId, MiddleBannerCreateDto middleBannerCreateDto) {
-    Festival festival = festivalRepository
-            .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
-    return middleBannerRepository.save(new MiddleBanner(middleBannerCreateDto, festival));
-  }
-
-  /** 전체조회 */
-  public List<MiddleBanner> getMiddleBannerList(Long festivalId) {
-    return middleBannerRepository.findAllByFestivalId(festivalId);
-  }
-
-  /** 단일조회 */
-  public MiddleBanner getMiddleBanner(Long middleBannerId) {
-    return middleBannerRepository
-        .findById(middleBannerId)
-        .orElseThrow(() -> new MiddleBannerNotFoundException(middleBannerId));
-  }
+  private final WidgetPageHelper widgetPageHelper;
 
   @Transactional
-  public MiddleBanner updateMiddleBanner(
-      Long middleBannerId, MiddleBannerCreateDto middleBannerCreateDto) {
-    MiddleBanner middleBanner = getMiddleBanner(middleBannerId);
-    middleBanner.update(middleBannerCreateDto);
-    return middleBanner;
+  public MiddleWidgetResDto create(Long festivalId, MiddleWidgetCreateDto middleWidgetCreateDto) {
+    Festival festival = festivalRepository.findById(festivalId)
+            .orElseThrow(() -> new FestivalNotFoundException(festivalId));
+
+    MiddleWidget middleWidget = middleWidgetRepository.save(MiddleWidget.from(festival, middleWidgetCreateDto));
+
+    return MiddleWidgetResDto.from(middleWidget);
+  }
+
+  @Transactional(readOnly = true)
+  public MiddleWidgetResDto getMiddleWidget(Long id) {
+    MiddleWidget middleWidget = middleWidgetRepository.findById(id)
+            .orElseThrow(() -> new WidgetNotFoundException(id, WidgetType.MIDDLE));
+
+    return MiddleWidgetResDto.from(middleWidget);
+  }
+
+  @Transactional(readOnly = true)
+  public PagedResponse<MiddleWidgetResDto> getMiddleWidgetsWithOffsetPaging(Long festivalId, SortOption sortOption,
+                                                                    int page, int size){
+    validateFestival(festivalId);
+
+    Pageable pageable = PageRequest.of(page, size);
+    Page<MiddleWidget> middleWidgetPage = widgetPageHelper
+            .findWidgetsBySort(MiddleWidget.class, festivalId, sortOption, pageable);
+
+    return widgetPageHelper.getPagedResponse(middleWidgetPage, MiddleWidgetResDto::from);
   }
 
   @Transactional
-  public String updateRank(MiddleBannerEditListDto middleBannerEditListDto) {
-    List<MiddleBanner> banners =
-        middleBannerRepository.findAllById(
-            middleBannerEditListDto.getBannerRankEditDtos().stream()
-                .map(MiddleBannerRankEditDto::getMiddleBannerId)
-                .collect(Collectors.toList()));
+  public MiddleWidgetResDto update(Long id, MiddleWidgetCreateDto middleWidgetCreateDto) {
+    MiddleWidget middleWidget = middleWidgetRepository.findById(id)
+            .orElseThrow(() -> new WidgetNotFoundException(id, WidgetType.MIDDLE));
 
-    for (MiddleBanner middleBanner : banners) {
-      for (MiddleBannerRankEditDto b : middleBannerEditListDto.getBannerRankEditDtos()) {
-        if (b.getMiddleBannerId() == middleBanner.getId()) {
-          middleBanner.setRank(b.getRank());
-          break;
-        }
-      }
+    middleWidget.updateMiddleWidget(middleWidgetCreateDto);
+
+    return MiddleWidgetResDto.from(middleWidget);
+  }
+
+  @Transactional
+  public void delete(Long id) {
+    middleWidgetRepository.deleteById(id);
+  }
+
+  @Transactional
+  public List<MiddleWidgetResDto> updateDisplayOrder(Long festivalId, List<WidgetOrderUpdateRequest> orderRequests){
+    List<MiddleWidget> widgets = middleWidgetRepository.findAllByFestivalId(festivalId);
+
+    DisplayOrderUtils.updateDisplayOrder(widgets, orderRequests);
+
+    return widgets.stream()
+            .map(MiddleWidgetResDto::from)
+            .collect(Collectors.toList());
+  }
+
+  private void validateFestival(Long festivalId) {
+    if (!festivalRepository.existsById(festivalId)) {
+      throw new FestivalNotFoundException(festivalId);
     }
-    return "수정완료";
-  }
-
-  public String deleteMiddleBanner(Long middleBannerId) {
-    middleBannerRepository.deleteById(middleBannerId);
-    return "삭제완료";
   }
 }

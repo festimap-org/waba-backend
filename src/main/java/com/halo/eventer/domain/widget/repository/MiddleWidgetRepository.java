@@ -1,13 +1,14 @@
-package com.halo.eventer.domain.middle_banner.repository;
+package com.halo.eventer.domain.widget.repository;
 
-import com.halo.eventer.domain.middle_banner.MiddleBanner;
-import java.util.List;
+import com.halo.eventer.domain.widget.entity.MiddleWidget;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface MiddleBannerRepository extends JpaRepository<MiddleBanner, Long> {
+import java.util.List;
 
-  @Query("SELECT m From MiddleBanner m WHERE m.festival.id = :festivalId ")
-  List<MiddleBanner> findAllByFestivalId(@Param("festivalId") Long festivalId);
+public interface MiddleWidgetRepository extends JpaRepository<MiddleWidget, Long> {
+
+  @Query("SELECT m From MiddleWidget m WHERE m.festival.id = :festivalId ")
+  List<MiddleWidget> findAllByFestivalId(@Param("festivalId") Long festivalId);
 }

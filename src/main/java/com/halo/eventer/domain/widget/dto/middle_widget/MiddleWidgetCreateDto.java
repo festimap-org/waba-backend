@@ -1,11 +1,11 @@
-package com.halo.eventer.domain.middle_banner.dto;
+package com.halo.eventer.domain.widget.dto.middle_widget;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MiddleBannerCreateDto {
+public class MiddleWidgetCreateDto {
   private String name;
   private String url;
   private String image;

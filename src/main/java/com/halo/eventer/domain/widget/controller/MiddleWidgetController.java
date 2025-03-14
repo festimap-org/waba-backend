@@ -1,58 +1,59 @@
-package com.halo.eventer.domain.middle_banner.controller;
+package com.halo.eventer.domain.widget.controller;
 
-import com.halo.eventer.domain.middle_banner.dto.MiddleBannerCreateDto;
-import com.halo.eventer.domain.middle_banner.dto.MiddleBannerEditListDto;
-import com.halo.eventer.domain.middle_banner.dto.MiddleBannerListDto;
-import com.halo.eventer.domain.middle_banner.dto.MiddleBannerResDto;
-import com.halo.eventer.domain.middle_banner.service.MiddleBannerService;
+import com.halo.eventer.domain.widget.dto.PagedResponse;
+import com.halo.eventer.domain.widget.dto.WidgetOrderUpdateRequest;
+import com.halo.eventer.domain.widget.dto.middle_widget.*;
+import com.halo.eventer.domain.widget.service.MiddleWidgetService;
+import com.halo.eventer.global.common.SortOption;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import java.util.List;
+
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/middleBanner")
-public class MiddleBannerController {
-  private final MiddleBannerService middleBannerService;
+@RequestMapping("/middleWidget")
+@Tag(name = "중간 위젯 API")
+public class MiddleWidgetController {
+  private final MiddleWidgetService middleWidgetService;
 
-  /** 중간 배너 생성 */
   @PostMapping()
-  public MiddleBannerResDto createMiddleBanner(
-      @RequestParam("festivalId") Long festivalId,
-      @RequestBody MiddleBannerCreateDto middleBannerCreateDto) {
-    return new MiddleBannerResDto(
-        middleBannerService.createMiddleBanner(festivalId, middleBannerCreateDto));
+  public MiddleWidgetResDto create(@RequestParam("festivalId") Long festivalId,
+                                               @RequestBody MiddleWidgetCreateDto middleWidgetCreateDto) {
+    return middleWidgetService.create(festivalId, middleWidgetCreateDto);
   }
 
-  /** 전체조회 */
   @GetMapping()
-  public MiddleBannerListDto getMiddleBannerList(@RequestParam("festivalId") Long festivalId) {
-    return new MiddleBannerListDto(middleBannerService.getMiddleBannerList(festivalId));
+  public MiddleWidgetResDto getMiddleWidget(@RequestParam("id") Long id) {
+    return middleWidgetService.getMiddleWidget(id);
   }
 
-  /** 단일조회 */
-  @GetMapping("/{middleBannerId}")
-  public MiddleBannerResDto getMiddleBanner(@PathVariable("middleBannerId") Long middleBannerId) {
-    return new MiddleBannerResDto(middleBannerService.getMiddleBanner(middleBannerId));
+  @GetMapping("/{festivalId}")
+  public PagedResponse<MiddleWidgetResDto> getMiddleWidgets(@PathVariable Long festivalId,
+                                                            @RequestParam(name = "sortOption") SortOption sortOption,
+                                                            @RequestParam(defaultValue="0") @Min(0) int page,
+                                                            @RequestParam @Min(1) @Max(50) int size) {
+    return middleWidgetService.getMiddleWidgetsWithOffsetPaging(festivalId,sortOption,page,size);
   }
 
-  /** 수정 */
   @PatchMapping()
-  public MiddleBannerResDto updateMiddleBanner(
-      @RequestParam("middleBannerId") Long middleBannerId,
-      @RequestBody MiddleBannerCreateDto middleBannerCreateDto) {
-    return new MiddleBannerResDto(
-        middleBannerService.updateMiddleBanner(middleBannerId, middleBannerCreateDto));
+  public MiddleWidgetResDto updateMiddleBanner(@RequestParam("id") Long id,
+                                               @RequestBody MiddleWidgetCreateDto middleWidgetCreateDto) {
+    return middleWidgetService.update(id, middleWidgetCreateDto);
   }
 
-  /** 순서 수정 */
-  @PatchMapping("/rank")
-  public String updateRank(@RequestBody MiddleBannerEditListDto middleBannerEditListDto) {
-    return middleBannerService.updateRank(middleBannerEditListDto);
-  }
-
-  /** 삭제 */
   @DeleteMapping()
-  public String deleteMiddleBanner(@RequestParam("middleBannerId") Long middleBannerId) {
-    return middleBannerService.deleteMiddleBanner(middleBannerId);
+  public void deleteMiddleBanner(@RequestParam("id") Long id) {
+    middleWidgetService.delete(id);
+  }
+
+  @PatchMapping("/displayOrder")
+  public List<MiddleWidgetResDto> updateDisplayOrder(@RequestParam Long festivalId,
+                                                     @RequestBody List<WidgetOrderUpdateRequest> orderRequests) {
+    return middleWidgetService.updateDisplayOrder(festivalId, orderRequests);
   }
 }
