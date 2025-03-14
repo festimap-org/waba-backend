@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/widget")
+@RequestMapping("/api/squareWidget")
 @Validated
 @Tag(name = "정사각형 위젯 API")
 public class SquareWidgetController {

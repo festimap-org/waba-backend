@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/middleWidget")
+@RequestMapping("/api/middleWidget")
 @Tag(name = "중간 위젯 API")
 public class MiddleWidgetController {
   private final MiddleWidgetService middleWidgetService;
