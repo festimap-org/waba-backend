@@ -13,8 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class PagedResponse<T> {
-
     private List<T> content;
     private PageInfo pageInfo;
-
 }

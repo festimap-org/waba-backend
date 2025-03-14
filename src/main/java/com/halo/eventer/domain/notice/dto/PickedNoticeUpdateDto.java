@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.content.dto;
+package com.halo.eventer.domain.notice.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
