@@ -6,30 +6,60 @@ import com.halo.eventer.global.common.ArticleType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class NoticeDto {
+public class NoticeResDto {
+    private Long id;
     private String title;
     private String thumbnail;
-    private String index;
+    private String tag;
     private String writer;
     private String content;
     private ArticleType type;
-    private LocalDateTime createTime;
+    private LocalDateTime createAt;
+    private LocalDateTime updateAt;
+    private boolean pick;
+    private Long displayOrder;
 
     private List<ImageDto> images;
 
-    public NoticeDto(Notice notice) {
-        this.title = notice.getTitle();
-        this.thumbnail = notice.getThumbnail();
-        this.content = notice.getContent();
-        this.type = notice.getType();
-        this.index = notice.getTag();
-        this.writer = notice.getWriter();
-        this.images = notice.getImages().stream().map(ImageDto::from).collect(Collectors.toList());
-        this.createTime = notice.getUpdateTime();
-    }
+  @Builder
+  public NoticeResDto(Long id,String title, String thumbnail, String tag, String writer, String content,
+                      ArticleType type, LocalDateTime createAt, LocalDateTime updateAt, List<ImageDto> images,
+                      boolean pick, Long displayOrder) {
+    this.id = id;
+    this.title = title;
+    this.thumbnail = thumbnail;
+    this.tag = tag;
+    this.writer = writer;
+    this.content = content;
+    this.type = type;
+    this.createAt = createAt;
+    this.updateAt = updateAt;
+    this.images = images;
+    this.pick = pick;
+    this.displayOrder = displayOrder;
+  }
+
+  public static NoticeResDto from(Notice notice) {
+    return NoticeResDto.builder()
+        .id(notice.getId())
+        .title(notice.getTitle())
+        .thumbnail(notice.getThumbnail())
+        .tag(notice.getTag())
+        .writer(notice.getWriter())
+        .content(notice.getContent())
+        .type(notice.getType())
+        .createAt(notice.getCreatedAt())
+        .updateAt(notice.getUpdatedAt())
+        .images(notice.getImages().stream().map(ImageDto::from).collect(Collectors.toList()))
+        .pick(notice.isPicked())
+        .displayOrder(notice.getId())
+        .build();
+  }
 }

@@ -9,22 +9,22 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class RegisteredBannerGetDto {
+public class PickedNoticeResDto {
     private Long id;
-    private Integer rank;
+    private Integer displayOrder;
     private String thumbnail;
     private ArticleType type;
 
-    public RegisteredBannerGetDto(Notice n) {
+    public PickedNoticeResDto(Notice n) {
         this.id = n.getId();
         this.thumbnail = n.getThumbnail();
-        this.rank = n.getBannerRank();
+        this.displayOrder = n.getDisplayOrder();
         this.type = n.getType();
     }
 
-    public static List<RegisteredBannerGetDto> fromRegisteredBannerList(List<Notice> noticeList) {
+    public static List<PickedNoticeResDto> noticesToPikedNoticeResDtos(List<Notice> noticeList) {
         return noticeList.stream()
-                .map(RegisteredBannerGetDto::new)
+                .map(PickedNoticeResDto::new)
                 .collect(Collectors.toList());
     }
 }

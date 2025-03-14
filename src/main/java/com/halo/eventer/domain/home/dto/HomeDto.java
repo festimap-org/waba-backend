@@ -9,7 +9,7 @@ import com.halo.eventer.domain.widget.dto.middle_widget.MiddleWidgetResDto;
 import com.halo.eventer.domain.widget.dto.square_widget.SquareWidgetResDto;
 import com.halo.eventer.domain.widget.dto.up_widget.UpWidgetResDto;
 import com.halo.eventer.domain.widget.entity.UpWidget;
-import com.halo.eventer.domain.notice.dto.RegisteredBannerGetDto;
+import com.halo.eventer.domain.notice.dto.PickedNoticeResDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -20,14 +20,14 @@ import lombok.NoArgsConstructor;
 public class HomeDto {
     // todo: List<RegisteredBannerGetDto> -> RegisteredBannerGetListDto
     private List<UpWidgetResDto> upWidgets;
-    private List<RegisteredBannerGetDto> banner;
+    private List<PickedNoticeResDto> banner;
     private List<MainWidgetResDto> mainWidgets;
     private List<SquareWidgetResDto> widgetDto;
     private List<DownWidgetResDto> downWidgetResDtos;
     private List<MissingPersonPopupDto> missingPersonDtos;
     private List<MiddleWidgetResDto> middleBannerDtos;
 
-    public HomeDto(List<RegisteredBannerGetDto> banner, Festival festival, List<UpWidget> upWidgets, List<MissingPerson> missingPersons) {
+    public HomeDto(List<PickedNoticeResDto> banner, Festival festival, List<UpWidget> upWidgets, List<MissingPerson> missingPersons) {
         //this.upWidgets =upWidgets.stream().map(UpWidgetrResDto::new).collect(Collectors.toList());
         this.banner = banner;
         //this.mainMenuDto = MainMenuDto.from(festival);

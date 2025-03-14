@@ -1,9 +1,9 @@
-package com.halo.eventer.domain.content.exception;
+package com.halo.eventer.domain.notice.exception;
 
 import com.halo.eventer.global.error.exception.EntityNotFoundException;
 
-public class ContentNotFoundException extends EntityNotFoundException {
-    public ContentNotFoundException(Long id) {
+public class NoticeNotFoundException extends EntityNotFoundException {
+    public NoticeNotFoundException(Long id) {
         super(String.format("Notice with %d is not found", id));
     }
 }

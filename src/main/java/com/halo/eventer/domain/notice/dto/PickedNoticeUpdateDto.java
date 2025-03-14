@@ -5,8 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class BannerEditDto {
-
-  private Long noticeId;
-  private Integer rank;
+public class PickedNoticeUpdateDto {
+  private Long id;
+  private Integer displayOrder;
 }

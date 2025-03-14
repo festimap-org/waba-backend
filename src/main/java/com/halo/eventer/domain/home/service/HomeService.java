@@ -7,7 +7,7 @@ import com.halo.eventer.domain.home.dto.HomeDto;
 import com.halo.eventer.domain.missing_person.MissingPerson;
 import com.halo.eventer.domain.missing_person.service.MissingPersonService;
 import com.halo.eventer.domain.widget.entity.UpWidget;
-import com.halo.eventer.domain.notice.dto.RegisteredBannerGetDto;
+import com.halo.eventer.domain.notice.dto.PickedNoticeResDto;
 import com.halo.eventer.domain.notice.repository.NoticeRepository;
 import com.halo.eventer.domain.widget.service.UpWidgetService;
 import java.time.LocalDateTime;
@@ -27,9 +27,9 @@ public class HomeService {
 
   // todo: List<RegisteredBannerGetDto> -> RegisteredBannerGetListDto
   public HomeDto getMainPage(Long festivalId, LocalDateTime dateTime) {
-    List<RegisteredBannerGetDto> banner =
+    List<PickedNoticeResDto> banner =
         noticeRepository.findAllByPickedAndFestival_Id(true, festivalId).stream()
-            .map(RegisteredBannerGetDto::new)
+            .map(PickedNoticeResDto::new)
             .collect(Collectors.toList());
     Festival festival =
         festivalRepository

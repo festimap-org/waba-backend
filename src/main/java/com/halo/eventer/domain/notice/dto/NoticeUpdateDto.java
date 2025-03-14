@@ -1,12 +1,15 @@
 package com.halo.eventer.domain.notice.dto;
 
 import com.halo.eventer.global.common.ArticleType;
-import java.util.List;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+import java.util.List;
+
 @Getter
-public class NoticeCreateDto {
+@NoArgsConstructor
+public class NoticeUpdateDto {
+  private List<Long> deleteIds;
   private String title;
   private String content;
   private String tag;

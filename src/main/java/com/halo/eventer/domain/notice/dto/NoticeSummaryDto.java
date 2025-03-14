@@ -7,25 +7,41 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 @Builder
-public class NoticeInquireDto {
+public class NoticeSummaryDto {
 
   private Long id;
   private String title;
-  private String index;
+  private String tag;
   private String writer;
   private String thumbnail;
   private boolean picked;
-  private LocalDateTime time;
+  private Integer displayOrder;
+  private LocalDateTime updatedAt;
 
-  public NoticeInquireDto(Notice notice) {
-    this.id = notice.getId();
-    this.title = notice.getTitle();
-    this.thumbnail = notice.getThumbnail();
-    this.index = notice.getTag();
-    this.writer = notice.getWriter();
-    this.time = notice.getUpdateTime();
-    this.picked = notice.isPicked();
+  @Builder
+  private NoticeSummaryDto(Long id, String title, String tag, String writer, String thumbnail, boolean picked,
+                          Integer displayOrder, LocalDateTime updatedAt) {
+    this.id = id;
+    this.title = title;
+    this.tag = tag;
+    this.writer = writer;
+    this.thumbnail = thumbnail;
+    this.picked = picked;
+    this.displayOrder = displayOrder;
+    this.updatedAt = updatedAt;
+  }
+
+  public static NoticeSummaryDto from(Notice notice) {
+    return NoticeSummaryDto.builder()
+            .id(notice.getId())
+            .title(notice.getTitle())
+            .tag(notice.getTag())
+            .writer(notice.getWriter())
+            .thumbnail(notice.getThumbnail())
+            .picked(notice.isPicked())
+            .updatedAt(notice.getUpdatedAt())
+            .displayOrder(notice.getDisplayOrder())
+            .build();
   }
 }
