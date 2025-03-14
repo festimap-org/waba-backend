@@ -7,11 +7,8 @@ import com.halo.eventer.domain.inquiry.Inquiry;
 import com.halo.eventer.domain.lost_item.LostItem;
 import com.halo.eventer.domain.manager.Manager;
 import com.halo.eventer.domain.map.MapCategory;
-import com.halo.eventer.domain.middle_banner.MiddleBanner;
 import com.halo.eventer.domain.missing_person.MissingPerson;
-import com.halo.eventer.domain.widget.entity.DownWidget;
-import com.halo.eventer.domain.widget.entity.SquareWidget;
-import com.halo.eventer.domain.widget.entity.UpWidget;
+import com.halo.eventer.domain.widget.BaseWidget;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.splash.Splash;
 import com.halo.eventer.domain.stamp.Stamp;
@@ -79,16 +76,10 @@ public class Festival {
   private List<Duration> durations = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-  private List<SquareWidget> widgets = new ArrayList<>();
+  private List<BaseWidget> widgets = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   private List<ConcertInfo> concertInfos = new ArrayList<>();
-
-  @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private List<UpWidget> upWidgets = new ArrayList<>();
-
-  @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private List<DownWidget> downWidget1s = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<Inquiry> inquiries = new ArrayList<>();
@@ -104,9 +95,6 @@ public class Festival {
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<Splash> splashes = new ArrayList<>();
-
-  @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private List<MiddleBanner> middleBanners = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<MissingPerson> missingPersons = new ArrayList<>();
