@@ -6,13 +6,10 @@ import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.widget.dto.WidgetOrderUpdateRequest;
 import com.halo.eventer.domain.widget.dto.down_widget.DownWidgetCreateDto;
 import com.halo.eventer.domain.widget.dto.down_widget.DownWidgetResDto;
-import com.halo.eventer.domain.widget.dto.square_widget.SquareWidgetResDto;
 import com.halo.eventer.domain.widget.entity.DownWidget;
-import com.halo.eventer.domain.widget.entity.SquareWidget;
 import com.halo.eventer.domain.widget.exception.WidgetNotFoundException;
 import com.halo.eventer.domain.widget.repository.DownWidgetRepository;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.halo.eventer.domain.widget.util.DisplayOrderUtils;
