@@ -42,17 +42,6 @@ public class Festival {
 
   private String logo; // 메인 페이지 최상단에 보여지는 이미지
 
-  // 매인 배너 아래 2개의 컴포넌트 관련 필드
-  private String menuName1;
-  private String menuImage1;
-  private String menuSummary1;
-  private String menuUrl1;
-
-  private String menuName2;
-  private String menuImage2;
-  private String menuSummary2;
-  private String menuUrl2;
-
   // 2번째 컴포넌트에 들어갔을 때 나옴
   private String entrySummary;
   private String entryIcon;
@@ -128,17 +117,6 @@ public class Festival {
 
   public void updateLogo(ImageDto imageDto) {
     this.logo = imageDto.getImage();
-  }
-
-  public void updateMainMenu(MainMenuDto mainMenuDto) {
-    this.menuName1 = mainMenuDto.getMenuName1();
-    this.menuName2 = mainMenuDto.getMenuName2();
-    this.menuSummary1 = mainMenuDto.getMenuSummary1();
-    this.menuSummary2 = mainMenuDto.getMenuSummary2();
-    this.menuImage1 = mainMenuDto.getMenuImage1();
-    this.menuImage2 = mainMenuDto.getMenuImage2();
-    this.menuUrl1 = mainMenuDto.getMenuUrl1();
-    this.menuUrl2 = mainMenuDto.getMenuUrl2();
   }
 
   public void updateEntry(FestivalConcertMenuDto festivalConcertMenuDto) {

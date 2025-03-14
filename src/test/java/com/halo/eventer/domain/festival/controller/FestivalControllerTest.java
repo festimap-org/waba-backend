@@ -155,19 +155,6 @@ public class FestivalControllerTest {
         }
 
         @Test
-        void ADMIN_메인메뉴_수정()throws Exception{
-            MainMenuDto mainMenuDto = new MainMenuDto();
-            doNothing().when(festivalService).updateMainMenu(1L,mainMenuDto);
-
-            // when & then
-            mockMvc.perform(post("/festival/{festivalId}/main-menu", 1L)
-                            .header("Authorization", ADMIN_TOKEN)
-                            .content(objectMapper.writeValueAsString(mainMenuDto))
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk());
-        }
-
-        @Test
         void ADMIN_입장방법_수정()throws Exception{
             doNothing().when(festivalService).updateEntryInfo(1L,festivalConcertMenuDto);
 
@@ -268,18 +255,6 @@ public class FestivalControllerTest {
         }
 
         @Test
-        void 토큰없는유저_메인메뉴_수정_실패()throws Exception{
-            MainMenuDto mainMenuDto = new MainMenuDto();
-            doNothing().when(festivalService).updateMainMenu(1L,mainMenuDto);
-
-            // when & then
-            mockMvc.perform(post("/festival/{festivalId}/main-menu", 1L)
-                            .content(objectMapper.writeValueAsString(mainMenuDto))
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isUnauthorized());
-        }
-
-        @Test
         void 토큰없는유저_입장방법_수정_실패()throws Exception{
             doNothing().when(festivalService).updateEntryInfo(1L,festivalConcertMenuDto);
 
@@ -334,19 +309,6 @@ public class FestivalControllerTest {
                     .andExpect(jsonPath("$[0].subAddress").value(festivalListDto.getSubAddress()))
                     .andExpect(jsonPath("$[0].latitude").value(festivalListDto.getLatitude()))
                     .andExpect(jsonPath("$[0].longitude").value(festivalListDto.getLongitude()));
-        }
-
-        @Test
-        void 메인메뉴정보_조회()throws Exception{
-            //given
-            MainMenuDto mainMenuDto = new MainMenuDto();
-            given(festivalService.getMainMenu(1L)).willReturn(mainMenuDto);
-
-            //then
-            mockMvc.perform(get("/festival/{festivalId}/main-menu",1L)
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(objectMapper.writeValueAsString(mainMenuDto)));
         }
 
         @Test

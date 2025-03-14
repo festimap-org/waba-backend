@@ -61,17 +61,6 @@ public class FestivalController {
     festivalService.updateLogo(id, imageDto);
   }
 
-  @PostMapping("/{festivalId}/main-menu")
-  public void addMainMenu(
-      @PathVariable("festivalId") Long id, @RequestBody MainMenuDto mainMenuDto) {
-    festivalService.updateMainMenu(id, mainMenuDto);
-  }
-
-  @GetMapping("/{festivalId}/main-menu")
-  public MainMenuDto getMainMenu(@PathVariable("festivalId") Long id) {
-    return festivalService.getMainMenu(id);
-  }
-
   @PostMapping("/{festivalId}/entry")
   public void addEntryInfo(
       @PathVariable("festivalId") Long festivalId,

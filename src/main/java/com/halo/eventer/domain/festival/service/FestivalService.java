@@ -64,12 +64,6 @@ public class FestivalService {
   }
 
   @Transactional
-  public void updateMainMenu(Long id, MainMenuDto mainMenuDto) {
-    Festival festival = loadFestivalOrThrow(id);
-    festival.updateMainMenu(mainMenuDto);
-  }
-
-  @Transactional
   public void updateEntryInfo(Long id, FestivalConcertMenuDto festivalConcertMenuDto) {
     Festival festival = loadFestivalOrThrow(id);
     festival.updateEntry(festivalConcertMenuDto);
@@ -94,11 +88,6 @@ public class FestivalService {
   public FestivalListDto findBySubAddress(String subAddress) {
     return new FestivalListDto(festivalRepository.findBySubAddress(subAddress)
             .orElseThrow(() -> new FestivalNotFoundException(subAddress)));
-  }
-
-  public MainMenuDto getMainMenu(Long id) {
-    Festival festival = loadFestivalOrThrow(id);
-    return MainMenuDto.from(festival);
   }
 
   @Transactional
