@@ -1,8 +1,8 @@
 package com.halo.eventer.domain.festival;
 
-import com.halo.eventer.domain.concert_info.ConcertInfo;
 import com.halo.eventer.domain.duration.Duration;
 import com.halo.eventer.domain.festival.dto.*;
+import com.halo.eventer.domain.image.dto.FileDto;
 import com.halo.eventer.domain.inquiry.Inquiry;
 import com.halo.eventer.domain.lost_item.LostItem;
 import com.halo.eventer.domain.manager.Manager;
@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
-import com.halo.eventer.global.common.ImageDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,31 +33,20 @@ public class Festival {
   private String name;
   private String subAddress;
 
-  // 4가지 커스텀 색
   private String mainColor;
   private String subColor;
   private String fontColor;
   private String backgroundColor;
 
-  private String logo; // 메인 페이지 최상단에 보여지는 이미지
+  private String logo;
 
-  // 2번째 컴포넌트에 들어갔을 때 나옴
-  private String entrySummary;
-  private String entryIcon;
-  private String viewSummary;
-  private String viewIcon;
-
-  // 축제 위치 정보
   private double latitude; // 위도
   private double longitude; // 경도
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   private List<Notice> notices = new ArrayList<>();
 
-  @OneToMany(
-      mappedBy = "festival",
-      fetch = FetchType.LAZY,
-      cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+  @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
   private List<MapCategory> mapCategories = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
@@ -66,9 +54,6 @@ public class Festival {
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   private List<BaseWidget> widgets = new ArrayList<>();
-
-  @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-  private List<ConcertInfo> concertInfos = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<Inquiry> inquiries = new ArrayList<>();
@@ -115,18 +100,8 @@ public class Festival {
     this.backgroundColor = colorDto.getBackgroundColor();
   }
 
-  public void updateLogo(ImageDto imageDto) {
-    this.logo = imageDto.getImage();
-  }
-
-  public void updateEntry(FestivalConcertMenuDto festivalConcertMenuDto) {
-    this.entrySummary = festivalConcertMenuDto.getSummary();
-    this.entryIcon = festivalConcertMenuDto.getIcon();
-  }
-
-  public void updateView(FestivalConcertMenuDto festivalConcertMenuDto) {
-    this.viewSummary = festivalConcertMenuDto.getSummary();
-    this.viewIcon = festivalConcertMenuDto.getIcon();
+  public void updateLogo(FileDto fileDto) {
+    this.logo = fileDto.getUrl();
   }
 
   public void updateLocation(FestivalLocationDto festivalLocationDto) {

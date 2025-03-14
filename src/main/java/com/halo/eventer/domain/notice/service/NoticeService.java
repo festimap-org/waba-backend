@@ -1,15 +1,14 @@
-package com.halo.eventer.domain.notice.service;
+package com.halo.eventer.domain.content.service;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.image.Image;
 import com.halo.eventer.domain.image.ImageRepository;
-import com.halo.eventer.domain.notice.Notice;
-import com.halo.eventer.domain.notice.dto.*;
-import com.halo.eventer.domain.notice.exception.NoticeNotFoundException;
-import com.halo.eventer.domain.notice.repository.NoticeRepository;
+import com.halo.eventer.domain.content.Content;
+import com.halo.eventer.domain.content.dto.*;
+import com.halo.eventer.domain.content.exception.ContentNotFoundException;
+import com.halo.eventer.domain.content.repository.NoticeRepository;
 import com.halo.eventer.global.common.ArticleType;
 
 import java.util.List;
@@ -31,11 +30,11 @@ public class NoticeService {
   @Transactional
   public String registerNotice(NoticeRegisterDto NoticeRegisterDto, Long festivalId) {
     Festival festival = festivalRepository.findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
-    Notice notice = new Notice(NoticeRegisterDto);
-    notice.setFestival(festival);
-    notice.setImages(
+    Content content = new Content(NoticeRegisterDto);
+    content.setFestival(festival);
+    content.setImages(
         NoticeRegisterDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
-    noticeRepository.save(notice);
+    noticeRepository.save(content);
     return "저장 완료";
   }
 
@@ -43,34 +42,34 @@ public class NoticeService {
   @Transactional
   public NoticeInquireListDto inquireNoticeList(Long festivalId, ArticleType type) {
     Festival festival = festivalRepository.findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
-    List<Notice> notices = noticeRepository.findAllByFestivalAndType(festival, type);
+    List<Content> contents = noticeRepository.findAllByFestivalAndType(festival, type);
 
     return new NoticeInquireListDto(
-        notices.stream().map(NoticeInquireDto::new).collect(Collectors.toList()));
+        contents.stream().map(NoticeInquireDto::new).collect(Collectors.toList()));
   }
 
   /** 단일 공지사항 / 이벤트 조회하기 */
   @Transactional
-  public Notice getNotice(Long id) {
-    return noticeRepository.findById(id).orElseThrow(() -> new NoticeNotFoundException(id));
+  public Content getNotice(Long id) {
+    return noticeRepository.findById(id).orElseThrow(() -> new ContentNotFoundException(id));
   }
 
   /** 배너 등록, 해제 */
   @Transactional
   public String changeBanner(Long noticeId, Boolean pick) {
-    Notice notice = getNotice(noticeId);
-    notice.setPicked(pick);
+    Content content = getNotice(noticeId);
+    content.setPicked(pick);
     return "반영 완료";
   }
 
   /** 공지사항 수정 */
   @Transactional
   public String updateNotice(Long noticeId, NoticeRegisterDto NoticeRegisterDto) {
-    Notice notice = getNotice(noticeId);
+    Content content = getNotice(noticeId);
 
     imageRepository.deleteByIdIn(NoticeRegisterDto.getDeleteIds());
-    notice.setAll(NoticeRegisterDto);
-    notice.setImages(
+    content.setAll(NoticeRegisterDto);
+    content.setImages(
         NoticeRegisterDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
     return "수정완료";
   }
@@ -78,8 +77,8 @@ public class NoticeService {
   /** 공지사항 삭제 */
   @Transactional
   public String deleteNotice(Long noticeId) {
-    Notice notice = getNotice(noticeId);
-    noticeRepository.delete(notice);
+    Content content = getNotice(noticeId);
+    noticeRepository.delete(content);
     return "삭제완료";
   }
 
@@ -94,16 +93,16 @@ public class NoticeService {
   /** 배너 순서 등록 */
   @Transactional
   public String editBannerRank(BannerEditListDto bannerEditListDto) {
-    List<Notice> notices =
+    List<Content> contents =
         noticeRepository.findAllById(
             bannerEditListDto.getBannerEditListDto().stream()
                 .map(BannerEditDto::getNoticeId)
                 .collect(Collectors.toList()));
 
-    for (Notice notice : notices) {
+    for (Content content : contents) {
       for (BannerEditDto b : bannerEditListDto.getBannerEditListDto()) {
-        if (b.getNoticeId() == notice.getId()) {
-          notice.setRank(b.getRank());
+        if (b.getNoticeId() == content.getId()) {
+          content.setRank(b.getRank());
           break;
         }
       }

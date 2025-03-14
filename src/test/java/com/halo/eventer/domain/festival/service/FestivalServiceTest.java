@@ -5,7 +5,7 @@ import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.festival.exception.FestivalAlreadyExistsException;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.global.common.ImageDto;
+import com.halo.eventer.domain.image.dto.FileDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -187,87 +187,13 @@ public class FestivalServiceTest {
   void 로고등록_성공(){
     //given
     given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
-    ImageDto imageDto = new ImageDto();
+    FileDto fileDto = new FileDto();
 
     //when
-    festivalService.updateLogo(1L, imageDto);
+    festivalService.updateLogo(1L, fileDto);
 
     //then
-    assertThat(festival.getLogo()).isEqualTo(imageDto.getImage());
-  }
-
-  @Test
-  void 메인메뉴등록_성공(){
-    //given
-    given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
-    MainMenuDto mainMenuDto = new MainMenuDto();
-
-    //when
-    festivalService.updateMainMenu(1L, mainMenuDto);
-
-    //then
-    assertThat(festival.getMenuName1()).isEqualTo(mainMenuDto.getMenuName1());
-    assertThat(festival.getMenuName2()).isEqualTo(mainMenuDto.getMenuName2());
-    assertThat(festival.getMenuImage1()).isEqualTo(mainMenuDto.getMenuImage1());
-    assertThat(festival.getMenuImage2()).isEqualTo(mainMenuDto.getMenuImage2());
-    assertThat(festival.getMenuSummary1()).isEqualTo(mainMenuDto.getMenuSummary1());
-    assertThat(festival.getMenuSummary2()).isEqualTo(mainMenuDto.getMenuSummary2());
-    assertThat(festival.getMenuUrl2()).isEqualTo(mainMenuDto.getMenuUrl2());
-    assertThat(festival.getMenuUrl1()).isEqualTo(mainMenuDto.getMenuUrl1());
-  }
-
-  @Test
-  void 입장정보등록_성공(){
-    //given
-    given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
-    FestivalConcertMenuDto dto = new FestivalConcertMenuDto();
-
-    //when
-    festivalService.updateEntryInfo(1L, dto);
-
-    //then
-    assertThat(festival.getEntrySummary()).isEqualTo(dto.getSummary());
-    assertThat(festival.getEntryIcon()).isEqualTo(dto.getIcon());
-  }
-
-  @Test
-  void 관람안내등록_성공(){
-    //given
-    given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
-    FestivalConcertMenuDto dto = new FestivalConcertMenuDto();
-
-    //when
-    festivalService.updateViewInfo(1L, dto);
-
-    //then
-    assertThat(festival.getViewSummary()).isEqualTo(dto.getSummary());
-    assertThat(festival.getViewIcon()).isEqualTo(dto.getIcon());
-  }
-
-  @Test
-  void 입장방법조회_성공(){
-    //given
-    given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
-
-    //when
-    FestivalConcertMenuDto concertMenuDto = festivalService.getEntryInfo(1L);
-
-    //then
-    assertThat(concertMenuDto.getIcon()).isEqualTo(festival.getEntryIcon());
-    assertThat(concertMenuDto.getSummary()).isEqualTo(festival.getEntrySummary());
-  }
-
-  @Test
-  void 관람방법조회_성공(){
-    //given
-    given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
-
-    //when
-    FestivalConcertMenuDto concertMenuDto = festivalService.getViewInfo(1L);
-
-    //then
-    assertThat(concertMenuDto.getIcon()).isEqualTo(festival.getEntryIcon());
-    assertThat(concertMenuDto.getSummary()).isEqualTo(festival.getEntrySummary());
+    assertThat(festival.getLogo()).isEqualTo(fileDto.getUrl());
   }
 
   @Test
@@ -293,26 +219,6 @@ public class FestivalServiceTest {
   }
 
   @Test
-  void  메인메뉴조회_성공(){
-    //given
-    given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
-
-    //when
-    MainMenuDto mainMenuDto = festivalService.getMainMenu(1L);
-
-    //then
-    assertThat(mainMenuDto).isNotNull();
-    assertThat(mainMenuDto.getMenuName1()).isEqualTo(festival.getMenuName1());
-    assertThat(mainMenuDto.getMenuName2()).isEqualTo(festival.getMenuName2());
-    assertThat(mainMenuDto.getMenuImage1()).isEqualTo(festival.getMenuImage1());
-    assertThat(mainMenuDto.getMenuImage2()).isEqualTo(festival.getMenuImage2());
-    assertThat(mainMenuDto.getMenuSummary1()).isEqualTo(festival.getMenuSummary1());
-    assertThat(mainMenuDto.getMenuSummary2()).isEqualTo(festival.getMenuSummary2());
-    assertThat(mainMenuDto.getMenuUrl1()).isEqualTo(festival.getMenuUrl1());
-    assertThat(mainMenuDto.getMenuUrl2()).isEqualTo(festival.getMenuUrl2());
-  }
-
-  @Test
   void 축제위치등록_성공(){
     //given
     given(festivalRepository.findById(1L)).willReturn(Optional.of(festival));
@@ -327,9 +233,3 @@ public class FestivalServiceTest {
     assertThat(result.getLatitude()).isEqualTo(festival.getLatitude());
   }
 }
-
-//given
-
-//when
-
-//then

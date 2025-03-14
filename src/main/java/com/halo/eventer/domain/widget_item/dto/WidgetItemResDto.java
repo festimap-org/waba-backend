@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.concert_info.dto;
+package com.halo.eventer.domain.widget_item.dto;
 
 import com.halo.eventer.domain.concert_info.ConcertInfo;
 import java.util.List;

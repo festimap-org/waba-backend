@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.notice.dto;
+package com.halo.eventer.domain.content.dto;
 
 
 import com.halo.eventer.global.common.ArticleType;

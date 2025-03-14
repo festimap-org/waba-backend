@@ -1,8 +1,8 @@
-package com.halo.eventer.domain.notice.controller;
+package com.halo.eventer.domain.content.controller;
 
-import com.halo.eventer.domain.notice.dto.*;
-import com.halo.eventer.domain.notice.service.NoticeService;
-import com.halo.eventer.domain.notice.swagger.*;
+import com.halo.eventer.domain.content.dto.*;
+import com.halo.eventer.domain.content.service.NoticeService;
+import com.halo.eventer.domain.content.swagger.*;
 import com.halo.eventer.global.common.ArticleType;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/notice")
-public class NoticeController {
+public class ContentController {
 
     private final NoticeService noticeService;
 

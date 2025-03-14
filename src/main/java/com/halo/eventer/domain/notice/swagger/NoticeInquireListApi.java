@@ -1,6 +1,6 @@
-package com.halo.eventer.domain.notice.swagger;
+package com.halo.eventer.domain.content.swagger;
 
-import com.halo.eventer.domain.notice.dto.NoticeInquireListDto;
+import com.halo.eventer.domain.content.dto.NoticeInquireListDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

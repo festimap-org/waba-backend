@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.notice.dto;
+package com.halo.eventer.domain.content.dto;
 
 import java.util.List;
 import lombok.Getter;
