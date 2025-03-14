@@ -1,6 +1,5 @@
 package com.halo.eventer.domain.map.dto.mapcategory;
 
-import com.halo.eventer.domain.notice.dto.BannerEditDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
