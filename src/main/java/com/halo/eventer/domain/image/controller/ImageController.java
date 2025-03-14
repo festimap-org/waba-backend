@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.image.controller;
 
-import com.halo.eventer.domain.image.dto.FileResDto;
+import com.halo.eventer.domain.image.dto.FileDto;
 import com.halo.eventer.domain.image.service.ImageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
@@ -24,18 +24,18 @@ public class ImageController {
 
   // stream 방식 업로드
   @PostMapping("/upload/stream")
-  public FileResDto uploadStream(HttpServletRequest request) throws IOException {
-    return new FileResDto(
+  public FileDto uploadStream(HttpServletRequest request) throws IOException {
+    return new FileDto(
         imageService.uploadStream(
             request.getInputStream(), request.getContentLength(), request.getContentType()));
   }
 
   // MultipartFile 방식 업로드
   @PostMapping("/upload/multipartFile")
-  public FileResDto uploadImage(@RequestParam(value = "image", required = true) MultipartFile file)
+  public FileDto uploadImage(@RequestParam(value = "image", required = true) MultipartFile file)
       throws IOException {
     log.info("이미지 업로드 시작");
-    return new FileResDto(imageService.upload(file));
+    return new FileDto(imageService.upload(file));
   }
 
   // Pre Signed URL 방식

@@ -1,7 +1,7 @@
 package com.halo.eventer.domain.image;
 
-import com.halo.eventer.domain.concert_info.ConcertInfo;
 import com.halo.eventer.domain.notice.Notice;
+import com.halo.eventer.domain.widget_item.WidgetItem;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,29 +16,29 @@ public class Image {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String image_url;
+  private String imageUrl;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "notice_id")
   private Notice notice;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "concertInfoId")
-  private ConcertInfo concertInfo;
+  @JoinColumn(name = "widget_item_id")
+  private WidgetItem widgetItem;
 
   public Image(String image_url) {
-    this.image_url = image_url;
+    this.imageUrl = image_url;
   }
 
-  public void setImage(String image_url) {
-    this.image_url = image_url;
+  public void setImage(String imageUrl) {
+    this.imageUrl = imageUrl;
   }
 
   public void setNotice(Notice notice) {
     this.notice = notice;
   }
 
-  public void setConcertInfo(ConcertInfo concertInfo) {
-    this.concertInfo = concertInfo;
+  public void updateWidgetItem(WidgetItem widgetItem) {
+    this.widgetItem = widgetItem;
   }
 }

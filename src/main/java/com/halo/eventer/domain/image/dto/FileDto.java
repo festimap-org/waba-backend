@@ -5,10 +5,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class FileResDto {
-  String url;
+public class FileDto {
+  private String url;
 
-  public FileResDto(String url) {
+  public FileDto(String url) {
     this.url = url;
   }
 }
