@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@DiscriminatorValue("Square")
+@DiscriminatorValue("SQUARE")
 @NoArgsConstructor
 @Getter
 public class SquareWidget extends BaseWidget implements DisplayOrderUpdatable{

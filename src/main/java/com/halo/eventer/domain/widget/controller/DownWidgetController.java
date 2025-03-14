@@ -4,6 +4,7 @@ import com.halo.eventer.domain.widget.dto.WidgetOrderUpdateRequest;
 import com.halo.eventer.domain.widget.dto.down_widget.DownWidgetCreateDto;
 import com.halo.eventer.domain.widget.dto.down_widget.DownWidgetResDto;
 import com.halo.eventer.domain.widget.service.DownWidgetService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/downWidget")
+@Tag(name = "하단 위젯 API")
 public class DownWidgetController {
 
   private final DownWidgetService downWidgetService;

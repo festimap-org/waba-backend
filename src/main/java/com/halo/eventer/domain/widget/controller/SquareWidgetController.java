@@ -46,7 +46,7 @@ public class SquareWidgetController {
 
   @PatchMapping
   public SquareWidgetResDto update(@RequestParam("widgetId") Long widgetId,
-                             @RequestBody SquareWidgetCreateDto squareWidgetCreateDto) {
+                                   @RequestBody SquareWidgetCreateDto squareWidgetCreateDto) {
     return squareWidgetService.update(widgetId, squareWidgetCreateDto);
   }
 
@@ -58,7 +58,6 @@ public class SquareWidgetController {
   @PatchMapping("/displayOrder")
   public List<SquareWidgetResDto> updateDisplayOrder(@RequestParam long festivalId,
                                                      @RequestBody List<WidgetOrderUpdateRequest> orderRequests){
-    System.out.println("start");
     return squareWidgetService.updateDisplayOrder(festivalId, orderRequests);
   }
 }
