@@ -1,58 +1,57 @@
-package com.halo.eventer.domain.concert_info.controller;
+package com.halo.eventer.domain.widget_item.controller;
 
-import com.halo.eventer.domain.concert_info.ConcertInfoType;
-import com.halo.eventer.domain.concert_info.dto.ConcertInfoDto;
-import com.halo.eventer.domain.concert_info.dto.ConcertInfoGetListDto;
-import com.halo.eventer.domain.concert_info.dto.ConcertInfoUpdateDto;
-import com.halo.eventer.domain.concert_info.service.ConcertInfoService;
-import com.halo.eventer.domain.concert_info.swagger.ConcertInfoGetApi;
-import com.halo.eventer.domain.concert_info.swagger.ConcertInfoGetListApi;
+import com.halo.eventer.domain.image.dto.FileDto;
+import com.halo.eventer.domain.image.dto.ImageDto;
+import com.halo.eventer.domain.widget_item.dto.WidgetItemCreateDto;
+import com.halo.eventer.domain.widget_item.dto.WidgetItemResDto;
+import com.halo.eventer.domain.widget_item.service.WidgetItemService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/concertInfo")
-@Tag(name = "입장 방법, 관람 안내, 추가 컴포넌트")
-public class ConcertInfoController {
-  private final ConcertInfoService concertInfoService;
+@RequestMapping("/widgetItem")
+@Tag(name = "위젯 내부 요소 (메인 위젯에 연결되는 입장방법, 관람안내 등)")
+public class WidgetItemController {
+  private final WidgetItemService widgetItemService;
 
-  /** 공연 정보 생성 */
-  @PostMapping("/{festivalId}/name")
-  public String createInfoName(
-      @PathVariable("festivalId") Long festivalId,
-      @RequestParam("name") String name,
-      @RequestParam("type") ConcertInfoType type) {
-    return concertInfoService.createInfoName(festivalId, name, type);
+  @PostMapping("/{widgetId}")
+  public WidgetItemResDto createInfoName(@PathVariable("widgetId") Long widgetId,
+                                         @RequestBody WidgetItemCreateDto widgetItemCreateDto) {
+    return widgetItemService.create(widgetId, widgetItemCreateDto);
   }
 
-  /** 타입 별 공연 정보 전체 조회 */
-  @ConcertInfoGetListApi
-  @GetMapping("/{festivalId}")
-  public ConcertInfoGetListDto getConcertInfoListByType(
-      @PathVariable("festivalId") Long festivalId, @RequestParam("type") ConcertInfoType type) {
-    return concertInfoService.getConcertInfoListByType(festivalId, type);
+  @GetMapping("/{widgetId}")
+  public List<WidgetItemResDto> getWidgetItemsByWidgetId(@PathVariable("widgetId") Long widgetId){
+    return widgetItemService.getWidgetItemWithWidgetId(widgetId);
   }
 
-  /** 단일 공연 정보 조회 */
-  @ConcertInfoGetApi
   @GetMapping
-  public ConcertInfoDto getConcertInfo(@RequestParam("concertId") Long concertId) {
-    return new ConcertInfoDto(concertInfoService.getConcertInfo(concertId));
+  public List<ImageDto> getWidgetItemImages(@RequestParam("widgetId") Long widgetId) {
+    return widgetItemService.getWidgetItemImages(widgetId);
   }
 
-  /** 상세 이미지 등록 */
-  @PatchMapping("/{concertInfoId}")
-  public String updateConcertInfo(
-      @PathVariable("concertInfoId") Long id,
-      @RequestBody ConcertInfoUpdateDto concertInfoUpdateDto) {
-    return concertInfoService.updateConcertInfo(id, concertInfoUpdateDto);
+  @PatchMapping("/{widgetId}")
+  public WidgetItemResDto updateWidgetItem(@PathVariable("widgetId") Long id,
+                                 @RequestBody WidgetItemCreateDto widgetItemCreateDto) {
+    return widgetItemService.updateWidgetInfo(id, widgetItemCreateDto);
   }
 
-  /** 공연 정보 삭제 */
-  @DeleteMapping("/{concertInfoId}")
-  public String deleteConcertInfo(@PathVariable("concertInfoId") Long id) {
-    return concertInfoService.deleteConcertInfo(id);
+  @PostMapping("/{widgetId}/images")
+  public List<ImageDto> addImages(@PathVariable Long widgetId, @RequestBody List<FileDto> fileDtos) {
+    return widgetItemService.addImages(widgetId,fileDtos);
+  }
+
+  @DeleteMapping("/{widgetId}/images")
+  public void deleteImages(@PathVariable Long widgetId, @RequestBody List<Long> imageIds) {
+    widgetItemService.deleteImages(widgetId,imageIds);
+  }
+
+  @DeleteMapping("/{widgetId}")
+  public void deleteConcertInfo(@PathVariable("widgetId") Long id) {
+    widgetItemService.delete(id);
   }
 }

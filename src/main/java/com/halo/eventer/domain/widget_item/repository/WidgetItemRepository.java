@@ -1,10 +1,18 @@
-package com.halo.eventer.domain.concert_info.repository;
+package com.halo.eventer.domain.widget_item.repository;
 
-import com.halo.eventer.domain.concert_info.ConcertInfo;
-import com.halo.eventer.domain.concert_info.ConcertInfoType;
-import java.util.List;
+import com.halo.eventer.domain.widget_item.WidgetItem;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-public interface ConcertInfoRepository extends JpaRepository<ConcertInfo, Long> {
-  List<ConcertInfo> findAllByFestivalIdAndType(Long festivalId, ConcertInfoType type);
+import java.util.List;
+import java.util.Optional;
+
+public interface WidgetItemRepository extends JpaRepository<WidgetItem, Long> {
+
+  @Query("SELECT wi FROM WidgetItem wi WHERE wi.baseWidget.id = :widgetId ")
+  List<WidgetItem> findAllWidgetItemsByBaseWidgetId(@Param("widgetId") Long widgetId);
+
+  @Query("SELECT wi FROM WidgetItem wi LEFT JOIN FETCH wi.images WHERE wi.id = :id ")
+  Optional<WidgetItem> findWidgetItemById(@Param("id") Long id);
 }

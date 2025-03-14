@@ -1,68 +1,96 @@
-package com.halo.eventer.domain.concert_info.service;
+package com.halo.eventer.domain.widget_item.service;
 
-import com.halo.eventer.domain.concert_info.ConcertInfo;
-import com.halo.eventer.domain.concert_info.ConcertInfoType;
-import com.halo.eventer.domain.concert_info.dto.ConcertInfoGetDto;
-import com.halo.eventer.domain.concert_info.dto.ConcertInfoGetListDto;
-import com.halo.eventer.domain.concert_info.dto.ConcertInfoUpdateDto;
-import com.halo.eventer.domain.concert_info.exception.ConcertInfoNotFoundException;
-import com.halo.eventer.domain.concert_info.repository.ConcertInfoRepository;
-import com.halo.eventer.domain.festival.Festival;
-import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
-import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.festival.service.FestivalService;
+import com.halo.eventer.domain.image.Image;
+import com.halo.eventer.domain.image.dto.FileDto;
+import com.halo.eventer.domain.image.dto.ImageDto;
+import com.halo.eventer.domain.widget.BaseWidget;
+import com.halo.eventer.domain.widget.dto.WidgetOrderUpdateRequest;
+import com.halo.eventer.domain.widget.exception.WidgetNotFoundException;
+import com.halo.eventer.domain.widget.repository.BaseWidgetRepository;
+import com.halo.eventer.domain.widget_item.WidgetItem;
+import com.halo.eventer.domain.widget_item.dto.WidgetItemResDto;
+import com.halo.eventer.domain.widget_item.dto.WidgetItemCreateDto;
+import com.halo.eventer.domain.widget_item.exception.WidgetItemNotFoundException;
+import com.halo.eventer.domain.widget_item.repository.WidgetItemRepository;
 import com.halo.eventer.domain.image.ImageRepository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.halo.eventer.global.common.WidgetType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class ConcertInfoService {
+public class WidgetItemService {
 
-  private final ConcertInfoRepository concertInfoRepository;
+  private final WidgetItemRepository widgetItemRepository;
   private final ImageRepository imageRepository;
+  private final BaseWidgetRepository baseWidgetRepository;
 
-  private final FestivalRepository festivalRepository;
-
-  /** 공연 정보 생성 */
   @Transactional
-  public String createInfoName(Long festivalId, String name, ConcertInfoType type) {
-    Festival festival = festivalRepository
-            .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
-    ConcertInfo concertInfo = new ConcertInfo(name, type, festival);
-    concertInfoRepository.save(concertInfo);
-    return "저장완료";
+  public WidgetItemResDto create(Long widgetId, WidgetItemCreateDto widgetItemCreateDto) {
+    BaseWidget baseWidget = baseWidgetRepository.findById(widgetId)
+            .orElseThrow(() -> new WidgetNotFoundException(widgetId, WidgetType.DEFAULT));
+
+    WidgetItem widgetItem = widgetItemRepository.save(WidgetItem.from(baseWidget,widgetItemCreateDto));
+    return WidgetItemResDto.from(widgetItem);
   }
 
-  /** 타입 별 공연 정보 전체 조회 */
-  public ConcertInfoGetListDto getConcertInfoListByType(Long festivalId, ConcertInfoType type) {
-    List<ConcertInfo> concertInfos =
-        concertInfoRepository.findAllByFestivalIdAndType(festivalId, type);
-    List<ConcertInfoGetDto> concertInfoListDto =
-        ConcertInfoGetDto.fromConcertInfoList(concertInfos);
-    return new ConcertInfoGetListDto(concertInfoListDto);
+  @Transactional(readOnly = true)
+  public List<WidgetItemResDto> getWidgetItemWithWidgetId(Long widgetId) {
+    List<WidgetItem> widgetItems = widgetItemRepository.findAllWidgetItemsByBaseWidgetId(widgetId);
+
+    return widgetItems.stream()
+            .map(WidgetItemResDto::from)
+            .collect(Collectors.toList());
   }
 
-  /** 단일 공연 정보 조회 */
-  public ConcertInfo getConcertInfo(Long id) {
-    return concertInfoRepository.findById(id).orElseThrow(() -> new ConcertInfoNotFoundException(id));
+  @Transactional(readOnly = true)
+  public List<ImageDto> getWidgetItemImages(Long id) {
+    WidgetItem widgetItem = widgetItemRepository.findWidgetItemById(id)
+            .orElseThrow(()-> new WidgetItemNotFoundException(id));
+
+    return widgetItem.getImages().stream()
+            .map(ImageDto::from)
+            .collect(Collectors.toList());
   }
 
-  /** 상세 이미지 등록 */
   @Transactional
-  public String updateConcertInfo(Long concertInfoId, ConcertInfoUpdateDto concertUpdateDto) {
-    ConcertInfo concertInfo = getConcertInfo(concertInfoId);
-    concertUpdateDto.getDeletedImages().forEach(imageRepository::deleteById);
-    concertInfo.setInfo(concertUpdateDto);
-    return "상세 이미지 등록";
+  public WidgetItemResDto updateWidgetInfo(Long id, WidgetItemCreateDto widgetItemCreateDto) {
+    WidgetItem widgetItem = widgetItemRepository.findById(id)
+                    .orElseThrow(()-> new WidgetItemNotFoundException(id));
+    widgetItem.updateWidgetItem(widgetItemCreateDto);
+    return WidgetItemResDto.from(widgetItem);
   }
 
-  /** 공연 정보 삭제 */
-  public String deleteConcertInfo(Long id) {
-    concertInfoRepository.deleteById(id);
-    return "삭제완료";
+  @Transactional
+  public List<ImageDto> addImages(Long id,List<FileDto> fileDtos){
+    WidgetItem widgetItem = widgetItemRepository.findById(id)
+            .orElseThrow(()-> new WidgetItemNotFoundException(id));
+
+    fileDtos.forEach(o->widgetItem.addImages(o.getUrl()));
+    return widgetItem.getImages().stream()
+            .map(ImageDto::from)
+            .collect(Collectors.toList());
+  }
+
+  @Transactional
+  public void deleteImages(Long id, List<Long> imageIds){
+    Set<Long> imageMap = new HashSet<>(imageIds);
+
+    widgetItemRepository.findWidgetItemById(id).orElseThrow(() -> new WidgetItemNotFoundException(id))
+        .getImages()
+        .removeIf(image -> imageMap.contains(image.getId()));
+  }
+
+  @Transactional
+  public void delete(Long id) {
+    widgetItemRepository.deleteById(id);
   }
 }

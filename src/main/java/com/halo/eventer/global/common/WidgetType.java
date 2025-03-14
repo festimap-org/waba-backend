@@ -1,6 +1,7 @@
 package com.halo.eventer.global.common;
 
 public enum WidgetType {
+    DEFAULT("default"),
     UP("up"),
     MAIN("main"),
     MIDDLE("middle"),
