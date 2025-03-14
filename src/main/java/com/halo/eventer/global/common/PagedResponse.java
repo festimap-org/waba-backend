@@ -1,6 +1,5 @@
-package com.halo.eventer.domain.widget.dto;
+package com.halo.eventer.global.common;
 
-import com.halo.eventer.global.common.PageInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class PagedResponse<T> {
-    private List<T> content;
-    private PageInfo pageInfo;
+  private List<T> content;
+  private PageInfo pageInfo;
 }
