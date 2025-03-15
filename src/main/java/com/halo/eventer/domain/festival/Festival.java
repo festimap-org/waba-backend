@@ -53,7 +53,7 @@ public class Festival {
   private List<Duration> durations = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-  private List<BaseWidget> widgets = new ArrayList<>();
+  private List<BaseWidget> baseWidgets = new ArrayList<>();
 
   @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<Inquiry> inquiries = new ArrayList<>();
