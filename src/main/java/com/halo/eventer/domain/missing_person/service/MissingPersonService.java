@@ -71,6 +71,6 @@ public class MissingPersonService {
 
   // 팝업 리스트 조회
   public List<MissingPerson> getPopupList(Long festivalId) {
-    return missingPersonRepository.findAllByFestival_idAndPopup(festivalId, true);
+    return missingPersonRepository.findAllByFestivalIdAndPopup(festivalId, true);
   }
 }
