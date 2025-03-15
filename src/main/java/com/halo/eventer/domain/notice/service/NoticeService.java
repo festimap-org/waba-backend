@@ -80,7 +80,7 @@ public class NoticeService {
   }
 
   public List<PickedNoticeResDto> getPickedNotice(Long festivalId) {
-    return noticeRepository.findAllByPickedAndFestival_Id(true, festivalId).stream()
+    return noticeRepository.findAllByPickedAndFestivalId(festivalId,true).stream()
             .map(PickedNoticeResDto::new)
             .collect(Collectors.toList());
   }

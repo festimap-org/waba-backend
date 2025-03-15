@@ -15,12 +15,9 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
   Page<Notice> findAll(Pageable pageable);
 
-  List<Notice> findAllByFestivalAndType(Festival festival, ArticleType type);
-
-  List<Notice> findAllByFestivalAndPicked(Festival festival, Boolean b);
-
-  @Query("SELECT n FROM Notice n WHERE n.picked = :picked AND n.festival.id = :id ")
-  List<Notice> findAllByPickedAndFestival_Id(Boolean picked, Long id);
+  @Query("SELECT n FROM Notice n WHERE n.festival.id = :id AND n.picked = :picked ")
+  List<Notice> findAllByPickedAndFestivalId(@Param("id") Long id,
+                                             @Param("picked") Boolean picked);
 
   @Query("SELECT n FROM Notice n " +
           "WHERE n.type = :type " +
