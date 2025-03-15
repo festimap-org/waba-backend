@@ -76,8 +76,6 @@ public class UpWidgetService {
 
   @Transactional(readOnly = true)
   public List<UpWidgetResDto> getUpWidgetsByNow(Long festivalId, LocalDateTime now) {
-    validateFestival(festivalId);
-
     return upWidgetRepository.findAllByFestivalIdAndPeriod(festivalId, now).stream()
             .map(UpWidgetResDto::from)
             .collect(Collectors.toList());

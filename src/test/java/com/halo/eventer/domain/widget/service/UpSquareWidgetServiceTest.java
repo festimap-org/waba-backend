@@ -211,7 +211,6 @@ public class UpSquareWidgetServiceTest {
     void 상단_위젯_오늘날짜_시간으로_조회(){
         //given
         LocalDateTime now = LocalDateTime.now();
-        given(festivalRepository.existsById(festivalId)).willReturn(true);
         given(upWidgetRepository.findAllByFestivalIdAndPeriod(festivalId,now)).willReturn(upWidgetList);
 
         //when
