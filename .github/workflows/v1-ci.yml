@@ -17,7 +17,7 @@ jobs:
       - name: Create application.yml
         run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.TEST_APP_YML }}" > src/main/resources/application.yml
+          echo "${{ secrets.APP_YML }}" > src/main/resources/application.yml
           
       # (2)-1 Logback config 주입    
       - name: Decode logback-spring.xml
