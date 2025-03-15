@@ -2,13 +2,12 @@ package com.halo.eventer.domain.map.dto.map;
 
 
 import com.halo.eventer.domain.duration.dto.DurationGetDto;
-import com.halo.eventer.domain.map.enumtype.OperationTime;
 import com.halo.eventer.domain.map.Map;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
+import com.halo.eventer.domain.map.enumtype.OperationTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor

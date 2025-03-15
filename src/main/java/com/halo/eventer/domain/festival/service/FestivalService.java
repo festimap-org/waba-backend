@@ -1,132 +1,90 @@
 package com.halo.eventer.domain.festival.service;
 
-
-import com.halo.eventer.domain.down_widget.DownWidget;
-import com.halo.eventer.domain.festival.dto.*;
-import com.halo.eventer.global.common.ImageDto;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
-import com.halo.eventer.global.exception.common.DuplicatedElementException;
-import com.halo.eventer.global.exception.common.NoDataInDatabaseException;
 import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.dto.*;
+import com.halo.eventer.domain.festival.exception.FestivalAlreadyExistsException;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.map.MapCategory;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.halo.eventer.domain.image.dto.FileDto;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class FestivalService {
 
-    private final FestivalRepository festivalRepository;
+  private final FestivalRepository festivalRepository;
 
-    public String createFestival(FestivalCreateDto festivalCreateDto) {
-        if(festivalRepository.findByName(festivalCreateDto.getName()).isPresent() || festivalRepository.findBySubAddress(festivalCreateDto.getSubAddress()).isPresent()){
-            throw new BaseException("중복생성", ErrorCode.ELEMENT_DUPLICATED);
-        }
+  @Transactional
+  public void create(FestivalCreateDto festivalCreateDto) {
+    validateUniqueFestival(festivalCreateDto);
+    Festival festival = Festival.from(festivalCreateDto);
+    festival.applyDefaultMapCategory();
+    festivalRepository.save(festival);
+  }
 
-        Festival festival = new Festival(festivalCreateDto);
-        festival.setMapCategory(List.of(new MapCategory("고정 부스")));
-        for(int i =0;i<3;i++){
-            festival.getDownWidgets().add(new DownWidget(festival));
-        }
-        festivalRepository.save(festival);
-        return "저장완료";
+  @Transactional(readOnly = true)
+  public FestivalResDto findById(Long id) {
+    Festival festival = loadFestivalOrThrow(id);
+    return FestivalResDto.from(festival);
+  }
+
+  public List<FestivalListDto> findAll() {
+    return festivalRepository.findAll().stream().map(FestivalListDto::new).collect(Collectors.toList());
+  }
+
+  @Transactional
+  public FestivalResDto update(Long id, FestivalCreateDto festivalCreateDto) {
+    Festival festival = loadFestivalOrThrow(id);
+    festival.updateFestival(festivalCreateDto);
+    return FestivalResDto.from(festival);
+  }
+
+  @Transactional
+  public void delete(Long id) {
+    Festival festival = loadFestivalOrThrow(id);
+    festivalRepository.delete(festival);
+  }
+
+  @Transactional
+  public void updateColor(Long id, ColorDto colorDto) {
+    Festival festival = loadFestivalOrThrow(id);
+    festival.updateColor(colorDto);
+  }
+
+  @Transactional
+  public void updateLogo(Long id, FileDto fileDto) {
+    Festival festival = loadFestivalOrThrow(id);
+    festival.updateLogo(fileDto);
+  }
+
+  public FestivalListDto findBySubAddress(String subAddress) {
+    return new FestivalListDto(festivalRepository.findBySubAddress(subAddress)
+            .orElseThrow(() -> new FestivalNotFoundException(subAddress)));
+  }
+
+  @Transactional
+  public FestivalResDto updateLocation(Long id, FestivalLocationDto festivalLocationDto) {
+    Festival festival = loadFestivalOrThrow(id);
+    festival.updateLocation(festivalLocationDto);
+    return FestivalResDto.from(festival);
+  }
+
+  private Festival loadFestivalOrThrow(Long id) {
+    return festivalRepository.findById(id).orElseThrow(() -> new FestivalNotFoundException(id));
+  }
+
+  private void validateUniqueFestival(FestivalCreateDto festivalCreateDto) {
+    if (festivalRepository.findByName(festivalCreateDto.getName()).isPresent() ||
+            festivalRepository.findBySubAddress(festivalCreateDto.getSubAddress()).isPresent()) {
+      throw new FestivalAlreadyExistsException();
     }
-
-    public Festival getFestival(Long id) {
-        Festival festival = festivalRepository.findById(id).orElseThrow(()->new BaseException("축제가 존재하지 않습니다", ErrorCode.ELEMENT_NOT_FOUND));
-        return festival;
-    }
-
-    public List<FestivalListDto> getFestivals() {
-        return festivalRepository.findAll().stream().map(FestivalListDto::new).collect(Collectors.toList());
-    }
-
-    @Transactional
-    public FestivalResDto updateFestival(Long id, FestivalCreateDto festivalCreateDto) {
-        Festival festival = getFestival(id);
-        festival.setFestival(festivalCreateDto);
-        return new FestivalResDto(festival);
-    }
-
-    @Transactional
-    public String deleteFestival(Long id) {
-        Festival festival = getFestival(id);
-        festivalRepository.delete(festival);
-        return "삭제완료";
-    }
-
-
-    @Transactional
-    public String addColor(Long id, ColorReqDto colorReqDto) {
-        Festival festival = getFestival(id);
-        festival.setColor(colorReqDto);
-        return "색 등록 완료";
-    }
-
-    @Transactional
-    public String addLogo(Long id, ImageDto imageDto) {
-        Festival festival = getFestival(id);
-        festival.setLogo(imageDto.getImage());
-        return "로고 등록 완료";
-    }
-
-    @Transactional
-    public String addMainMenu(Long id, MainMenuDto mainMenuDto) {
-        Festival festival = getFestival(id);
-        festival.setMainMenu(mainMenuDto);
-        return "메인 메뉴 정보 등록";
-    }
-
-    @Transactional
-    public String addEntryInfo(Long id, FestivalConcertMenuDto festivalConcertMenuDto) {
-        Festival festival = getFestival(id);
-        festival.setEntry(festivalConcertMenuDto);
-        festivalRepository.save(festival);
-        return "입장방법 등록";
-
-    }
-
-    @Transactional
-    public String addViewInfo(Long id, FestivalConcertMenuDto festivalConcertMenuDto) {
-        Festival festival = getFestival(id);
-        festival.setView(festivalConcertMenuDto);
-        festivalRepository.save(festival);
-        return "관람안내 등록";
-    }
-
-    public FestivalConcertMenuDto getEntryInfo(Long id) {
-        Festival festival = getFestival(id);
-        return new FestivalConcertMenuDto(festival.getEntrySummary(),festival.getEntryIcon());
-    }
-
-    public FestivalConcertMenuDto getViewInfo(Long id) {
-        Festival festival = getFestival(id);
-        return new FestivalConcertMenuDto(festival.getViewSummary(),festival.getViewIcon());
-    }
-    //subAddress로 축제 조회
-    public FestivalListDto getFestivalSubAddress(String name) {
-        return new FestivalListDto(festivalRepository.findBySubAddress(name).orElseThrow(()->new BaseException("축제가 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND)));
-    }
-
-    public MainMenuDto getMainMenu(Long id) {
-        Festival festival = getFestival(id);
-        return new MainMenuDto(festival);
-    }
-
-    /** 축제 위치 등록 */
-    @Transactional
-    public Festival updateFestivalLocation(Long festivalId, FestivalLocationDto festivalLocationDto){
-        Festival festival = getFestival(festivalId);
-        festival.updateLocation(festivalLocationDto);
-        return festival;
-    }
+  }
 }

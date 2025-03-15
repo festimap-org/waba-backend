@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SuccessResponse {
 
-    private String message;
+  private String message;
 
-    public SuccessResponse(SuccessCode successCode) {
-        this.message = successCode.getMessage();
-    }
+  public SuccessResponse(SuccessCode successCode) {
+    this.message = successCode.getMessage();
+  }
 
-    public static SuccessResponse of(SuccessCode successCode) {
-        return new SuccessResponse(successCode);
-    }
+  public static SuccessResponse of(SuccessCode successCode) {
+    return new SuccessResponse(successCode);
+  }
 }

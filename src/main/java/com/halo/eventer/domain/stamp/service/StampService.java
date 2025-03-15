@@ -1,49 +1,54 @@
 package com.halo.eventer.domain.stamp.service;
 
 import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.dto.stamp.*;
 import com.halo.eventer.domain.stamp.dto.stampUser.FinishedStampUserDto;
+import com.halo.eventer.domain.stamp.exception.StampClosedException;
+import com.halo.eventer.domain.stamp.exception.StampNotFoundException;
 import com.halo.eventer.domain.stamp.repository.StampRepository;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
 public class StampService {
     private final StampRepository stampRepository;
-    private final FestivalService festivalService;
+    private final FestivalRepository festivalRepository;
     private final EncryptService encryptService;
 
     /** 축제 id로 스탬프 조회 */
     public Stamp getStamp(Long stampId) {
-        return stampRepository.findById(stampId).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+        return stampRepository.findById(stampId).orElseThrow(() -> new StampNotFoundException(stampId));
     }
 
     /** 축제 id로 스탬프 생성 */
     @Transactional
     public StampGetListDto registerStamp(Long festivalId) {
-        Festival festival = festivalService.getFestival(festivalId);
+        Festival festival = festivalRepository
+                .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
         stampRepository.save(new Stamp(festival));
 
-        List<Stamp> stamps = stampRepository.findByFestival(festivalService.getFestival(festivalId));
+        List<Stamp> stamps = stampRepository.findByFestival(festival);
         List<StampGetDto> stampGetDtos = StampGetDto.fromStampList(stamps);
         return new StampGetListDto(stampGetDtos);
     }
 
     /** 축제 id로 스탬프 조회 */
     public StampGetListDto getStampByFestivalId(Long festivalId) {
-        List<Stamp> stamps = stampRepository.findByFestival(festivalService.getFestival(festivalId));
+        Festival festival = festivalRepository
+                .findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
+        List<Stamp> stamps = stampRepository.findByFestival(festival);
         List<StampGetDto> stampGetDtos = StampGetDto.fromStampList(stamps);
         return new StampGetListDto(stampGetDtos);
     }
@@ -51,7 +56,7 @@ public class StampService {
     /** 스탬프 상태 변경 */
     @Transactional
     public String updateStampOn(Long stampId) {
-        Stamp stamp = stampRepository.findById(stampId).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+        Stamp stamp = stampRepository.findById(stampId).orElseThrow(() -> new StampNotFoundException(stampId));
         if (stamp.isStampOn()) stamp.setStampOn(false);
         else stamp.setStampOn(true);
 
@@ -71,7 +76,7 @@ public class StampService {
     @Transactional
     public String setMission(Long stampId, MissionSetListDto dto) {
         Stamp stamp = getStamp(stampId);
-        if (!stamp.isStampOn()) throw new BaseException("종료된 스탬프 투어입니다.", ErrorCode.ELEMENT_NOT_FOUND);
+        if (!stamp.isStampOn()) throw new StampClosedException(stampId);
 
         List<Mission> missions = dto.getMissionSets().stream()
                 .map(m -> new Mission(

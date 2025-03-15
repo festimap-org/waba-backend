@@ -6,13 +6,12 @@ import lombok.Getter;
 @Getter
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum SuccessCode {
-    SAVE_SUCCESS("Successfully saved"),
-    UPDATE_SUCCESS("Successfully updated")
-    ;
+  SAVE_SUCCESS("Successfully saved"),
+  UPDATE_SUCCESS("Successfully updated");
 
-    private String message;
+  private String message;
 
-    SuccessCode(String message) {
-        this.message = message;
-    }
+  SuccessCode(String message) {
+    this.message = message;
+  }
 }

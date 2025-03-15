@@ -1,11 +1,10 @@
 package com.halo.eventer.domain.member;
 
 
+import java.util.List;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor

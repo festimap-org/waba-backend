@@ -1,74 +1,95 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.7.16'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+    id 'org.springframework.boot' version '2.7.16'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'jacoco'
 }
 
 group = 'com.halo'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '11'
+    sourceCompatibility = '11'
 }
 
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        xml.required = true
+        xml.outputLocation = layout.buildDirectory.file("reports/jacoco/test/jacocoTestReport.xml")
+
+        html.required = true
+        html.outputLocation = layout.buildDirectory.dir("reports/jacoco/test/html")
+
+        csv.required = false
+    }
+}
+
+
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	//Swagger
-	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+    //Swagger
+    implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
-	//lombok
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    //lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	//mysql driver
-	runtimeOnly 'com.mysql:mysql-connector-j'
+    //db driver
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.h2database:h2'
 
-	//JWT
-	implementation "io.jsonwebtoken:jjwt-api:0.11.5"
-	runtimeOnly "io.jsonwebtoken:jjwt-impl:0.11.5"
-	runtimeOnly "io.jsonwebtoken:jjwt-jackson:0.11.5"
+    //JWT
+    implementation "io.jsonwebtoken:jjwt-api:0.11.5"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:0.11.5"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:0.11.5"
 
-	//Security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	testImplementation 'org.springframework.security:spring-security-test'
+    //Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
 
-	//httpClient
-	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    //httpClient
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
-	//aws-s3
-	implementation(platform("software.amazon.awssdk:bom:2.27.21"))
-	implementation("software.amazon.awssdk:s3")
+    //aws-s3
+    implementation(platform("software.amazon.awssdk:bom:2.27.21"))
+    implementation("software.amazon.awssdk:s3")
 
-	//io
-	implementation 'commons-io:commons-io:2.18.0'
+    //io
+    implementation 'commons-io:commons-io:2.18.0'
 
-	//ulid
-	implementation 'com.github.f4b6a3:ulid-creator:5.2.3'
+    //ulid
+    implementation 'com.github.f4b6a3:ulid-creator:5.2.3'
 
-	//actuator
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    //actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-	//prometheus-micrometer
-	implementation 'io.micrometer:micrometer-registry-prometheus'
+    //prometheus-micrometer
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('bootBuildImage') {
-	builder = 'paketobuildpacks/builder-jammy-base:latest'
+    builder = 'paketobuildpacks/builder-jammy-base:latest'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }

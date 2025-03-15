@@ -8,6 +8,6 @@ import lombok.*;
 @Getter
 @Builder
 public class FileUploadReqDto {
-    private String fileName;
-    private String fileBody;
+  private String fileName;
+  private String fileBody;
 }

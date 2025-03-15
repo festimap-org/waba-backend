@@ -1,11 +1,10 @@
 package com.halo.eventer.domain.manager.dto;
 
 import com.halo.eventer.domain.manager.Manager;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor

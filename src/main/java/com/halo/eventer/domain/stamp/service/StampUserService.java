@@ -5,15 +5,15 @@ import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
 import com.halo.eventer.domain.stamp.dto.stampUser.*;
+import com.halo.eventer.domain.stamp.exception.*;
 import com.halo.eventer.domain.stamp.repository.StampUserRepository;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,19 +23,19 @@ public class StampUserService {
     private final StampService stampService;
 
     private StampUser getStampUserFromUuid(String uuid) {
-        StampUser stampUser = stampUserRepository.findByUuid(uuid).orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
-        return stampUser;
+        return stampUserRepository.findByUuid(uuid).orElseThrow(() -> new StampUserNotFoundException(uuid));
     }
 
     /** 스탬프 유저 생성 */
     @Transactional
     public StampUserGetDto signup(Long stampId, SignupDto signupDto) {
         Stamp stamp = stampService.getStamp(stampId);
-        if (!stamp.isStampOn()) throw new BaseException("종료된 스탬프 투어입니다.", ErrorCode.ELEMENT_NOT_FOUND);
+        if (!stamp.isStampOn()) throw new StampClosedException(stampId);
 
         String encryptedPhone = encryptService.encryptInfo(signupDto.getPhone());
         String encryptedName = encryptService.encryptInfo(signupDto.getName());
-        if (stampUserRepository.existsByStampIdAndPhone(stampId, encryptedPhone)) throw new BaseException(ErrorCode.ELEMENT_DUPLICATED);
+        if (stampUserRepository.existsByStampIdAndPhone(stampId, encryptedPhone))
+            throw new StampUserAlreadyExistsException();
 
         // 사용자 생성
         StampUser stampUser = new StampUser(stampService.getStamp(stampId), encryptedPhone, encryptedName, signupDto.getParticipantCount());
@@ -69,8 +69,13 @@ public class StampUserService {
 
     /** 로그인 */
     public StampUserGetDto login(Long stampId, LoginDto loginDto) {
-        StampUser stampUser = stampUserRepository.findByStampIdAndPhoneAndName(stampId, encryptService.encryptInfo(loginDto.getPhone()), encryptService.encryptInfo(loginDto.getName()))
-                .orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+    StampUser stampUser =
+        stampUserRepository
+            .findByStampIdAndPhoneAndName(
+                stampId,
+                encryptService.encryptInfo(loginDto.getPhone()),
+                encryptService.encryptInfo(loginDto.getName()))
+            .orElseThrow(StampUserNotFoundException::new);
 
         return new StampUserGetDto(stampUser, getUserMission(stampUser.getUuid()));
     }
@@ -97,10 +102,11 @@ public class StampUserService {
     public String updateUserMission(String uuid, Long userMissionId) {
         StampUser stampUser = getStampUserFromUuid(uuid);
 
-        UserMission userMission = stampUser.getUserMissions().stream()
-                        .filter(mission -> mission.getId().equals(userMissionId))
-                        .findFirst()
-                        .orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
+    UserMission userMission =
+        stampUser.getUserMissions().stream()
+            .filter(mission -> mission.getId().equals(userMissionId))
+            .findFirst()
+            .orElseThrow(() -> new UserMissionNotFoundException(userMissionId));
 
         userMission.setComplete(true);
         stampUserRepository.save(stampUser);

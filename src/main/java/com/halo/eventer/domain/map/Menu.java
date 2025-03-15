@@ -3,10 +3,9 @@ package com.halo.eventer.domain.map;
 
 import com.halo.eventer.domain.map.dto.menu.MenuCreateDto;
 import com.halo.eventer.domain.map.dto.menu.MenuResDto;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor

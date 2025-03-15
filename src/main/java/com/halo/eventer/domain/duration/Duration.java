@@ -1,17 +1,16 @@
 package com.halo.eventer.domain.duration;
 
 
-import com.halo.eventer.domain.concert.Concert;
+
 import com.halo.eventer.domain.duration.dto.DurationCreateDto;
 import com.halo.eventer.domain.duration_map.DurationMap;
 import com.halo.eventer.domain.festival.Festival;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
@@ -31,9 +30,6 @@ public class Duration {
 
     @OneToMany(mappedBy = "duration",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<DurationMap> durationMaps = new ArrayList<>();
-
-    @OneToMany(mappedBy = "duration",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Concert> concerts = new ArrayList<>();
 
     public Duration(DurationCreateDto durationDto, Festival festival) {
         this.date = durationDto.getDate();
