@@ -15,10 +15,6 @@ import java.time.LocalDateTime;
 @DiscriminatorValue("UP")
 @Getter
 @NoArgsConstructor
-@Table(indexes = {
-                @Index(name = "idx_festival_period", columnList = "festival_id, period_start, period_end")
-        }
-)
 public class UpWidget extends BaseWidget {
 
     @Embedded
