@@ -1,12 +1,10 @@
 package com.halo.eventer.domain.festival.entity;
 
-
-import com.halo.eventer.domain.down_widget.DownWidget;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.*;
+import com.halo.eventer.domain.image.dto.FileDto;
 import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.domain.map.enumtype.MapCategoryType;
-import com.halo.eventer.global.common.ImageDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -51,16 +49,6 @@ public class FestivalTest {
     }
 
     @Test
-    void 하단위젯_3개추가(){
-        //when
-        festival.applyThreeDownWidgets();
-        List<DownWidget> downWidgets = festival.getDownWidgets();
-
-        //then
-        assertThat(downWidgets).hasSize(3);
-    }
-
-    @Test
     void 축제기본정보_수정(){
         //given
         FestivalCreateDto festivalCreateDto = new FestivalCreateDto("수정","edit");
@@ -91,52 +79,13 @@ public class FestivalTest {
     @Test
     void 로고_수정() {
         //given
-        ImageDto imageDto = new ImageDto("logo.png");
+        FileDto imageDto = new FileDto("logo.png");
 
         //when
         festival.updateLogo(imageDto);
 
         //then
-        assertThat(festival.getLogo()).isEqualTo(imageDto.getImage());
-    }
-
-    @Test
-    void 홈화면_메뉴_수정(){
-        //given
-        MainMenuDto mainMenuDto = new MainMenuDto("Menu1", "Menu2", "Summary1", "Summary2", "Image1.png", "Image2.png", "Url1", "Url2");
-
-        //when
-        festival.updateMainMenu(mainMenuDto);
-
-        //then
-        assertThat(festival).extracting("menuName1", "menuName2", "menuSummary1", "menuSummary2", "menuImage1", "menuImage2", "menuUrl1", "menuUrl2")
-                .containsExactly("Menu1", "Menu2", "Summary1", "Summary2", "Image1.png", "Image2.png", "Url1", "Url2");
-    }
-
-    @Test
-    void 입장정보_수정() {
-        //given
-        FestivalConcertMenuDto dto = new FestivalConcertMenuDto("Entry summary", "Entry icon.png");
-
-        //when
-        festival.updateEntry(dto);
-
-        //then
-        assertThat(festival.getEntrySummary()).isEqualTo(dto.getSummary());
-        assertThat(festival.getEntryIcon()).isEqualTo(dto.getIcon());
-    }
-
-    @Test
-    void 관람정보_수정(){
-        //given
-        FestivalConcertMenuDto dto = new FestivalConcertMenuDto("View summary", "View icon.png");
-
-        //when
-        festival.updateView(dto);
-
-        //then
-        assertThat(festival.getViewSummary()).isEqualTo(dto.getSummary());
-        assertThat(festival.getViewIcon()).isEqualTo(dto.getIcon());
+        assertThat(festival.getLogo()).isEqualTo(imageDto.getUrl());
     }
 
     @Test

@@ -24,8 +24,8 @@ public class HomeController {
 
     @HomeGetApi
     @GetMapping("/home/{festivalId}")
-    public HomeDto getManInfo(@PathVariable Long festivalId,
-                              @RequestParam("dateTime") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime dateTime) {
+    public HomeDto getHomeInfo(@PathVariable Long festivalId,
+                               @RequestParam("dateTime") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime dateTime) {
         return homeService.getMainPage(festivalId,dateTime);
     }
 
@@ -38,5 +38,4 @@ public class HomeController {
     @GetMapping("/")
     public void getOk(){
     }
-
 }

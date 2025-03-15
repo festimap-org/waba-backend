@@ -5,9 +5,11 @@ import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.festival.exception.FestivalAlreadyExistsException;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.global.common.ImageDto;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.halo.eventer.domain.image.dto.FileDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,6 @@ public class FestivalService {
     validateUniqueFestival(festivalCreateDto);
     Festival festival = Festival.from(festivalCreateDto);
     festival.applyDefaultMapCategory();
-    festival.applyThreeDownWidgets();
     festivalRepository.save(festival);
   }
 
@@ -59,47 +60,14 @@ public class FestivalService {
   }
 
   @Transactional
-  public void updateLogo(Long id, ImageDto imageDto) {
+  public void updateLogo(Long id, FileDto fileDto) {
     Festival festival = loadFestivalOrThrow(id);
-    festival.updateLogo(imageDto);
-  }
-
-  @Transactional
-  public void updateMainMenu(Long id, MainMenuDto mainMenuDto) {
-    Festival festival = loadFestivalOrThrow(id);
-    festival.updateMainMenu(mainMenuDto);
-  }
-
-  @Transactional
-  public void updateEntryInfo(Long id, FestivalConcertMenuDto festivalConcertMenuDto) {
-    Festival festival = loadFestivalOrThrow(id);
-    festival.updateEntry(festivalConcertMenuDto);
-  }
-
-  @Transactional
-  public void updateViewInfo(Long id, FestivalConcertMenuDto festivalConcertMenuDto) {
-    Festival festival = loadFestivalOrThrow(id);
-    festival.updateView(festivalConcertMenuDto);
-  }
-
-  public FestivalConcertMenuDto getEntryInfo(Long id) {
-    Festival festival = loadFestivalOrThrow(id);
-    return FestivalConcertMenuDto.from(festival);
-  }
-
-  public FestivalConcertMenuDto getViewInfo(Long id) {
-    Festival festival = loadFestivalOrThrow(id);
-    return FestivalConcertMenuDto.from(festival);
+    festival.updateLogo(fileDto);
   }
 
   public FestivalListDto findBySubAddress(String subAddress) {
     return new FestivalListDto(festivalRepository.findBySubAddress(subAddress)
             .orElseThrow(() -> new FestivalNotFoundException(subAddress)));
-  }
-
-  public MainMenuDto getMainMenu(Long id) {
-    Festival festival = loadFestivalOrThrow(id);
-    return MainMenuDto.from(festival);
   }
 
   @Transactional

@@ -3,18 +3,22 @@ package com.halo.eventer.domain.notice.service;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.festival.service.FestivalService;
-import com.halo.eventer.domain.image.Image;
 import com.halo.eventer.domain.image.ImageRepository;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.notice.dto.*;
 import com.halo.eventer.domain.notice.exception.NoticeNotFoundException;
 import com.halo.eventer.domain.notice.repository.NoticeRepository;
+import com.halo.eventer.global.common.PagedResponse;
 import com.halo.eventer.global.common.ArticleType;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.halo.eventer.global.common.PageInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,90 +28,96 @@ public class NoticeService {
 
   private final NoticeRepository noticeRepository;
   private final ImageRepository imageRepository;
-
   private final FestivalRepository festivalRepository;
 
-  /** 공지사항 등록 */
   @Transactional
-  public String registerNotice(NoticeRegisterDto NoticeRegisterDto, Long festivalId) {
-    Festival festival = festivalRepository.findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
-    Notice notice = new Notice(NoticeRegisterDto);
-    notice.setFestival(festival);
-    notice.setImages(
-        NoticeRegisterDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
-    noticeRepository.save(notice);
-    return "저장 완료";
+  public NoticeResDto create(Long festivalId, NoticeCreateDto noticeCreateDto) {
+    Festival festival = festivalRepository.findById(festivalId)
+            .orElseThrow(() -> new FestivalNotFoundException(festivalId));
+
+    Notice notice = Notice.from(festival,noticeCreateDto);
+    notice.addImages(noticeCreateDto.getImages());
+
+    Notice savedNotice = noticeRepository.save(notice);
+    return NoticeResDto.from(savedNotice);
   }
 
-  /** 공지사항 타입별로 조회 */
-  @Transactional
-  public NoticeInquireListDto inquireNoticeList(Long festivalId, ArticleType type) {
-    Festival festival = festivalRepository.findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
-    List<Notice> notices = noticeRepository.findAllByFestivalAndType(festival, type);
-
-    return new NoticeInquireListDto(
-        notices.stream().map(NoticeInquireDto::new).collect(Collectors.toList()));
+  @Transactional(readOnly = true)
+  public NoticeResDto getNoticeById(Long id) {
+    Notice notice = loadNoticeOrThrow(id);
+    return NoticeResDto.from(notice);
   }
 
-  /** 단일 공지사항 / 이벤트 조회하기 */
+  @Transactional(readOnly = true)
+  public PagedResponse<NoticeSummaryDto> getNoticesByType(Long festivalId, ArticleType type, int page, int size) {
+    PageRequest pageRequest = PageRequest.of(page,size);
+    Page<Notice> noticePage = noticeRepository
+            .findAllByTypeAndFestivalIdOrderByUpdatedAtDesc(type,festivalId,pageRequest);
+
+    return convertToPagedResponse(noticePage);
+  }
+
   @Transactional
-  public Notice getNotice(Long id) {
+  public NoticeResDto updatePicked(Long noticeId, Boolean pick) {
+    Notice notice = loadNoticeOrThrow(noticeId);
+    notice.updatePicked(pick);
+    return NoticeResDto.from(notice);
+  }
+
+  @Transactional
+  public NoticeResDto updateNotice(Long noticeId, NoticeUpdateDto noticeUpdateDto) {
+    Notice notice = loadNoticeOrThrow(noticeId);
+
+    imageRepository.deleteByIdIn(noticeUpdateDto.getDeleteIds());
+    notice.updateNotice(noticeUpdateDto);
+    notice.addImages(noticeUpdateDto.getImages());
+    return NoticeResDto.from(notice);
+  }
+
+  @Transactional
+  public void delete(Long id) {
+    noticeRepository.deleteById(id);
+  }
+
+  public List<PickedNoticeResDto> getPickedNotice(Long festivalId) {
+    return noticeRepository.findAllByPickedAndFestivalId(festivalId,true).stream()
+            .map(PickedNoticeResDto::new)
+            .collect(Collectors.toList());
+  }
+
+  @Transactional
+  public List<PickedNoticeResDto> updateDisplayOrder(List<PickedNoticeUpdateDto> noticeDtos) {
+    Map<Long, Integer> noticeIdToRankMap = noticeDtos.stream().collect(
+            Collectors.toMap(PickedNoticeUpdateDto::getId, PickedNoticeUpdateDto::getDisplayOrder));
+
+    List<Notice> notices = noticeRepository.findAllById(noticeIdToRankMap.keySet());
+
+    notices.forEach(notice -> {
+      Integer rank = noticeIdToRankMap.get(notice.getId());
+      notice.setRank(rank);
+    });
+    return PickedNoticeResDto.noticesToPikedNoticeResDtos(notices);
+  }
+
+  private Notice loadNoticeOrThrow(Long id) {
     return noticeRepository.findById(id).orElseThrow(() -> new NoticeNotFoundException(id));
   }
 
-  /** 배너 등록, 해제 */
-  @Transactional
-  public String changeBanner(Long noticeId, Boolean pick) {
-    Notice notice = getNotice(noticeId);
-    notice.setPicked(pick);
-    return "반영 완료";
-  }
+  private PagedResponse<NoticeSummaryDto> convertToPagedResponse(Page<Notice> noticePage) {
+    List<NoticeSummaryDto> dtos = noticePage.getContent().stream()
+            .map(NoticeSummaryDto::from)
+            .collect(Collectors.toList());
 
-  /** 공지사항 수정 */
-  @Transactional
-  public String updateNotice(Long noticeId, NoticeRegisterDto NoticeRegisterDto) {
-    Notice notice = getNotice(noticeId);
+    PageInfo pageInfo = PageInfo.builder()
+            .pageNumber(noticePage.getNumber())
+            .pageSize(noticePage.getSize())
+            .totalElements(noticePage.getTotalElements())
+            .totalPages(noticePage.getTotalPages())
+            .build();
 
-    imageRepository.deleteByIdIn(NoticeRegisterDto.getDeleteIds());
-    notice.setAll(NoticeRegisterDto);
-    notice.setImages(
-        NoticeRegisterDto.getImages().stream().map(Image::new).collect(Collectors.toList()));
-    return "수정완료";
-  }
-
-  /** 공지사항 삭제 */
-  @Transactional
-  public String deleteNotice(Long noticeId) {
-    Notice notice = getNotice(noticeId);
-    noticeRepository.delete(notice);
-    return "삭제완료";
-  }
-
-  /** 등록된 배너 전체 조회 */
-  public RegisteredBannerGetListDto getRegisteredBanner(Long festivalId) {
-    return new RegisteredBannerGetListDto(
-        noticeRepository.findAllByPickedAndFestival_Id(true, festivalId).stream()
-            .map(RegisteredBannerGetDto::new)
-            .collect(Collectors.toList()));
-  }
-
-  /** 배너 순서 등록 */
-  @Transactional
-  public String editBannerRank(BannerEditListDto bannerEditListDto) {
-    List<Notice> notices =
-        noticeRepository.findAllById(
-            bannerEditListDto.getBannerEditListDto().stream()
-                .map(BannerEditDto::getNoticeId)
-                .collect(Collectors.toList()));
-
-    for (Notice notice : notices) {
-      for (BannerEditDto b : bannerEditListDto.getBannerEditListDto()) {
-        if (b.getNoticeId() == notice.getId()) {
-          notice.setRank(b.getRank());
-          break;
-        }
-      }
-    }
-    return "수정완료";
+    return PagedResponse.<NoticeSummaryDto>builder()
+            .content(dtos)
+            .pageInfo(pageInfo)
+            .build();
   }
 }

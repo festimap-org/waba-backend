@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.member.Member;
-import com.halo.eventer.global.common.ImageDto;
 import com.halo.eventer.global.config.TestSecurityBeans;
 import com.halo.eventer.global.config.security.SecurityConfig;
 import com.halo.eventer.global.security.CustomUserDetails;
@@ -61,7 +60,6 @@ public class FestivalControllerTest {
     private FestivalCreateDto festivalCreateDto;
     private FestivalResDto festivalResDto;
     private ColorDto colorDto;
-    private FestivalConcertMenuDto festivalConcertMenuDto;
 
     @BeforeEach
     void setAll(){
@@ -69,7 +67,6 @@ public class FestivalControllerTest {
         festivalCreateDto =  new FestivalCreateDto("축제","univ");
         festivalResDto = new FestivalResDto(1L,"축제","logo",colorDto,
                 127.123456,123.123456);
-        festivalConcertMenuDto = new FestivalConcertMenuDto("요약","icon");
     }
     @Nested
     class 어드민_테스트{
@@ -79,7 +76,6 @@ public class FestivalControllerTest {
             festivalCreateDto =  new FestivalCreateDto("축제","univ");
             festivalResDto = new FestivalResDto(1L,"축제","logo",colorDto,
                     127.123456,123.123456);
-            festivalConcertMenuDto = new FestivalConcertMenuDto("요약","icon");
             CustomUserDetails customUserDetails = new CustomUserDetails(new Member("admin", "1234"));
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                     customUserDetails, null,
@@ -137,56 +133,6 @@ public class FestivalControllerTest {
             mockMvc.perform(post("/festival/{festivalId}/color", 1L)
                             .header("Authorization", ADMIN_TOKEN)
                             .content(objectMapper.writeValueAsString(festivalCreateDto))
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk());
-        }
-
-        @Test
-        void ADMIN_로고수정()throws Exception{
-            ImageDto imageDto = new ImageDto();
-            doNothing().when(festivalService).updateLogo(1L,imageDto);
-
-            // when & then
-            mockMvc.perform(post("/festival/{festivalId}/logo", 1L)
-                            .header("Authorization", ADMIN_TOKEN)
-                            .content(objectMapper.writeValueAsString(imageDto))
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk());
-        }
-
-        @Test
-        void ADMIN_메인메뉴_수정()throws Exception{
-            MainMenuDto mainMenuDto = new MainMenuDto();
-            doNothing().when(festivalService).updateMainMenu(1L,mainMenuDto);
-
-            // when & then
-            mockMvc.perform(post("/festival/{festivalId}/main-menu", 1L)
-                            .header("Authorization", ADMIN_TOKEN)
-                            .content(objectMapper.writeValueAsString(mainMenuDto))
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk());
-        }
-
-        @Test
-        void ADMIN_입장방법_수정()throws Exception{
-            doNothing().when(festivalService).updateEntryInfo(1L,festivalConcertMenuDto);
-
-            // when & then
-            mockMvc.perform(post("/festival/{festivalId}/entry", 1L)
-                            .header("Authorization", ADMIN_TOKEN)
-                            .content(objectMapper.writeValueAsString(festivalConcertMenuDto))
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk());
-        }
-
-        @Test
-        void ADMIN_관람방법_수정()throws Exception{
-            doNothing().when(festivalService).updateEntryInfo(1L,festivalConcertMenuDto);
-
-            // when & then
-            mockMvc.perform(post("/festival/{festivalId}/view", 1L)
-                            .header("Authorization", ADMIN_TOKEN)
-                            .content(objectMapper.writeValueAsString(festivalConcertMenuDto))
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
         }
@@ -256,41 +202,6 @@ public class FestivalControllerTest {
         }
 
         @Test
-        void 토큰없는유저_로고수정_실패()throws Exception{
-            ImageDto imageDto = new ImageDto();
-            doNothing().when(festivalService).updateLogo(1L,imageDto);
-
-            // when & then
-            mockMvc.perform(post("/festival/{festivalId}/logo", 1L)
-                            .content(objectMapper.writeValueAsString(imageDto))
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isUnauthorized());
-        }
-
-        @Test
-        void 토큰없는유저_메인메뉴_수정_실패()throws Exception{
-            MainMenuDto mainMenuDto = new MainMenuDto();
-            doNothing().when(festivalService).updateMainMenu(1L,mainMenuDto);
-
-            // when & then
-            mockMvc.perform(post("/festival/{festivalId}/main-menu", 1L)
-                            .content(objectMapper.writeValueAsString(mainMenuDto))
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isUnauthorized());
-        }
-
-        @Test
-        void 토큰없는유저_입장방법_수정_실패()throws Exception{
-            doNothing().when(festivalService).updateEntryInfo(1L,festivalConcertMenuDto);
-
-            // when & then
-            mockMvc.perform(post("/festival/{festivalId}/main-menu", 1L)
-                            .content(objectMapper.writeValueAsString(festivalConcertMenuDto))
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isUnauthorized());
-        }
-
-        @Test
         void 토큰없는유저_위치정보_수정_실패()throws Exception{
             //given
             FestivalLocationDto festivalLocationDto = new FestivalLocationDto();
@@ -334,43 +245,6 @@ public class FestivalControllerTest {
                     .andExpect(jsonPath("$[0].subAddress").value(festivalListDto.getSubAddress()))
                     .andExpect(jsonPath("$[0].latitude").value(festivalListDto.getLatitude()))
                     .andExpect(jsonPath("$[0].longitude").value(festivalListDto.getLongitude()));
-        }
-
-        @Test
-        void 메인메뉴정보_조회()throws Exception{
-            //given
-            MainMenuDto mainMenuDto = new MainMenuDto();
-            given(festivalService.getMainMenu(1L)).willReturn(mainMenuDto);
-
-            //then
-            mockMvc.perform(get("/festival/{festivalId}/main-menu",1L)
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(objectMapper.writeValueAsString(mainMenuDto)));
-        }
-
-        @Test
-        void 입장정보_조회()throws Exception{
-            //given
-            given(festivalService.getEntryInfo(1L)).willReturn(festivalConcertMenuDto);
-
-            //then
-            mockMvc.perform(get("/festival/{festivalId}/entry",1L)
-                    .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(objectMapper.writeValueAsString(festivalConcertMenuDto)));
-        }
-
-        @Test
-        void 관람정보_조회()throws Exception{
-            //given
-            given(festivalService.getViewInfo(1L)).willReturn(festivalConcertMenuDto);
-
-            //then
-            mockMvc.perform(get("/festival/{festivalId}/view",1L)
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(objectMapper.writeValueAsString(festivalConcertMenuDto)));
         }
     }
 }

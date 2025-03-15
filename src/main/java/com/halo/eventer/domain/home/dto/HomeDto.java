@@ -1,16 +1,18 @@
 package com.halo.eventer.domain.home.dto;
 
-import com.halo.eventer.domain.down_widget.dto.DownWidgetDto;
+import com.halo.eventer.domain.widget.BaseWidget;
+import com.halo.eventer.domain.widget.dto.down_widget.DownWidgetResDto;
 import com.halo.eventer.domain.festival.Festival;
-import com.halo.eventer.domain.festival.dto.MainMenuDto;
-import com.halo.eventer.domain.middle_banner.dto.MiddleBannerHomeResDto;
 import com.halo.eventer.domain.missing_person.MissingPerson;
 import com.halo.eventer.domain.missing_person.dto.MissingPersonPopupDto;
-import com.halo.eventer.domain.notice.dto.RegisteredBannerGetDto;
-import com.halo.eventer.domain.up_widget.UpWidget;
-import com.halo.eventer.domain.up_widget.dto.UpWidgetGetDto;
-import com.halo.eventer.domain.widget.dto.WidgetDto;
+import com.halo.eventer.domain.widget.dto.main_widget.MainWidgetResDto;
+import com.halo.eventer.domain.widget.dto.middle_widget.MiddleWidgetResDto;
+import com.halo.eventer.domain.widget.dto.square_widget.SquareWidgetResDto;
+import com.halo.eventer.domain.widget.dto.up_widget.UpWidgetResDto;
+import com.halo.eventer.domain.widget.entity.*;
+import com.halo.eventer.domain.notice.dto.PickedNoticeResDto;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,22 +20,30 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class HomeDto {
-    // todo: List<RegisteredBannerGetDto> -> RegisteredBannerGetListDto
-    private List<UpWidgetGetDto> upWidgets;
-    private List<RegisteredBannerGetDto> banner;
-    private MainMenuDto mainMenuDto;
-    private List<WidgetDto> widgetDto;
-    private List<DownWidgetDto> downWidgetDtos;
+    private List<UpWidgetResDto> upWidgets;
+    private List<PickedNoticeResDto> banner;
+    private List<MainWidgetResDto> mainWidgets;
+    private List<MiddleWidgetResDto> middleBannerDtos;
+    private List<SquareWidgetResDto> squareWidgets;
+    private List<DownWidgetResDto> downWidgets;
     private List<MissingPersonPopupDto> missingPersonDtos;
-    private List<MiddleBannerHomeResDto> middleBannerDtos;
 
-    public HomeDto(List<RegisteredBannerGetDto> banner, Festival festival, List<UpWidget> upWidgets, List<MissingPerson> missingPersons) {
-        this.upWidgets =upWidgets.stream().map(UpWidgetGetDto::new).collect(Collectors.toList());
+
+    public HomeDto(List<PickedNoticeResDto> banner, Festival festival,List<UpWidgetResDto> upWidgets, List<MissingPerson> missingPersons) {
+        this.upWidgets = upWidgets;
         this.banner = banner;
-        this.mainMenuDto = MainMenuDto.from(festival);
-        this.widgetDto = festival.getWidgets().stream().map(WidgetDto::new).collect(Collectors.toList());
-        this.downWidgetDtos = festival.getDownWidgets().stream().map(DownWidgetDto::new).collect(Collectors.toList());
+        this.mainWidgets = filterWidgets(festival.getBaseWidgets(), MainWidget.class, MainWidgetResDto::from);
+        this.middleBannerDtos = filterWidgets(festival.getBaseWidgets(), MiddleWidget.class, MiddleWidgetResDto::from);
+        this.squareWidgets = filterWidgets(festival.getBaseWidgets(), SquareWidget.class, SquareWidgetResDto::from);
+        this.downWidgets = filterWidgets(festival.getBaseWidgets(), DownWidget.class, DownWidgetResDto::from);
         this.missingPersonDtos = missingPersons.stream().map(MissingPersonPopupDto::new).collect(Collectors.toList());
-        this.middleBannerDtos = festival.getMiddleBanners().stream().map(MiddleBannerHomeResDto::new).collect(Collectors.toList());
+    }
+
+    private <E extends BaseWidget, D> List<D> filterWidgets(List<BaseWidget> widgets, Class<E> type, Function<E, D> mapper) {
+        return widgets.stream()
+                .filter(type::isInstance)
+                .map(type::cast)
+                .map(mapper)
+                .collect(Collectors.toList());
     }
 }
