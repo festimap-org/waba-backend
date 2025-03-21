@@ -49,10 +49,11 @@ public class JwtProvider {
         Claims claims = Jwts.claims().setSubject(account);
         claims.put("roles", roles);
         Date now = new Date();
+        long expireTimeMs = 12L * 60 * 60 * 1000;
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() +  3600000)) //만료기간
+                .setExpiration(new Date(now.getTime() +  expireTimeMs))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
