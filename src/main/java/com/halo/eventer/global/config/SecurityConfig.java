@@ -107,7 +107,10 @@ public class SecurityConfig {
                 "https://adelante.wabauniv.com",
                 "http://m.localhost:3000",
                 "https://firefestivaljeju.com",
-                "https://m.firefestivaljeju.com")
+                "https://m.firefestivaljeju.com",
+                "https://cherryblossom.festimap.kr",
+                "https://www.djdrone.kr",
+                "https://djdrone.kr")
         );
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
