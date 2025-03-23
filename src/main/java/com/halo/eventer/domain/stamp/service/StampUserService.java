@@ -6,6 +6,7 @@ import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
 import com.halo.eventer.domain.stamp.dto.stampUser.*;
 import com.halo.eventer.domain.stamp.exception.*;
+import com.halo.eventer.domain.stamp.repository.StampRepository;
 import com.halo.eventer.domain.stamp.repository.StampUserRepository;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -20,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class StampUserService {
     private final StampUserRepository stampUserRepository;
     private final EncryptService encryptService;
-    private final StampService stampService;
+    private final StampRepository stampRepository;
 
     private StampUser getStampUserFromUuid(String uuid) {
         return stampUserRepository.findByUuid(uuid).orElseThrow(() -> new StampUserNotFoundException(uuid));
@@ -29,7 +30,7 @@ public class StampUserService {
     /** 스탬프 유저 생성 */
     @Transactional
     public StampUserGetDto signup(Long stampId, SignupDto signupDto) {
-        Stamp stamp = stampService.getStamp(stampId);
+        Stamp stamp = loadStampOrThrow(stampId);
         if (!stamp.isStampOn()) throw new StampClosedException(stampId);
 
         String encryptedPhone = encryptService.encryptInfo(signupDto.getPhone());
@@ -38,7 +39,7 @@ public class StampUserService {
             throw new StampUserAlreadyExistsException();
 
         // 사용자 생성
-        StampUser stampUser = new StampUser(stampService.getStamp(stampId), encryptedPhone, encryptedName, signupDto.getParticipantCount());
+        StampUser stampUser = new StampUser(loadStampOrThrow(stampId), encryptedPhone, encryptedName, signupDto.getParticipantCount());
 
         // 미션 생성 후 연결
         List<UserMission> userMissions = stamp.getMissions().stream()
@@ -145,5 +146,10 @@ public class StampUserService {
         StampUser stampUser = getStampUserFromUuid(uuid);
         stampUserRepository.delete(stampUser);
         return "삭제 완료";
+    }
+
+    private Stamp loadStampOrThrow(Long stampId) {
+        return stampRepository.findById(stampId)
+                .orElseThrow(() -> new StampNotFoundException(stampId));
     }
 }
