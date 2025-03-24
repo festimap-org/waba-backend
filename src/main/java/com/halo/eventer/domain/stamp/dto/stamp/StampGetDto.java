@@ -17,7 +17,7 @@ public class StampGetDto {
     private boolean stampOn;
     private Integer stampFinishCnt;
 
-    public static List<StampGetDto> fromStampList(List<Stamp> stampList) {
+    public static List<StampGetDto> fromEntities(List<Stamp> stampList) {
         return stampList.stream()
                 .map(StampGetDto::from)
                 .collect(Collectors.toList());

@@ -3,38 +3,47 @@ package com.halo.eventer.domain.stamp.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.FestivalCreateDto;
+import com.halo.eventer.domain.member.Member;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.dto.stamp.*;
 import com.halo.eventer.domain.stamp.service.StampService;
+import com.halo.eventer.global.config.TestSecurityBeans;
+import com.halo.eventer.global.config.security.SecurityConfig;
 import com.halo.eventer.global.error.GlobalExceptionHandler;
+import com.halo.eventer.global.security.CustomUserDetails;
+import com.halo.eventer.global.security.provider.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = StampController.class)
-@AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
+@AutoConfigureMockMvc
+@SuppressWarnings("NonAsciiCharacters")
+@ActiveProfiles("test")
+@Import({TestSecurityBeans.class, SecurityConfig.class})
 public class StampControllerTest {
 
     @Autowired
@@ -43,17 +52,25 @@ public class StampControllerTest {
     @MockBean
     private StampService stampService;
 
+    @MockBean
+    private JwtProvider jwtProvider;
+
     private Stamp stamp;
+
+    private final String ADMIN_TOKEN = "Bearer admin-token";
 
     @BeforeEach
     void setUp() {
         stamp = Stamp.create(Festival.from(
                 new FestivalCreateDto("test festival","test")
         ));
-        this.mockMvc = MockMvcBuilders
-                .standaloneSetup(new StampController(stampService))
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
+        CustomUserDetails customUserDetails = new CustomUserDetails(new Member("admin", "1234"));
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                customUserDetails,
+                null,
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN"))
+        );
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
     @Test
@@ -79,6 +96,7 @@ public class StampControllerTest {
     @Test
     void 스탬프_상태변경_성공() throws Exception {
         mockMvc.perform(patch("/stamp")
+                        .header("Authorization", ADMIN_TOKEN)
                         .param("stampId", "1"))
                 .andExpect(status().isOk());
         then(stampService).should().updateStampOn(1L);
@@ -87,6 +105,7 @@ public class StampControllerTest {
     @Test
     void 스탬프_삭제_성공() throws Exception {
         mockMvc.perform(delete("/stamp")
+                        .header("Authorization", ADMIN_TOKEN)
                         .param("stampId", "1"))
                 .andExpect(status().isOk());
         then(stampService).should().deleteStamp(1L);
@@ -96,6 +115,7 @@ public class StampControllerTest {
     void 미션_생성_성공() throws Exception {
         MissionSetListDto dto = new MissionSetListDto();
         mockMvc.perform(post("/stamp/mission")
+                        .header("Authorization", ADMIN_TOKEN)
                         .param("stampId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(dto)))
@@ -126,6 +146,7 @@ public class StampControllerTest {
     @Test
     void 완료_기준_설정_성공() throws Exception {
         mockMvc.perform(post("/stamp/finishCnt")
+                        .header("Authorization", ADMIN_TOKEN)
                         .param("stampId", "1")
                         .param("cnt", "3"))
                 .andExpect(status().isOk());

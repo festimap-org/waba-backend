@@ -19,7 +19,7 @@ public class StampUsersGetDto {
   private boolean finished;
   private int participantCount;
 
-  public static List<StampUsersGetDto> fromList(List<StampUser> stampUsers){
+  public static List<StampUsersGetDto> fromEntities(List<StampUser> stampUsers){
     return stampUsers.stream()
             .map(StampUsersGetDto::from)
             .collect(Collectors.toList());

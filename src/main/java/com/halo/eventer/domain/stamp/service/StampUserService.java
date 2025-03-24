@@ -8,10 +8,11 @@ import com.halo.eventer.domain.stamp.dto.stampUser.*;
 import com.halo.eventer.domain.stamp.exception.*;
 import com.halo.eventer.domain.stamp.repository.StampRepository;
 import com.halo.eventer.domain.stamp.repository.StampUserRepository;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.halo.eventer.global.utils.EncryptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

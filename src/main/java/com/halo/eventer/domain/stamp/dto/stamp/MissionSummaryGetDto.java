@@ -17,7 +17,7 @@ public class MissionSummaryGetDto {
   private String clearedThumbnail;
   private String notClearedThumbnail;
 
-  public static List<MissionSummaryGetDto> fromMissionList(List<Mission> missions){
+  public static List<MissionSummaryGetDto> fromEntities(List<Mission> missions){
     return missions.stream()
             .map(MissionSummaryGetDto::from)
             .collect(Collectors.toList());

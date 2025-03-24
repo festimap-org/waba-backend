@@ -1,15 +1,15 @@
-package com.halo.eventer.domain.stamp.service;
+package com.halo.eventer.global.utils;
 
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class EncryptService {
   private final AesBytesEncryptor aesBytesEncryptor;

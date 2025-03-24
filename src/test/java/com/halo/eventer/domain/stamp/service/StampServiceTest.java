@@ -12,6 +12,7 @@ import com.halo.eventer.domain.stamp.exception.StampClosedException;
 import com.halo.eventer.domain.stamp.exception.StampNotFoundException;
 import com.halo.eventer.domain.stamp.repository.MissionRepository;
 import com.halo.eventer.domain.stamp.repository.StampRepository;
+import com.halo.eventer.global.utils.EncryptService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

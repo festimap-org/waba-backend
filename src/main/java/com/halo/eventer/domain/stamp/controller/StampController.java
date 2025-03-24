@@ -17,34 +17,30 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/stamp")
 public class StampController {
+
   private final StampService stampService;
 
-  /** 축제 id로 스탬프 생성 */
   @PostMapping
   public List<StampGetDto> registerStamp(@RequestParam("festivalId") Long festivalId) {
     return stampService.registerStamp(festivalId);
   }
 
-  /** 축제 id로 스탬프 조회 */
   @GetMapping
   public List<StampGetDto> getStampList(@RequestParam("festivalId") Long festivalId) {
     return stampService.getStampByFestivalId(festivalId);
   }
 
-  /** 스탬프 상태 변경 */
   @StampOnUpdateApi
   @PatchMapping
   public void updateStampOn(@RequestParam("stampId") Long stampId) {
     stampService.updateStampOn(stampId);
   }
 
-  /** 스탬프 삭제 */
   @DeleteMapping
   public void deleteStamp(@RequestParam("stampId") Long stampId) {
     stampService.deleteStamp(stampId);
   }
 
-  /** 미션 생성 */
   @MissionListSetApi
   @PostMapping("/mission")
   public void setMissionList(
@@ -52,14 +48,12 @@ public class StampController {
     stampService.createMission(stampId, dto);
   }
 
-  /** 미션 리스트 조회 */
   @MissionListGetApi
   @GetMapping("/missions")
   public List<MissionSummaryGetDto> getMissionList(@RequestParam("stampId") Long stampId) {
     return stampService.getMissions(stampId);
   }
 
-  /** 해당 스탬프 유저들 조회 */
   @StampUsersListGetApi
   @GetMapping("/users")
   public List<StampUsersGetDto> getStampUsers(@RequestParam("stampId") Long stampId) {
