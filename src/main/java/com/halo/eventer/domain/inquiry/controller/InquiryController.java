@@ -8,12 +8,10 @@ import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/inquiry")
-public class inquiryController {
+public class InquiryController {
 
     private final InquiryService inquiryService;
 
