@@ -1,8 +1,6 @@
 name: Codacy Analysis
 
 on:
-  push:
-    branches: [ "develop" ]
   pull_request:
     branches: [ "develop" ]
     
@@ -87,9 +85,11 @@ jobs:
             - **실행 시간:** ${testDuration}
             - 🔍 **커버리지 리포트:** \`build/reports/jacoco/test/index.html\`
             - 📦 **커밋 SHA:** \`${{ github.sha }}\``;
+
+            const issueNumber = context.issue.number || context.payload.pull_request?.number;
       
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
+              issue_number: issueNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: message
