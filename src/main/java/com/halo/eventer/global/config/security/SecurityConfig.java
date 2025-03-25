@@ -18,13 +18,16 @@ public class SecurityConfig {
   private final CorsConfigurationSource corsConfig;
   private final AuthorizationConfig authorizationConfig;
   private final JwtAuthenticationFilterConfig jwtAuthenticationFilterConfig;
+  private final SecurityExceptionFilterConfig securityExceptionFilterConfig;
 
   public SecurityConfig(@Qualifier("customCorsConfigurationSource")CorsConfigurationSource corsConfig,
                         AuthorizationConfig authorizationConfig,
-                        JwtAuthenticationFilterConfig jwtAuthenticationFilterConfig) {
+                        JwtAuthenticationFilterConfig jwtAuthenticationFilterConfig,
+                        SecurityExceptionFilterConfig securityExceptionFilterConfig) {
     this.corsConfig = corsConfig;
     this.authorizationConfig = authorizationConfig;
     this.jwtAuthenticationFilterConfig = jwtAuthenticationFilterConfig;
+    this.securityExceptionFilterConfig = securityExceptionFilterConfig;
   }
 
   @Bean
@@ -38,6 +41,7 @@ public class SecurityConfig {
 
     authorizationConfig.configure(http);
     jwtAuthenticationFilterConfig.configure(http);
+    securityExceptionFilterConfig.configure(http);
 
     http.exceptionHandling()
             .accessDeniedHandler(new CustomAccessDeniedHandler())

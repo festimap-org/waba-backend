@@ -4,6 +4,7 @@ package com.halo.eventer.global.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.member.Member;
 import com.halo.eventer.global.config.security.*;
+import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.TestController;
 import com.halo.eventer.global.error.TestDto;
 import com.halo.eventer.global.security.provider.JwtProvider;
@@ -90,7 +91,10 @@ public class SecurityConfigTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(testDto)))
                     .andExpect(status().is(401))
-                    .andExpect(content().string("인증되지 않은 사용자입니다."));
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.code").value(ErrorCode.UN_AUTHENTICATED.getCode()))
+                    .andExpect(jsonPath("$.message").value(ErrorCode.UN_AUTHENTICATED.getMessage()))
+                    .andExpect(jsonPath("$.status").value(ErrorCode.UN_AUTHENTICATED.getStatus()));
         }
 
         @Test
@@ -109,7 +113,10 @@ public class SecurityConfigTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(testDto)))
                     .andExpect(status().is(403))
-                    .andExpect(content().string("권한이 없는 사용자입니다."));;
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.code").value(ErrorCode.UN_AUTHORIZED.getCode()))
+                    .andExpect(jsonPath("$.message").value(ErrorCode.UN_AUTHORIZED.getMessage()))
+                    .andExpect(jsonPath("$.status").value(ErrorCode.UN_AUTHORIZED.getStatus()));
         }
     }
 }
