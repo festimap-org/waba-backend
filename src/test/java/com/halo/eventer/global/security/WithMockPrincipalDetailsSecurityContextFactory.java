@@ -12,10 +12,10 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class WithMockPrincipalDetailsSecurityContextFactory
-        implements WithSecurityContextFactory<WithMockPrincipalDetails> {
+        implements WithSecurityContextFactory<WithMockCustomUserDetails> {
 
     @Override
-    public SecurityContext createSecurityContext(WithMockPrincipalDetails annotation) {
+    public SecurityContext createSecurityContext(WithMockCustomUserDetails annotation) {
 
         CustomUserDetails customUserDetails = Mockito.mock(CustomUserDetails.class);
         Member member = Mockito.mock(Member.class);
