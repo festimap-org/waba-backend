@@ -29,7 +29,7 @@ public class SmsService {
                 "성별 : %s\n" +
                 "실종 위치 : %s\n\n" +
                 "자세한 실종자 정보는 링크 확인\n" +
-                "https://m.jejulhfestival.kr";
+                "https://djdrone.kr/";
         List<FileDto> fileDtos = new ArrayList<>();
         if(dto.getBase64Image() != null){
             FileUploadResDto fileUploadResDto = smsRequest.sendFileUpload("thumbnail1.jpeg",dto.getBase64Image());
