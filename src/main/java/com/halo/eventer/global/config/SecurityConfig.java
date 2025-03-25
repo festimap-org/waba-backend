@@ -60,7 +60,7 @@ public class SecurityConfig {
                 .antMatchers("/", "/swagger-ui/**", "/v3/**","/swagger-ui.html").permitAll()
 
                 .antMatchers(HttpMethod.POST, "/widget/*","/vote", "/api/upWidgets",
-                        "/stamp","/stamp/mission","/splash","/notice","/notice/banner","/missingPerson","/middleBanner","/map","/mapCategory/*","/menu",
+                        "/stamp","/stamp/mission","/splash","/notice","/notice/banner","/middleBanner","/map","/mapCategory/*","/menu",
                         "/manager","/lostItem","/inquiry/forAdmin/*",
                         "/festival","/festival/*/color","/festival/*/logo","/festival/*/main-menu","/festival/*/entry","/festival/*/view","/festival/*/location",
                         "/duration/*","/api/downWidget","/concertInfo/*/name","/concert").hasRole("ADMIN")
