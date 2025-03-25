@@ -10,11 +10,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 
 @TestConfiguration
-public class TestSecurityBeans {
+public class ControllerTestSecurityBeans {
 
     // 테스트 전용 CorsConfigurationSource 빈 생성
     @Bean
