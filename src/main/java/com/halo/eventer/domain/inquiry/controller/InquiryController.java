@@ -1,7 +1,5 @@
 package com.halo.eventer.domain.inquiry.controller;
 
-
-
 import com.halo.eventer.domain.inquiry.dto.*;
 import com.halo.eventer.domain.inquiry.service.InquiryService;
 import javax.validation.constraints.Min;
@@ -17,7 +15,7 @@ public class InquiryController {
 
     @PostMapping
     public void create(@RequestParam("festivalId") Long festivalId ,
-                                @RequestBody InquiryCreateReqDto inquiryCreateReqDto){
+                       @RequestBody InquiryCreateReqDto inquiryCreateReqDto){
         inquiryService.create(festivalId,inquiryCreateReqDto);
     }
 
@@ -29,13 +27,13 @@ public class InquiryController {
 
     @GetMapping("/forAdmin/{inquiryId}")
     public InquiryResDto getInquiryForAdmin(@PathVariable("inquiryId") Long id){
-        return new InquiryResDto(inquiryService.findInquiryForAdmin(id));
+        return inquiryService.findInquiryForAdmin(id);
     }
 
     @PatchMapping("/forAdmin")
-    public InquiryResDto updateInquiryAnswer(@RequestParam("inquiryId") Long id,
+    public InquiryResDto updateInquiryAnswer(@RequestParam("inquiryId") Long inquiryId,
                                        @RequestBody InquiryAnswerReqDto answerReqDto){
-        return new InquiryResDto(inquiryService.updateInquiryAnswer(id, answerReqDto));
+        return inquiryService.updateInquiryAnswer(inquiryId, answerReqDto);
     }
 
     @DeleteMapping("/forAdmin")
