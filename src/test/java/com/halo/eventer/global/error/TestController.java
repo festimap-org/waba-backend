@@ -20,4 +20,14 @@ public class TestController {
     public ResponseEntity<String> postTestParam(@RequestParam int param){
         return ResponseEntity.ok("POST success");
     }
+
+    @PostMapping("/festival")
+    public String securityExceptionHandlingTest(@RequestBody TestDto testDto){
+        return testDto.getName();
+    }
+
+    @GetMapping("/festival")
+    public String securityGetTest(){
+        return "festival";
+    }
 }
