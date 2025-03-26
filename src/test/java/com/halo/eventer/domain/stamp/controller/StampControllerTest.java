@@ -119,7 +119,6 @@ public class StampControllerTest {
     }
 
     @Test
-    @WithMockPrincipalDetails(roles = "ADMIN")
     void 유저_리스트_조회_성공() throws Exception {
         given(stampService.getStampUsers(anyLong()))
                 .willReturn(List.of(new StampUsersGetDto()));
