@@ -9,6 +9,7 @@ import com.halo.eventer.global.security.exception.CustomAuthenticationEntryPoint
 import com.halo.eventer.global.security.provider.JwtProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -17,31 +18,17 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 @TestConfiguration
 public class ControllerTestSecurityBeans {
 
-    // 테스트 전용 CorsConfigurationSource 빈 생성
-    @Bean
+    @MockBean
     @Qualifier("customCorsConfigurationSource")
-    public CorsConfigurationSource corsConfigurationSource() {
-        return new CorsConfig().customCorsConfigurationSource();
-    }
+    private CorsConfigurationSource corsConfigurationSource;
 
+    @Bean
+    public JwtAuthenticationFilterConfig jwtAuthenticationFilterConfig(JwtProvider jwtProvider) {
+        return new JwtAuthenticationFilterConfig(jwtProvider);
+    }
     @Bean
     public AuthorizationConfig authorizationConfig() {
         return new AuthorizationConfig();
-    }
-
-    @Bean
-    public JwtAuthenticationFilterConfig securityFilterConfig(JwtProvider jwtProvider) {
-        return new JwtAuthenticationFilterConfig(jwtProvider);
-    }
-
-    @Bean
-    public CustomAccessDeniedHandler customAccessDeniedHandler() {
-        return new CustomAccessDeniedHandler();
-    }
-
-    @Bean
-    public CustomAuthenticationEntryPoint customAuthenticationEntryPoint(){
-        return new CustomAuthenticationEntryPoint();
     }
 
     @Bean
