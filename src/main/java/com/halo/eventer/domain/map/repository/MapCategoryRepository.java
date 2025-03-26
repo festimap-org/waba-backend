@@ -9,9 +9,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface MapCategoryRepository extends JpaRepository<MapCategory, Long> {
 
-
-    Optional<MapCategory> findByCategoryName(String categoryName);
-
     @Query("SELECT mc FROM MapCategory mc WHERE mc.festival.id = :festivalId ")
     List<MapCategory> findAllByFestivalId(@Param("festivalId") Long festivalId);
 }
