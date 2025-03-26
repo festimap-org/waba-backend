@@ -1,4 +1,4 @@
-package com.halo.eventer.global.common;
+package com.halo.eventer.global.common.sort;
 
 public enum SortOption {
     CREATED_AT("createAt"),

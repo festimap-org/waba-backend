@@ -1,10 +1,8 @@
-package com.halo.eventer.global.common;
+package com.halo.eventer.global.common.page;
 
-import com.halo.eventer.domain.inquiry.Inquiry;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
 
 @Getter
 @NoArgsConstructor

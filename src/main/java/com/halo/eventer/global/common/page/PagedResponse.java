@@ -1,4 +1,4 @@
-package com.halo.eventer.global.common;
+package com.halo.eventer.global.common.page;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.halo.eventer.global.common;
+package com.halo.eventer.domain.notice;
 
 public enum ArticleType {
   NOTICE,
