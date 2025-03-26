@@ -1,11 +1,11 @@
-package com.halo.eventer.domain.widget.dto;
+package com.halo.eventer.global.common.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class WidgetOrderUpdateRequest {
+public class OrderUpdateRequest {
 
     private Long id;
     private int displayOrder;
