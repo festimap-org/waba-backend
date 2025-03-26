@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.FestivalCreateDto;
 import com.halo.eventer.domain.stamp.Stamp;
+import com.halo.eventer.global.config.ControllerTestSecurityBeans;
 import com.halo.eventer.global.security.WithMockCustomUserDetails;
 import com.halo.eventer.domain.stamp.dto.stamp.*;
 import com.halo.eventer.domain.stamp.service.StampService;
-import com.halo.eventer.global.config.TestSecurityBeans;
 import com.halo.eventer.global.config.security.SecurityConfig;
 import com.halo.eventer.global.security.provider.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SuppressWarnings("NonAsciiCharacters")
 @ActiveProfiles("test")
 @WebMvcTest(controllers = StampController.class)
-@Import({TestSecurityBeans.class, SecurityConfig.class})
+@Import({ControllerTestSecurityBeans.class, SecurityConfig.class})
 public class StampControllerTest {
 
     @Autowired
@@ -55,7 +56,7 @@ public class StampControllerTest {
     }
 
     @Test
-    @WithMockCustomUserDetails(roles = "ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     void 스탬프_생성_성공() throws Exception {
         given(stampService.registerStamp(anyLong()))
                 .willReturn(List.of(StampGetDto.from(stamp)));
@@ -76,7 +77,7 @@ public class StampControllerTest {
     }
 
     @Test
-    @WithMockCustomUserDetails(roles = "ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     void 스탬프_상태변경_성공() throws Exception {
         mockMvc.perform(patch("/stamp")
                         .header("Authorization", ADMIN_TOKEN)
@@ -86,7 +87,7 @@ public class StampControllerTest {
     }
 
     @Test
-    @WithMockCustomUserDetails(roles = "ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     void 스탬프_삭제_성공() throws Exception {
         mockMvc.perform(delete("/stamp")
                         .header("Authorization", ADMIN_TOKEN)
@@ -96,7 +97,7 @@ public class StampControllerTest {
     }
 
     @Test
-    @WithMockCustomUserDetails(roles = "ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     void 미션_생성_성공() throws Exception {
         MissionSetListDto dto = new MissionSetListDto();
         mockMvc.perform(post("/stamp/mission")
@@ -129,7 +130,7 @@ public class StampControllerTest {
     }
 
     @Test
-    @WithMockCustomUserDetails(roles = "ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     void 완료_기준_설정_성공() throws Exception {
         mockMvc.perform(post("/stamp/finishCnt")
                         .header("Authorization", ADMIN_TOKEN)
