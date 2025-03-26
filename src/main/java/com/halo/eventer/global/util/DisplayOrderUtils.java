@@ -1,7 +1,6 @@
-package com.halo.eventer.domain.widget.util;
+package com.halo.eventer.global.util;
 
-import com.halo.eventer.domain.widget.BaseWidget;
-import com.halo.eventer.domain.widget.dto.WidgetOrderUpdateRequest;
+import com.halo.eventer.global.common.dto.OrderUpdateRequest;
 import com.halo.eventer.domain.widget.entity.DisplayOrderUpdatable;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +11,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class DisplayOrderUtils {
 
-  public static <T extends DisplayOrderUpdatable, R extends WidgetOrderUpdateRequest>
+  public static <T extends DisplayOrderUpdatable, R extends OrderUpdateRequest>
       void updateDisplayOrder(List<T> widgets, List<R> orderRequests) {
     Map<Long, Integer> orderMap =
         orderRequests.stream().collect(Collectors.toMap(R::getId, R::getDisplayOrder));
