@@ -19,6 +19,7 @@ public class SecurityConstants {
             "/widget/*",
             "/widget",
             "/stamp",
+            "/stamp/users",
             "/stamp/missions",
             "/stamp/mission",
             "/splash",
