@@ -60,21 +60,24 @@ public class SecurityConfig {
                 .antMatchers("/", "/swagger-ui/**", "/v3/**","/swagger-ui.html").permitAll()
 
                 .antMatchers(HttpMethod.POST, "/widget/*","/vote", "/api/upWidgets",
-                        "/stamp","/stamp/mission","/splash","/notice","/notice/banner","/middleBanner","/map","/mapCategory/*","/menu",
-                        "/manager","/lostItem","/inquiry/forAdmin/*",
+                        "/stamp","/stamp/mission","/splash","/middleBanner","/map","/mapCategory/*","/menu",
+                        "/manager","/inquiry/forAdmin/*",
                         "/festival","/festival/*/color","/festival/*/logo","/festival/*/main-menu","/festival/*/entry","/festival/*/view","/festival/*/location",
                         "/duration/*","/api/downWidget","/concertInfo/*/name","/concert").hasRole("ADMIN")
 
-                .antMatchers(HttpMethod.PATCH, "/widget","/vote/backOffice/*","/api/upWidgets","/stamp","/stamp/mission","/notice/banner","/notice/*",
-                        "/missingPerson","/middleBanner","/middleBanner/rank","/map/*","/mapCategory/*","/mapCategory/categoryRank","/menu","/lostItem/*",
+                .antMatchers(HttpMethod.PATCH, "/widget","/vote/backOffice/*","/api/upWidgets","/stamp","/stamp/mission","/middleBanner","/middleBanner/rank","/map/*","/mapCategory/*","/mapCategory/categoryRank","/menu",
                         "/inquiry/forAdmin","/festival/*","/concertInfo/*","/concert/*").hasRole("ADMIN")
 
-                .antMatchers(HttpMethod.DELETE, "/widget","/vote/backOffice/*","/api/upWidgets","/stamp/user/*","/stamp","/splash","/notice/*",
-                        "/missingPerson","/middleBanner","/map/*","/mapCategory/*","/menu/*","/manager","/lostItem/*","/inquiry/forAdmin","/festival/*",
+                .antMatchers(HttpMethod.DELETE, "/widget","/vote/backOffice/*","/api/upWidgets","/stamp/user/*","/stamp","/splash","/middleBanner","/map/*","/mapCategory/*","/menu/*","/manager","/inquiry/forAdmin","/festival/*",
                         "/concertInfo/*","/concert/*").hasRole("ADMIN")
 
                 .antMatchers(HttpMethod.GET, "/vote/backOffice", "/vote/backOffice/*","/stamp/users","/inquiry/forAdmin").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/excel/stamp/download").hasAnyRole("ADMIN","USER")
+                .antMatchers(HttpMethod.POST, "/notice","/notice/banner","/lostItem","/parking","/parking/announcement","/parking/place").hasAnyRole("ADMIN","USER")
+                .antMatchers(HttpMethod.PATCH, "/notice/banner","/notice/*","/lostItem/*","/missingPerson","/missingPerson/popup",
+                        "/parking","/parking/place/congestion","/parking/place/location","/parking/place/state").hasAnyRole("ADMIN","USER")
+                .antMatchers(HttpMethod.DELETE, "/notice/*","/lostItem/*","/missingPerson","/parking/place").hasAnyRole("ADMIN","USER")
+
                 .anyRequest().permitAll();
 
 
