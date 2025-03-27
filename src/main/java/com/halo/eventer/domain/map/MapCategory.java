@@ -15,16 +15,23 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Getter
+@Table(name = "map_category")
 public class MapCategory implements DisplayOrderUpdatable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "category_name", nullable = false, length = 50)
     private String categoryName;
 
+    @Column(name = "icon", nullable = true)
     private String icon;
+
+    @Column(name = "pin", nullable = true)
     private String pin;
+
+    @Column(name = "display_order", nullable = false)
     private int displayOrder = DisplayOrderConstants.DISPLAY_ORDER_DEFAULT;
 
     @ManyToOne(fetch = FetchType.LAZY)
