@@ -3,7 +3,6 @@ package com.halo.eventer.domain.duration;
 
 
 import com.halo.eventer.domain.duration.dto.DurationCreateDto;
-import com.halo.eventer.domain.duration_map.DurationMap;
 import com.halo.eventer.domain.festival.Festival;
 import java.time.LocalDate;
 import java.util.ArrayList;

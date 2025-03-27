@@ -1,7 +1,7 @@
 package com.halo.eventer.domain.map.dto.map;
 
 import com.halo.eventer.domain.duration.dto.DurationGetDto;
-import com.halo.eventer.domain.duration_map.DurationMap;
+import com.halo.eventer.domain.duration.DurationMap;
 import com.halo.eventer.domain.map.Map;
 import com.halo.eventer.domain.map.Menu;
 import com.halo.eventer.domain.map.dto.menu.MenuResDto;

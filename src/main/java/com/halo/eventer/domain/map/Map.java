@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.map;
 
-import com.halo.eventer.domain.duration_map.DurationMap;
+import com.halo.eventer.domain.duration.DurationMap;
 import com.halo.eventer.domain.map.dto.map.MapCreateDto;
 import com.halo.eventer.domain.map.enumtype.OperationTime;
 import lombok.Builder;

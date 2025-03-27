@@ -1,6 +1,5 @@
-package com.halo.eventer.domain.duration_map;
+package com.halo.eventer.domain.duration;
 
-import com.halo.eventer.domain.duration.Duration;
 import com.halo.eventer.domain.map.Map;
 import javax.persistence.*;
 import lombok.Getter;

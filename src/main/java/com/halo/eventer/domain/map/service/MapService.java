@@ -2,8 +2,8 @@ package com.halo.eventer.domain.map.service;
 
 
 import com.halo.eventer.domain.duration.repository.DurationRepository;
-import com.halo.eventer.domain.duration_map.DurationMap;
-import com.halo.eventer.domain.duration_map.DurationMapRepository;
+import com.halo.eventer.domain.duration.DurationMap;
+import com.halo.eventer.domain.duration.repository.DurationMapRepository;
 import com.halo.eventer.domain.map.Map;
 import com.halo.eventer.domain.map.dto.map.GetAllStoreResDto;
 import com.halo.eventer.domain.map.dto.map.MapCreateDto;
