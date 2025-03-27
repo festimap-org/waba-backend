@@ -13,6 +13,7 @@ import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.domain.middle_banner.MiddleBanner;
 import com.halo.eventer.domain.missing_person.MissingPerson;
 import com.halo.eventer.domain.notice.Notice;
+import com.halo.eventer.domain.parking.Parking;
 import com.halo.eventer.domain.splash.Splash;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.up_widget.UpWidget;
@@ -116,6 +117,9 @@ public class Festival {
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Vote> votes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Parking> parkings = new ArrayList<>();
 
 
     @Builder
