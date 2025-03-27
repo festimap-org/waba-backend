@@ -2,7 +2,6 @@ package com.halo.eventer.domain.duration_map;
 
 import com.halo.eventer.domain.duration.Duration;
 import com.halo.eventer.domain.map.Map;
-import java.util.Objects;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,28 +16,15 @@ public class DurationMap {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "durationId")
+  @JoinColumn(name = "duration_id")
   private Duration duration;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "mapId")
+  @JoinColumn(name = "map_id")
   private Map map;
 
   public DurationMap(Duration duration, Map map) {
     this.duration = duration;
     this.map = map;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    DurationMap that = (DurationMap) o;
-    return Objects.equals(id, that.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(id);
   }
 }
