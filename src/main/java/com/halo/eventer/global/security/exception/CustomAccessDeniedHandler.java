@@ -14,7 +14,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
   @Override
   public void handle(HttpServletRequest request, HttpServletResponse response,
-                     AccessDeniedException accessDeniedException) throws IOException, ServletException, IOException {
+                     AccessDeniedException accessDeniedException) throws IOException, ServletException {
     throw new CustomAuthenticationException(ErrorCode.UN_AUTHORIZED);
   }
 }
