@@ -21,7 +21,7 @@ public class DurationGetDto {
     public DurationGetDto(Duration duration) {
         this.durationId = duration.getId();
         this.date = duration.getDate();
-        this.day = duration.getDay();
+        this.day = duration.getDayNumber();
     }
 
     public static List<DurationGetDto> fromDurationList(List<Duration> durationList) {

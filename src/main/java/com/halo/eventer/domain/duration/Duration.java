@@ -1,7 +1,5 @@
 package com.halo.eventer.domain.duration;
 
-
-
 import com.halo.eventer.domain.duration.dto.DurationCreateDto;
 import com.halo.eventer.domain.festival.Festival;
 import java.time.LocalDate;
@@ -21,10 +19,10 @@ public class Duration {
     private Long id;
 
     private LocalDate date;
-    private Integer day;
+    private Integer dayNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "festivalId")
+    @JoinColumn(name = "festival_id")
     private Festival festival;
 
     @OneToMany(mappedBy = "duration",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
@@ -32,7 +30,7 @@ public class Duration {
 
     public Duration(DurationCreateDto durationDto, Festival festival) {
         this.date = durationDto.getDate();
-        this.day = durationDto.getDay();
+        this.dayNumber = durationDto.getDay();
         this.festival = festival;
     }
 }

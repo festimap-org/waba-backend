@@ -14,6 +14,11 @@ public class DurationCreateDto {
 
     public DurationCreateDto(Duration duration) {
         this.date = duration.getDate();
-        this.day = duration.getDay();
+        this.day = duration.getDayNumber();
+    }
+
+    public DurationCreateDto(LocalDate date, Integer day) {
+        this.date = date;
+        this.day = day;
     }
 }
