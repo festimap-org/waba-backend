@@ -53,7 +53,7 @@ public class DurationMapRepositoryTest {
     @Test
     void durationId로_DurationMap_전체조회(){
         //when
-        List<DurationMap> results = durationMapRepository.findAllByDuration_IdIn(List.of(duration.getId()));
+        List<DurationMap> results = durationMapRepository.findAllByDurationIds(List.of(duration.getId()));
 
         // then
         assertThat(results).hasSize(2);

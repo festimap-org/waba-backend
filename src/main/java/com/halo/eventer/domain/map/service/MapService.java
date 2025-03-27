@@ -68,7 +68,7 @@ public class MapService {
         map.setMapCategory(mapCategoryRepository.findById(mapCategoryId).orElseThrow(()-> new MapCategoryNotFoundException(mapCategoryId)));
 
         List<DurationMap> addDurationMaps = durationRepository.findAllByIdIn(mapCreateDto.getDurationIds()).stream().map(o->new DurationMap(o,map)).collect(Collectors.toList());
-        List<DurationMap> deleteDurationMaps =durationMapRepository.findAllByDuration_IdIn(mapCreateDto.getDeleteIds());
+        List<DurationMap> deleteDurationMaps =durationMapRepository.findAllByDurationIds(mapCreateDto.getDeleteIds());
 
         map.getDurationMaps().removeAll(deleteDurationMaps);
         map.getDurationMaps().addAll(addDurationMaps);
