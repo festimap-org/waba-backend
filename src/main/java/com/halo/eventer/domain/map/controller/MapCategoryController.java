@@ -46,7 +46,7 @@ public class MapCategoryController {
   }
 
   @PatchMapping("/displayOrder")
-  public List<MapCategoryResDto> editCategoryRank(@RequestParam("festivalId")Long festivalId,
+  public List<MapCategoryResDto> updateDisplayOrder(@RequestParam("festivalId")Long festivalId,
                                  @RequestBody List<OrderUpdateRequest> orderUpdateRequests) {
     return mapCategoryService.updateDisplayOrder(festivalId, orderUpdateRequests);
   }
