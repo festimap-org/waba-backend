@@ -68,8 +68,8 @@ public class StampUserService {
     }
 
     /** 로그인 */
-    public StampUserGetDto login(Long stampId, LoginDto loginDto) {
-        StampUser stampUser = stampUserRepository.findByStampIdAndPhoneAndName(stampId, encryptService.encryptInfo(loginDto.getPhone()), encryptService.encryptInfo(loginDto.getName()))
+    public StampUserGetDto login(Long stampId, StampUserLoginDto stampUserLoginDto) {
+        StampUser stampUser = stampUserRepository.findByStampIdAndPhoneAndName(stampId, encryptService.encryptInfo(stampUserLoginDto.getPhone()), encryptService.encryptInfo(stampUserLoginDto.getName()))
                 .orElseThrow(() -> new BaseException(ErrorCode.ELEMENT_NOT_FOUND));
 
         return new StampUserGetDto(stampUser, getUserMission(stampUser.getUuid()));

@@ -22,6 +22,9 @@ public class Member {
     @OneToMany(mappedBy = "member",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Authority> authorities;
 
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<MemberFestival> memberFestivals;
+
     public void setMember(List<Authority> roles) {
         this.authorities = roles;
         roles.forEach(o -> o.setMember(this));

@@ -31,8 +31,8 @@ public class StampUserController {
     /** 로그인 */
     @LoginApi
     @PostMapping("/login")
-    public StampUserGetDto login(@RequestParam("stampId") Long stampId, @RequestBody LoginDto loginDto) {
-        return stampUserService.login(stampId, loginDto);
+    public StampUserGetDto login(@RequestParam("stampId") Long stampId, @RequestBody StampUserLoginDto stampUserLoginDto) {
+        return stampUserService.login(stampId, stampUserLoginDto);
     }
 
     /** 유저 미션 전체 조회 + finished */

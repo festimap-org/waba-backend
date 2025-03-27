@@ -1,12 +1,12 @@
 package com.halo.eventer.domain.festival.controller;
 
-
-import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.festival.swagger.*;
 import com.halo.eventer.global.common.ImageDto;
 import com.halo.eventer.domain.festival.dto.FestivalConcertMenuDto;
+import com.halo.eventer.global.resolver.MemberCheck;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -98,5 +98,10 @@ public class FestivalController {
     public FestivalResDto updateFestivalLocation(@PathVariable("festivalId")Long festivalId,
                                                  @RequestBody FestivalLocationDto festivalLocationDto){
         return new FestivalResDto(festivalService.updateFestivalLocation(festivalId,festivalLocationDto));
+    }
+
+    @GetMapping("/forUser")
+    public List<FestivalListDto> getFestivalsForUser(@Parameter(hidden = true) @MemberCheck String loginId){
+        return festivalService.getFestivalForUser(loginId);
     }
 }

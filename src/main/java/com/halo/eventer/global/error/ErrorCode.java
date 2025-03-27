@@ -26,6 +26,8 @@ public enum ErrorCode {
     // Monitoring Error
     FESTIVAL_EXPIRED("M001", "Festival Expired"),
 
+    // Auth Error
+    UN_AUTHORIZED("A001", "Unauthorized"),
 
     ;
 

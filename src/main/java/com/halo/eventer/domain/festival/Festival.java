@@ -10,6 +10,7 @@ import com.halo.eventer.domain.inquiry.Inquiry;
 import com.halo.eventer.domain.lost_item.LostItem;
 import com.halo.eventer.domain.manager.Manager;
 import com.halo.eventer.domain.map.MapCategory;
+import com.halo.eventer.domain.member.MemberFestival;
 import com.halo.eventer.domain.middle_banner.MiddleBanner;
 import com.halo.eventer.domain.missing_person.MissingPerson;
 import com.halo.eventer.domain.notice.Notice;
@@ -121,6 +122,8 @@ public class Festival {
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Parking> parkings = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<MemberFestival> memberFestivals;
 
     @Builder
     public Festival(FestivalCreateDto festivalCreateDto) {

@@ -3,6 +3,8 @@ package com.halo.eventer.domain.festival.service;
 
 import com.halo.eventer.domain.down_widget.DownWidget;
 import com.halo.eventer.domain.festival.dto.*;
+import com.halo.eventer.domain.member.Member;
+import com.halo.eventer.domain.member.repository.MemberRepository;
 import com.halo.eventer.global.common.ImageDto;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +29,8 @@ import java.util.stream.Collectors;
 public class FestivalService {
 
     private final FestivalRepository festivalRepository;
+    private final MemberRepository memberRepository;
+
 
     public String createFestival(FestivalCreateDto festivalCreateDto) {
         if(festivalRepository.findByName(festivalCreateDto.getName()).isPresent() || festivalRepository.findBySubAddress(festivalCreateDto.getSubAddress()).isPresent()){
@@ -128,5 +133,15 @@ public class FestivalService {
         Festival festival = getFestival(festivalId);
         festival.updateLocation(festivalLocationDto);
         return festival;
+    }
+
+    public List<FestivalListDto> getFestivalForUser(String loginId){
+        Member member = memberRepository.findByLoginId(loginId)
+            .orElseThrow(() -> new BaseException("해당 유저가 존재하지 않습니다.",ErrorCode.ELEMENT_NOT_FOUND));
+
+        List<Long> ids = new ArrayList<>();
+        member.getMemberFestivals().forEach(o->ids.add(o.getFestival().getId()));
+
+        return festivalRepository.findAllById(ids).stream().map(FestivalListDto::new).collect(Collectors.toList());
     }
 }
