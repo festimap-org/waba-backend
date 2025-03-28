@@ -41,6 +41,7 @@ public class SecurityConstants {
             "/festival",
             "/festival/**",
             "/duration/*",
+            "/duration",
             "/concertInfo",
             "/concertInfo/*",
             "/api/upWidgets",
