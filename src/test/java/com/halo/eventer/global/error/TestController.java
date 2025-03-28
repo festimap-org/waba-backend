@@ -1,8 +1,10 @@
 package com.halo.eventer.global.error;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Profile("test")
 @RestController
 public class TestController {
 
