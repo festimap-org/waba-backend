@@ -12,21 +12,21 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-public class DurationGetDto {
+public class DurationResDto {
 
     private Long durationId;
     private LocalDate date;
     private Integer day;
 
-    public DurationGetDto(Duration duration) {
+    public DurationResDto(Duration duration) {
         this.durationId = duration.getId();
         this.date = duration.getDate();
         this.day = duration.getDayNumber();
     }
 
-    public static List<DurationGetDto> fromDurationList(List<Duration> durationList) {
-        return durationList.stream()
-                .map(DurationGetDto::new)
+    public static List<DurationResDto> fromDurations(List<Duration> durations) {
+        return durations.stream()
+                .map(DurationResDto::new)
                 .collect(Collectors.toList());
     }
 }

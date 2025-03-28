@@ -1,7 +1,7 @@
 package com.halo.eventer.domain.map.dto.map;
 
 
-import com.halo.eventer.domain.duration.dto.DurationGetDto;
+import com.halo.eventer.domain.duration.dto.DurationResDto;
 import com.halo.eventer.domain.map.Map;
 import com.halo.eventer.domain.map.enumtype.OperationTime;
 import java.util.List;
@@ -18,7 +18,7 @@ public class GetAllStoreResDto {
     private double latitude; // 위도
     private double longitude; // 경도
     private String type;
-    private List<DurationGetDto> durationGetDto;
+    private List<DurationResDto> durationResDto;
     private OperationTime operationTime;
     private String icon;
 
@@ -28,7 +28,7 @@ public class GetAllStoreResDto {
         this.latitude = map.getLatitude();
         this.longitude = map.getLongitude();
         this.type = map.getMapCategory().getCategoryName();
-        this.durationGetDto = map.getDurationMaps().stream().map(o->new DurationGetDto(o.getDuration())).collect(Collectors.toList());
+        this.durationResDto = map.getDurationMaps().stream().map(o->new DurationResDto(o.getDuration())).collect(Collectors.toList());
         this.operationTime = map.getOperationType();
         this.icon = map.getIcon();
     }

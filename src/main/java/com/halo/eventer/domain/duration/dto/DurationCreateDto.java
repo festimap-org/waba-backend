@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 public class DurationCreateDto {
 
     private LocalDate date;
-    private Integer day;
+    private Integer dayNumber;
 
     public DurationCreateDto(Duration duration) {
         this.date = duration.getDate();
-        this.day = duration.getDayNumber();
+        this.dayNumber = duration.getDayNumber();
     }
 
     public DurationCreateDto(LocalDate date, Integer day) {
         this.date = date;
-        this.day = day;
+        this.dayNumber = day;
     }
 }
