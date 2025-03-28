@@ -25,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SuppressWarnings("NonAsciiCharacters")
-@EntityScan(basePackages = "com.halo.eventer.domain")
 public class DurationMapRepositoryTest {
 
     @Autowired
