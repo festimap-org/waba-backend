@@ -1,13 +1,11 @@
 package com.halo.eventer.domain.map.dto.map;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MapCreateDto {
+public class MapUpdateDto {
     private String name;
     private String summary;
     private String content;
@@ -17,5 +15,5 @@ public class MapCreateDto {
     private OperationInfoDto operationInfo;
     private LocationInfoDto locationInfo;
     private ButtonInfoDto buttonInfo;
-    private List<Long> addIds = new ArrayList<>();
+    private DurationBindingDto durationBinding;
 }
