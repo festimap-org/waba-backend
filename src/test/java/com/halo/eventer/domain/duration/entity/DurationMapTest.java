@@ -17,7 +17,7 @@ public class DurationMapTest {
   @Test
   void DurationMap_객체_생성() {
     // when
-    DurationMap durationMap = new DurationMap(new Duration(), new Map());
+    DurationMap durationMap = DurationMap.of(new Duration(), new Map());
 
     // then
     assertThat(durationMap).isNotNull();

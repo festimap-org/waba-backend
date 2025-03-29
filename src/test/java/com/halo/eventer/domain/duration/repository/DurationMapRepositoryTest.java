@@ -45,8 +45,8 @@ public class DurationMapRepositoryTest {
         mapRepository.save(map);
         Duration duration1 = new Duration();
         duration = durationRepository.save(duration1);
-        durationMapRepository.save(new DurationMap(duration, map));
-        durationMapRepository.save(new DurationMap(duration, map));
+        durationMapRepository.save(DurationMap.of(duration, map));
+        durationMapRepository.save(DurationMap.of(duration, map));
     }
 
     @Test

@@ -2,6 +2,8 @@ package com.halo.eventer.domain.duration;
 
 import com.halo.eventer.domain.map.Map;
 import javax.persistence.*;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,8 +24,16 @@ public class DurationMap {
   @JoinColumn(name = "map_id")
   private Map map;
 
-  public DurationMap(Duration duration, Map map) {
+  @Builder
+  private DurationMap(Duration duration, Map map) {
     this.duration = duration;
     this.map = map;
+  }
+
+  public static DurationMap of(Duration duration, Map map) {
+    return DurationMap.builder()
+            .duration(duration)
+            .map(map)
+            .build();
   }
 }

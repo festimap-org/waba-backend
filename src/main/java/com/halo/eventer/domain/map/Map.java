@@ -1,7 +1,9 @@
 package com.halo.eventer.domain.map;
 
+import com.halo.eventer.domain.duration.Duration;
 import com.halo.eventer.domain.duration.DurationMap;
 import com.halo.eventer.domain.map.dto.map.MapCreateDto;
+import com.halo.eventer.domain.map.dto.map.MapUpdateDto;
 import com.halo.eventer.domain.map.embedded.ButtonInfo;
 import com.halo.eventer.domain.map.embedded.LocationInfo;
 import com.halo.eventer.domain.map.embedded.OperationInfo;
@@ -12,6 +14,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor
@@ -59,7 +63,7 @@ public class Map {
   @JoinColumn(name = "mapCategory_id")
   private MapCategory mapCategory;
 
-  @OneToMany(mappedBy = "map", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+  @OneToMany(mappedBy = "map", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   private List<Menu> menus = new ArrayList<>();
 
   @OneToMany(mappedBy = "map", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -93,19 +97,37 @@ public class Map {
             .build();
   }
 
-  public void updateMap(MapCreateDto mapCreateDto,MapCategory mapCategory) {
-    this.name = mapCreateDto.getName();
-    this.summary = mapCreateDto.getSummary();
-    this.content = mapCreateDto.getContent();
-    this.thumbnail = mapCreateDto.getThumbnail();
-    this.icon = mapCreateDto.getIcon();
-    this.locationInfo = LocationInfo.from(mapCreateDto.getLocationInfo());
-    this.operationInfo = OperationInfo.from(mapCreateDto.getOperationInfo());
-    this.buttonInfo = ButtonInfo.from(mapCreateDto.getButtonInfo());
+  public void updateMap(MapUpdateDto mapUpdateDto, MapCategory mapCategory) {
+    this.name = mapUpdateDto.getName();
+    this.summary = mapUpdateDto.getSummary();
+    this.content = mapUpdateDto.getContent();
+    this.thumbnail = mapUpdateDto.getThumbnail();
+    this.icon = mapUpdateDto.getIcon();
+    this.locationInfo = LocationInfo.from(mapUpdateDto.getLocationInfo());
+    this.operationInfo = OperationInfo.from(mapUpdateDto.getOperationInfo());
+    this.buttonInfo = ButtonInfo.from(mapUpdateDto.getButtonInfo());
     this.mapCategory = mapCategory;
   }
 
-  public void updateDurationMaps(List<DurationMap> durationMaps) {
-    this.durationMaps.addAll(durationMaps);
+  public void addDurationMaps(List<Duration> durations) {
+    durations.forEach(duration -> this.durationMaps.add(DurationMap.of(duration, this)));
+  }
+
+  public void updateDurations(List<Long> addIds, List<Long> deleteIds, List<Duration> allDurations) {
+    Set<Long> currentIds = this.durationMaps.stream()
+            .map(dm -> dm.getDuration().getId())
+            .collect(Collectors.toSet());
+
+    List<DurationMap> toAdd = allDurations.stream()
+            .filter(duration -> addIds.contains(duration.getId()) && !currentIds.contains(duration.getId()))
+            .map(d -> DurationMap.of(d, this))
+            .collect(Collectors.toList());
+
+    List<DurationMap> toRemove = this.durationMaps.stream()
+            .filter(dm -> deleteIds.contains(dm.getDuration().getId()))
+            .collect(Collectors.toList());
+
+    this.durationMaps.removeAll(toRemove);
+    this.durationMaps.addAll(toAdd);
   }
 }
