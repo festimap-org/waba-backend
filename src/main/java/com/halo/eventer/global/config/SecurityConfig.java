@@ -69,8 +69,8 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.DELETE, "/widget","/vote/backOffice/*","/api/upWidgets","/stamp/user/*","/stamp","/splash","/middleBanner","/map/*","/mapCategory/*","/menu/*","/festival/*",
                         "/concertInfo/*","/concert/*").hasRole("ADMIN")
 
-                .antMatchers(HttpMethod.GET, "/vote/backOffice", "/vote/backOffice/*","/stamp/users","/inquiry/forAdmin").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/excel/stamp/download").hasAnyRole("ADMIN","USER")
+                .antMatchers(HttpMethod.GET, "/vote/backOffice", "/vote/backOffice/*","/stamp/users").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/excel/stamp/download","/inquiry/forAdmin","/forAdmin/*").hasAnyRole("ADMIN","USER")
                 .antMatchers(HttpMethod.POST, "/notice","/notice/banner","/lostItem","/parking","/parking/announcement","/parking/place","/inquiry/forAdmin/*","/manager").hasAnyRole("ADMIN","USER")
                 .antMatchers(HttpMethod.PATCH, "/notice/banner","/notice/*","/lostItem/*","/missingPerson","/missingPerson/popup",
                         "/parking","/parking/place/congestion","/parking/place/location","/parking/place/state","/inquiry/forAdmin").hasAnyRole("ADMIN","USER")
