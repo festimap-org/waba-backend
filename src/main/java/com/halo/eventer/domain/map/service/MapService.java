@@ -1,9 +1,9 @@
 package com.halo.eventer.domain.map.service;
 
 import com.halo.eventer.domain.duration.Duration;
+import com.halo.eventer.domain.duration.repository.DurationMapJdbcRepository;
 import com.halo.eventer.domain.duration.repository.DurationRepository;
 import com.halo.eventer.domain.duration.DurationMap;
-import com.halo.eventer.domain.duration.repository.DurationMapRepository;
 import com.halo.eventer.domain.map.Map;
 import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.domain.map.dto.map.MapItemDto;
@@ -29,17 +29,18 @@ public class MapService {
     private final MapRepository mapRepository;
     private final MapCategoryRepository mapCategoryRepository;
     private final DurationRepository durationRepository;
-    private final DurationMapRepository durationMapRepository;
+    private final DurationMapJdbcRepository mapJdbcRepository;
 
     @Transactional
     public MapResDto create(MapCreateDto mapCreateDto, Long mapCategoryId){
-        List<Duration> durations = getValidatedDurations(mapCreateDto.getAddIds());
+        List<Duration> durations = getValidatedDurations(mapCreateDto.getAddDurationIds());
         MapCategory mapCategory = mapCategoryRepository.findById(mapCategoryId)
                 .orElseThrow(() -> new MapCategoryNotFoundException(mapCategoryId));
 
         Map map = Map.of(mapCreateDto, mapCategory);
-        map.addDurationMaps(durations);
         map = mapRepository.save(map);
+
+        mapJdbcRepository.batchInsertMapDurations(map.getId(), durations);
 
         return MapResDto.of(map,durations);
     }
