@@ -38,6 +38,9 @@ public enum ErrorCode {
   // StampUser
   STAMP_USER_ALREADY_EXISTS("SU001", "StampUser Already Exists",400),
 
+  // Infra
+  SMS_SEND_FAILED("I001", "SMS Send Failed",500),
+
   ;
 
   private final String code;
