@@ -1,10 +1,14 @@
 package com.halo.eventer.domain.stamp;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.persistence.*;
 
 import com.halo.eventer.domain.stamp.dto.stampUser.SignupDto;
+import com.halo.eventer.domain.stamp.exception.UserMissionNotFoundException;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,7 +35,7 @@ public class StampUser {
   @Column(nullable = false)
   private String name;
 
-  private boolean finished;
+  private boolean finished = false;
 
   private int participantCount;
 
@@ -40,7 +44,7 @@ public class StampUser {
   private Stamp stamp;
 
   @OneToMany(mappedBy = "stampUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<UserMission> userMissions;
+  private List<UserMission> userMissions = new ArrayList<>();
 
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
   private Custom custom;
@@ -52,18 +56,41 @@ public class StampUser {
     this.name = encryptedName;
     this.finished = false;
     this.participantCount = participantCount;
-    this.custom = null;
   }
 
-  public void setFinished() {
+  public void finished() {
     this.finished = true;
-  }
-
-  public void setUserMission(List<UserMission> userMissions) {
-    this.userMissions = userMissions;
   }
 
   public void setCustom(Custom custom) {
     this.custom = custom;
   }
+
+  public void assignMissionsFrom(Stamp stamp) {
+    List<UserMission> missions = stamp.getMissions().stream()
+            .map(m -> UserMission.from(m, this))
+            .collect(Collectors.toList());
+    this.userMissions = missions;
+  }
+
+  public boolean isAllMissionsCompleted() {
+    return userMissions.stream()
+            .allMatch(UserMission::isComplete);
+  }
+
+  public void userMissionComplete(Long missionId) {
+    this.userMissions.stream()
+            .filter(m -> m.getId().equals(missionId))
+            .findFirst()
+            .orElseThrow(() -> new UserMissionNotFoundException(missionId))
+            .updateComplete(true);
+  }
+
+  public boolean canFinishTour() {
+    long completed = userMissions.stream()
+            .filter(UserMission::isComplete)
+            .count();
+    return completed >= stamp.getStampFinishCnt();
+  }
+
 }

@@ -28,15 +28,23 @@ public class UserMission {
   @JoinColumn(name = "mission_id")
   private Mission mission;
 
-  public void setComplete(boolean state) {
+  public void updateComplete(boolean state) {
     this.isComplete = state;
   }
 
   public void setStampUser(StampUser stampUser) {
     this.stampUser = stampUser;
+    stampUser.getUserMissions().add(this);
   }
 
   public void setMission(Mission mission) {
     this.mission = mission;
+  }
+
+  public static UserMission from(Mission mission, StampUser stampUser){
+    UserMission userMission = new UserMission();
+    userMission.setStampUser(stampUser);
+    userMission.setMission(mission);
+    return userMission;
   }
 }
