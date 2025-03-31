@@ -33,7 +33,7 @@ public class MapService {
 
     @Transactional
     public MapResDto create(MapCreateDto mapCreateDto, Long mapCategoryId){
-        List<Duration> durations = getValidatedDurations(mapCreateDto.getAddDurationIds());
+        List<Duration> durations = getValidatedDurations(mapCreateDto.getDurationIdsToAdd());
         MapCategory mapCategory = mapCategoryRepository.findById(mapCategoryId)
                 .orElseThrow(() -> new MapCategoryNotFoundException(mapCategoryId));
 
@@ -65,11 +65,11 @@ public class MapService {
                 .orElseThrow(() -> new MapCategoryNotFoundException(mapCategoryId));
         Map map = mapRepository.findByIdWithCategoryAndDuration(mapId)
                 .orElseThrow(() -> new MapNotFoundException(mapId));
-        List<Duration> durations = getValidatedDurations(mapUpdateDto.getDurationBinding().getAddIds());
+        List<Duration> durations = getValidatedDurations(mapUpdateDto.getDurationBinding().getIdsToAdd());
 
         map.updateMap(mapUpdateDto, mapCategory);
-        map.updateDurations(mapUpdateDto.getDurationBinding().getAddIds(),
-                mapUpdateDto.getDurationBinding().getDeleteIds(), durations);
+        map.updateDurations(mapUpdateDto.getDurationBinding().getIdsToAdd(),
+                mapUpdateDto.getDurationBinding().getIdsToRemove(), durations);
 
         return MapResDto.from(map);
     }

@@ -63,7 +63,7 @@ public class MapBatchInsertTest {
             .buttonInfo(new ButtonInfoDto())
             .operationInfo(new OperationInfoDto())
             .locationInfo(new LocationInfoDto())
-            .addDurationIds(durationIds)
+            .durationIdsToAdd(durationIds)
             .build();
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();

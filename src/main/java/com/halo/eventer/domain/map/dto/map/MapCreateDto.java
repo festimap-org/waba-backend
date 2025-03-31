@@ -19,12 +19,12 @@ public class MapCreateDto {
     private OperationInfoDto operationInfo;
     private LocationInfoDto locationInfo;
     private ButtonInfoDto buttonInfo;
-    private List<Long> addDurationIds;
+    private List<Long> durationIdsToAdd;
 
     @Builder
     public MapCreateDto(String name, String summary, String content, String thumbnail, String icon,
                         OperationInfoDto operationInfo, LocationInfoDto locationInfo, ButtonInfoDto buttonInfo,
-                        List<Long> addDurationIds) {
+                        List<Long> durationIdsToAdd) {
         this.name = name;
         this.summary = summary;
         this.content = content;
@@ -33,6 +33,6 @@ public class MapCreateDto {
         this.operationInfo = operationInfo;
         this.locationInfo = locationInfo;
         this.buttonInfo = buttonInfo;
-        this.addDurationIds = addDurationIds;
+        this.durationIdsToAdd = durationIdsToAdd;
     }
 }

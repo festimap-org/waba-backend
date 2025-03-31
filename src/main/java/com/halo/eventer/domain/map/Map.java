@@ -113,18 +113,18 @@ public class Map {
     durations.forEach(duration -> this.durationMaps.add(DurationMap.of(duration, this)));
   }
 
-  public void updateDurations(List<Long> addIds, List<Long> deleteIds, List<Duration> allDurations) {
+  public void updateDurations(List<Long> durationIdsToAdd, List<Long> durationIdsToRemove, List<Duration> allDurations) {
     Set<Long> currentIds = this.durationMaps.stream()
             .map(dm -> dm.getDuration().getId())
             .collect(Collectors.toSet());
 
     List<DurationMap> toAdd = allDurations.stream()
-            .filter(duration -> addIds.contains(duration.getId()) && !currentIds.contains(duration.getId()))
+            .filter(duration -> durationIdsToAdd.contains(duration.getId()) && !currentIds.contains(duration.getId()))
             .map(d -> DurationMap.of(d, this))
             .collect(Collectors.toList());
 
     List<DurationMap> toRemove = this.durationMaps.stream()
-            .filter(dm -> deleteIds.contains(dm.getDuration().getId()))
+            .filter(dm -> durationIdsToRemove.contains(dm.getDuration().getId()))
             .collect(Collectors.toList());
 
     this.durationMaps.removeAll(toRemove);

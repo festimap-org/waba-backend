@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class DurationBindingDto {
-    private List<Long> addIds = new ArrayList<>();
-    private List<Long> deleteIds = new ArrayList<>();
+    private List<Long> idsToAdd;
+    private List<Long> idsToRemove;
 }
