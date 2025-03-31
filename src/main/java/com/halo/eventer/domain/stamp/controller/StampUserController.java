@@ -48,8 +48,8 @@ public class StampUserController {
 
   /** 사용자 미션 상태 업데이트 */
   @PatchMapping("/{uuid}/{userMissionId}")
-  public String updateUserMission(@PathVariable String uuid, @PathVariable Long userMissionId) {
-    return stampUserService.updateUserMission(uuid, userMissionId);
+  public void updateUserMission(@PathVariable String uuid, @PathVariable Long userMissionId) {
+    stampUserService.updateUserMission(uuid, userMissionId);
   }
 
   /** 사용자 미션 완료 상태 확인 */
@@ -67,7 +67,7 @@ public class StampUserController {
 
   /** 사용자 삭제 */
   @DeleteMapping("/{uuid}")
-  public String deleteStampByUuid(@PathVariable String uuid) {
-    return stampUserService.deleteStampByUuid(uuid);
+  public void deleteStampByUuid(@PathVariable String uuid) {
+    stampUserService.deleteStampByUuid(uuid);
   }
 }
