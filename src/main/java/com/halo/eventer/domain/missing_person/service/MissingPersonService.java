@@ -76,7 +76,7 @@ public class MissingPersonService {
   private void notifyManagersAboutMissingPerson(Long festivalId, MissingPersonReqDto missingPersonReqDto) {
     List<String> phoneNumbers = managerRepository.findManagerByFestivalId(festivalId).stream()
               .map(Manager::getPhoneNo)
-              .collect(Collectors.toList());;
+              .collect(Collectors.toList());
 
     if (!phoneNumbers.isEmpty()) {
       MissingPersonAlertMessageTemplate template = new MissingPersonAlertMessageTemplate();
