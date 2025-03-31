@@ -14,6 +14,7 @@ public class MissingPersonPopupDto {
     private String thumbnail;
     private String content;
     private String missingLocation;
+    private String missingTime;
 
     public MissingPersonPopupDto(MissingPerson m) {
         this.name = m.getName();
@@ -22,6 +23,7 @@ public class MissingPersonPopupDto {
         this.thumbnail = m.getThumbnail();
         this.content = m.getContent();
         this.missingLocation = m.getMissingLocation();
+        this.missingTime = m.getMissingTime();
     }
 }
 
