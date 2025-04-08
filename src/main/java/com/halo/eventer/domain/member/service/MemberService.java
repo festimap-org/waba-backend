@@ -27,7 +27,7 @@ public class MemberService {
             throw new AccessDenyException("비밀번호가 틀렸거나 아이디가 올바르지 않습니다."); // 401
         }
 
-        return new TokenDto(jwtProvider.createToken(member.getLoginId(),member.getAuthorities()));
+        return new TokenDto(jwtProvider.createToken(member.getLoginId(),member.getAuthoritiesNames()));
         //return jwtProvider.createToken(member.getLoginId(),member.getAuthorities());
     }
 }
