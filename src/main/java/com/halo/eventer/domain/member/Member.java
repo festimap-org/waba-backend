@@ -37,7 +37,7 @@ public class Member {
         roles.forEach(o -> o.setMember(this));
     }
 
-    public List<String> getAuthoritiesNames() {
+    public List<String> getRoleNames() {
         return authorities.stream()
                 .map(Authority::getRoleName)
                 .collect(Collectors.toList());
