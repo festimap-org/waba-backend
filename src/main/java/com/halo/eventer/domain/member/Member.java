@@ -2,6 +2,7 @@ package com.halo.eventer.domain.member;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,5 +35,11 @@ public class Member {
     public void setRoles(List<Authority> roles) {
         this.authorities = roles;
         roles.forEach(o -> o.setMember(this));
+    }
+
+    public List<String> getAuthoritiesNames() {
+        return authorities.stream()
+                .map(Authority::getRoleName)
+                .collect(Collectors.toList());
     }
 }

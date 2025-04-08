@@ -27,7 +27,7 @@ public class MemberService {
       throw new LoginFailedException();
         }
 
-        return new TokenDto(jwtProvider.createToken(member.getLoginId(),member.getAuthorities()));
+        return new TokenDto(jwtProvider.createToken(member.getLoginId(),member.getAuthoritiesNames()));
         //return jwtProvider.createToken(member.getLoginId(),member.getAuthorities());
     }
 }
