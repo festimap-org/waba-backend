@@ -111,7 +111,10 @@ public class SecurityConfig {
                 "https://m.firefestivaljeju.com",
                 "https://cherryblossom.festimap.kr",
                 "https://www.djdrone.kr",
-                "https://djdrone.kr")
+                "https://djdrone.kr",
+                "https://m.mokpowshow.co.kr",
+                "https://mokpowshow.co.kr/"
+                )
         );
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
