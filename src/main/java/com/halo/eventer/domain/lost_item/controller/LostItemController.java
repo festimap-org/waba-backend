@@ -15,22 +15,19 @@ public class LostItemController {
 
     //분실물 등록
     @PostMapping()
-    public LostItemLIstDto createLostItem(@RequestParam("festivalId") Long festivalId, @RequestBody LostItemDto lostItemDto){
+    public void createLostItem(@RequestParam("festivalId") Long festivalId, @RequestBody LostItemDto lostItemDto){
         lostItemService.createLostItem(festivalId,lostItemDto);
-        return new LostItemLIstDto(lostItemService.getAllLostItems());
     }
     //분실물 수정
     @PatchMapping("/{lostItemId}")
-    public LostItemLIstDto updateLostItem(@PathVariable(name = "lostItemId") Long lostItemId,
+    public void updateLostItem(@PathVariable(name = "lostItemId") Long lostItemId,
                                           @RequestBody LostItemDto lostDto){
         lostItemService.updateLostItem(lostItemId,lostDto);
-        return new LostItemLIstDto(lostItemService.getAllLostItems());
     }
     //분실물 삭제
     @DeleteMapping("/{itemId}")
-    public LostItemLIstDto deleteLostItem(@PathVariable(name = "itemId") Long itemId){
+    public void deleteLostItem(@PathVariable(name = "itemId") Long itemId){
         lostItemService.deleteLostItem(itemId);
-        return new LostItemLIstDto(lostItemService.getAllLostItems());
     }
     //분실물 단일 조회
     @GetMapping("/{lostItemId}")
@@ -39,7 +36,7 @@ public class LostItemController {
     }
     //분실물 전체 조회
     @GetMapping()
-    public LostItemLIstDto getAllLostItems(){
-        return new LostItemLIstDto(lostItemService.getAllLostItems());
+    public LostItemLIstDto getAllLostItems(@RequestParam("festivalId") Long festivalId){
+        return new LostItemLIstDto(lostItemService.getAllLostItems(festivalId));
     }
 }

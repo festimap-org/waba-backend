@@ -82,17 +82,16 @@ public class SmsRequest {
         return headers;
     }
 
-    public SmsReqDto getSmsBodyWithFile(List<MessageDto> messages,List<FileDto> files, String content){
+    public SmsReqDto getSmsBodyWithFile(List<MessageDto> messages, String content){
 
         //file이 null이면 LMS로 감
         SmsReqDto request = SmsReqDto.builder()
-                .type("MMS")
+                .type("LMS")
                 .contentType("COMM")
                 .countryCode("82")
                 .from(phone)
                 .content(content)
                 .messages(messages)
-                .files(files)
                 .build();
 
         return request;

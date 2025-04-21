@@ -43,7 +43,7 @@ public class LostItemService {
         return lostItemRepository.findById(id).orElseThrow(()->new BaseException("해당 분실물이 존재하지 않습니다.", ErrorCode.ELEMENT_NOT_FOUND));
     }
     //분실물 전체 조회
-    public List<LostItem> getAllLostItems(){
-        return lostItemRepository.findAll();
+    public List<LostItem> getAllLostItems(Long festivalId){
+        return lostItemRepository.findAllByFestivalId(festivalId);
     }
 }

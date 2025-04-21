@@ -29,14 +29,9 @@ public class SmsService {
                 "성별 : %s\n" +
                 "실종 위치 : %s\n\n" +
                 "자세한 실종자 정보는 링크 확인\n" +
-                "https://djdrone.kr/";
-        List<FileDto> fileDtos = new ArrayList<>();
-        if(dto.getBase64Image() != null){
-            FileUploadResDto fileUploadResDto = smsRequest.sendFileUpload("thumbnail1.jpeg",dto.getBase64Image());
-            fileDtos.add(new FileDto(fileUploadResDto.getFileId()));
-        }
+                "%s";
 
-        String realMessage = String.format(message,dto.getName(),dto.getAge(),dto.getGender(),dto.getMissingLocation());
+        String realMessage = String.format(message,dto.getName(),dto.getAge(),dto.getGender(),dto.getMissingLocation(),dto.getDomainName());
 
 
         //2. 관리자 리스트 수만큼 MessageDto setter로 to 필드 변경하기
@@ -51,7 +46,7 @@ public class SmsService {
 
 
         //3. 네이버 클라우드 API 요청 보내기
-        SmsReqDto smsReqDto = smsRequest.getSmsBodyWithFile(messages,fileDtos,realMessage);
+        SmsReqDto smsReqDto = smsRequest.getSmsBodyWithFile(messages,realMessage);
         SmsResDto smsResDto = smsRequest.sendSmsReq(smsReqDto);
     }
 }

@@ -19,6 +19,7 @@ public class MissingPersonReqDto {
 
     private String parentName;
     private String parentNo;
+    private String domainName;
 
     public MissingPersonReqDto(MissingPerson m) {
         this.name = m.getName();

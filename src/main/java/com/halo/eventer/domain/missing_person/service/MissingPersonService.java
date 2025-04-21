@@ -26,8 +26,8 @@ public class MissingPersonService {
         missingPersonRepository.save(new MissingPerson(missingPersonReqDto,festival));
     }
     // 실종자 전체 조회
-    public List<MissingPerson> getAllMissingPersonList(){
-        return missingPersonRepository.findAll();
+    public List<MissingPerson> getAllMissingPersonList(Long festivalId){
+        return missingPersonRepository.findAllByFestivalId(festivalId);
     }
     //실종자 단일 조회
     public MissingPerson getMissingPerson(Long id){
