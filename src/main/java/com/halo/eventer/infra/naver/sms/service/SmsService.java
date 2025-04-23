@@ -44,6 +44,7 @@ public class SmsService {
             messages.add(messageDto);
         }
 
+        log.info(messages.toString());
 
         //3. 네이버 클라우드 API 요청 보내기
         SmsReqDto smsReqDto = smsRequest.getSmsBodyWithFile(messages,realMessage);
