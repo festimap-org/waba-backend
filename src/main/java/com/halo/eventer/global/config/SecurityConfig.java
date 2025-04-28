@@ -113,7 +113,9 @@ public class SecurityConfig {
                 "https://www.djdrone.kr",
                 "https://djdrone.kr",
                 "https://m.mokpowshow.co.kr",
-                "https://mokpowshow.co.kr/"
+                "https://mokpowshow.co.kr/",
+                "https://www.mokpowshow.co.kr",
+                "https://wheat.festimap.kr"
                 )
         );
         configuration.setAllowedMethods(Arrays.asList("*"));
