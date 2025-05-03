@@ -25,13 +25,13 @@ public class NoticeResDto {
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private boolean pick;
-    private Long displayOrder;
+    private Integer displayOrder;
     private List<ImageDto> images;
 
   @Builder
   private NoticeResDto(Long id,String title, String thumbnail, String tag, String writer, String content,
                       ArticleType type, LocalDateTime createAt, LocalDateTime updateAt, List<ImageDto> images,
-                      boolean pick, Long displayOrder) {
+                      boolean pick, Integer displayOrder) {
     this.id = id;
     this.title = title;
     this.thumbnail = thumbnail;
@@ -59,7 +59,7 @@ public class NoticeResDto {
         .updateAt(notice.getUpdatedAt())
         .images(toImageDtos(notice.getImages()))
         .pick(notice.isPicked())
-        .displayOrder(notice.getId())
+        .displayOrder(notice.getDisplayOrder())
         .build();
   }
 
