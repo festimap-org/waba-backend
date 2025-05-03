@@ -27,19 +27,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class NoticeService {
 
   private final NoticeRepository noticeRepository;
-  private final ImageRepository imageRepository;
   private final FestivalRepository festivalRepository;
 
   @Transactional
-  public NoticeResDto create(Long festivalId, NoticeCreateDto noticeCreateDto) {
-    Festival festival = festivalRepository.findById(festivalId)
-            .orElseThrow(() -> new FestivalNotFoundException(festivalId));
-
-    Notice notice = Notice.from(festival,noticeCreateDto);
-    notice.addImages(noticeCreateDto.getImages());
-
-    Notice savedNotice = noticeRepository.save(notice);
-    return NoticeResDto.from(savedNotice);
+  public NoticeResDto create(Long festivalId, NoticeCreateReqDto noticeCreateReqDto) {
+    Festival festival = loadFestivalOrThrow(festivalId);
+    Notice notice = noticeRepository.save(Notice.from(festival, noticeCreateReqDto));
+    return NoticeResDto.from(notice);
   }
 
   @Transactional(readOnly = true)
@@ -48,12 +42,12 @@ public class NoticeService {
     return NoticeResDto.from(notice);
   }
 
+  //TODO : 리팩토링 필요 (sql 개선, 코드 리팩토링)
   @Transactional(readOnly = true)
   public PagedResponse<NoticeSummaryDto> getNoticesByType(Long festivalId, ArticleType type, int page, int size) {
     PageRequest pageRequest = PageRequest.of(page,size);
     Page<Notice> noticePage = noticeRepository
             .findAllByTypeAndFestivalIdOrderByUpdatedAtDesc(type,festivalId,pageRequest);
-
     return convertToPagedResponse(noticePage);
   }
 
@@ -65,12 +59,9 @@ public class NoticeService {
   }
 
   @Transactional
-  public NoticeResDto updateNotice(Long noticeId, NoticeUpdateDto noticeUpdateDto) {
+  public NoticeResDto updateNotice(Long noticeId, NoticeUpdateReqDto noticeUpdateReqDto) {
     Notice notice = loadNoticeOrThrow(noticeId);
-
-    imageRepository.deleteByIdIn(noticeUpdateDto.getDeleteIds());
-    notice.updateNotice(noticeUpdateDto);
-    notice.addImages(noticeUpdateDto.getImages());
+    notice.updateNotice(noticeUpdateReqDto);
     return NoticeResDto.from(notice);
   }
 
@@ -79,6 +70,7 @@ public class NoticeService {
     noticeRepository.deleteById(id);
   }
 
+  @Transactional(readOnly = true)
   public List<PickedNoticeResDto> getPickedNotice(Long festivalId) {
     return noticeRepository.findAllByPickedAndFestivalId(festivalId,true).stream()
             .map(PickedNoticeResDto::new)
@@ -89,14 +81,14 @@ public class NoticeService {
   public List<PickedNoticeResDto> updateDisplayOrder(List<PickedNoticeUpdateDto> noticeDtos) {
     Map<Long, Integer> noticeIdToRankMap = noticeDtos.stream().collect(
             Collectors.toMap(PickedNoticeUpdateDto::getId, PickedNoticeUpdateDto::getDisplayOrder));
-
     List<Notice> notices = noticeRepository.findAllById(noticeIdToRankMap.keySet());
 
-    notices.forEach(notice -> {
-      Integer rank = noticeIdToRankMap.get(notice.getId());
-      notice.setRank(rank);
-    });
+    Notice.reOrderPickedNotices(notices, noticeIdToRankMap);
     return PickedNoticeResDto.noticesToPikedNoticeResDtos(notices);
+  }
+
+  private Festival loadFestivalOrThrow(Long id) {
+    return festivalRepository.findById(id).orElseThrow(() -> new FestivalNotFoundException(id));
   }
 
   private Notice loadNoticeOrThrow(Long id) {

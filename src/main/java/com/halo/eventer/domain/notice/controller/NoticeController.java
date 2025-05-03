@@ -24,9 +24,9 @@ public class NoticeController {
   private final NoticeService noticeService;
 
   @PostMapping
-  public NoticeResDto create(@RequestBody NoticeCreateDto noticeCreateDto,
+  public NoticeResDto create(@RequestBody NoticeCreateReqDto noticeCreateReqDto,
                              @RequestParam("festivalId") Long id) {
-    return noticeService.create(id, noticeCreateDto);
+    return noticeService.create(id, noticeCreateReqDto);
   }
 
   @GetMapping("/{noticeId}")
@@ -60,8 +60,8 @@ public class NoticeController {
 
     @PatchMapping("/{noticeId}")
     public NoticeResDto updateNotice(@PathVariable("noticeId") Long id,
-                                     @RequestBody NoticeUpdateDto noticeUpdateDto) {
-        return noticeService.updateNotice(id, noticeUpdateDto);
+                                     @RequestBody NoticeUpdateReqDto noticeUpdateReqDto) {
+        return noticeService.updateNotice(id, noticeUpdateReqDto);
     }
 
     @DeleteMapping("/{noticeId}")

@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.notice.dto;
 
+import com.halo.eventer.domain.image.Image;
 import com.halo.eventer.domain.image.dto.ImageDto;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.notice.ArticleType;
@@ -25,11 +26,10 @@ public class NoticeResDto {
     private LocalDateTime updateAt;
     private boolean pick;
     private Long displayOrder;
-
     private List<ImageDto> images;
 
   @Builder
-  public NoticeResDto(Long id,String title, String thumbnail, String tag, String writer, String content,
+  private NoticeResDto(Long id,String title, String thumbnail, String tag, String writer, String content,
                       ArticleType type, LocalDateTime createAt, LocalDateTime updateAt, List<ImageDto> images,
                       boolean pick, Long displayOrder) {
     this.id = id;
@@ -57,9 +57,15 @@ public class NoticeResDto {
         .type(notice.getType())
         .createAt(notice.getCreatedAt())
         .updateAt(notice.getUpdatedAt())
-        .images(notice.getImages().stream().map(ImageDto::from).collect(Collectors.toList()))
+        .images(toImageDtos(notice.getImages()))
         .pick(notice.isPicked())
         .displayOrder(notice.getId())
         .build();
+  }
+
+  private static List<ImageDto> toImageDtos(List<Image> images) {
+      return images.stream()
+              .map(ImageDto::from)
+              .collect(Collectors.toList());
   }
 }
