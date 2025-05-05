@@ -11,8 +11,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
-  Page<Notice> findAll(Pageable pageable);
-
   @Query("SELECT n FROM Notice n WHERE n.festival.id = :id AND n.picked = :picked ")
   List<Notice> findAllByPickedAndFestivalId(@Param("id") Long id,
                                              @Param("picked") Boolean picked);

@@ -4,7 +4,6 @@ import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.FestivalFixture;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.inquiry.exception.InquiryNotFoundException;
 import com.halo.eventer.domain.notice.ArticleType;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.notice.NoticeFixture;
