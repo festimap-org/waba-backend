@@ -4,6 +4,8 @@ import com.halo.eventer.domain.festival.Festival;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
+
+import com.halo.eventer.domain.stamp.exception.StampClosedException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,6 +42,12 @@ public class Stamp {
     }
 
     public void setStampFinishCnt(Integer cnt) { this.stampFinishCnt = cnt; }
+
+    public void validateStampOn() {
+        if (!this.isStampOn()){
+            throw new StampClosedException(id);
+        }
+    }
 
     public static Stamp create(Festival festival){
         return new Stamp(festival);
