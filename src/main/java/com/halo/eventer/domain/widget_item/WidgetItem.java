@@ -59,8 +59,7 @@ public class WidgetItem {
   }
 
   public void addImages(String url) {
-    Image image = new Image(url);
+    Image image = Image.ofWidgetItem(url,this);
     this.images.add(image);
-    image.updateWidgetItem(this);
   }
 }

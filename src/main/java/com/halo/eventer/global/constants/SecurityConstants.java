@@ -50,6 +50,8 @@ public class SecurityConstants {
             "/api/downWidget",
             "/univ",
             "/home/*",
+            "/notices/*",
+            "/notices",
     };
 
     public static final String[] PUBLIC_POST_URLS = {

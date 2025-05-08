@@ -6,7 +6,7 @@ import lombok.*;
 
 @NoArgsConstructor
 @Getter
-public class NoticeCreateDto {
+public class NoticeCreateReqDto {
   private String title;
   private String content;
   private String tag;
