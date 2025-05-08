@@ -2,22 +2,26 @@ package com.halo.eventer.domain.notice;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.image.Image;
-import com.halo.eventer.domain.notice.dto.NoticeCreateDto;
-import com.halo.eventer.domain.notice.dto.NoticeUpdateDto;
+import com.halo.eventer.domain.notice.dto.NoticeCreateReqDto;
+import com.halo.eventer.domain.notice.dto.NoticeUpdateReqDto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import javax.persistence.*;
 
+import com.halo.eventer.domain.notice.exception.MissingNoticeException;
 import com.halo.eventer.global.common.BaseTime;
 import com.halo.eventer.global.constants.DisplayOrderConstants;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(name = "notice",indexes = {
+        @Index(name = "idx_notice_paging",columnList = "festival_id, type, updated_at DESC")
+})
 public class Notice extends BaseTime {
 
   @Id
@@ -38,7 +42,8 @@ public class Notice extends BaseTime {
   @Enumerated(EnumType.STRING)
   private ArticleType type;
 
-  @OneToMany(mappedBy = "notice", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+  @OneToMany(mappedBy = "notice", fetch = FetchType.LAZY, orphanRemoval = true,
+          cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
   private List<Image> images = new ArrayList<>();
 
   private Integer displayOrder;
@@ -48,8 +53,8 @@ public class Notice extends BaseTime {
   private Festival festival;
 
   @Builder
-  public Notice(String tag, String title, String writer, String content, String thumbnail,
-                ArticleType type, Festival festival) {
+  private Notice(String tag, String title, String writer, String content, String thumbnail,
+                ArticleType type, Festival festival, List<String> images) {
     this.tag = tag;
     this.title = title;
     this.writer = writer;
@@ -59,18 +64,20 @@ public class Notice extends BaseTime {
     this.festival = festival;
     this.picked = false;
     this.displayOrder = DisplayOrderConstants.DISPLAY_ORDER_DEFAULT;
+    addImages(images);
   }
 
-  public static Notice from(Festival festival, NoticeCreateDto dto) {
+  public static Notice from(Festival festival, NoticeCreateReqDto dto) {
     return Notice.builder()
-            .tag(dto.getTag())
-            .title(dto.getTitle())
-            .writer(dto.getWriter())
-            .content(dto.getContent())
-            .thumbnail(dto.getThumbnail())
-            .type(dto.getType())
-            .festival(festival)
-            .build();
+        .tag(dto.getTag())
+        .title(dto.getTitle())
+        .writer(dto.getWriter())
+        .content(dto.getContent())
+        .thumbnail(dto.getThumbnail())
+        .type(dto.getType())
+        .festival(festival)
+        .images(dto.getImages())
+        .build();
   }
 
   public void updatePicked(boolean picked) {
@@ -80,21 +87,39 @@ public class Notice extends BaseTime {
     }
   }
 
-  public void updateNotice(NoticeUpdateDto n) {
-    this.title = n.getTitle();
-    this.content = n.getContent();
-    this.thumbnail = n.getThumbnail();
-    this.tag = n.getTag();
-    this.writer = n.getWriter();
-    this.type = n.getType();
+  public void updateNotice(NoticeUpdateReqDto noticeUpdateReqDto) {
+    this.title = noticeUpdateReqDto.getTitle();
+    this.content = noticeUpdateReqDto.getContent();
+    this.thumbnail = noticeUpdateReqDto.getThumbnail();
+    this.tag = noticeUpdateReqDto.getTag();
+    this.writer = noticeUpdateReqDto.getWriter();
+    this.type = noticeUpdateReqDto.getType();
+    deleteImages(noticeUpdateReqDto.getDeleteIds());
+    addImages(noticeUpdateReqDto.getImages());
   }
 
-  public void setRank(Integer rank) {
-    this.displayOrder = rank;
+  public static void reOrderPickedNotices(List<Notice> notices,
+                                          Map<Long, Integer> newOrders) {
+    notices.forEach(n -> {
+      Integer newDisplayOrder = newOrders.get(n.getId());
+      if (newDisplayOrder == null)
+        throw new MissingNoticeException(n.getId());
+      n.changeDisplayOrder(newDisplayOrder);
+    });
   }
 
-  public void addImages(List<String> newImages) {
-    newImages.forEach(o -> this.images.add(new Image(o)));
-    images.forEach(o -> o.setNotice(this));
+  private void addImages(List<String> newImages) {
+    newImages.stream()
+            .map(o->Image.ofNotice(o,this))
+            .forEach(o-> images.add(o));
+  }
+
+  private void deleteImages(List<Long> imageIds) {
+    Set<Long> idsToDelete = new HashSet<>(imageIds);
+    images.removeIf(image -> idsToDelete.contains(image.getId()));
+  }
+
+  private void changeDisplayOrder(Integer newDisplayOrder) {
+    this.displayOrder = newDisplayOrder;
   }
 }

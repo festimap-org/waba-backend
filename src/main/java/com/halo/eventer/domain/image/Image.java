@@ -26,19 +26,21 @@ public class Image {
   @JoinColumn(name = "widget_item_id")
   private WidgetItem widgetItem;
 
-  public Image(String image_url) {
-    this.imageUrl = image_url;
+  private Image(String imageUrl, Notice notice, WidgetItem widgetItem) {
+    this.imageUrl = imageUrl;
+    this.notice = notice;
+    this.widgetItem = widgetItem;
+  }
+
+  public static Image ofNotice(String imageUrl, Notice notice) {
+    return new Image(imageUrl,notice,null);
+  }
+
+  public static Image ofWidgetItem(String imageUrl, WidgetItem widgetItem) {
+    return new Image(imageUrl,null,widgetItem);
   }
 
   public void setImage(String imageUrl) {
     this.imageUrl = imageUrl;
-  }
-
-  public void setNotice(Notice notice) {
-    this.notice = notice;
-  }
-
-  public void updateWidgetItem(WidgetItem widgetItem) {
-    this.widgetItem = widgetItem;
   }
 }

@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.notice.dto;
 
+import com.halo.eventer.domain.image.Image;
 import com.halo.eventer.domain.image.dto.ImageDto;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.notice.ArticleType;
@@ -21,17 +22,16 @@ public class NoticeResDto {
     private String writer;
     private String content;
     private ArticleType type;
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private boolean pick;
-    private Long displayOrder;
-
+    private Integer displayOrder;
     private List<ImageDto> images;
 
   @Builder
-  public NoticeResDto(Long id,String title, String thumbnail, String tag, String writer, String content,
+  private NoticeResDto(Long id,String title, String thumbnail, String tag, String writer, String content,
                       ArticleType type, LocalDateTime createAt, LocalDateTime updateAt, List<ImageDto> images,
-                      boolean pick, Long displayOrder) {
+                      boolean pick, Integer displayOrder) {
     this.id = id;
     this.title = title;
     this.thumbnail = thumbnail;
@@ -39,8 +39,8 @@ public class NoticeResDto {
     this.writer = writer;
     this.content = content;
     this.type = type;
-    this.createAt = createAt;
-    this.updateAt = updateAt;
+    this.createdAt = createAt;
+    this.updatedAt = updateAt;
     this.images = images;
     this.pick = pick;
     this.displayOrder = displayOrder;
@@ -57,9 +57,15 @@ public class NoticeResDto {
         .type(notice.getType())
         .createAt(notice.getCreatedAt())
         .updateAt(notice.getUpdatedAt())
-        .images(notice.getImages().stream().map(ImageDto::from).collect(Collectors.toList()))
+        .images(toImageDtos(notice.getImages()))
         .pick(notice.isPicked())
-        .displayOrder(notice.getId())
+        .displayOrder(notice.getDisplayOrder())
         .build();
+  }
+
+  private static List<ImageDto> toImageDtos(List<Image> images) {
+      return images.stream()
+              .map(ImageDto::from)
+              .collect(Collectors.toList());
   }
 }
