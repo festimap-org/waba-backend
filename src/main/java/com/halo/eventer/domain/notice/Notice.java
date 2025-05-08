@@ -19,6 +19,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(name = "notice",indexes = {
+        @Index(name = "idx_notice_paging",columnList = "festival_id, type, updated_at DESC")
+})
 public class Notice extends BaseTime {
 
   @Id
