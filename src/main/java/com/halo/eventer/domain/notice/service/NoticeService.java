@@ -3,7 +3,6 @@ package com.halo.eventer.domain.notice.service;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.image.ImageRepository;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.notice.dto.*;
 import com.halo.eventer.domain.notice.dto.user.UserNoticeNoOffsetPageDto;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 
 import com.halo.eventer.global.common.page.PageInfo;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;

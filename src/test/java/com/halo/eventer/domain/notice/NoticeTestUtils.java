@@ -18,8 +18,8 @@ public class NoticeTestUtils {
         assertThat(result.getWriter()).isEqualTo(notice.getWriter());
         assertThat(result.isPick()).isEqualTo(notice.isPicked());
         assertThat(result.getDisplayOrder()).isEqualTo(notice.getDisplayOrder());
-        assertThat(result.getCreateAt()).isEqualTo(notice.getCreatedAt());
-        assertThat(result.getUpdateAt()).isEqualTo(notice.getUpdatedAt());
+        assertThat(result.getCreatedAt()).isEqualTo(notice.getCreatedAt());
+        assertThat(result.getUpdatedAt()).isEqualTo(notice.getUpdatedAt());
         assertThat(result.getImages()).hasSize(notice.getImages().size());
     }
 

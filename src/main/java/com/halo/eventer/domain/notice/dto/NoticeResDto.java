@@ -22,8 +22,8 @@ public class NoticeResDto {
     private String writer;
     private String content;
     private ArticleType type;
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private boolean pick;
     private Integer displayOrder;
     private List<ImageDto> images;
@@ -39,8 +39,8 @@ public class NoticeResDto {
     this.writer = writer;
     this.content = content;
     this.type = type;
-    this.createAt = createAt;
-    this.updateAt = updateAt;
+    this.createdAt = createAt;
+    this.updatedAt = updateAt;
     this.images = images;
     this.pick = pick;
     this.displayOrder = displayOrder;
