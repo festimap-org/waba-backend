@@ -9,6 +9,8 @@ import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.notice.NoticeFixture;
 import com.halo.eventer.domain.notice.NoticeTestUtils;
 import com.halo.eventer.domain.notice.dto.*;
+import com.halo.eventer.domain.notice.dto.user.UserNoticeNoOffsetPageDto;
+import com.halo.eventer.domain.notice.dto.user.UserNoticeResDto;
 import com.halo.eventer.domain.notice.exception.NoticeNotFoundException;
 import com.halo.eventer.domain.notice.repository.NoticeRepository;
 import com.halo.eventer.global.common.page.PagedResponse;
@@ -24,6 +26,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,6 +107,18 @@ public class NoticeServiceTest {
     }
 
     @Test
+    void 유저용_noticeId_로_단일조회(){
+        //given
+        given(noticeRepository.findById(noticeId)).willReturn(Optional.of(notice));
+
+        //when
+        UserNoticeResDto result = noticeService.getNoticeByIdForUser(noticeId);
+
+        //then
+        NoticeTestUtils.assertUserNoticeDtoEqualsNotice(result, notice);
+    }
+
+    @Test
     void notice_단일조회시_없을_경우_예외(){
         //given
         given(noticeRepository.findById(noticeId)).willReturn(Optional.empty());
@@ -110,6 +126,28 @@ public class NoticeServiceTest {
         //when & then
         assertThatThrownBy(()-> noticeService.getNoticeById(noticeId))
                 .isInstanceOf(NoticeNotFoundException.class);
+    }
+
+    @Test
+    void notice_index_페이징_조회(){
+        int size = 2;
+        List<Notice> notices = new ArrayList<>(Arrays.asList(
+                Notice.from(festival, noticeCreateReqDto),
+                Notice.from(festival, noticeCreateReqDto),
+                Notice.from(festival, noticeCreateReqDto)
+        ));
+        given(noticeRepository.getNoticesNextPageByFestivalIdAndLastValue(
+                eq(festivalId), eq(ArticleType.NOTICE.name()),
+                any(LocalDateTime.class), anyLong(), eq(size + 1)))
+                .willReturn(notices);
+
+        //when
+        UserNoticeNoOffsetPageDto dto = noticeService.getNoticesByTypeWithNoOffsetPaging(
+                        festivalId, ArticleType.NOTICE, LocalDateTime.now(), 0L, size);
+
+        // then
+        assertThat(dto.getIsLast()).isFalse();
+        assertThat(dto.getNotices()).hasSize(size);
     }
 
     @Test

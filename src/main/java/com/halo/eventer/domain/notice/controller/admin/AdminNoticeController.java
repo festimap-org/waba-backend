@@ -1,46 +1,43 @@
-package com.halo.eventer.domain.notice.controller;
+package com.halo.eventer.domain.notice.controller.admin;
 
+import com.halo.eventer.domain.notice.ArticleType;
 import com.halo.eventer.domain.notice.dto.*;
 import com.halo.eventer.domain.notice.service.NoticeService;
 import com.halo.eventer.global.common.page.PagedResponse;
-import com.halo.eventer.domain.notice.ArticleType;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
 
-
-@Tag(name = "공지사항", description = "공지사항과 관련된 모든 것")
+@Tag(name = "공지사항 ADMIN 용", description = "백오피스용 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/notice")
-@Validated
-public class NoticeController {
+@RequestMapping("/admin/notices")
+public class AdminNoticeController {
 
-  private final NoticeService noticeService;
+    private final NoticeService noticeService;
 
-  @PostMapping
-  public NoticeResDto create(@RequestBody NoticeCreateReqDto noticeCreateReqDto,
-                             @RequestParam("festivalId") Long id) {
-    return noticeService.create(id, noticeCreateReqDto);
-  }
+    @PostMapping
+    public NoticeResDto create(@RequestBody NoticeCreateReqDto noticeCreateReqDto,
+                               @RequestParam("festivalId") Long id) {
+        return noticeService.create(id, noticeCreateReqDto);
+    }
 
-  @GetMapping("/{noticeId}")
-  public NoticeResDto getNotice(@PathVariable("noticeId") Long noticeId) {
-    return noticeService.getNoticeById(noticeId);
-  }
+    @GetMapping("/{noticeId}")
+    public NoticeResDto getNotice(@PathVariable("noticeId") Long noticeId) {
+        return noticeService.getNoticeById(noticeId);
+    }
 
-  @GetMapping()
-  public PagedResponse<NoticeSummaryDto> inquireNoticeList(@RequestParam Long festivalId,
-                                                           @RequestParam("type") ArticleType type,
-                                                           @RequestParam(defaultValue="0") @Min(0) int page,
-                                                           @RequestParam @Min(1) @Max(50) int size){
-    return noticeService.getNoticesByType(festivalId, type,page,size);
-  }
+    @GetMapping()
+    public PagedResponse<NoticeSummaryDto> inquireNoticeList(@RequestParam Long festivalId,
+                                                             @RequestParam("type") ArticleType type,
+                                                             @RequestParam(defaultValue="0") @Min(0) int page,
+                                                             @RequestParam @Min(1) @Max(50) int size){
+        return noticeService.getNoticesByType(festivalId, type,page,size);
+    }
 
     @PostMapping("/banner")
     public NoticeResDto updateBanner(@RequestParam("noticeId") Long noticeId,

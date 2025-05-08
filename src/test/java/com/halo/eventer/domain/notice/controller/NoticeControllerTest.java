@@ -3,9 +3,11 @@ package com.halo.eventer.domain.notice.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.notice.ArticleType;
 import com.halo.eventer.domain.notice.NoticeFixture;
-import com.halo.eventer.domain.notice.dto.*;
+import com.halo.eventer.domain.notice.controller.user.NoticeController;
+import com.halo.eventer.domain.notice.dto.NoticeCreateReqDto;
+import com.halo.eventer.domain.notice.dto.user.UserNoticeNoOffsetPageDto;
+import com.halo.eventer.domain.notice.dto.user.UserNoticeResDto;
 import com.halo.eventer.domain.notice.service.NoticeService;
-import com.halo.eventer.global.common.page.PagedResponse;
 import com.halo.eventer.global.config.ControllerTestSecurityBeans;
 import com.halo.eventer.global.config.security.SecurityConfig;
 import com.halo.eventer.global.security.provider.JwtProvider;
@@ -16,16 +18,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.BDDMockito.then;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,9 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @Import({ControllerTestSecurityBeans.class, SecurityConfig.class})
 public class NoticeControllerTest {
-
     @Autowired
-    private MockMvc mvc;
+    private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -47,244 +47,42 @@ public class NoticeControllerTest {
 
     @MockBean
     private JwtProvider jwtProvider;
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
-    void notice_생성_api_성공_테스트()throws Exception {
-        //given
+    void 유저용_notice_단일조회_성공() throws Exception {
         NoticeCreateReqDto noticeCreateReqDto = NoticeFixture.공지사항_생성_DTO();
-        NoticeResDto responseDto = NoticeResDto.builder()
+        UserNoticeResDto response = UserNoticeResDto.builder()
                 .title(noticeCreateReqDto.getTitle())
                 .content(noticeCreateReqDto.getContent())
-                .type(noticeCreateReqDto.getType())
                 .build();
-        given(noticeService.create(eq(1L),any(NoticeCreateReqDto.class))).willReturn(responseDto);
+        given(noticeService.getNoticeByIdForUser(eq(1L))).willReturn(response);
 
-        //when & then
-        mockMvc.perform(post("/notice")
-                .param("festivalId","1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(noticeCreateReqDto)))
+        mockMvc.perform(get("/notices/{noticesId}",1L)
+                        .param("type","NOTICE")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(noticeCreateReqDto.getTitle()))
-                .andExpect(jsonPath("$.type").value(noticeCreateReqDto.getType().toString()));
+                .andExpect(jsonPath("$.content").value(noticeCreateReqDto.getContent()));
     }
 
     @Test
-    void notice_생성_api_권한_없음() throws Exception {
-        NoticeCreateReqDto noticeCreateReqDto = NoticeFixture.공지사항_생성_DTO();
-        NoticeResDto responseDto = NoticeResDto.builder()
-                .title(noticeCreateReqDto.getTitle())
-                .content(noticeCreateReqDto.getContent())
-                .type(noticeCreateReqDto.getType())
-                .build();
-        given(noticeService.create(eq(1L),any(NoticeCreateReqDto.class))).willReturn(responseDto);
+    void 파라미터_생략시_DTO_기본값으로_서비스_호출() throws Exception {
+        // given – 서비스 Mock 반환값
+        UserNoticeNoOffsetPageDto noticeNoOffsetPageDto = new UserNoticeNoOffsetPageDto();
+        given(noticeService.getNoticesByTypeWithNoOffsetPaging(
+                1L, ArticleType.NOTICE, LocalDateTime.of(9999, 12, 31, 23, 59, 59),
+                0L,20)).willReturn(noticeNoOffsetPageDto);
 
-        mockMvc.perform(post("/notice")
-                .param("festivalId","1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(noticeCreateReqDto)))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void notice_단일_조회_성공()throws Exception {
-        NoticeResDto responseDto = NoticeResDto.builder()
-                .title("title")
-                .content("content")
-                .type(ArticleType.NOTICE)
-                .build();
-        given(noticeService.getNoticeById(eq(1L))).willReturn(responseDto);
-
-        mockMvc.perform(get("/notice/{noticeId}",1L)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("title"))
-                .andExpect(jsonPath("$.type").value(ArticleType.NOTICE.toString()));
-    }
-
-    @Test
-    void notice_페이징_조회_성공() throws Exception{
-        //given
-        PagedResponse<NoticeSummaryDto> response = new PagedResponse<>();
-        given(noticeService.getNoticesByType(eq(1L),any(ArticleType.class),eq(0),eq(10)))
-                .willReturn(response);
-
-
-        //when & then
-        mockMvc.perform(get("/notice")
+        // when
+        mockMvc.perform(get("/notices")
                         .param("festivalId","1")
-                        .param("type","NOTICE")
-                        .param("page","0")
-                        .param("size","10")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .param("type", "NOTICE")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-    }
 
-    @Test
-    void notice_페이징_조회_ArticleType_예외() throws Exception{
-        //given
-        PagedResponse<NoticeSummaryDto> response = new PagedResponse<>();
-        given(noticeService.getNoticesByType(eq(1L),any(ArticleType.class),eq(0),eq(10)))
-                .willReturn(response);
-
-        //when & then
-        mockMvc.perform(get("/notice")
-                        .param("festivalId","1")
-                        .param("type","NOTICEE")
-                        .param("page","0")
-                        .param("size","10")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
-    void banner_선택_api_성공() throws Exception {
-        NoticeResDto response = NoticeResDto.builder()
-                .title("title")
-                .content("content")
-                .type(ArticleType.NOTICE)
-                .build();
-        given(noticeService.updatePicked(eq(1L),eq(true)))
-                .willReturn(response);
-
-        //when & then
-        mockMvc.perform(post("/notice/banner")
-                        .param("noticeId","1")
-                        .param("picked","true")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value(response.getTitle()))
-                .andExpect(jsonPath("$.content").value(response.getContent()))
-                .andExpect(jsonPath("$.type").value(response.getType().toString()));
-    }
-
-    @Test
-    void banner_선택_api_권한_예외()throws Exception{
-        NoticeResDto response = NoticeResDto.builder()
-                .title("title")
-                .content("content")
-                .type(ArticleType.NOTICE)
-                .build();
-        given(noticeService.updatePicked(eq(1L),eq(true)))
-                .willReturn(response);
-
-        //when & then
-        mockMvc.perform(post("/notice/banner")
-                        .param("noticeId","1")
-                        .param("picked","true")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void 선택된_notice_리스트_조회_성공()throws Exception{
-        PickedNoticeResDto n1 = new PickedNoticeResDto();
-        PickedNoticeResDto n2 = new PickedNoticeResDto();
-        List<PickedNoticeResDto> response = List.of(n1,n2);
-        given(noticeService.getPickedNotice(eq(1L))).willReturn(response);
-
-        //when & then
-        mockMvc.perform(get("/notice/banner")
-                .param("festivalId","1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
-    }
-
-    @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
-    void picked_notice_순서_변경_api_성공()throws Exception{
-        PickedNoticeResDto n1 = new PickedNoticeResDto();
-        PickedNoticeResDto n2 = new PickedNoticeResDto();
-        PickedNoticeUpdateDto n3 = new PickedNoticeUpdateDto();
-        PickedNoticeUpdateDto n4 = new PickedNoticeUpdateDto();
-        List<PickedNoticeResDto> response = List.of(n1,n2);
-        List<PickedNoticeUpdateDto> request = List.of(n3,n4);
-        given(noticeService.updateDisplayOrder(anyList())).willReturn(response);
-
-        mockMvc.perform(patch("/notice/banner")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
-    }
-
-    @Test
-    void picked_notice_순서_변경_api_권한_예외()throws Exception{
-        PickedNoticeResDto n1 = new PickedNoticeResDto();
-        PickedNoticeResDto n2 = new PickedNoticeResDto();
-        PickedNoticeUpdateDto n3 = new PickedNoticeUpdateDto();
-        PickedNoticeUpdateDto n4 = new PickedNoticeUpdateDto();
-        List<PickedNoticeResDto> response = List.of(n1,n2);
-        List<PickedNoticeUpdateDto> request = List.of(n3,n4);
-        given(noticeService.updateDisplayOrder(anyList())).willReturn(response);
-
-        mockMvc.perform(patch("/notice/banner")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
-    void notice_수정_API_성공() throws Exception{
-        NoticeUpdateReqDto noticeUpdateReqDto = NoticeFixture.공지사항_수정_DTO();
-        NoticeResDto responseDto = NoticeResDto.builder()
-                .title(noticeUpdateReqDto.getTitle())
-                .content(noticeUpdateReqDto.getContent())
-                .type(noticeUpdateReqDto.getType())
-                .build();
-        given(noticeService.updateNotice(eq(1L),any(NoticeUpdateReqDto.class))).willReturn(responseDto);
-
-        mockMvc.perform(patch("/notice/{noticeId}",1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(noticeUpdateReqDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value(noticeUpdateReqDto.getTitle()))
-                .andExpect(jsonPath("$.content").value(noticeUpdateReqDto.getContent()))
-                .andExpect(jsonPath("$.type").value(noticeUpdateReqDto.getType().toString()));
-    }
-
-    @Test
-    void notice_수정_API_권한_예외() throws Exception{
-        NoticeUpdateReqDto noticeUpdateReqDto = NoticeFixture.공지사항_수정_DTO();
-        NoticeResDto responseDto = NoticeResDto.builder()
-                .title(noticeUpdateReqDto.getTitle())
-                .content(noticeUpdateReqDto.getContent())
-                .type(noticeUpdateReqDto.getType())
-                .build();
-        given(noticeService.updateNotice(eq(1L),any(NoticeUpdateReqDto.class))).willReturn(responseDto);
-
-        mockMvc.perform(patch("/notice/{noticeId}",1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(noticeUpdateReqDto)))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
-    void notice_삭제_api_성공() throws Exception{
-        //given
-        doNothing().when(noticeService).delete(eq(1L));
-
-        //then
-        mockMvc.perform(delete("/notice/{noticeId}",1L)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        verify(noticeService,times(1)).delete(eq(1L));
-    }
-
-    @Test
-    void notice_삭제_api_권한예외() throws Exception{
-        //given
-        doNothing().when(noticeService).delete(eq(1L));
-
-        //then
-        mockMvc.perform(delete("/notice/{noticeId}",1L)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+        // then – 서비스가 기대 값으로 호출됐는지 검증
+        then(noticeService).should().getNoticesByTypeWithNoOffsetPaging(
+                1L, ArticleType.NOTICE, LocalDateTime.of(9999, 12, 31, 23, 59, 59),
+                0L,20);
     }
 }

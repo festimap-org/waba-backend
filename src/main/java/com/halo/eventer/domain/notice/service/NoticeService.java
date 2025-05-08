@@ -6,17 +6,21 @@ import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.image.ImageRepository;
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.notice.dto.*;
+import com.halo.eventer.domain.notice.dto.user.UserNoticeNoOffsetPageDto;
+import com.halo.eventer.domain.notice.dto.user.UserNoticeResDto;
 import com.halo.eventer.domain.notice.exception.NoticeNotFoundException;
 import com.halo.eventer.domain.notice.repository.NoticeRepository;
 import com.halo.eventer.global.common.page.PagedResponse;
 import com.halo.eventer.domain.notice.ArticleType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.halo.eventer.global.common.page.PageInfo;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -42,6 +46,12 @@ public class NoticeService {
     return NoticeResDto.from(notice);
   }
 
+  @Transactional(readOnly = true)
+  public UserNoticeResDto getNoticeByIdForUser(Long id) {
+    Notice notice = loadNoticeOrThrow(id);
+    return UserNoticeResDto.from(notice);
+  }
+
   //TODO : 리팩토링 필요 (sql 개선, 코드 리팩토링)
   @Transactional(readOnly = true)
   public PagedResponse<NoticeSummaryDto> getNoticesByType(Long festivalId, ArticleType type, int page, int size) {
@@ -49,6 +59,20 @@ public class NoticeService {
     Page<Notice> noticePage = noticeRepository
             .findAllByTypeAndFestivalIdOrderByUpdatedAtDesc(type,festivalId,pageRequest);
     return convertToPagedResponse(noticePage);
+  }
+
+  @Transactional(readOnly = true)
+  public UserNoticeNoOffsetPageDto getNoticesByTypeWithNoOffsetPaging(Long festivalId, ArticleType type,
+                                                                      LocalDateTime lastUpdatedAt,
+                                                                      Long lastId, int size) {
+    List<Notice> notices = noticeRepository
+            .getNoticesNextPageByFestivalIdAndLastValue(festivalId, type.name(), lastUpdatedAt, lastId, size + 1);
+
+    boolean isLast = notices.size() <= size;
+    if (!isLast)
+      notices.remove(notices.size() - 1);
+
+    return UserNoticeNoOffsetPageDto.of(notices,isLast);
   }
 
   @Transactional
