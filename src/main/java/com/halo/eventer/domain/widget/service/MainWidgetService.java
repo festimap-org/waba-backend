@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MainWidgetService {
 
-    private final DownWidgetRepository downWidgetRepository;
     private final FestivalRepository festivalRepository;
     private final MainWidgetRepository mainWidgetRepository;
 
@@ -53,6 +52,6 @@ public class MainWidgetService {
 
     @Transactional
     public void delete(Long id) {
-        downWidgetRepository.deleteById(id);
+        mainWidgetRepository.deleteById(id);
     }
 }
