@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/downWidget")
+@RequestMapping("/api/downWidgets")
 @Tag(name = "하단 위젯 API")
 public class DownWidgetController {
 

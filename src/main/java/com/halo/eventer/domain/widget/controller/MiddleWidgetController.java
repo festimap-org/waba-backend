@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/api/middleWidget")
+@RequestMapping("/api/middleWidgets")
 @Tag(name = "중간 위젯 API")
 public class MiddleWidgetController {
   private final MiddleWidgetService middleWidgetService;
@@ -29,13 +29,13 @@ public class MiddleWidgetController {
     return middleWidgetService.create(festivalId, middleWidgetCreateDto);
   }
 
-  @GetMapping()
-  public MiddleWidgetResDto getMiddleWidget(@RequestParam("id") Long id) {
+  @GetMapping("/{id}")
+  public MiddleWidgetResDto getMiddleWidget(@PathVariable("id") Long id) {
     return middleWidgetService.getMiddleWidget(id);
   }
 
-  @GetMapping("/{festivalId}")
-  public PagedResponse<MiddleWidgetResDto> getMiddleWidgets(@PathVariable Long festivalId,
+  @GetMapping()
+  public PagedResponse<MiddleWidgetResDto> getMiddleWidgets(@RequestParam("festivalId") Long festivalId,
                                                             @RequestParam(name = "sortOption") SortOption sortOption,
                                                             @RequestParam(defaultValue="0") @Min(0) int page,
                                                             @RequestParam @Min(1) @Max(50) int size) {
@@ -43,13 +43,13 @@ public class MiddleWidgetController {
   }
 
   @PatchMapping()
-  public MiddleWidgetResDto updateMiddleBanner(@RequestParam("id") Long id,
+  public MiddleWidgetResDto update(@RequestParam("id") Long id,
                                                @RequestBody MiddleWidgetCreateDto middleWidgetCreateDto) {
     return middleWidgetService.update(id, middleWidgetCreateDto);
   }
 
   @DeleteMapping()
-  public void deleteMiddleBanner(@RequestParam("id") Long id) {
+  public void delete(@RequestParam("id") Long id) {
     middleWidgetService.delete(id);
   }
 

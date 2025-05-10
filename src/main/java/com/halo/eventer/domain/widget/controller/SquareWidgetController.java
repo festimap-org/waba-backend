@@ -17,27 +17,27 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/squareWidget")
+@RequestMapping("/api/squareWidgets")
 @Validated
 @Tag(name = "정사각형 위젯 API")
 public class SquareWidgetController {
 
   private final SquareWidgetService squareWidgetService;
 
-  @PostMapping("/{festivalId}")
-  public SquareWidgetResDto create(@PathVariable Long festivalId,
+  @PostMapping()
+  public SquareWidgetResDto create(@RequestParam("festivalId") Long festivalId,
                                    @RequestBody SquareWidgetCreateDto squareWidgetCreateDto) {
 
     return squareWidgetService.create(festivalId, squareWidgetCreateDto);
   }
 
-  @GetMapping
-  public SquareWidgetResDto getWidget(@RequestParam("widgetId") Long widgetId) {
-    return squareWidgetService.getSquareWidget(widgetId);
+  @GetMapping("/{id}")
+  public SquareWidgetResDto getWidget(@PathVariable("id") Long id) {
+    return squareWidgetService.getSquareWidget(id);
   }
 
-  @GetMapping("/{festivalId}")
-  public PagedResponse<SquareWidgetResDto> getWidgets(@PathVariable Long festivalId,
+  @GetMapping()
+  public PagedResponse<SquareWidgetResDto> getWidgets(@RequestParam("festivalId") Long festivalId,
                                                       @RequestParam(name = "sortOption") SortOption sortOption,
                                                       @RequestParam(defaultValue="0") @Min(0) int page,
                                                       @RequestParam @Min(1) @Max(50) int size) {
@@ -45,9 +45,9 @@ public class SquareWidgetController {
   }
 
   @PatchMapping
-  public SquareWidgetResDto update(@RequestParam("widgetId") Long widgetId,
+  public SquareWidgetResDto update(@RequestParam("id") Long id,
                                    @RequestBody SquareWidgetCreateDto squareWidgetCreateDto) {
-    return squareWidgetService.update(widgetId, squareWidgetCreateDto);
+    return squareWidgetService.update(id, squareWidgetCreateDto);
   }
 
   @DeleteMapping
