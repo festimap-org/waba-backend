@@ -49,6 +49,7 @@ public class SecurityConstants {
             "/home/*",
             "/notices/*",
             "/notices",
+            "/menus"
     };
 
     public static final String[] PUBLIC_POST_URLS = {
