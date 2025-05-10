@@ -25,11 +25,9 @@ public class MapResDto {
     private String content;
     private String thumbnail;
     private String icon;
-
     private LocationInfoDto locationInfo;
     private OperationInfoDto operationInfo;
     private ButtonInfoDto buttonInfo;
-
     private String categoryName;
     private List<DurationResDto> durations;
 
@@ -70,18 +68,6 @@ public class MapResDto {
         List<Duration> durations = map.getDurationMaps().stream()
                 .map(DurationMap::getDuration)
                 .collect(Collectors.toList());
-        return MapResDto.builder()
-                .mapId(map.getId())
-                .name(map.getName())
-                .summary(map.getSummary())
-                .content(map.getContent())
-                .thumbnail(map.getThumbnail())
-                .icon(map.getIcon())
-                .locationInfo(LocationInfoDto.from(map.getLocationInfo()))
-                .operationInfo(OperationInfoDto.from(map.getOperationInfo()))
-                .buttonInfo(ButtonInfoDto.from(map.getButtonInfo()))
-                .categoryName(map.getMapCategory().getCategoryName())
-                .durations(DurationResDto.fromDurations(durations))
-                .build();
+        return of(map, durations);
     }
 }

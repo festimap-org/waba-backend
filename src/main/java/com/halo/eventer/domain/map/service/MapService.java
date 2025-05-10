@@ -3,7 +3,6 @@ package com.halo.eventer.domain.map.service;
 import com.halo.eventer.domain.duration.Duration;
 import com.halo.eventer.domain.duration.repository.DurationMapJdbcRepository;
 import com.halo.eventer.domain.duration.repository.DurationRepository;
-import com.halo.eventer.domain.duration.DurationMap;
 import com.halo.eventer.domain.map.Map;
 import com.halo.eventer.domain.map.MapCategory;
 import com.halo.eventer.domain.map.dto.map.MapItemDto;
@@ -26,10 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class MapService {
+
     private final MapRepository mapRepository;
     private final MapCategoryRepository mapCategoryRepository;
     private final DurationRepository durationRepository;
-    private final DurationMapJdbcRepository mapJdbcRepository;
+    private final DurationMapJdbcRepository durationMapJdbcRepository;
 
     @Transactional
     public MapResDto create(MapCreateDto mapCreateDto, Long mapCategoryId){
@@ -37,10 +37,8 @@ public class MapService {
         MapCategory mapCategory = mapCategoryRepository.findById(mapCategoryId)
                 .orElseThrow(() -> new MapCategoryNotFoundException(mapCategoryId));
 
-        Map map = Map.of(mapCreateDto, mapCategory);
-        map = mapRepository.save(map);
-
-        mapJdbcRepository.batchInsertMapDurations(map.getId(), durations);
+        Map map = mapRepository.save(Map.of(mapCreateDto, mapCategory));
+        durationMapJdbcRepository.batchInsertMapDurations(map.getId(), durations);
 
         return MapResDto.of(map,durations);
     }
@@ -48,15 +46,13 @@ public class MapService {
   public MapResDto getMap(Long mapId) {
     Map map = mapRepository.findByIdWithCategoryAndDuration(mapId)
             .orElseThrow(() -> new MapNotFoundException(mapId));
-    List<Duration> durations = map.getDurationMaps().stream()
-            .map(DurationMap::getDuration)
-            .collect(Collectors.toList());
-    return MapResDto.of(map, durations);
+    return MapResDto.from(map);
   }
 
   public List<MapItemDto> getMaps(Long mapCategoryId) {
         return mapRepository.findByCategoryIdWithCategoryAndDuration(mapCategoryId)
-                .stream().map(MapItemDto::new).collect(Collectors.toList());
+                .stream().map(MapItemDto::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -67,10 +63,7 @@ public class MapService {
                 .orElseThrow(() -> new MapNotFoundException(mapId));
         List<Duration> durations = getValidatedDurations(mapUpdateDto.getDurationBinding().getIdsToAdd());
 
-        map.updateMap(mapUpdateDto, mapCategory);
-        map.updateDurations(mapUpdateDto.getDurationBinding().getIdsToAdd(),
-                mapUpdateDto.getDurationBinding().getIdsToRemove(), durations);
-
+        map.updateMap(mapUpdateDto, mapCategory,durations);
         return MapResDto.from(map);
     }
 
