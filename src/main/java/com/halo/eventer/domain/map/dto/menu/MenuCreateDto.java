@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MenuCreateDto {
   private String name;
-
   private Integer price;
-
   private String summary;
   private String image;
 }

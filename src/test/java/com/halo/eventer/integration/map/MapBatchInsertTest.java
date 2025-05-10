@@ -6,12 +6,9 @@ import com.halo.eventer.domain.duration.repository.DurationRepository;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.FestivalCreateDto;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.map.Map;
 import com.halo.eventer.domain.map.MapCategory;
-import com.halo.eventer.domain.map.dto.map.ButtonInfoDto;
-import com.halo.eventer.domain.map.dto.map.LocationInfoDto;
+import com.halo.eventer.domain.map.MapFixture;
 import com.halo.eventer.domain.map.dto.map.MapCreateDto;
-import com.halo.eventer.domain.map.dto.map.OperationInfoDto;
 import com.halo.eventer.domain.map.repository.MapCategoryRepository;
 import com.halo.eventer.domain.map.service.MapService;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,12 +58,7 @@ public class MapBatchInsertTest {
 
   @Test
   void 지도정보생성시_N개의_DurationMap_생성_테스트() {
-    MapCreateDto mapCreateDto = MapCreateDto.builder()
-            .buttonInfo(new ButtonInfoDto())
-            .operationInfo(new OperationInfoDto())
-            .locationInfo(new LocationInfoDto())
-            .durationIdsToAdd(durationIds)
-            .build();
+    MapCreateDto mapCreateDto = MapFixture.지도_생성_DTO();
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     mapService.create(mapCreateDto, mapCategory.getId());

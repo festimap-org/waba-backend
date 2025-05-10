@@ -97,7 +97,7 @@ public class Map {
             .build();
   }
 
-  public void updateMap(MapUpdateDto mapUpdateDto, MapCategory mapCategory) {
+  public void updateMap(MapUpdateDto mapUpdateDto, MapCategory mapCategory, List<Duration> allDurations) {
     this.name = mapUpdateDto.getName();
     this.summary = mapUpdateDto.getSummary();
     this.content = mapUpdateDto.getContent();
@@ -107,13 +107,13 @@ public class Map {
     this.operationInfo = OperationInfo.from(mapUpdateDto.getOperationInfo());
     this.buttonInfo = ButtonInfo.from(mapUpdateDto.getButtonInfo());
     this.mapCategory = mapCategory;
+    updateDurations(mapUpdateDto.getDurationBinding().getIdsToAdd(),mapUpdateDto.getDurationBinding().getIdsToRemove(),
+            allDurations);
   }
 
-  public void addDurationMaps(List<Duration> durations) {
-    durations.forEach(duration -> this.durationMaps.add(DurationMap.of(duration, this)));
-  }
-
-  public void updateDurations(List<Long> durationIdsToAdd, List<Long> durationIdsToRemove, List<Duration> allDurations) {
+  private void updateDurations(List<Long> durationIdsToAdd,
+                               List<Long> durationIdsToRemove,
+                               List<Duration> allDurations) {
     Set<Long> currentIds = this.durationMaps.stream()
             .map(dm -> dm.getDuration().getId())
             .collect(Collectors.toSet());
