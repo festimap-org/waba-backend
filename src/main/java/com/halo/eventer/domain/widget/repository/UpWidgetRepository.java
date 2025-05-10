@@ -12,15 +12,16 @@ import java.util.List;
 
 public interface UpWidgetRepository extends JpaRepository<UpWidget, Long> {
 
-    @Query("SELECT u FROM UpWidget u " +
-            "WHERE u.festival.id = :festivalId " +
-            "ORDER BY u.createdAt DESC")
-    Page<UpWidget> findByFestivalIdOrderByCreateAtDesc(@Param("festivalId") Long festivalId, Pageable pageable);
-
-    @Query("SELECT u FROM UpWidget u " +
-            "WHERE u.festival.id = :festivalId " +
-            "ORDER BY u.updatedAt DESC")
-    Page<UpWidget> findByFestivalIdOrderByUpdateAtDesc(@Param("festivalId") Long festivalId, Pageable pageable);
+    //TODO: 사용시점에 주석 풀기
+//    @Query("SELECT u FROM UpWidget u " +
+//            "WHERE u.festival.id = :festivalId " +
+//            "ORDER BY u.createdAt DESC")
+//    Page<UpWidget> findByFestivalIdOrderByCreateAtDesc(@Param("festivalId") Long festivalId, Pageable pageable);
+//
+//    @Query("SELECT u FROM UpWidget u " +
+//            "WHERE u.festival.id = :festivalId " +
+//            "ORDER BY u.updatedAt DESC")
+//    Page<UpWidget> findByFestivalIdOrderByUpdateAtDesc(@Param("festivalId") Long festivalId, Pageable pageable);
 
     @Query("SELECT u FROM UpWidget u " +
             "WHERE u.festival.id = :festivalId " +
