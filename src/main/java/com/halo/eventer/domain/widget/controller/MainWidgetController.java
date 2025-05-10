@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/mainWidget")
+@RequestMapping("/api/mainWidgets")
 @Tag(name = "메인 위젯 API")
 public class MainWidgetController {
 

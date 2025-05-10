@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface MainWidgetRepository extends JpaRepository<MainWidget, Long> {
-  @Query("select e from DownWidget e WHERE e.festival.id = :festivalId")
+  @Query("select e from MainWidget e WHERE e.festival.id = :festivalId")
   List<MainWidget> findAllByFestivalId(@Param("festivalId") Long festivalId);
 }
