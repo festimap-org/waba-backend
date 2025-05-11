@@ -1,5 +1,17 @@
 package com.halo.eventer.domain.notice.controller;
 
+import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.notice.ArticleType;
 import com.halo.eventer.domain.notice.NoticeFixture;
@@ -11,17 +23,6 @@ import com.halo.eventer.domain.notice.service.NoticeService;
 import com.halo.eventer.global.config.ControllerTestSecurityBeans;
 import com.halo.eventer.global.config.security.SecurityConfig;
 import com.halo.eventer.global.security.provider.JwtProvider;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -57,9 +58,7 @@ public class NoticeControllerTest {
                 .build();
         given(noticeService.getNoticeByIdForUser(eq(1L))).willReturn(response);
 
-        mockMvc.perform(get("/notices/{noticesId}",1L)
-                        .param("type","NOTICE")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/notices/{noticesId}", 1L).param("type", "NOTICE").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(noticeCreateReqDto.getTitle()))
                 .andExpect(jsonPath("$.content").value(noticeCreateReqDto.getContent()));
@@ -70,19 +69,20 @@ public class NoticeControllerTest {
         // given – 서비스 Mock 반환값
         UserNoticeNoOffsetPageDto noticeNoOffsetPageDto = new UserNoticeNoOffsetPageDto();
         given(noticeService.getNoticesByTypeWithNoOffsetPaging(
-                1L, ArticleType.NOTICE, LocalDateTime.of(9999, 12, 31, 23, 59, 59),
-                0L,20)).willReturn(noticeNoOffsetPageDto);
+                        1L, ArticleType.NOTICE, LocalDateTime.of(9999, 12, 31, 23, 59, 59), 0L, 20))
+                .willReturn(noticeNoOffsetPageDto);
 
         // when
         mockMvc.perform(get("/notices")
-                        .param("festivalId","1")
+                        .param("festivalId", "1")
                         .param("type", "NOTICE")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         // then – 서비스가 기대 값으로 호출됐는지 검증
-        then(noticeService).should().getNoticesByTypeWithNoOffsetPaging(
-                1L, ArticleType.NOTICE, LocalDateTime.of(9999, 12, 31, 23, 59, 59),
-                0L,20);
+        then(noticeService)
+                .should()
+                .getNoticesByTypeWithNoOffsetPaging(
+                        1L, ArticleType.NOTICE, LocalDateTime.of(9999, 12, 31, 23, 59, 59), 0L, 20);
     }
 }

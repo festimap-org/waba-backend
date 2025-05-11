@@ -1,19 +1,19 @@
 package com.halo.eventer.domain.map;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.halo.eventer.domain.duration.Duration;
 import com.halo.eventer.domain.duration.DurationMap;
 import com.halo.eventer.domain.map.dto.map.*;
 import com.halo.eventer.domain.map.enumtype.OperationTime;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class MapFixture {
 
-    public static MapCreateDto 지도_생성_DTO(){
+    public static MapCreateDto 지도_생성_DTO() {
         OperationInfoDto operationInfoDto = new OperationInfoDto();
         setField(operationInfoDto, "hours", "hours");
         setField(operationInfoDto, "type", OperationTime.all);
@@ -43,7 +43,7 @@ public class MapFixture {
         return dto;
     }
 
-    public static MapUpdateDto 지도_수정_DTO(){
+    public static MapUpdateDto 지도_수정_DTO() {
         OperationInfoDto operationInfoDto = new OperationInfoDto();
         setField(operationInfoDto, "hours", "u_hours");
         setField(operationInfoDto, "type", OperationTime.evening);
@@ -76,23 +76,23 @@ public class MapFixture {
         return dto;
     }
 
-    public static MapResDto 지도_응답_DTO(Map map){
+    public static MapResDto 지도_응답_DTO(Map map) {
         return MapResDto.from(map);
     }
 
-    //TODO: Duration 관련 Fixture 생성후 적용하기
-    public static Map 지도_엔티티(MapCreateDto mapCreateDto, MapCategory mapCategory,long count){
-        Map map = Map.of(mapCreateDto,mapCategory);
+    // TODO: Duration 관련 Fixture 생성후 적용하기
+    public static Map 지도_엔티티(MapCreateDto mapCreateDto, MapCategory mapCategory, long count) {
+        Map map = Map.of(mapCreateDto, mapCategory);
         List<DurationMap> durationMaps = DurationMap_추가(count);
         setField(map, "durationMaps", durationMaps);
         return map;
     }
 
-    private static List<DurationMap> DurationMap_추가(long count){
+    private static List<DurationMap> DurationMap_추가(long count) {
         List<DurationMap> durationMaps = new ArrayList<>();
-        for(long i = 1; i<=count;i++){
+        for (long i = 1; i <= count; i++) {
             Duration duration = new Duration();
-            setField(duration,"id",i);
+            setField(duration, "id", i);
             DurationMap durationMap1 = new DurationMap();
             setField(durationMap1, "id", i);
             setField(durationMap1, "duration", duration);

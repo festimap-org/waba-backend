@@ -8,11 +8,11 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 @SuppressWarnings("NonAsciiCharacters")
 public class MenuFixture {
 
-    public static Menu 메뉴_엔티티(MenuCreateDto dto){
+    public static Menu 메뉴_엔티티(MenuCreateDto dto) {
         return new Menu(dto);
     }
 
-    public static MenuCreateDto 메뉴_생성_DTO(){
+    public static MenuCreateDto 메뉴_생성_DTO() {
         MenuCreateDto menuCreateDto = new MenuCreateDto();
         setField(menuCreateDto, "name", "name");
         setField(menuCreateDto, "price", 100);
@@ -21,7 +21,7 @@ public class MenuFixture {
         return menuCreateDto;
     }
 
-    public static MenuUpdateDto 메뉴_수정_DTO(){
+    public static MenuUpdateDto 메뉴_수정_DTO() {
         MenuUpdateDto menuUpdateDto = new MenuUpdateDto();
         setField(menuUpdateDto, "id", 1L);
         setField(menuUpdateDto, "name", "u_name");

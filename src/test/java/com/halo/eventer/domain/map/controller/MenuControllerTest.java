@@ -1,14 +1,7 @@
 package com.halo.eventer.domain.map.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.halo.eventer.domain.map.MenuFixture;
-import com.halo.eventer.domain.map.dto.menu.MenuCreateDto;
-import com.halo.eventer.domain.map.dto.menu.MenuResDto;
-import com.halo.eventer.domain.map.dto.menu.MenuUpdateDto;
-import com.halo.eventer.domain.map.service.MenuService;
-import com.halo.eventer.global.config.ControllerTestSecurityBeans;
-import com.halo.eventer.global.config.security.SecurityConfig;
-import com.halo.eventer.global.security.provider.JwtProvider;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +14,15 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.halo.eventer.domain.map.MenuFixture;
+import com.halo.eventer.domain.map.dto.menu.MenuCreateDto;
+import com.halo.eventer.domain.map.dto.menu.MenuResDto;
+import com.halo.eventer.domain.map.dto.menu.MenuUpdateDto;
+import com.halo.eventer.domain.map.service.MenuService;
+import com.halo.eventer.global.config.ControllerTestSecurityBeans;
+import com.halo.eventer.global.config.security.SecurityConfig;
+import com.halo.eventer.global.security.provider.JwtProvider;
 
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -40,7 +41,8 @@ public class MenuControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private MenuService menuService;
@@ -58,27 +60,27 @@ public class MenuControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void 메뉴_생성_테스트() throws Exception {
-        //given
-        doNothing().when(menuService).create(anyList(),anyLong());
+        // given
+        doNothing().when(menuService).create(anyList(), anyLong());
         List<MenuCreateDto> menuCreateDtos = List.of(menuCreateDto);
 
         // when & then
         mockMvc.perform(post("/menus")
-                        .param("mapId","1")
+                        .param("mapId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(menuCreateDtos)))
                 .andExpect(status().isOk());
-        verify(menuService,times(1)).create(anyList(),anyLong());
+        verify(menuService, times(1)).create(anyList(), anyLong());
     }
 
     @Test
     void 메뉴_생성_테스트_권한예외() throws Exception {
-        //given
+        // given
         List<MenuCreateDto> menuCreateDtos = List.of(menuCreateDto);
 
         // when & then
         mockMvc.perform(post("/menus")
-                        .param("mapId","1")
+                        .param("mapId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(menuCreateDtos)))
                 .andExpect(status().isUnauthorized());
@@ -86,47 +88,45 @@ public class MenuControllerTest {
 
     @Test
     void 메뉴_리스트_조회_테스트() throws Exception {
-        //given
+        // given
         MenuResDto menuResDto = new MenuResDto();
         List<MenuResDto> menuResDtos = List.of(menuResDto);
         given(menuService.getMenus(anyLong())).willReturn(menuResDtos);
 
         // when & then
-        mockMvc.perform(get("/menus")
-                        .param("mapId","1")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/menus").param("mapId", "1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(menuService,times(1)).getMenus(anyLong());
+        verify(menuService, times(1)).getMenus(anyLong());
     }
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void 메뉴_수정_테스트() throws Exception {
-        //given
+        // given
         MenuUpdateDto menuUpdateDto = MenuFixture.메뉴_수정_DTO();
         List<MenuUpdateDto> menuUpdateDtos = List.of(menuUpdateDto);
         MenuResDto menuResDto = new MenuResDto();
         List<MenuResDto> menuResDtos = List.of(menuResDto);
-        given(menuService.update(anyLong(),anyList())).willReturn(menuResDtos);
+        given(menuService.update(anyLong(), anyList())).willReturn(menuResDtos);
 
-        //when & then
+        // when & then
         mockMvc.perform(patch("/menus")
-                        .param("mapId","1")
+                        .param("mapId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(menuUpdateDtos)))
                 .andExpect(status().isOk());
-        verify(menuService,times(1)).update(anyLong(),anyList());
+        verify(menuService, times(1)).update(anyLong(), anyList());
     }
 
     @Test
     void 메뉴_수정_권한예외() throws Exception {
-        //given
+        // given
         MenuUpdateDto menuUpdateDto = MenuFixture.메뉴_수정_DTO();
         List<MenuUpdateDto> menuUpdateDtos = List.of(menuUpdateDto);
 
-        //when & then
+        // when & then
         mockMvc.perform(patch("/menus")
-                        .param("mapId","1")
+                        .param("mapId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(menuUpdateDtos)))
                 .andExpect(status().isUnauthorized());
@@ -134,22 +134,20 @@ public class MenuControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void 메뉴_삭제_테스트()throws Exception {
-        //given
+    void 메뉴_삭제_테스트() throws Exception {
+        // given
         doNothing().when(menuService).delete(anyLong());
 
-        //when & then
-        mockMvc.perform(delete("/menus/{id}",1L)
-                        .contentType(MediaType.APPLICATION_JSON))
+        // when & then
+        mockMvc.perform(delete("/menus/{id}", 1L).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(menuService,times(1)).delete(anyLong());
+        verify(menuService, times(1)).delete(anyLong());
     }
 
     @Test
-    void 메뉴_삭제_권한예외()throws Exception {
-        //when & then
-        mockMvc.perform(delete("/menus/{id}",1L)
-                        .contentType(MediaType.APPLICATION_JSON))
+    void 메뉴_삭제_권한예외() throws Exception {
+        // when & then
+        mockMvc.perform(delete("/menus/{id}", 1L).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 }

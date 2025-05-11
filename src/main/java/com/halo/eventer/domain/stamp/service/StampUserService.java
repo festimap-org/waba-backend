@@ -1,5 +1,10 @@
 package com.halo.eventer.domain.stamp.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.halo.eventer.domain.stamp.Custom;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
@@ -7,13 +12,8 @@ import com.halo.eventer.domain.stamp.dto.stampUser.*;
 import com.halo.eventer.domain.stamp.exception.*;
 import com.halo.eventer.domain.stamp.repository.StampRepository;
 import com.halo.eventer.domain.stamp.repository.StampUserRepository;
-
-import java.util.List;
-
 import com.halo.eventer.global.utils.EncryptService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -66,7 +66,7 @@ public class StampUserService {
     }
 
     @Transactional
-    public String checkV2Finish(String uuid){
+    public String checkV2Finish(String uuid) {
         StampUser stampUser = loadStampUserFromUuid(uuid);
         if (!stampUser.canFinishTour()) {
             return "미완료";
@@ -82,17 +82,16 @@ public class StampUserService {
     }
 
     private Stamp loadStampOrThrow(Long stampId) {
-        return stampRepository.findById(stampId)
-                .orElseThrow(() -> new StampNotFoundException(stampId));
+        return stampRepository.findById(stampId).orElseThrow(() -> new StampNotFoundException(stampId));
     }
 
     private StampUser loadStampUserFromUuid(String uuid) {
-        return stampUserRepository.findByUuid(uuid)
-                .orElseThrow(() -> new StampUserNotFoundException(uuid));
+        return stampUserRepository.findByUuid(uuid).orElseThrow(() -> new StampUserNotFoundException(uuid));
     }
 
     private StampUser loadStampUserWithStampIdAndLoginInfo(Long stampId, LoginDto loginDto) {
-        return stampUserRepository.findByStampIdAndPhoneAndName(
+        return stampUserRepository
+                .findByStampIdAndPhoneAndName(
                         stampId,
                         encryptService.encryptInfo(loginDto.getPhone()),
                         encryptService.encryptInfo(loginDto.getName()))
@@ -124,8 +123,7 @@ public class StampUserService {
     }
 
     private StampUserGetDto toStampUserGetDto(StampUser user) {
-        List<UserMissionInfoGetDto> userMissionInfoGetDtos =
-                UserMissionInfoGetDto.fromEntities(user.getUserMissions());
+        List<UserMissionInfoGetDto> userMissionInfoGetDtos = UserMissionInfoGetDto.fromEntities(user.getUserMissions());
         return StampUserGetDto.from(user, userMissionInfoGetDtos);
     }
 }

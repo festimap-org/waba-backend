@@ -1,11 +1,8 @@
 package com.halo.eventer.domain.widget.repository;
 
-import com.halo.eventer.domain.festival.Festival;
-import com.halo.eventer.domain.festival.FestivalFixture;
-import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.widget.WidgetFixture;
-import com.halo.eventer.domain.widget.dto.main_widget.MainWidgetCreateDto;
-import com.halo.eventer.domain.widget.entity.MainWidget;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,8 +15,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.FestivalFixture;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
+import com.halo.eventer.domain.widget.WidgetFixture;
+import com.halo.eventer.domain.widget.dto.main_widget.MainWidgetCreateDto;
+import com.halo.eventer.domain.widget.entity.MainWidget;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -45,7 +46,7 @@ public class MainWidgetRepositoryTest {
     private MainWidgetCreateDto mainWidgetCreateDto;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         festival = festivalRepository.save(FestivalFixture.축제_엔티티());
         mainWidgetCreateDto = WidgetFixture.메인_위젯_생성_DTO();
     }
@@ -59,21 +60,21 @@ public class MainWidgetRepositoryTest {
     }
 
     @Test
-    void MainWidget_리스트_festivalId_로_조회(){
-        //given
+    void MainWidget_리스트_festivalId_로_조회() {
+        // given
         saveDownWidget(3);
 
-        //when
+        // when
         List<MainWidget> mainWidgets = mainWidgetRepository.findAllByFestivalId(festival.getId());
 
-        //then
+        // then
         assertThat(mainWidgets).hasSize(3);
     }
 
     private void saveDownWidget(int count) {
         for (int i = 0; i < count; i++) {
             MainWidget mainWidget = WidgetFixture.메인_위젯_엔티티(festival, mainWidgetCreateDto);
-            setField(mainWidget,"updatedAt", LocalDateTime.now());
+            setField(mainWidget, "updatedAt", LocalDateTime.now());
             mainWidgetRepository.save(mainWidget);
         }
     }

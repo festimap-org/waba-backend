@@ -1,9 +1,9 @@
 package com.halo.eventer.domain.member;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +19,7 @@ public class Member {
     private String loginId;
     private String password;
 
-    @OneToMany(mappedBy = "member",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Authority> authorities;
 
     public void setMember(List<Authority> roles) {
@@ -38,8 +38,6 @@ public class Member {
     }
 
     public List<String> getRoleNames() {
-        return authorities.stream()
-                .map(Authority::getRoleName)
-                .collect(Collectors.toList());
+        return authorities.stream().map(Authority::getRoleName).collect(Collectors.toList());
     }
 }

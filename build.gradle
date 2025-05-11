@@ -33,10 +33,10 @@ jacocoTestReport {
 
 spotless {
     java {
-        googleJavaFormat('1.20.0').aosp()
+        palantirJavaFormat()
         target 'src/**/*.java'
 
-        importOrder 'java|javax', 'org', 'com.mycorp', '', '\\#'
+        importOrder 'java|javax', 'org', ' com.halo.eventer', '', '\\#'
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()
