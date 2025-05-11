@@ -1,6 +1,5 @@
 package com.halo.eventer.domain.missing_person.dto;
 
-import com.halo.eventer.domain.missing_person.MissingPerson;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,16 +16,4 @@ public class MissingPersonReqDto {
   private String parentName;
   private String parentNo;
   private String domainUrlName;
-
-  public MissingPersonReqDto(MissingPerson m) {
-    this.name = m.getName();
-    this.age = m.getAge();
-    this.gender = m.getGender();
-    this.thumbnail = m.getThumbnail();
-    this.missingLocation = m.getMissingLocation();
-    this.missingTime = m.getMissingTime();
-    this.content = m.getContent();
-    this.parentName = m.getParentName();
-    this.parentNo = m.getParentNo();
-  }
 }
