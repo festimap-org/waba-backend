@@ -1,12 +1,12 @@
 package com.halo.eventer.infra.sms.common;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.halo.eventer.domain.missing_person.dto.MissingPersonReqDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -21,10 +21,7 @@ public class SmsSendRequest {
     }
 
     public static SmsSendRequest of(String to, String message) {
-        return SmsSendRequest.builder()
-                .to(to)
-                .message(message)
-                .build();
+        return SmsSendRequest.builder().to(to).message(message).build();
     }
 
     public static SmsSendRequest of(String phoneNumber, MissingPersonReqDto missingPersonReqDto) {
@@ -36,7 +33,7 @@ public class SmsSendRequest {
 
     public static List<SmsSendRequest> of(List<String> phoneNumbers, MissingPersonReqDto missingPersonReqDto) {
         return phoneNumbers.stream()
-                .map(phoneNumber -> of(phoneNumber,missingPersonReqDto))
+                .map(phoneNumber -> of(phoneNumber, missingPersonReqDto))
                 .collect(Collectors.toList());
     }
 
@@ -47,8 +44,7 @@ public class SmsSendRequest {
                 defaultString(payload.getAge()),
                 defaultString(payload.getGender()),
                 defaultString(payload.getMissingLocation()),
-                defaultString(payload.getDomainUrlName())
-        );
+                defaultString(payload.getDomainUrlName()));
     }
 
     private static String defaultString(String value) {

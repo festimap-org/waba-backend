@@ -1,14 +1,8 @@
 package com.halo.eventer.domain.widget.repository;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 
-import com.halo.eventer.domain.festival.Festival;
-import com.halo.eventer.domain.festival.FestivalFixture;
-import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.widget.WidgetFixture;
-import com.halo.eventer.domain.widget.dto.main_widget.MainWidgetCreateDto;
-import com.halo.eventer.domain.widget.entity.DownWidget;
-import com.halo.eventer.domain.widget.entity.MainWidget;
-import com.halo.eventer.global.common.BaseTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,8 +15,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Comparator;
+import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.FestivalFixture;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
+import com.halo.eventer.domain.widget.WidgetFixture;
+import com.halo.eventer.domain.widget.dto.main_widget.MainWidgetCreateDto;
+import com.halo.eventer.domain.widget.entity.MainWidget;
+import com.halo.eventer.global.common.BaseTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -56,14 +55,12 @@ public class BaseWidgetRepositoryTest {
     @Test
     void MainWidget_페이지_createdAt_desc_로_정렬_조회() {
         saveDownWidget(5);
-        Page<MainWidget> page = baseWidgetRepository.findChildCreateDesc(
-                MainWidget.class,
-                festival.getId(),
-                PageRequest.of(0, 2));
+        Page<MainWidget> page =
+                baseWidgetRepository.findChildCreateDesc(MainWidget.class, festival.getId(), PageRequest.of(0, 2));
 
         assertThat(page.getContent())
                 .extracting(BaseTime::getCreatedAt)
-                .isSortedAccordingTo(Comparator.reverseOrder())   // 내림차순
+                .isSortedAccordingTo(Comparator.reverseOrder()) // 내림차순
                 .hasSize(2);
         assertThat(page.hasNext()).isTrue();
     }
@@ -71,10 +68,8 @@ public class BaseWidgetRepositoryTest {
     @Test
     void MainWidget_페이지_updatedAt_desc_로_정렬_조회() {
         saveDownWidget(5);
-        Page<MainWidget> page = baseWidgetRepository.findChildUpdateDesc(
-                MainWidget.class,
-                festival.getId(),
-                PageRequest.of(0, 2));
+        Page<MainWidget> page =
+                baseWidgetRepository.findChildUpdateDesc(MainWidget.class, festival.getId(), PageRequest.of(0, 2));
 
         assertThat(page.getContent())
                 .extracting(BaseTime::getUpdatedAt)
@@ -86,8 +81,8 @@ public class BaseWidgetRepositoryTest {
     private void saveDownWidget(int count) {
         for (int i = 0; i < count; i++) {
             MainWidget mainWidget = WidgetFixture.메인_위젯_엔티티(festival, mainWidgetCreateDto);
-            setField(mainWidget,"updatedAt", LocalDateTime.now());
-            setField(mainWidget,"createdAt", LocalDateTime.now());
+            setField(mainWidget, "updatedAt", LocalDateTime.now());
+            setField(mainWidget, "createdAt", LocalDateTime.now());
             mainWidgetRepository.save(mainWidget);
         }
     }

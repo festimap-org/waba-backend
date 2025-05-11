@@ -1,15 +1,15 @@
 package com.halo.eventer.domain.notice.dto.user;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.halo.eventer.domain.image.Image;
 import com.halo.eventer.domain.image.dto.ImageDto;
 import com.halo.eventer.domain.notice.Notice;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -24,8 +24,15 @@ public class UserNoticeResDto {
     private List<ImageDto> images;
 
     @Builder
-    public UserNoticeResDto(String title, String thumbnail, String tag, String writer, String content,
-                            LocalDateTime createAt, LocalDateTime updateAt, List<ImageDto> images) {
+    public UserNoticeResDto(
+            String title,
+            String thumbnail,
+            String tag,
+            String writer,
+            String content,
+            LocalDateTime createAt,
+            LocalDateTime updateAt,
+            List<ImageDto> images) {
         this.title = title;
         this.thumbnail = thumbnail;
         this.tag = tag;
@@ -50,8 +57,6 @@ public class UserNoticeResDto {
     }
 
     private static List<ImageDto> toImageDtos(List<Image> images) {
-        return images.stream()
-                .map(ImageDto::from)
-                .collect(Collectors.toList());
+        return images.stream().map(ImageDto::from).collect(Collectors.toList());
     }
 }

@@ -1,5 +1,22 @@
 package com.halo.eventer.domain.notice.service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
+
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.FestivalFixture;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
@@ -14,22 +31,6 @@ import com.halo.eventer.domain.notice.dto.user.UserNoticeResDto;
 import com.halo.eventer.domain.notice.exception.NoticeNotFoundException;
 import com.halo.eventer.domain.notice.repository.NoticeRepository;
 import com.halo.eventer.global.common.page.PagedResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.ActiveProfiles;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -60,90 +61,91 @@ public class NoticeServiceTest {
     private final Long noticeId = 1L;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         noticeCreateReqDto = NoticeFixture.공지사항_생성_DTO();
         noticeUpdateReqDto = NoticeFixture.공지사항_수정_DTO();
         festival = FestivalFixture.축제_엔티티();
         notice = Notice.from(festival, noticeCreateReqDto);
-        setField(notice.getImages().get(0),"id",1L);
+        setField(notice.getImages().get(0), "id", 1L);
         setField(notice, "id", noticeId);
-        setField(notice,"createdAt", LocalDateTime.now());
-        setField(notice,"updatedAt", LocalDateTime.now());
+        setField(notice, "createdAt", LocalDateTime.now());
+        setField(notice, "updatedAt", LocalDateTime.now());
     }
 
     @Test
-    void notice_생성_테스트(){
-        //given
+    void notice_생성_테스트() {
+        // given
         given(festivalRepository.findById(festivalId)).willReturn(Optional.of(festival));
         given(noticeRepository.save(any())).willReturn(notice);
 
-        //when
+        // when
         NoticeResDto result = noticeService.create(festivalId, noticeCreateReqDto);
 
-        //then
+        // then
         NoticeTestUtils.assertNoticeDtoEqualsNotice(result, notice);
     }
 
     @Test
-    void notice_생성시_festival_없을_경우_예외(){
-        //given
+    void notice_생성시_festival_없을_경우_예외() {
+        // given
         given(festivalRepository.findById(festivalId)).willReturn(Optional.empty());
 
-        //when & then
-        assertThatThrownBy(()-> noticeService.create(festivalId,noticeCreateReqDto))
+        // when & then
+        assertThatThrownBy(() -> noticeService.create(festivalId, noticeCreateReqDto))
                 .isInstanceOf(FestivalNotFoundException.class);
     }
 
     @Test
-    void noticeId_로단일조회(){
-        //given
+    void noticeId_로단일조회() {
+        // given
         given(noticeRepository.findById(noticeId)).willReturn(Optional.of(notice));
 
-        //when
+        // when
         NoticeResDto result = noticeService.getNoticeById(noticeId);
 
-        //then
+        // then
         NoticeTestUtils.assertNoticeDtoEqualsNotice(result, notice);
     }
 
     @Test
-    void 유저용_noticeId_로_단일조회(){
-        //given
+    void 유저용_noticeId_로_단일조회() {
+        // given
         given(noticeRepository.findById(noticeId)).willReturn(Optional.of(notice));
 
-        //when
+        // when
         UserNoticeResDto result = noticeService.getNoticeByIdForUser(noticeId);
 
-        //then
+        // then
         NoticeTestUtils.assertUserNoticeDtoEqualsNotice(result, notice);
     }
 
     @Test
-    void notice_단일조회시_없을_경우_예외(){
-        //given
+    void notice_단일조회시_없을_경우_예외() {
+        // given
         given(noticeRepository.findById(noticeId)).willReturn(Optional.empty());
 
-        //when & then
-        assertThatThrownBy(()-> noticeService.getNoticeById(noticeId))
-                .isInstanceOf(NoticeNotFoundException.class);
+        // when & then
+        assertThatThrownBy(() -> noticeService.getNoticeById(noticeId)).isInstanceOf(NoticeNotFoundException.class);
     }
 
     @Test
-    void notice_index_페이징_조회(){
+    void notice_index_페이징_조회() {
         int size = 2;
         List<Notice> notices = new ArrayList<>(Arrays.asList(
                 Notice.from(festival, noticeCreateReqDto),
                 Notice.from(festival, noticeCreateReqDto),
-                Notice.from(festival, noticeCreateReqDto)
-        ));
+                Notice.from(festival, noticeCreateReqDto)));
         given(noticeRepository.getNoticesNextPageByFestivalIdAndLastValue(
-                eq(festivalId), eq(ArticleType.NOTICE.name()),
-                any(LocalDateTime.class), anyLong(), eq(size + 1)))
+                        eq(festivalId),
+                        eq(ArticleType.NOTICE.name()),
+                        any(LocalDateTime.class),
+                        anyLong(),
+                        eq(size + 1)))
                 .willReturn(notices);
 
-        //when
+        // when
         UserNoticeNoOffsetPageDto dto = noticeService.getNoticesByTypeWithNoOffsetPaging(
-                        festivalId, ArticleType.NOTICE, LocalDateTime.now(), 0L, size);
+                festivalId, ArticleType.NOTICE, LocalDateTime.now(), 0L, size);
 
         // then
         assertThat(dto.getIsLast()).isFalse();
@@ -151,20 +153,20 @@ public class NoticeServiceTest {
     }
 
     @Test
-    void notice_페이징_조회(){
-        //given
+    void notice_페이징_조회() {
+        // given
         int page = 0, size = 2;
         Notice notice2 = Notice.from(festival, noticeCreateReqDto);
         setField(notice2, "id", 2L);
         List<Notice> notices = List.of(notice, notice2);
         Page<Notice> noticePage = new PageImpl<>(notices, PageRequest.of(page, size), 2L);
-        given(noticeRepository.findAllByTypeAndFestivalIdOrderByUpdatedAtDesc(ArticleType.NOTICE, festivalId,
-                PageRequest.of(page, size)))
+        given(noticeRepository.findAllByTypeAndFestivalIdOrderByUpdatedAtDesc(
+                        ArticleType.NOTICE, festivalId, PageRequest.of(page, size)))
                 .willReturn(noticePage);
 
         // when
-        PagedResponse<NoticeSummaryDto> response = noticeService.getNoticesByType(festivalId, ArticleType.NOTICE,
-                page, size);
+        PagedResponse<NoticeSummaryDto> response =
+                noticeService.getNoticesByType(festivalId, ArticleType.NOTICE, page, size);
 
         // then
         assertThat(response).isNotNull();
@@ -176,53 +178,52 @@ public class NoticeServiceTest {
     }
 
     @Test
-    void picked_수정_성공(){
-        //given
+    void picked_수정_성공() {
+        // given
         given(noticeRepository.findById(noticeId)).willReturn(Optional.of(notice));
 
-        //when
-        NoticeResDto result = noticeService.updatePicked(noticeId,true);
+        // when
+        NoticeResDto result = noticeService.updatePicked(noticeId, true);
 
-        //then
+        // then
         NoticeTestUtils.assertNoticeDtoEqualsNotice(result, notice);
     }
 
     @Test
-    void notice_전체_수정_성공(){
-        //given
+    void notice_전체_수정_성공() {
+        // given
         given(noticeRepository.findById(noticeId)).willReturn(Optional.of(notice));
-        setField(noticeUpdateReqDto,"deleteIds",List.of(1L));
+        setField(noticeUpdateReqDto, "deleteIds", List.of(1L));
 
-        //when
-        NoticeResDto result = noticeService.updateNotice(noticeId,noticeUpdateReqDto);
+        // when
+        NoticeResDto result = noticeService.updateNotice(noticeId, noticeUpdateReqDto);
 
-        //then
+        // then
         NoticeTestUtils.assertNoticeDtoEqualsNotice(result, notice);
     }
 
     @Test
-    void notice_삭제(){
-        //when
+    void notice_삭제() {
+        // when
         noticeService.delete(noticeId);
 
-        //then
+        // then
         verify(noticeRepository, times(1)).deleteById(noticeId);
     }
 
     @Test
-    void picked_된_notice_리스트_조회(){
-        //given
+    void picked_된_notice_리스트_조회() {
+        // given
         Notice notice2 = Notice.from(festival, noticeCreateReqDto);
         setField(notice2, "id", 2L);
         notice.updatePicked(true);
         notice2.updatePicked(true);
-        given(noticeRepository.findAllByPickedAndFestivalId(festivalId,true))
-                .willReturn(List.of(notice,notice2));
+        given(noticeRepository.findAllByPickedAndFestivalId(festivalId, true)).willReturn(List.of(notice, notice2));
 
-        //when
+        // when
         List<PickedNoticeResDto> results = noticeService.getPickedNotice(festivalId);
 
-        //then
+        // then
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.get(0).getId()).isEqualTo(notice.getId());
         assertThat(results.get(1).getId()).isEqualTo(notice2.getId());
@@ -235,7 +236,7 @@ public class NoticeServiceTest {
     }
 
     @Test
-    void picked_notice_순서_변경(){
+    void picked_notice_순서_변경() {
         Notice notice2 = Notice.from(festival, noticeCreateReqDto);
         setField(notice2, "id", 2L);
         notice.updatePicked(true);
@@ -249,11 +250,10 @@ public class NoticeServiceTest {
         setField(noticeUpdateDto2, "displayOrder", 2);
         List<PickedNoticeUpdateDto> dtos = List.of(noticeUpdateDto1, noticeUpdateDto2);
 
-        //when
+        // when
         List<PickedNoticeResDto> result = noticeService.updateDisplayOrder(dtos);
 
         assertThat(result.get(0).getDisplayOrder()).isEqualTo(noticeUpdateDto1.getDisplayOrder());
         assertThat(result.get(1).getDisplayOrder()).isEqualTo(noticeUpdateDto2.getDisplayOrder());
     }
-
 }

@@ -1,8 +1,8 @@
 package com.halo.eventer.infra.sms.naver.dto;
 
-import lombok.*;
-
 import java.time.LocalDateTime;
+
+import lombok.*;
 
 @Getter
 @Builder

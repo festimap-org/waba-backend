@@ -1,5 +1,18 @@
 package com.halo.eventer.infra.sms.naver.util;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.global.error.ErrorCode;
@@ -7,18 +20,6 @@ import com.halo.eventer.global.error.exception.BaseException;
 import com.halo.eventer.infra.sms.common.SmsSendRequest;
 import com.halo.eventer.infra.sms.naver.dto.NaverMessageReqDto;
 import com.halo.eventer.infra.sms.naver.dto.NaverSmsReqDto;
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class NaverRequest {
 
@@ -38,16 +39,15 @@ public class NaverRequest {
         this.senderPhone = senderPhone;
     }
 
-    public static NaverRequest builder(ObjectMapper objectMapper, String accessKey, String secretKey,
-                                       String senderPhone) {
+    public static NaverRequest builder(
+            ObjectMapper objectMapper, String accessKey, String secretKey, String senderPhone) {
         return new NaverRequest(objectMapper, accessKey, secretKey, senderPhone);
     }
 
     public NaverRequest header(String endpoint) {
         try {
             this.headers = createHeaders(endpoint);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new BaseException("Failed to build SMS body", ErrorCode.SMS_SEND_FAILED);
         }
         return this;
@@ -79,7 +79,7 @@ public class NaverRequest {
             String bodyStr = objectMapper.writeValueAsString(naverSmsReqDto);
             return new HttpEntity<>(bodyStr, headers);
         } catch (JsonProcessingException e) {
-            throw new BaseException("Failed to build SMS message",ErrorCode.SMS_SEND_FAILED);
+            throw new BaseException("Failed to build SMS message", ErrorCode.SMS_SEND_FAILED);
         }
     }
 
