@@ -1,8 +1,8 @@
 package com.halo.eventer.domain.stamp.dto.stampUser;
 
-import lombok.Getter;
-
 import java.util.List;
+
+import lombok.Getter;
 
 @Getter
 public class UserMissionInfoWithFinishedGetListDto {

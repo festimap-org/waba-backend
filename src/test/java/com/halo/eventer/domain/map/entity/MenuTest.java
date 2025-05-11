@@ -1,11 +1,12 @@
 package com.halo.eventer.domain.map.entity;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.halo.eventer.domain.map.Menu;
 import com.halo.eventer.domain.map.MenuFixture;
 import com.halo.eventer.domain.map.dto.menu.MenuCreateDto;
 import com.halo.eventer.domain.map.dto.menu.MenuUpdateDto;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,11 +25,11 @@ public class MenuTest {
     }
 
     @Test
-    void 메뉴_생성_테스트(){
-        //when
+    void 메뉴_생성_테스트() {
+        // when
         Menu result = new Menu(menuCreateDto);
 
-        //then
+        // then
         assertThat(result.getSummary()).isEqualTo(menuCreateDto.getSummary());
         assertThat(result.getName()).isEqualTo(menuCreateDto.getName());
         assertThat(result.getPrice()).isEqualTo(menuCreateDto.getPrice());
@@ -36,11 +37,11 @@ public class MenuTest {
     }
 
     @Test
-    void 메뉴_수정_테스트(){
-        //when
+    void 메뉴_수정_테스트() {
+        // when
         menu.updateMenu(menuUpdateDto);
 
-        //then
+        // then
         assertThat(menu.getSummary()).isEqualTo(menuUpdateDto.getSummary());
         assertThat(menu.getName()).isEqualTo(menuUpdateDto.getName());
         assertThat(menu.getPrice()).isEqualTo(menuUpdateDto.getPrice());

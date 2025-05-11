@@ -1,13 +1,14 @@
 package com.halo.eventer.domain.notice.dto.user;
 
+import java.time.LocalDateTime;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

@@ -1,5 +1,12 @@
 package com.halo.eventer.infra.sms.naver;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -9,12 +16,6 @@ import com.halo.eventer.infra.sms.naver.dto.NaverSmsResDto;
 import com.halo.eventer.infra.sms.naver.util.NaverRequest;
 import com.halo.eventer.infra.sms.naver.util.NaverUrlBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
 
 @Component
 @Slf4j
@@ -49,15 +50,14 @@ public class NaverSmsClient implements SmsClient {
         String endpoint = NaverUrlBuilder.buildMessageEndpoint(serviceId);
         String url = apiBaseUrl + endpoint;
 
-        HttpEntity<String> httpEntity = NaverRequest.builder(objectMapper,accessKey,secretKey,senderPhone)
+        HttpEntity<String> httpEntity = NaverRequest.builder(objectMapper, accessKey, secretKey, senderPhone)
                 .header(endpoint)
                 .body(smsSendRequests)
                 .build();
 
         try {
             return restTemplate.postForObject(url, httpEntity, NaverSmsResDto.class);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             throw new BaseException(e.getMessage(), ErrorCode.SMS_SEND_FAILED);
         }
     }

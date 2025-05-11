@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class SquareWidgetCreateDto {
-  private String name;
-  private String description;
-  private String image;
-  private String url;
+    private String name;
+    private String description;
+    private String image;
+    private String url;
 }
