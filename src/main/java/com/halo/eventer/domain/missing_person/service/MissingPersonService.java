@@ -3,19 +3,18 @@ package com.halo.eventer.domain.missing_person.service;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.manager.Manager;
 import com.halo.eventer.domain.manager.repository.ManagerRepository;
 import com.halo.eventer.domain.missing_person.MissingPerson;
 import com.halo.eventer.domain.missing_person.dto.MissingPersonReqDto;
 import com.halo.eventer.domain.missing_person.exception.MissingPersonNotFoundException;
-import com.halo.eventer.domain.missing_person.formatter.MissingPersonAlertMessageTemplate;
 import com.halo.eventer.domain.missing_person.repository.MissingPersonRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.halo.eventer.infra.common.sms.SmsClient;
+import com.halo.eventer.infra.sms.SmsClient;
+import com.halo.eventer.infra.sms.common.SmsSendRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -79,11 +78,9 @@ public class MissingPersonService {
               .collect(Collectors.toList());
 
     if (!phoneNumbers.isEmpty()) {
-      MissingPersonAlertMessageTemplate template = new MissingPersonAlertMessageTemplate();
-      String message = template.buildMessage(missingPersonReqDto);
-      smsClient.send(message, phoneNumbers);
-      log.info("실종자 등록 알림 SMS 전송 완료 - 이름: {}, 수신자 수: {}",
-          missingPersonReqDto.getName(), phoneNumbers.size());
+      List<SmsSendRequest> smsSendRequests = SmsSendRequest.of(phoneNumbers, missingPersonReqDto);
+      smsClient.sendToMany(smsSendRequests);
+      log.info("실종자 등록 알림 SMS 전송 - 이름: {}, 수신자 수: {}", missingPersonReqDto.getName(), phoneNumbers.size());
     }
   }
 }
