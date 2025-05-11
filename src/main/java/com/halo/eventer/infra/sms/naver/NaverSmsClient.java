@@ -44,7 +44,7 @@ public class NaverSmsClient implements SmsClient {
     }
 
     @Override
-    public void sendToMany(List<SmsSendRequest> smsSendRequests) {
+    public NaverSmsResDto sendToMany(List<SmsSendRequest> smsSendRequests) {
 
         String endpoint = NaverUrlBuilder.buildMessageEndpoint(serviceId);
         String url = apiBaseUrl + endpoint;
@@ -55,7 +55,7 @@ public class NaverSmsClient implements SmsClient {
                 .build();
 
         try {
-            restTemplate.postForObject(url, httpEntity, NaverSmsResDto.class);
+            return restTemplate.postForObject(url, httpEntity, NaverSmsResDto.class);
         }
         catch(Exception e) {
             throw new BaseException(e.getMessage(), ErrorCode.SMS_SEND_FAILED);

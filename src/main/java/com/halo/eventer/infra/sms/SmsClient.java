@@ -1,9 +1,10 @@
 package com.halo.eventer.infra.sms;
 
 import com.halo.eventer.infra.sms.common.SmsSendRequest;
+import com.halo.eventer.infra.sms.naver.dto.NaverSmsResDto;
 
 import java.util.List;
 
 public interface SmsClient {
-    void sendToMany(List<SmsSendRequest> smsRequests);
+    NaverSmsResDto sendToMany(List<SmsSendRequest> smsRequests);
 }
