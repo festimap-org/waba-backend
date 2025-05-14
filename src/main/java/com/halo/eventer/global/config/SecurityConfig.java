@@ -115,7 +115,11 @@ public class SecurityConfig {
                 "https://m.mokpowshow.co.kr",
                 "https://mokpowshow.co.kr/",
                 "https://www.mokpowshow.co.kr",
-                "https://wheat.festimap.kr"
+                "https://wheat.festimap.kr",
+                "https://adelante.festimap.kr",
+                "https://festival.business.festimap.kr",
+                "https://business.festimap.kr",
+                "https://adelante.festimap.kr"
                 )
         );
         configuration.setAllowedMethods(Arrays.asList("*"));
