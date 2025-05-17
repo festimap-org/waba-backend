@@ -118,7 +118,7 @@ public class StampUserServiceTest {
     void 스탬프_유저_생성_스탬프_off_실패() {
         // given
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(stamp));
-        stamp.switchStampOn();
+        stamp.switchActivation();
 
         // when & then
         assertThatThrownBy(() -> stampUserService.signup(1L, signupWithCustomDto))
@@ -225,7 +225,7 @@ public class StampUserServiceTest {
     @Test
     void 사용자_미션_완료_상태_확인_완료_성공() {
         // given
-        stampUser.getUserMissions().forEach(mission -> mission.updateComplete(true));
+        stampUser.getUserMissions().forEach(UserMission::markAsComplete);
         given(stampUserRepository.findByUuid(anyString())).willReturn(Optional.of(stampUser));
 
         // when
@@ -239,7 +239,7 @@ public class StampUserServiceTest {
     void v2_사용자_미션_완료_상태_확인_미완료_성공() {
         // given
         given(stampUserRepository.findByUuid(anyString())).willReturn(Optional.of(stampUser));
-        stamp.setStampFinishCnt(3);
+        stamp.defineFinishCnt(3);
 
         // when
         String result = stampUserService.checkV2Finish(anyString());
@@ -330,10 +330,8 @@ public class StampUserServiceTest {
     }
 
     private UserMission setupUserMission(Long id, StampUser stampUser, Mission mission) {
-        UserMission userMission = new UserMission();
+        UserMission userMission = UserMission.create(mission, stampUser);
         setField(userMission, "id", id);
-        userMission.setMission(mission);
-        userMission.setStampUser(stampUser);
         return userMission;
     }
 }
