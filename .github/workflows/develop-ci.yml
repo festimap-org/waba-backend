@@ -51,6 +51,8 @@ jobs:
         with:
           tool_name: spotless
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          script: ./gradlew spotlessApply --quiet
+          commit: false
 
   check-test:
     runs-on: ubuntu-latest
