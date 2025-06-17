@@ -94,7 +94,7 @@ jobs:
         with:
           files: '**/build/test-results/test/TEST-*.xml'
           comment_mode: failures
-          fail_on: test failure
+          fail_on: test failures
 
       - name: Generate JaCoCo XML / HTML
         if: success()
