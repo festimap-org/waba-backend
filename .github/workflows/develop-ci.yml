@@ -45,14 +45,19 @@ jobs:
           chmod +x ./gradlew
           ./gradlew spotlessCheck
 
+      - name: Spotless Apply
+        if: failure() && steps.spotless.outcome == 'failure'
+        run: |
+          git config core.fileMode false  
+          ./gradlew spotlessApply
+
       - name: Spotless Fix Suggestion
         if: failure() && steps.spotless.outcome == 'failure'
         uses: reviewdog/action-suggester@v1.5.1
         with:
           tool_name: spotless
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          script: ./gradlew spotlessApply --quiet
-          commit: false
+          reviewdog_flags: "--diff='git diff --diff-filter=ACM -U0 --no-color'"
 
   check-test:
     runs-on: ubuntu-latest
