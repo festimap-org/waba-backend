@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Table(
         name = "duration",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"festival_id", "date"})})
-public class Duration{
+public class Duration {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
