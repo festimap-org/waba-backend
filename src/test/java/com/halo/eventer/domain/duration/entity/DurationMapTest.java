@@ -1,15 +1,12 @@
 package com.halo.eventer.domain.duration.entity;
 
-import com.halo.eventer.domain.duration.DurationFixture;
-import com.halo.eventer.domain.festival.FestivalFixture;
-import com.halo.eventer.domain.map.MapFixture;
 import org.junit.jupiter.api.Test;
 
 import com.halo.eventer.domain.duration.Duration;
+import com.halo.eventer.domain.duration.DurationFixture;
 import com.halo.eventer.domain.duration.DurationMap;
-import com.halo.eventer.domain.festival.Festival;
-import com.halo.eventer.domain.festival.dto.FestivalCreateDto;
 import com.halo.eventer.domain.map.Map;
+import com.halo.eventer.domain.map.MapFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -16,8 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(
         name = "duration",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"festival_id", "date"})}
-)
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"festival_id", "date"})})
 public class Duration {
 
     @Id
