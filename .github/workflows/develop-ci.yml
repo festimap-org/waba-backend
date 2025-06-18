@@ -2,7 +2,7 @@ name: Check Code Format And Test Code
 
 on:
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "develop" , "main" ]
 
 defaults:
   run:
