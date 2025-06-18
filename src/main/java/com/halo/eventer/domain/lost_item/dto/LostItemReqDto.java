@@ -8,15 +8,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LostItemDto {
+public class LostItemReqDto {
     private String name;
-    private String type;
+    private String description;
     private String thumbnail;
     private String findDate;
 
-    public LostItemDto(LostItem lostItem) {
+    public LostItemReqDto(LostItem lostItem) {
         this.name = lostItem.getName();
-        this.type = lostItem.getType();
+        this.description = lostItem.getDescription();
         this.thumbnail = lostItem.getThumbnail();
         this.findDate = lostItem.getFindDate();
     }
