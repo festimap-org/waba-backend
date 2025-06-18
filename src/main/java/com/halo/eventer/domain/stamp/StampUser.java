@@ -36,6 +36,9 @@ public class StampUser {
 
     private int participantCount;
 
+    @Column(nullable = true)
+    private String schoolNo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stamp_id")
     private Stamp stamp;
@@ -54,6 +57,16 @@ public class StampUser {
         this.name = encryptedName;
         this.isFinished = false;
         this.participantCount = participantCount;
+    }
+
+    public StampUser(Stamp stamp, String encryptedPhone, String encryptedName, int participantCount, String schoolNo) {
+        this.stamp = stamp;
+        this.uuid = UUID.randomUUID().toString();
+        this.phone = encryptedPhone;
+        this.name = encryptedName;
+        this.isFinished = false;
+        this.participantCount = participantCount;
+        this.schoolNo = schoolNo;
     }
 
     public void markAsFinished() {

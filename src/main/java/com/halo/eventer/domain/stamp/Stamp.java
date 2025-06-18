@@ -21,7 +21,7 @@ public class Stamp {
     private boolean isActive = true;
 
     @Column(nullable = false)
-    private Integer finishCount = 0;
+    private int finishCount = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
@@ -50,7 +50,7 @@ public class Stamp {
         isActive = !isActive;
     }
 
-    public void defineFinishCnt(Integer cnt) {
+    public void defineFinishCnt(int cnt) {
         this.finishCount = cnt;
     }
 

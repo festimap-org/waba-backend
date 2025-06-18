@@ -32,6 +32,25 @@ public class StampUserService {
     }
 
     @Transactional
+    public StampUserGetDto signupV2(Long stampId, SignupDto signupDto) {
+        Stamp stamp = loadStampOrThrow(stampId);
+        stamp.validateActivation();
+        StampUser stampUser = createStampUserFromSignUpDtoV2(stamp, signupDto);
+        stamp.assignAllMissionsTo(stampUser);
+        stampUserRepository.save(stampUser);
+        return StampUserGetDto.from(stampUser);
+    }
+
+    private StampUser createStampUserFromSignUpDtoV2(Stamp stamp, SignupDto signupDto) {
+        String encryptedPhone = encryptService.encryptInfo(signupDto.getPhone());
+        String encryptedName = encryptService.encryptInfo(signupDto.getName());
+
+        validateExistStamp(stamp.getId(), encryptedPhone);
+
+        return new StampUser(stamp, encryptedPhone, encryptedName, signupDto.getParticipantCount(), signupDto.getSchoolNo());
+    }
+
+    @Transactional
     public StampUserGetDto login(Long stampId, LoginDto loginDto) {
         StampUser stampUser = loadStampUserWithStampIdAndLoginInfo(stampId, loginDto);
         return StampUserGetDto.from(stampUser);

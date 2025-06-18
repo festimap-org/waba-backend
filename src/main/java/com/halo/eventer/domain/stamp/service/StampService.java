@@ -83,7 +83,7 @@ public class StampService {
     }
 
     @Transactional
-    public void setFinishCnt(Long stampId, Integer cnt) {
+    public void setFinishCnt(Long stampId, int cnt) {
         Stamp stamp = loadStampOrThrow(stampId);
         stamp.defineFinishCnt(cnt);
     }

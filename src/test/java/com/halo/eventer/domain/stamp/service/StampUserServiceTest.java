@@ -2,6 +2,10 @@ package com.halo.eventer.domain.stamp.service;
 
 import java.util.Optional;
 
+import com.halo.eventer.domain.stamp.fixture.MissionFixture;
+import com.halo.eventer.domain.stamp.fixture.StampFixture;
+import com.halo.eventer.domain.stamp.fixture.StampUserFixture;
+import com.halo.eventer.domain.stamp.fixture.UserMissionFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,8 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.halo.eventer.domain.festival.Festival;
-import com.halo.eventer.domain.festival.dto.FestivalCreateDto;
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
@@ -56,9 +58,9 @@ public class StampUserServiceTest {
     private StampUser stampUser;
     private Mission mission;
     private UserMission userMission1;
-    private UserMission userMission2;
 
     // request dto
+    private SignupDto signupDto;
     private SignupWithoutCustomDto signupWithoutCustomDto;
     private SignupWithCustomDto signupWithCustomDto;
     private LoginDto loginDto;
@@ -68,15 +70,16 @@ public class StampUserServiceTest {
     @BeforeEach
     public void setUp() {
         // entity setup
-        stamp = setUpStamp();
-        stampUser = setUpStampUser();
-        mission = setUpMission();
-        userMission1 = setupUserMission(1L, stampUser, mission);
-        userMission2 = setupUserMission(2L, stampUser, mission);
+        stamp = StampFixture.스탬프_엔티티_생성();
+        stampUser = StampUserFixture.스탬프유저_엔티티_생성(stamp);
+        mission = MissionFixture.미션_엔티티_생성();
+        userMission1 = UserMissionFixture.유저미션_엔티티_생성(1L, stampUser, mission);
+
         // dto setup
-        signupWithoutCustomDto = setUpSignupWithoutCustomDto();
-        signupWithCustomDto = setUpsignupWithCustomDto();
-        loginDto = setUpLoginDto();
+        signupDto = StampUserFixture.회원가입_DTO_생성();
+        signupWithoutCustomDto = StampUserFixture.커스텀_없는_회원가입_DTO_생성();
+        signupWithCustomDto = StampUserFixture.커스텀_있는_회원가입_DTO_생성();
+        loginDto = StampUserFixture.로그인_DTO_생성();
     }
 
     @Test
@@ -108,6 +111,41 @@ public class StampUserServiceTest {
         // when
 
         StampUserGetDto result = stampUserService.signup(1L, signupWithCustomDto);
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.isFinished()).isEqualTo(false);
+        assertThat(result.getUserMissionInfoGetDtos()).hasSize(1);
+    }
+
+    @Test
+    void 스탬프_유저_생성_학교번호_있음(){
+        // given
+        mission.addStamp(stamp);
+        given(stampRepository.findById(anyLong())).willReturn(Optional.of(stamp));
+        given(encryptService.encryptInfo(anyString())).willReturn(ENCRYPTED_STRING);
+        given(stampUserRepository.existsByStampIdAndPhone(anyLong(), anyString()))
+                .willReturn(false);
+        setField(signupDto, "schoolNo", "test school no");
+        // when
+        StampUserGetDto result = stampUserService.signup(1L, signupDto);
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.isFinished()).isEqualTo(false);
+        assertThat(result.getUserMissionInfoGetDtos()).hasSize(1);
+    }
+
+    @Test
+    void 스탬프_유저_생성_학교번호_없음(){
+        // given
+        mission.addStamp(stamp);
+        given(stampRepository.findById(anyLong())).willReturn(Optional.of(stamp));
+        given(encryptService.encryptInfo(anyString())).willReturn(ENCRYPTED_STRING);
+        given(stampUserRepository.existsByStampIdAndPhone(anyLong(), anyString()))
+                .willReturn(false);
+        // when
+        StampUserGetDto result = stampUserService.signup(1L, signupDto);
+
         // then
         assertThat(result).isNotNull();
         assertThat(result.isFinished()).isEqualTo(false);
@@ -243,6 +281,7 @@ public class StampUserServiceTest {
 
         // when
         String result = stampUserService.checkV2Finish(anyString());
+        System.out.println(stamp.getFinishCount());
 
         // then
         assertThat(result).isEqualTo("미완료");
@@ -280,53 +319,6 @@ public class StampUserServiceTest {
         // when & then
         assertThatThrownBy(() -> stampUserService.deleteStampByUuid(anyString()))
                 .isInstanceOf(StampUserNotFoundException.class);
-    }
-
-    private SignupWithoutCustomDto setUpSignupWithoutCustomDto() {
-        SignupWithoutCustomDto signupDto = new SignupWithoutCustomDto();
-        setField(signupDto, "name", "test name");
-        setField(signupDto, "phone", "test phone");
-        setField(signupDto, "participantCount", 10);
-        return signupDto;
-    }
-
-    private SignupWithCustomDto setUpsignupWithCustomDto() {
-        SignupWithCustomDto signupDto = new SignupWithCustomDto();
-        setField(signupDto, "name", "test name");
-        setField(signupDto, "phone", "test phone");
-        setField(signupDto, "participantCount", 10);
-        setField(signupDto, "schoolNo", "test school no");
-        return signupDto;
-    }
-
-    private LoginDto setUpLoginDto() {
-        LoginDto loginDto = new LoginDto();
-        setField(loginDto, "name", "test");
-        setField(loginDto, "phone", "01012341234");
-        return loginDto;
-    }
-
-    private Mission setUpMission() {
-        Mission mission = new Mission();
-        setField(mission, "id", 1L);
-        setField(mission, "boothId", 1L);
-        setField(mission, "title", "mission title");
-        setField(mission, "content", "mission content");
-        setField(mission, "place", "mission place");
-        setField(mission, "time", "mission time");
-        setField(mission, "clearedThumbnail", "mission cleared thumbnail");
-        setField(mission, "notClearedThumbnail", "mission not cleared thumbnail");
-        return mission;
-    }
-
-    private StampUser setUpStampUser() {
-        return new StampUser(stamp, ENCRYPTED_STRING, ENCRYPTED_STRING, 10);
-    }
-
-    private Stamp setUpStamp() {
-        Stamp stamp = Stamp.create(Festival.from(new FestivalCreateDto("test festival", "test address")));
-        setField(stamp, "id", 1L);
-        return stamp;
     }
 
     private UserMission setupUserMission(Long id, StampUser stampUser, Mission mission) {
