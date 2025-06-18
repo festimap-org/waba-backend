@@ -1,16 +1,16 @@
 package com.halo.eventer.domain.stamp.entity;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
 import com.halo.eventer.domain.stamp.dto.stamp.MissionSetDto;
 import com.halo.eventer.domain.stamp.fixture.MissionFixture;
 import com.halo.eventer.domain.stamp.fixture.StampFixture;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
-
 
 @SuppressWarnings("NonAsciiCharacters")
 public class MissionTest {
@@ -31,22 +31,22 @@ public class MissionTest {
     }
 
     @Test
-    void 미션_업데이트_성공(){
-        //given & when
+    void 미션_업데이트_성공() {
+        // given & when
         mission.updateMission(updateDto);
 
-        //then
+        // then
         assertThat(mission.getPlace()).isEqualTo(updateDto.getPlace());
         assertThat(mission.getTitle()).isEqualTo(updateDto.getTitle());
         assertThat(mission.getTime()).isEqualTo(updateDto.getTime());
     }
 
     @Test
-    void 미션_스탬프_추가_성공(){
-        //given & when
+    void 미션_스탬프_추가_성공() {
+        // given & when
         mission.addStamp(stamp);
 
-        //then
+        // then
         assertThat(mission.getStamp()).isEqualTo(stamp); // 동등성 검사
     }
 }

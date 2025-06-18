@@ -2,10 +2,6 @@ package com.halo.eventer.domain.stamp.service;
 
 import java.util.Optional;
 
-import com.halo.eventer.domain.stamp.fixture.MissionFixture;
-import com.halo.eventer.domain.stamp.fixture.StampFixture;
-import com.halo.eventer.domain.stamp.fixture.StampUserFixture;
-import com.halo.eventer.domain.stamp.fixture.UserMissionFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +19,10 @@ import com.halo.eventer.domain.stamp.exception.StampClosedException;
 import com.halo.eventer.domain.stamp.exception.StampUserAlreadyExistsException;
 import com.halo.eventer.domain.stamp.exception.StampUserNotFoundException;
 import com.halo.eventer.domain.stamp.exception.UserMissionNotFoundException;
+import com.halo.eventer.domain.stamp.fixture.MissionFixture;
+import com.halo.eventer.domain.stamp.fixture.StampFixture;
+import com.halo.eventer.domain.stamp.fixture.StampUserFixture;
+import com.halo.eventer.domain.stamp.fixture.UserMissionFixture;
 import com.halo.eventer.domain.stamp.repository.StampRepository;
 import com.halo.eventer.domain.stamp.repository.StampUserRepository;
 import com.halo.eventer.global.utils.EncryptService;
@@ -118,7 +118,7 @@ public class StampUserServiceTest {
     }
 
     @Test
-    void 스탬프_유저_생성_학교번호_있음(){
+    void 스탬프_유저_생성_학교번호_있음() {
         // given
         mission.addStamp(stamp);
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(stamp));
@@ -136,7 +136,7 @@ public class StampUserServiceTest {
     }
 
     @Test
-    void 스탬프_유저_생성_학교번호_없음(){
+    void 스탬프_유저_생성_학교번호_없음() {
         // given
         mission.addStamp(stamp);
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(stamp));

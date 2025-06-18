@@ -12,7 +12,6 @@ import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.dto.stamp.*;
-import com.halo.eventer.domain.stamp.exception.StampClosedException;
 import com.halo.eventer.domain.stamp.exception.StampNotFoundException;
 import com.halo.eventer.domain.stamp.repository.MissionRepository;
 import com.halo.eventer.domain.stamp.repository.StampRepository;

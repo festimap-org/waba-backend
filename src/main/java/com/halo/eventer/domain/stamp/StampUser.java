@@ -77,7 +77,7 @@ public class StampUser {
         this.custom = custom;
     }
 
-    public void assignUserMissions(List<UserMission> userMissions){
+    public void assignUserMissions(List<UserMission> userMissions) {
         this.userMissions = userMissions;
     }
 
@@ -86,8 +86,7 @@ public class StampUser {
     }
 
     public void userMissionComplete(Long missionId) {
-        this.userMissions
-                .stream()
+        this.userMissions.stream()
                 .filter(m -> m.getId().equals(missionId))
                 .findFirst()
                 .orElseThrow(() -> new UserMissionNotFoundException(missionId))

@@ -1,6 +1,5 @@
 package com.halo.eventer.domain.stamp.fixture;
 
-
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.FestivalCreateDto;
 import com.halo.eventer.domain.stamp.Stamp;

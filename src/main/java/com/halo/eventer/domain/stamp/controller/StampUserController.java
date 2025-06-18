@@ -33,8 +33,7 @@ public class StampUserController {
 
     @SignupApi
     @PostMapping("/signup")
-    public StampUserGetDto signup(
-            @RequestParam("stampId") Long stampId, @RequestBody SignupDto signupDto){
+    public StampUserGetDto signup(@RequestParam("stampId") Long stampId, @RequestBody SignupDto signupDto) {
         return stampUserService.signupV2(stampId, signupDto);
     }
 

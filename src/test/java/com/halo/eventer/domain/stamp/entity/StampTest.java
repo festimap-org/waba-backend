@@ -1,5 +1,7 @@
 package com.halo.eventer.domain.stamp.entity;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.FestivalFixture;
@@ -9,9 +11,6 @@ import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
 import com.halo.eventer.domain.stamp.exception.StampClosedException;
 import com.halo.eventer.domain.stamp.fixture.MissionFixture;
-import com.halo.eventer.domain.stamp.fixture.StampUserFixture;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,7 +28,7 @@ public class StampTest {
     }
 
     @Test
-    void 스탬프_생성(){
+    void 스탬프_생성() {
         assertThat(stamp.getFestival()).isEqualTo(festival);
         assertThat(stamp.isActive()).isTrue();
         assertThat(stamp.getFinishCount()).isZero();

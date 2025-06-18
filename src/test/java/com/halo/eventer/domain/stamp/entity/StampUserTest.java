@@ -1,5 +1,13 @@
 package com.halo.eventer.domain.stamp.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
@@ -7,16 +15,8 @@ import com.halo.eventer.domain.stamp.fixture.MissionFixture;
 import com.halo.eventer.domain.stamp.fixture.StampFixture;
 import com.halo.eventer.domain.stamp.fixture.StampUserFixture;
 import com.halo.eventer.domain.stamp.fixture.UserMissionFixture;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class StampUserTest {
@@ -31,30 +31,30 @@ public class StampUserTest {
     }
 
     @Test
-    void 완료_마킹(){
+    void 완료_마킹() {
         stampUser.markAsFinished();
         assertThat(stampUser.isFinished()).isTrue();
     }
 
     @Test
-    void 유저미션_할당(){
-        //given
+    void 유저미션_할당() {
+        // given
         List<UserMission> userMissions = new ArrayList<>();
         UserMission userMission1 = UserMissionFixture.유저미션_엔티티_생성(1L, stampUser, MissionFixture.미션_엔티티_생성());
         UserMission userMission2 = UserMissionFixture.유저미션_엔티티_생성(2L, stampUser, MissionFixture.미션_엔티티_생성());
         userMissions.add(userMission1);
         userMissions.add(userMission2);
 
-        //when
+        // when
         stampUser.assignUserMissions(userMissions);
 
-        //then
+        // then
         assertThat(stampUser.getUserMissions()).isEqualTo(userMissions);
     }
 
     @Test
-    void 유저미션_전부_성공_완료여부_확인(){
-        //given
+    void 유저미션_전부_성공_완료여부_확인() {
+        // given
         List<UserMission> userMissions = new ArrayList<>();
         UserMission userMission1 = UserMissionFixture.유저미션_엔티티_생성(1L, stampUser, MissionFixture.미션_엔티티_생성());
         UserMission userMission2 = UserMissionFixture.유저미션_엔티티_생성(2L, stampUser, MissionFixture.미션_엔티티_생성());
@@ -63,16 +63,16 @@ public class StampUserTest {
         userMissions.add(userMission1);
         userMissions.add(userMission2);
 
-        //when
+        // when
         stampUser.assignUserMissions(userMissions);
         boolean result = stampUser.isMissionsAllCompleted();
 
-        //then
+        // then
         assertThat(result).isTrue();
     }
 
     @Test
-    void 유저미션_완료(){
+    void 유저미션_완료() {
         // given
         List<UserMission> userMissions = new ArrayList<>();
         UserMission userMission = UserMissionFixture.유저미션_엔티티_생성(1L, stampUser, MissionFixture.미션_엔티티_생성());
@@ -87,7 +87,7 @@ public class StampUserTest {
     }
 
     @Test
-    void 스탬프투어_종료_가능(){
+    void 스탬프투어_종료_가능() {
         // given
         List<UserMission> userMissions = new ArrayList<>();
         UserMission userMission = UserMissionFixture.유저미션_엔티티_생성(1L, stampUser, MissionFixture.미션_엔티티_생성());
@@ -98,7 +98,7 @@ public class StampUserTest {
         // when
         boolean result = stampUser.canFinishTour();
 
-        //then
+        // then
         assertThat(result).isTrue();
     }
 }

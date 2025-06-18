@@ -47,7 +47,8 @@ public class StampUserService {
 
         validateExistStamp(stamp.getId(), encryptedPhone);
 
-        return new StampUser(stamp, encryptedPhone, encryptedName, signupDto.getParticipantCount(), signupDto.getSchoolNo());
+        return new StampUser(
+                stamp, encryptedPhone, encryptedName, signupDto.getParticipantCount(), signupDto.getSchoolNo());
     }
 
     @Transactional

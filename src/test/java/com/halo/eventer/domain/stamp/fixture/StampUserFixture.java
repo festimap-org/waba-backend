@@ -1,16 +1,13 @@
 package com.halo.eventer.domain.stamp.fixture;
 
-import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
-import com.halo.eventer.domain.stamp.UserMission;
 import com.halo.eventer.domain.stamp.dto.stampUser.LoginDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.SignupDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.SignupWithCustomDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.SignupWithoutCustomDto;
 
 import static org.springframework.test.util.ReflectionTestUtils.setField;
-
 
 @SuppressWarnings("NonAsciiCharacters")
 public class StampUserFixture {

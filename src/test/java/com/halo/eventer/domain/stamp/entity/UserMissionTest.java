@@ -1,13 +1,14 @@
 package com.halo.eventer.domain.stamp.entity;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
 import com.halo.eventer.domain.stamp.fixture.MissionFixture;
 import com.halo.eventer.domain.stamp.fixture.StampFixture;
 import com.halo.eventer.domain.stamp.fixture.StampUserFixture;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -25,17 +26,17 @@ public class UserMissionTest {
     }
 
     @Test
-    void 유저미션_생성_성공(){
+    void 유저미션_생성_성공() {
         // given & when
         userMission = UserMission.create(mission, stampUser);
 
-        //then
+        // then
         assertThat(userMission.getMission()).isEqualTo(mission);
         assertThat(userMission.getStampUser()).isEqualTo(stampUser);
     }
 
     @Test
-    void 유저미션_완료_성공(){
+    void 유저미션_완료_성공() {
         // given & when
         userMission = UserMission.create(mission, stampUser);
         userMission.markAsComplete();
