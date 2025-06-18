@@ -1,5 +1,7 @@
 package com.halo.eventer.domain.lost_item.dto;
 
+import java.time.LocalDate;
+
 import com.halo.eventer.domain.lost_item.LostItem;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,10 +14,10 @@ public class LostItemResDto {
     private String name;
     private String description;
     private String thumbnail;
-    private String findDate;
+    private LocalDate findDate;
 
     @Builder
-    private LostItemResDto(Long id, String name, String description, String thumbnail, String findDate) {
+    private LostItemResDto(Long id, String name, String description, String thumbnail, LocalDate findDate) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -23,7 +25,7 @@ public class LostItemResDto {
         this.findDate = findDate;
     }
 
-    public static LostItemResDto from(LostItem lostItem){
+    public static LostItemResDto from(LostItem lostItem) {
         return LostItemResDto.builder()
                 .id(lostItem.getId())
                 .name(lostItem.getName())

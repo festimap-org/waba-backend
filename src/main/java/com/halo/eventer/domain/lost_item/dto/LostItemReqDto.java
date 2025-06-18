@@ -1,5 +1,7 @@
 package com.halo.eventer.domain.lost_item.dto;
 
+import java.time.LocalDate;
+
 import com.halo.eventer.domain.lost_item.LostItem;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +14,7 @@ public class LostItemReqDto {
     private String name;
     private String description;
     private String thumbnail;
-    private String findDate;
+    private LocalDate findDate;
 
     public LostItemReqDto(LostItem lostItem) {
         this.name = lostItem.getName();

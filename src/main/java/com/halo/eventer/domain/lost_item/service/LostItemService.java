@@ -3,8 +3,6 @@ package com.halo.eventer.domain.lost_item.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.halo.eventer.domain.lost_item.dto.LostItemResDto;
-import com.halo.eventer.domain.lost_item.dto.LostItemSummaryDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +11,8 @@ import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.lost_item.LostItem;
 import com.halo.eventer.domain.lost_item.dto.LostItemReqDto;
+import com.halo.eventer.domain.lost_item.dto.LostItemResDto;
+import com.halo.eventer.domain.lost_item.dto.LostItemSummaryDto;
 import com.halo.eventer.domain.lost_item.exception.LostItemNotFoundException;
 import com.halo.eventer.domain.lost_item.repository.LostItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +25,8 @@ public class LostItemService {
 
     @Transactional
     public Long create(Long festivalId, LostItemReqDto lostItemReqDto) {
-        Festival festival = festivalRepository.findById(festivalId)
-                .orElseThrow(() -> new FestivalNotFoundException(festivalId));
+        Festival festival =
+                festivalRepository.findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
         LostItem lostItem = lostItemRepository.save(LostItem.of(lostItemReqDto, festival));
         return lostItem.getId();
     }
@@ -58,7 +58,7 @@ public class LostItemService {
                 .collect(Collectors.toList());
     }
 
-    private LostItem loadFestivalOrThrow(Long id){
+    private LostItem loadFestivalOrThrow(Long id) {
         return lostItemRepository.findById(id).orElseThrow(() -> new LostItemNotFoundException(id));
     }
 }

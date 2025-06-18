@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.lost_item;
 
+import java.time.LocalDate;
 import javax.persistence.*;
 
 import com.halo.eventer.domain.festival.Festival;
@@ -16,10 +17,17 @@ public class LostItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
+
+    @Column(name = "description", nullable = true)
     private String description;
+
+    @Column(name = "thumbnail", nullable = false, length = 1000)
     private String thumbnail;
-    private String findDate;
+
+    @Column(name = "find_date", nullable = false)
+    private LocalDate findDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
@@ -29,7 +37,7 @@ public class LostItem {
         this.name = lostItemReqDto.getName();
         this.thumbnail = lostItemReqDto.getThumbnail();
         this.findDate = lostItemReqDto.getFindDate();
-        this.description= lostItemReqDto.getDescription();
+        this.description = lostItemReqDto.getDescription();
         this.festival = festival;
     }
 
