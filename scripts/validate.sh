@@ -11,7 +11,7 @@ if ! pgrep -f "java.*app.jar" >/dev/null; then
 fi
 
 # 2) 헬스 체크
-if ! curl -sf http://127.0.0.1:8080/; then
+if ! curl -sf http://127.0.0.1:9998/; then
   echo "헬스 체크 실패"
   exit 1
 fi
