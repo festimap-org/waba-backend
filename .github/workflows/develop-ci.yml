@@ -61,7 +61,7 @@ jobs:
           
 
       - name: Upload zip to S3
-        run: aws s3 cp deploy.zip s3://${{ secrets.S3_BUCKET }}/deploy.zip
+        run: aws s3 cp deploy.zip s3://${{ secrets.S3_BUCKET_NAME }}/deploy.zip
 
       - name: Create Blue/Green deployment
         id: cd
@@ -70,7 +70,7 @@ jobs:
             --application-name       ${{ secrets.CODEDEPLOY_APP }} \
             --deployment-group-name  ${{ secrets.CODEDEPLOY_DG }} \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
-            --s3-location bucket=${{ secrets.S3_BUCKET }},key=deploy.zip,bundleType=zip \
+            --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},key=deploy.zip,bundleType=zip \
             --file-exists-behavior OVERWRITE \
             --auto-rollback-configuration enabled=true,events=DEPLOYMENT_FAILURE > result.json
           cat result.json
