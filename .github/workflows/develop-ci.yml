@@ -3,6 +3,8 @@ name: Check Code Format And Test Code
 on:
   pull_request:
     branches: [ "develop" , "main" ]
+  push:
+    branches: ["feature/issue-121"]
 
 defaults:
   run:
