@@ -19,31 +19,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # (1) 소스코드 체크아웃
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # (2) application.yml 생성
       - name: Create application.yml
         run: |
           mkdir -p src/main/resources
           echo "${{ secrets.APP_DEVELOP_YML }}" > src/main/resources/application.yml
 
-      # (3) JDK 설정
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           java-version: 11
           distribution: temurin
 
-      # (4) Gradle 빌드
       - name: Build (Gradle)
         run: |
           chmod +x ./gradlew
           ./gradlew clean build
           ls -alh build/libs
 
-      # (5) AWS 자격증명 세팅
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -51,13 +46,34 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # (6) 빌드 산출물 (JAR) S3 업로드
       - name: Upload jar to S3
         run: |
           aws s3 cp \
             build/libs/eventer-0.0.1-SNAPSHOT.jar \
             s3://${{ secrets.BUCKET_NAME }}/backend/develop/eventer-0.0.1-SNAPSHOT.jar
 
+      - name: Package for CodeDeploy
+        run: |
+          mkdir -p deploy/scripts
+          cp appspec.yml             deploy/
+          cp scripts/validate.sh      deploy/scripts/
+          cd deploy && zip -r ../deploy.zip .
+          
+
+      - name: Upload zip to S3
+        run: aws s3 cp deploy.zip s3://${{ secrets.S3_BUCKET }}/deploy.zip
+
+      - name: Create Blue/Green deployment
+        id: cd
+        run: |
+          aws deploy create-deployment \
+            --application-name       ${{ secrets.CODEDEPLOY_APP }} \
+            --deployment-group-name  ${{ secrets.CODEDEPLOY_DG }} \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --s3-location bucket=${{ secrets.S3_BUCKET }},key=deploy.zip,bundleType=zip \
+            --file-exists-behavior OVERWRITE \
+            --auto-rollback-configuration enabled=true,events=DEPLOYMENT_FAILURE > result.json
+          cat result.json
 
 #  code-quality:
 #    name: Code Quality (Spotless)
