@@ -37,7 +37,7 @@ jobs:
       - name: Create application.yml
         run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.APP_YML }}" > src/main/resources/application.yml 
+          echo "${{ secrets.APP_YML }}" > src/main/resources/application.yml
 
       - name: Spotless Check
         id: spotless
@@ -48,7 +48,7 @@ jobs:
       - name: Spotless Apply
         if: failure() && steps.spotless.outcome == 'failure'
         run: |
-          git config core.fileMode false  
+          git config core.fileMode false
           ./gradlew spotlessApply
 
       - name: Spotless Fix Suggestion
@@ -108,5 +108,5 @@ jobs:
           title: Test Coverage Report
           token: ${{ secrets.GITHUB_TOKEN }}
           paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
-#          min-coverage-overall: 80
-#          min-coverage-changed-files: 80
+          min-coverage-overall: 70
+          min-coverage-changed-files: 80
