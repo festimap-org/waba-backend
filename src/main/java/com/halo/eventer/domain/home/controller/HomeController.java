@@ -35,9 +35,4 @@ public class HomeController {
 
     @GetMapping("/")
     public void getOk() {}
-
-    @GetMapping("/test")
-    public String getTest() {
-        return "Hello World";
-    }
 }
