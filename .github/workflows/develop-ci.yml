@@ -12,101 +12,146 @@ env:
   JDK_VERSION: 11
 
 jobs:
-  code-quality:
-    name: Code Quality (Spotless)
+  build-and-deploy:
+    name: build and deploy with AWS Code Deploy
     runs-on: ubuntu-latest
 
-    permissions:
-      checks: write
-      pull-requests: write
-
-
     steps:
+      # (1) 소스코드 체크아웃
       - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.TOKEN }}
+        uses: actions/checkout@v3
 
-      - name: Set up JDK ${{ env.JDK_VERSION }}
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: ${{ env.JDK_VERSION }}
-          cache: gradle
-
+      # (2) application.yml 생성
       - name: Create application.yml
         run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.APP_YML }}" > src/main/resources/application.yml 
+          echo "${{ secrets.APP_DEVELOP_YML }}" > src/main/resources/application.yml
 
-      - name: Spotless Check
-        id: spotless
-        run: |
-          chmod +x ./gradlew
-          ./gradlew spotlessCheck
-
-      - name: Spotless Apply
-        if: failure() && steps.spotless.outcome == 'failure'
-        run: |
-          git config core.fileMode false  
-          ./gradlew spotlessApply
-
-      - name: Spotless Fix Suggestion
-        if: failure() && steps.spotless.outcome == 'failure'
-        uses: reviewdog/action-suggester@v1.5.1
-        with:
-          tool_name: spotless
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reviewdog_flags: "--diff='git diff --diff-filter=ACM -U0 --no-color'"
-
-  check-test:
-    runs-on: ubuntu-latest
-    needs: code-quality
-    timeout-minutes: 10
-
-    permissions:
-      checks: write
-      pull-requests: write
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.TOKEN }}
-
-      - name: Set up JDK ${{ env.JDK_VERSION }}
+      # (3) JDK 설정
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: ${{ env.JDK_VERSION }}
-          cache: gradle
+          java-version: 11
+          distribution: temurin
 
-      - name: Grant wrapper exec
-        run: chmod +x gradlew
+      # (4) Gradle 빌드
+      - name: Build (Gradle)
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build
+          ls -alh build/libs
 
-      - name: Run Tests
-        run: ./gradlew test -Dspring.profiles.active=test
-
-      - name: Publish Test Summary
-        id: junit
-        if: always()
-        uses: EnricoMi/publish-unit-test-result-action@v2
+      # (5) AWS 자격증명 세팅
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          files: '**/build/test-results/test/TEST-*.xml'
-          comment_mode: always
-          fail_on: test failures
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Generate JaCoCo XML / HTML
-        if: success()
-        run: ./gradlew jacocoTestReport
+      # (6) 빌드 산출물 (JAR) S3 업로드
+      - name: Upload jar to S3
+        run: |
+          aws s3 cp \
+            build/libs/eventer-0.0.1-SNAPSHOT.jar \
+            s3://${{ secrets.BUCKET_NAME }}/backend/develop/eventer-0.0.1-SNAPSHOT.jar
 
-      - name: Coverage Report (JaCoCo)
-        if: success()
-        id: jacoco
-        uses: madrapps/jacoco-report@v1.6
-        with:
-          title: Test Coverage Report
-          token: ${{ secrets.GITHUB_TOKEN }}
-          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+
+#  code-quality:
+#    name: Code Quality (Spotless)
+#    runs-on: ubuntu-latest
+#
+#    permissions:
+#      checks: write
+#      pull-requests: write
+#
+#
+#    steps:
+#      - name: Check out repository
+#        uses: actions/checkout@v4
+#        with:
+#          token: ${{ secrets.TOKEN }}
+#
+#      - name: Set up JDK ${{ env.JDK_VERSION }}
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: 'temurin'
+#          java-version: ${{ env.JDK_VERSION }}
+#          cache: gradle
+#
+#      - name: Create application.yml
+#        run: |
+#          mkdir -p src/main/resources
+#          echo "${{ secrets.APP_YML }}" > src/main/resources/application.yml
+#
+#      - name: Spotless Check
+#        id: spotless
+#        run: |
+#          chmod +x ./gradlew
+#          ./gradlew spotlessCheck
+#
+#      - name: Spotless Apply
+#        if: failure() && steps.spotless.outcome == 'failure'
+#        run: |
+#          git config core.fileMode false
+#          ./gradlew spotlessApply
+#
+#      - name: Spotless Fix Suggestion
+#        if: failure() && steps.spotless.outcome == 'failure'
+#        uses: reviewdog/action-suggester@v1.5.1
+#        with:
+#          tool_name: spotless
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          reviewdog_flags: "--diff='git diff --diff-filter=ACM -U0 --no-color'"
+#
+#  check-test:
+#    runs-on: ubuntu-latest
+#    needs: code-quality
+#    timeout-minutes: 10
+#
+#    permissions:
+#      checks: write
+#      pull-requests: write
+#
+#    steps:
+#      - name: Check out repository
+#        uses: actions/checkout@v4
+#        with:
+#          token: ${{ secrets.TOKEN }}
+#
+#      - name: Set up JDK ${{ env.JDK_VERSION }}
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: 'temurin'
+#          java-version: ${{ env.JDK_VERSION }}
+#          cache: gradle
+#
+#      - name: Grant wrapper exec
+#        run: chmod +x gradlew
+#
+#      - name: Run Tests
+#        run: ./gradlew test -Dspring.profiles.active=test
+#
+#      - name: Publish Test Summary
+#        id: junit
+#        if: always()
+#        uses: EnricoMi/publish-unit-test-result-action@v2
+#        with:
+#          files: '**/build/test-results/test/TEST-*.xml'
+#          comment_mode: always
+#          fail_on: test failures
+#
+#      - name: Generate JaCoCo XML / HTML
+#        if: success()
+#        run: ./gradlew jacocoTestReport
+#
+#      - name: Coverage Report (JaCoCo)
+#        if: success()
+#        id: jacoco
+#        uses: madrapps/jacoco-report@v1.6
+#        with:
+#          title: Test Coverage Report
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
 #          min-coverage-overall: 80
 #          min-coverage-changed-files: 80
