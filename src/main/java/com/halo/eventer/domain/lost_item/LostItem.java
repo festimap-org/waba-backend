@@ -1,10 +1,10 @@
 package com.halo.eventer.domain.lost_item;
 
 import java.time.LocalDate;
-import javax.persistence.*;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.lost_item.dto.LostItemReqDto;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

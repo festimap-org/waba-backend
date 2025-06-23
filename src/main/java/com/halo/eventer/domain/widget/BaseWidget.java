@@ -2,13 +2,13 @@ package com.halo.eventer.domain.widget;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.widget_item.WidgetItem;
 import com.halo.eventer.global.common.BaseTime;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

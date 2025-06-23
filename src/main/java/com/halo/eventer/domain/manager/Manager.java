@@ -1,8 +1,7 @@
 package com.halo.eventer.domain.manager;
 
-import javax.persistence.*;
-
 import com.halo.eventer.domain.festival.Festival;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

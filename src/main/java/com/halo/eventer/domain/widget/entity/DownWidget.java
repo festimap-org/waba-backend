@@ -1,12 +1,11 @@
 package com.halo.eventer.domain.widget.entity;
 
-import javax.persistence.*;
-
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.widget.BaseWidget;
 import com.halo.eventer.domain.widget.dto.down_widget.DownWidgetCreateDto;
 import com.halo.eventer.domain.widget.feature.DisplayOrderFeature;
 import com.halo.eventer.global.constants.DisplayOrderConstants;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

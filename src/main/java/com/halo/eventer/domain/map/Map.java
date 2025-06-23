@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.*;
 
 import com.halo.eventer.domain.duration.Duration;
 import com.halo.eventer.domain.duration.DurationMap;
@@ -13,6 +12,7 @@ import com.halo.eventer.domain.map.dto.map.MapUpdateDto;
 import com.halo.eventer.domain.map.embedded.ButtonInfo;
 import com.halo.eventer.domain.map.embedded.LocationInfo;
 import com.halo.eventer.domain.map.embedded.OperationInfo;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
