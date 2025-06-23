@@ -2,11 +2,11 @@ package com.halo.eventer.domain.widget_item;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
 
 import com.halo.eventer.domain.image.Image;
 import com.halo.eventer.domain.widget.BaseWidget;
 import com.halo.eventer.domain.widget_item.dto.WidgetItemCreateDto;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
