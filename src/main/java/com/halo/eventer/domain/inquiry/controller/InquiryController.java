@@ -1,11 +1,10 @@
 package com.halo.eventer.domain.inquiry.controller;
 
-import javax.validation.constraints.Min;
-
 import org.springframework.web.bind.annotation.*;
 
 import com.halo.eventer.domain.inquiry.dto.*;
 import com.halo.eventer.domain.inquiry.service.InquiryService;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 
 @RestController

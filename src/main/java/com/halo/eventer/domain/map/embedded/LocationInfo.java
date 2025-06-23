@@ -1,8 +1,7 @@
 package com.halo.eventer.domain.map.embedded;
 
-import javax.persistence.Embeddable;
-
 import com.halo.eventer.domain.map.dto.map.LocationInfoDto;
+import jakarta.persistence.Embeddable;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

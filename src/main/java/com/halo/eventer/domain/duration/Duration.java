@@ -3,10 +3,10 @@ package com.halo.eventer.domain.duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
 
 import com.halo.eventer.domain.duration.dto.DurationCreateDto;
 import com.halo.eventer.domain.festival.Festival;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

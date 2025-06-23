@@ -9,7 +9,7 @@ public class FestivalFixture {
 
     public static Festival 축제_엔티티() {
         Festival festival = Festival.from(축제_생성용_DTO());
-        setField(festival, "id", 1L);
+        // setField(festival, "id", 1L);
         return festival;
     }
 

@@ -1,7 +1,6 @@
 package com.halo.eventer.domain.inquiry;
 
 import java.time.LocalDateTime;
-import javax.persistence.*;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -9,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.inquiry.dto.InquiryCreateReqDto;
 import com.halo.eventer.domain.inquiry.dto.InquiryUserReqDto;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

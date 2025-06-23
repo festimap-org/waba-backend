@@ -3,9 +3,9 @@ package com.halo.eventer.domain.stamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import javax.persistence.*;
 
 import com.halo.eventer.domain.stamp.exception.UserMissionNotFoundException;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
