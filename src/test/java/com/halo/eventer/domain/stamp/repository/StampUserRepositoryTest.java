@@ -46,7 +46,6 @@ public class StampUserRepositoryTest {
         FestivalCreateDto dto = new FestivalCreateDto("축제", "univ");
         festival = festivalRepository.save(Festival.from(dto));
         stamp = Stamp.create(festival);
-        festivalRepository.save(festival);
         stampRepository.save(stamp);
 
         stampUser = new StampUser(stamp, "encryptedPhone", "encryptedName", 1);
