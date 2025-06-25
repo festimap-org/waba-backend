@@ -14,6 +14,7 @@ import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.dto.mission.MissionDetailGetDto;
 import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
 import com.halo.eventer.domain.stamp.exception.MissionNotFoundException;
+import com.halo.eventer.domain.stamp.fixture.MissionFixture;
 import com.halo.eventer.domain.stamp.repository.MissionRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,9 +37,10 @@ public class MissionServiceTest {
     private MissionUpdateDto missionUpdateDto;
 
     @BeforeEach
-    public void setUp() {
-        mission = setUpMission();
-        missionUpdateDto = setUpMissionUpdateDto();
+    void setUp() {
+        mission = MissionFixture.미션_엔티티_생성();
+        missionUpdateDto = MissionFixture.미션_업데이트_DTO_생성();
+        setField(mission, "id", 1L);
     }
 
     @Test
@@ -50,7 +52,7 @@ public class MissionServiceTest {
         MissionDetailGetDto result = missionService.getMission(1L);
 
         // then
-        assertThat(result).usingRecursiveComparison().isEqualTo(mission);
+        assertThat(result).usingRecursiveComparison().isEqualTo(MissionDetailGetDto.from(mission));
     }
 
     @Test
@@ -69,31 +71,11 @@ public class MissionServiceTest {
 
         // when
         missionService.updateMission(mission.getId(), missionUpdateDto);
-        MissionDetailGetDto result = missionService.getMission(1L);
 
         // then
-        assertThat(result)
-                .usingRecursiveComparison()
-                .comparingOnlyFields("boothId")
-                .isEqualTo(mission);
-    }
-
-    private Mission setUpMission() {
-        Mission mission = new Mission();
-        setField(mission, "id", 1L);
-        setField(mission, "boothId", 1L);
-        setField(mission, "title", "mission title");
-        setField(mission, "content", "mission content");
-        setField(mission, "place", "mission place");
-        setField(mission, "time", "mission time");
-        setField(mission, "clearedThumbnail", "mission cleared thumbnail");
-        setField(mission, "notClearedThumbnail", "mission not cleared thumbnail");
-        return mission;
-    }
-
-    private MissionUpdateDto setUpMissionUpdateDto() {
-        MissionUpdateDto dto = new MissionUpdateDto();
-        setField(dto, "boothId", 2L);
-        return dto;
+        assertThat(mission.getBoothId()).isEqualTo(missionUpdateDto.getBoothId());
+        assertThat(mission.getTitle()).isEqualTo(missionUpdateDto.getTitle());
+        assertThat(mission.getPlace()).isEqualTo(missionUpdateDto.getPlace());
+        assertThat(mission.getTime()).isEqualTo(missionUpdateDto.getTime());
     }
 }

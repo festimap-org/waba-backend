@@ -320,10 +320,4 @@ public class StampUserServiceTest {
         assertThatThrownBy(() -> stampUserService.deleteStampByUuid(anyString()))
                 .isInstanceOf(StampUserNotFoundException.class);
     }
-
-    private UserMission setupUserMission(Long id, StampUser stampUser, Mission mission) {
-        UserMission userMission = UserMission.create(mission, stampUser);
-        setField(userMission, "id", id);
-        return userMission;
-    }
 }

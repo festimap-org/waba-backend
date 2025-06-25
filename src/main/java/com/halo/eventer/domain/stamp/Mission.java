@@ -35,15 +35,14 @@ public class Mission {
     private Stamp stamp;
 
     @Builder
-    public Mission(
+    private Mission(
             Long boothId,
             String title,
             String content,
             String place,
             String time,
             String clearedThumbnail,
-            String notClearedThumbnail,
-            Stamp stamp) {
+            String notClearedThumbnail) {
         this.boothId = boothId;
         this.title = title;
         this.content = content;
@@ -51,7 +50,6 @@ public class Mission {
         this.time = time;
         this.clearedThumbnail = clearedThumbnail;
         this.notClearedThumbnail = notClearedThumbnail;
-        this.stamp = stamp;
     }
 
     public void updateMission(MissionUpdateDto request) {

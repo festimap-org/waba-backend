@@ -74,8 +74,7 @@ public class StampServiceTest {
         // given
         given(festivalRepository.findById(anyLong())).willReturn(Optional.ofNullable(festival));
         given(stampRepository.save(any(Stamp.class))).willReturn(stamp);
-        List<Stamp> stamps = List.of(stamp);
-        given(stampRepository.findByFestival(festival)).willReturn(stamps);
+        given(stampRepository.findByFestival(festival)).willReturn(List.of(stamp));
 
         // when
         List<StampGetDto> result = stampService.registerStamp(1L);
