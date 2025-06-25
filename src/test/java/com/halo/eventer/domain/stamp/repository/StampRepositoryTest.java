@@ -18,10 +18,8 @@ import com.halo.eventer.domain.stamp.Stamp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SuppressWarnings("NonAsciiCharacters")
 public class StampRepositoryTest {
 

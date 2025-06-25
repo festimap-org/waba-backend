@@ -31,22 +31,43 @@ public class MissionTest {
     }
 
     @Test
-    void 미션_업데이트_성공() {
-        // given & when
+    void 미션_정보_업데이트된다() {
+        // when
         mission.updateMission(updateDto);
 
         // then
-        assertThat(mission.getPlace()).isEqualTo(updateDto.getPlace());
+        assertThat(mission.getBoothId()).isEqualTo(updateDto.getBoothId());
         assertThat(mission.getTitle()).isEqualTo(updateDto.getTitle());
+        assertThat(mission.getContent()).isEqualTo(updateDto.getContent());
+        assertThat(mission.getPlace()).isEqualTo(updateDto.getPlace());
         assertThat(mission.getTime()).isEqualTo(updateDto.getTime());
+        assertThat(mission.getClearedThumbnail()).isEqualTo(updateDto.getClearedThumbnail());
+        assertThat(mission.getNotClearedThumbnail()).isEqualTo(updateDto.getNotClearedThumbnail());
     }
 
     @Test
-    void 미션_스탬프_추가_성공() {
-        // given & when
+    void 미션에_스탬프_추가된다() {
+        // when
         mission.addStamp(stamp);
 
         // then
-        assertThat(mission.getStamp()).isEqualTo(stamp); // 동등성 검사
+        assertThat(mission.getStamp())
+                .isSameAs(stamp);
+        assertThat(stamp.getMissions())
+                .contains(mission);
+    }
+
+    @Test
+    void 이미_스탬프가_있는경우_addStamp_호출시_중복추가된다() {
+        // given
+        mission.addStamp(stamp);
+
+        // when
+        mission.addStamp(stamp);
+
+        // then
+        assertThat(stamp.getMissions())
+                .filteredOn(m -> m.equals(mission))
+                .hasSize(2);
     }
 }

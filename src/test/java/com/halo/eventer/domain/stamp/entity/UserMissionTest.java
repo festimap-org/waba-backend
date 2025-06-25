@@ -42,6 +42,20 @@ public class UserMissionTest {
         userMission.markAsComplete();
 
         // then
-        assertThat(userMission.isComplete()).isEqualTo(true);
+        assertThat(userMission.isComplete()).isTrue();
+    }
+
+    @Test
+    void 유저미션_이미완료된상태_다시완료처리해도_변화없음() {
+        userMission = UserMission.create(mission, stampUser);
+        userMission.markAsComplete();
+
+        boolean before = userMission.isComplete();
+
+        // when
+        userMission.markAsComplete();
+
+        // then
+        assertThat(userMission.isComplete()).isEqualTo(before).isTrue();
     }
 }

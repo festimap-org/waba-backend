@@ -3,10 +3,9 @@ package com.halo.eventer.domain.stamp.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.halo.eventer.domain.stamp.exception.UserMissionNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.StampUser;
@@ -17,11 +16,11 @@ import com.halo.eventer.domain.stamp.fixture.StampUserFixture;
 import com.halo.eventer.domain.stamp.fixture.UserMissionFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class StampUserTest {
 
-    private static final Logger log = LoggerFactory.getLogger(StampUserTest.class);
     private StampUser stampUser;
     private Mission mission;
 
@@ -87,13 +86,22 @@ public class StampUserTest {
     }
 
     @Test
+    void 유저미션_완료_없는_ID_실패() {
+        // given
+        stampUser.assignUserMissions(List.of()); // 비어있거나 다른 id만 존재
+
+        // when & then
+        assertThatThrownBy(() -> stampUser.userMissionComplete(999L))
+                .isInstanceOf(UserMissionNotFoundException.class);
+    }
+
+    @Test
     void 스탬프투어_종료_가능() {
         // given
-        List<UserMission> userMissions = new ArrayList<>();
-        UserMission userMission = UserMissionFixture.유저미션_엔티티_생성(1L, stampUser, MissionFixture.미션_엔티티_생성());
-        userMission.markAsComplete();
-        userMissions.add(userMission);
-        stampUser.assignUserMissions(userMissions);
+        stampUser.getStamp().defineFinishCnt(1);
+        UserMission mission = UserMissionFixture.유저미션_엔티티_생성(1L, stampUser, MissionFixture.미션_엔티티_생성());
+        mission.markAsComplete();
+        stampUser.assignUserMissions(List.of(mission));
 
         // when
         boolean result = stampUser.canFinishTour();
