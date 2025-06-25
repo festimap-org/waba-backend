@@ -3,13 +3,13 @@ package com.halo.eventer.domain.stamp.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.halo.eventer.domain.stamp.exception.UserMissionNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
+import com.halo.eventer.domain.stamp.exception.UserMissionNotFoundException;
 import com.halo.eventer.domain.stamp.fixture.MissionFixture;
 import com.halo.eventer.domain.stamp.fixture.StampFixture;
 import com.halo.eventer.domain.stamp.fixture.StampUserFixture;
@@ -91,8 +91,7 @@ public class StampUserTest {
         stampUser.assignUserMissions(List.of()); // 비어있거나 다른 id만 존재
 
         // when & then
-        assertThatThrownBy(() -> stampUser.userMissionComplete(999L))
-                .isInstanceOf(UserMissionNotFoundException.class);
+        assertThatThrownBy(() -> stampUser.userMissionComplete(999L)).isInstanceOf(UserMissionNotFoundException.class);
     }
 
     @Test

@@ -81,8 +81,7 @@ class StampTest {
         mission2.addStamp(stamp);
 
         // then
-        assertThat(stamp.getMissions()).hasSize(2)
-                .contains(mission1, mission2);
+        assertThat(stamp.getMissions()).hasSize(2).contains(mission1, mission2);
     }
 
     @Test
@@ -100,7 +99,8 @@ class StampTest {
         stamp.assignAllMissionsTo(stampUser);
 
         // then
-        assertThat(stampUser.getUserMissions()).hasSize(2)
+        assertThat(stampUser.getUserMissions())
+                .hasSize(2)
                 .extracting(UserMission::getMission)
                 .containsExactlyInAnyOrder(mission1, mission2);
     }

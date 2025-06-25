@@ -51,10 +51,8 @@ public class MissionTest {
         mission.addStamp(stamp);
 
         // then
-        assertThat(mission.getStamp())
-                .isSameAs(stamp);
-        assertThat(stamp.getMissions())
-                .contains(mission);
+        assertThat(mission.getStamp()).isSameAs(stamp);
+        assertThat(stamp.getMissions()).contains(mission);
     }
 
     @Test
@@ -66,8 +64,6 @@ public class MissionTest {
         mission.addStamp(stamp);
 
         // then
-        assertThat(stamp.getMissions())
-                .filteredOn(m -> m.equals(mission))
-                .hasSize(2);
+        assertThat(stamp.getMissions()).filteredOn(m -> m.equals(mission)).hasSize(2);
     }
 }

@@ -2,7 +2,6 @@ package com.halo.eventer.domain.stamp.service;
 
 import java.util.Optional;
 
-import com.halo.eventer.domain.stamp.fixture.MissionFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +14,7 @@ import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.dto.mission.MissionDetailGetDto;
 import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
 import com.halo.eventer.domain.stamp.exception.MissionNotFoundException;
+import com.halo.eventer.domain.stamp.fixture.MissionFixture;
 import com.halo.eventer.domain.stamp.repository.MissionRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,9 +52,7 @@ public class MissionServiceTest {
         MissionDetailGetDto result = missionService.getMission(1L);
 
         // then
-        assertThat(result)
-                .usingRecursiveComparison()
-                .isEqualTo(MissionDetailGetDto.from(mission));
+        assertThat(result).usingRecursiveComparison().isEqualTo(MissionDetailGetDto.from(mission));
     }
 
     @Test
@@ -63,8 +61,7 @@ public class MissionServiceTest {
         given(missionRepository.findById(1L)).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> missionService.getMission(1L))
-                .isInstanceOf(MissionNotFoundException.class);
+        assertThatThrownBy(() -> missionService.getMission(1L)).isInstanceOf(MissionNotFoundException.class);
     }
 
     @Test
