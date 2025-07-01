@@ -10,8 +10,15 @@ endif::[]
 
 
 
-== 축제 기간 생성 API {sp} `POST /duration`
+== 축제 기간 생성 API `POST /duration`
 
 '''
 
 operation::duration/create-duration[snippets="http-request,request-headers,query-parameters,request-fields,http-response"]
+
+'''
+
+
+=== Error
+
+include::{navroot}/common/unauthenticated.adoc[]

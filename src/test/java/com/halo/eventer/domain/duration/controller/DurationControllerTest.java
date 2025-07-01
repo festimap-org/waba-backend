@@ -83,15 +83,16 @@ public class DurationControllerTest {
 
     @Test
     void 일반유저_축제기간_생성_인증거부() throws Exception {
-        // given
-        doNothing().when(durationService).createDurations(any(), any());
-
         // when & then
         mockMvc.perform(post("/duration")
                         .param("festivalId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(durationCreateDtos)))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("code").value("A002"))
+                .andExpect(jsonPath("message").value("Unauthenticated"))
+                .andExpect(jsonPath("status").value(401))
+                .andDo(DurationDoc.unauthenticated());
     }
 
     @Test

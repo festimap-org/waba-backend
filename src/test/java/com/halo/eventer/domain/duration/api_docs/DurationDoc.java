@@ -41,4 +41,14 @@ public class DurationDoc {
                                 .type(JsonFieldType.NUMBER)
                                 .description("축제 시작일 기준 N번째 날 (1부터 시작)")));
     }
+
+    public static RestDocumentationResultHandler unauthenticated(){
+        return document("common/unauthenticated",
+                responseFields(
+                        fieldWithPath("code").description("에러 코드 번호"),
+                        fieldWithPath("message").description("상세 에러 메시지"),
+                        fieldWithPath("status").description("HTTP 상태 코드")
+                )
+        );
+    }
 }
