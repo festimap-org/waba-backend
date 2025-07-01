@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.notice;
 
 import java.util.*;
+import jakarta.persistence.*;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.image.Image;
@@ -9,7 +10,6 @@ import com.halo.eventer.domain.notice.dto.NoticeUpdateReqDto;
 import com.halo.eventer.domain.notice.exception.MissingNoticeException;
 import com.halo.eventer.global.common.BaseTime;
 import com.halo.eventer.global.constants.DisplayOrderConstants;
-import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

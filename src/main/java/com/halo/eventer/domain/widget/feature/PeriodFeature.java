@@ -1,9 +1,9 @@
 package com.halo.eventer.domain.widget.feature;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

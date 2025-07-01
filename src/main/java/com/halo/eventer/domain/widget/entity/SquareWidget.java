@@ -1,5 +1,7 @@
 package com.halo.eventer.domain.widget.entity;
 
+import jakarta.persistence.*;
+
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.widget.BaseWidget;
 import com.halo.eventer.domain.widget.dto.square_widget.SquareWidgetCreateDto;
@@ -7,7 +9,6 @@ import com.halo.eventer.domain.widget.feature.DescriptionFeature;
 import com.halo.eventer.domain.widget.feature.DisplayOrderFeature;
 import com.halo.eventer.domain.widget.feature.ImageFeature;
 import com.halo.eventer.global.constants.DisplayOrderConstants;
-import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

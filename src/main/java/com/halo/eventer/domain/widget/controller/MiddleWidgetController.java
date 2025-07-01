@@ -1,6 +1,8 @@
 package com.halo.eventer.domain.widget.controller;
 
 import java.util.List;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +13,6 @@ import com.halo.eventer.global.common.dto.OrderUpdateRequest;
 import com.halo.eventer.global.common.page.PagedResponse;
 import com.halo.eventer.global.common.sort.SortOption;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 
 @RestController
