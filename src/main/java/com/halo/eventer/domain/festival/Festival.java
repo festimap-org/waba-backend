@@ -2,6 +2,7 @@ package com.halo.eventer.domain.festival;
 
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.persistence.*;
 
 import com.halo.eventer.domain.duration.Duration;
 import com.halo.eventer.domain.festival.dto.*;
@@ -15,7 +16,6 @@ import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.splash.Splash;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.widget.BaseWidget;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

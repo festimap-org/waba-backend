@@ -16,12 +16,12 @@ public class DurationResDto {
 
     private Long durationId;
     private LocalDate date;
-    private Integer day;
+    private Integer dayNumber;
 
     public DurationResDto(Duration duration) {
         this.durationId = duration.getId();
         this.date = duration.getDate();
-        this.day = duration.getDayNumber();
+        this.dayNumber = duration.getDayNumber();
     }
 
     public static List<DurationResDto> fromDurations(List<Duration> durations) {

@@ -3,7 +3,9 @@ package com.halo.eventer.global.constants;
 public class SecurityConstants {
 
     // 공개 API 경로
-    public static final String[] SWAGGER_URLS = {"/", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/test"};
+    public static final String[] SWAGGER_URLS = {
+        "/", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/docs/**"
+    };
 
     public static final String[] PUBLIC_GET_URLS = {
         "/concert",

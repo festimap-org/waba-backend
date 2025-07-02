@@ -1,0 +1,24 @@
+:navroot: ..
+include::../_attributes.adoc[]
+
+ifdef::backend-html5[]
+[role="api-nav"]
+****
+include::{navroot}/_nav.adoc[]
+****
+endif::[]
+
+
+
+== 축제 기간 생성 API `POST /duration`
+
+'''
+
+operation::duration/create-duration[snippets="http-request,request-headers,query-parameters,request-fields,http-response"]
+
+'''
+
+
+=== Error
+
+include::{navroot}/common/unauthenticated.adoc[]

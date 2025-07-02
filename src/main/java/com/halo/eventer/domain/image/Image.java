@@ -1,8 +1,9 @@
 package com.halo.eventer.domain.image;
 
+import jakarta.persistence.*;
+
 import com.halo.eventer.domain.notice.Notice;
 import com.halo.eventer.domain.widget_item.WidgetItem;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
