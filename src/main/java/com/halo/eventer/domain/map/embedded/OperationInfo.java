@@ -1,10 +1,11 @@
 package com.halo.eventer.domain.map.embedded;
 
-import com.halo.eventer.domain.map.dto.map.OperationInfoDto;
-import com.halo.eventer.domain.map.enumtype.OperationTime;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+
+import com.halo.eventer.domain.map.dto.map.OperationInfoDto;
+import com.halo.eventer.domain.map.enumtype.OperationTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,0 +1,21 @@
+/* 왼쪽 네비게이션 */
+.sidebarblock.api-nav{
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 260px;
+    margin: 0;
+    padding: 1rem 1.2rem 1rem;;
+    overflow-y: auto;
+    background: #fafafa;
+    border-right: 1px solid #ddd;
+    z-index: 1000;
+}
+
+#header,#content{ margin-left: 280px; }
+
+.sidebarblock.api-nav .nav-root{
+    font-size: 21px;
+    font-weight: 600;
+}

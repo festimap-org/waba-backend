@@ -1,0 +1,6 @@
+:linkcss:
+:copycss:
+:docinfodir: {navroot}
+:docinfo: shared
+:stylesdir: {navroot}/styles
+:nofooter:

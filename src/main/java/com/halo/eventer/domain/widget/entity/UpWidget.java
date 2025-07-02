@@ -1,12 +1,12 @@
 package com.halo.eventer.domain.widget.entity;
 
 import java.time.LocalDateTime;
+import jakarta.persistence.*;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.widget.BaseWidget;
 import com.halo.eventer.domain.widget.dto.up_widget.UpWidgetCreateDto;
 import com.halo.eventer.domain.widget.feature.PeriodFeature;
-import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

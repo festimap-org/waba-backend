@@ -1,7 +1,8 @@
 package com.halo.eventer.domain.splash;
 
-import com.halo.eventer.domain.festival.Festival;
 import jakarta.persistence.*;
+
+import com.halo.eventer.domain.festival.Festival;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -1,8 +1,9 @@
 package com.halo.eventer.domain.missing_person;
 
+import jakarta.persistence.*;
+
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.missing_person.dto.MissingPersonReqDto;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

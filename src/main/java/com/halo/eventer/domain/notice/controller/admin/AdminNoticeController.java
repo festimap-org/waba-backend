@@ -1,6 +1,8 @@
 package com.halo.eventer.domain.notice.controller.admin;
 
 import java.util.List;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -8,8 +10,6 @@ import com.halo.eventer.domain.notice.ArticleType;
 import com.halo.eventer.domain.notice.dto.*;
 import com.halo.eventer.domain.notice.service.NoticeService;
 import com.halo.eventer.global.common.page.PagedResponse;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 
 @RestController

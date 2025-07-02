@@ -14,8 +14,8 @@ public class DurationCreateDto {
     private Integer dayNumber;
 
     @Builder
-    public DurationCreateDto(LocalDate date, Integer day) {
+    public DurationCreateDto(LocalDate date, Integer dayNumber) {
         this.date = date;
-        this.dayNumber = day;
+        this.dayNumber = dayNumber;
     }
 }
