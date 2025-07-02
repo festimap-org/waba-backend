@@ -14,12 +14,13 @@ import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.dto.mission.MissionDetailGetDto;
 import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
 import com.halo.eventer.domain.stamp.exception.MissionNotFoundException;
+import com.halo.eventer.domain.stamp.fixture.MissionFixture;
 import com.halo.eventer.domain.stamp.repository.MissionRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -33,30 +34,28 @@ public class MissionServiceTest {
     private MissionService missionService;
 
     private Mission mission;
-    private MissionUpdateDto missionUpdateDto;
 
     @BeforeEach
-    public void setUp() {
-        mission = setUpMission();
-        missionUpdateDto = setUpMissionUpdateDto();
+    void setUp() {
+        mission = MissionFixture.미션_엔티티_생성();
     }
 
     @Test
     void 미션조회_성공() {
         // given
-        given(missionRepository.findById(1L)).willReturn(Optional.of(mission));
+        given(missionRepository.findById(anyLong())).willReturn(Optional.of(mission));
 
         // when
         MissionDetailGetDto result = missionService.getMission(1L);
 
         // then
-        assertThat(result).usingRecursiveComparison().isEqualTo(mission);
+        assertThat(result).usingRecursiveComparison().isEqualTo(MissionDetailGetDto.from(mission));
     }
 
     @Test
     void 미션조회_실패() {
         // given
-        given(missionRepository.findById(1L)).willReturn(Optional.empty());
+        given(missionRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> missionService.getMission(1L)).isInstanceOf(MissionNotFoundException.class);
@@ -65,35 +64,40 @@ public class MissionServiceTest {
     @Test
     void 미션수정_성공() {
         // given
-        given(missionRepository.findById(1L)).willReturn(Optional.of(mission));
+        MissionUpdateDto dto = MissionFixture.미션_업데이트_DTO_생성();
+        given(missionRepository.findById(anyLong())).willReturn(Optional.of(mission));
 
         // when
-        missionService.updateMission(mission.getId(), missionUpdateDto);
-        MissionDetailGetDto result = missionService.getMission(1L);
+        missionService.updateMission(1L, dto);
 
         // then
-        assertThat(result)
-                .usingRecursiveComparison()
-                .comparingOnlyFields("boothId")
-                .isEqualTo(mission);
+        assertThat(mission.getBoothId()).isEqualTo(dto.getBoothId());
+        assertThat(mission.getTitle()).isEqualTo(dto.getTitle());
+        assertThat(mission.getContent()).isEqualTo(dto.getContent());
+        assertThat(mission.getPlace()).isEqualTo(dto.getPlace());
+        assertThat(mission.getTime()).isEqualTo(dto.getTime());
+        assertThat(mission.getClearedThumbnail()).isEqualTo(dto.getClearedThumbnail());
+        assertThat(mission.getNotClearedThumbnail()).isEqualTo(dto.getNotClearedThumbnail());
     }
 
-    private Mission setUpMission() {
-        Mission mission = new Mission();
-        setField(mission, "id", 1L);
-        setField(mission, "boothId", 1L);
-        setField(mission, "title", "mission title");
-        setField(mission, "content", "mission content");
-        setField(mission, "place", "mission place");
-        setField(mission, "time", "mission time");
-        setField(mission, "clearedThumbnail", "mission cleared thumbnail");
-        setField(mission, "notClearedThumbnail", "mission not cleared thumbnail");
-        return mission;
-    }
+    @Test
+    void 미션_일부수정_성공() {
+        // given
+        MissionUpdateDto dto = MissionFixture.미션_업데이트_DTO_일부수정_생성();
+        given(missionRepository.findById(anyLong())).willReturn(Optional.of(mission));
 
-    private MissionUpdateDto setUpMissionUpdateDto() {
-        MissionUpdateDto dto = new MissionUpdateDto();
-        setField(dto, "boothId", 2L);
-        return dto;
+        // when
+        missionService.updateMission(1L, dto);
+
+        // then - 수정된 필드
+        assertThat(mission.getTitle()).isEqualTo("수정된 제목");
+        assertThat(mission.getContent()).isEqualTo("수정된 내용");
+
+        // then - 수정되지 않은 필드
+        assertThat(mission.getBoothId()).isEqualTo(1L);
+        assertThat(mission.getPlace()).isEqualTo("A관 1층");
+        assertThat(mission.getTime()).isEqualTo("10:00 ~ 18:00");
+        assertThat(mission.getClearedThumbnail()).isEqualTo("cleared.png");
+        assertThat(mission.getNotClearedThumbnail()).isEqualTo("not_cleared.png");
     }
 }

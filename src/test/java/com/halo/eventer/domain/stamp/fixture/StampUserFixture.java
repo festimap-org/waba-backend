@@ -47,6 +47,6 @@ public class StampUserFixture {
     }
 
     public static StampUser 스탬프유저_엔티티_생성(Stamp stamp) {
-        return new StampUser(stamp, ENCRYPTED_STRING, ENCRYPTED_STRING, 10);
+        return new StampUser(ENCRYPTED_STRING, ENCRYPTED_STRING, 10);
     }
 }

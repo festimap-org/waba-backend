@@ -25,7 +25,8 @@ public class StampUserService {
     public StampUserGetDto signup(Long stampId, SignupDto signupDto) {
         Stamp stamp = loadStampOrThrow(stampId);
         stamp.validateActivation();
-        StampUser stampUser = createStampUserFromSignUpDto(stamp, signupDto);
+        StampUser stampUser = createStampUserFromSignUpDto(stampId, signupDto);
+        stampUser.addStamp(stamp);
         stamp.assignAllMissionsTo(stampUser);
         stampUserRepository.save(stampUser);
         return StampUserGetDto.from(stampUser);
@@ -35,20 +36,18 @@ public class StampUserService {
     public StampUserGetDto signupV2(Long stampId, SignupDto signupDto) {
         Stamp stamp = loadStampOrThrow(stampId);
         stamp.validateActivation();
-        StampUser stampUser = createStampUserFromSignUpDtoV2(stamp, signupDto);
+        StampUser stampUser = createStampUserFromSignUpDtoV2(stampId, signupDto);
+        stampUser.addStamp(stamp);
         stamp.assignAllMissionsTo(stampUser);
         stampUserRepository.save(stampUser);
         return StampUserGetDto.from(stampUser);
     }
 
-    private StampUser createStampUserFromSignUpDtoV2(Stamp stamp, SignupDto signupDto) {
+    private StampUser createStampUserFromSignUpDtoV2(Long stampId, SignupDto signupDto) {
         String encryptedPhone = encryptService.encryptInfo(signupDto.getPhone());
         String encryptedName = encryptService.encryptInfo(signupDto.getName());
-
-        validateExistStamp(stamp.getId(), encryptedPhone);
-
-        return new StampUser(
-                stamp, encryptedPhone, encryptedName, signupDto.getParticipantCount(), signupDto.getSchoolNo());
+        validateExistStamp(stampId, encryptedPhone);
+        return new StampUser(encryptedPhone, encryptedName, signupDto.getParticipantCount(), signupDto.getSchoolNo());
     }
 
     @Transactional
@@ -118,21 +117,17 @@ public class StampUserService {
         }
     }
 
-    private StampUser createStampUserFromSignUpDto(Stamp stamp, SignupDto signupDto) {
+    private StampUser createStampUserFromSignUpDto(Long stampId, SignupDto signupDto) {
         String encryptedPhone = encryptService.encryptInfo(signupDto.getPhone());
         String encryptedName = encryptService.encryptInfo(signupDto.getName());
-
-        validateExistStamp(stamp.getId(), encryptedPhone);
-
-        StampUser stampUser = new StampUser(stamp, encryptedPhone, encryptedName, signupDto.getParticipantCount());
-
+        validateExistStamp(stampId, encryptedPhone);
+        StampUser stampUser = new StampUser(encryptedPhone, encryptedName, signupDto.getParticipantCount());
         if (signupDto instanceof SignupWithCustomDto) {
             SignupWithCustomDto customDto = (SignupWithCustomDto) signupDto;
             Custom custom = new Custom();
             custom.setSchoolNo(customDto.getSchoolNo());
             stampUser.setCustom(custom);
         }
-
         return stampUser;
     }
 }
