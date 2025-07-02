@@ -5,29 +5,33 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.halo.eventer.domain.stamp.Mission;
+import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
+import com.halo.eventer.domain.stamp.exception.UserMissionNotFoundException;
 import com.halo.eventer.domain.stamp.fixture.MissionFixture;
 import com.halo.eventer.domain.stamp.fixture.StampFixture;
 import com.halo.eventer.domain.stamp.fixture.StampUserFixture;
 import com.halo.eventer.domain.stamp.fixture.UserMissionFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class StampUserTest {
 
-    private static final Logger log = LoggerFactory.getLogger(StampUserTest.class);
+    private Stamp stamp;
     private StampUser stampUser;
     private Mission mission;
 
     @BeforeEach
     void setUp() {
         stampUser = StampUserFixture.스탬프유저_엔티티_생성(StampFixture.스탬프_엔티티_생성());
+        stamp = new Stamp();
+        stamp.defineFinishCnt(1);
+        stampUser.addStamp(stamp);
     }
 
     @Test
@@ -87,13 +91,20 @@ public class StampUserTest {
     }
 
     @Test
+    void 유저미션_완료_없는_ID_실패() {
+        // given
+        stampUser.assignUserMissions(List.of()); // 비어있거나 다른 id만 존재
+
+        // when & then
+        assertThatThrownBy(() -> stampUser.userMissionComplete(999L)).isInstanceOf(UserMissionNotFoundException.class);
+    }
+
+    @Test
     void 스탬프투어_종료_가능() {
         // given
-        List<UserMission> userMissions = new ArrayList<>();
-        UserMission userMission = UserMissionFixture.유저미션_엔티티_생성(1L, stampUser, MissionFixture.미션_엔티티_생성());
-        userMission.markAsComplete();
-        userMissions.add(userMission);
-        stampUser.assignUserMissions(userMissions);
+        UserMission mission = UserMissionFixture.유저미션_엔티티_생성(1L, stampUser, MissionFixture.미션_엔티티_생성());
+        mission.markAsComplete();
+        stampUser.assignUserMissions(List.of(mission));
 
         // when
         boolean result = stampUser.canFinishTour();

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.Stamp;
@@ -37,7 +36,6 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
-@ActiveProfiles("test")
 @SuppressWarnings("NonAsciiCharacters")
 public class StampUserServiceTest {
 
@@ -127,7 +125,7 @@ public class StampUserServiceTest {
                 .willReturn(false);
         setField(signupDto, "schoolNo", "test school no");
         // when
-        StampUserGetDto result = stampUserService.signup(1L, signupDto);
+        StampUserGetDto result = stampUserService.signupV2(1L, signupDto);
 
         // then
         assertThat(result).isNotNull();
@@ -276,8 +274,9 @@ public class StampUserServiceTest {
     @Test
     void v2_사용자_미션_완료_상태_확인_미완료_성공() {
         // given
-        given(stampUserRepository.findByUuid(anyString())).willReturn(Optional.of(stampUser));
+        stampUser.addStamp(stamp);
         stamp.defineFinishCnt(3);
+        given(stampUserRepository.findByUuid(anyString())).willReturn(Optional.of(stampUser));
 
         // when
         String result = stampUserService.checkV2Finish(anyString());
@@ -290,6 +289,7 @@ public class StampUserServiceTest {
     @Test
     void v2_사용자_미션_완료_상태_확인_완료_성공() {
         // given
+        stampUser.addStamp(stamp);
         given(stampUserRepository.findByUuid(anyString())).willReturn(Optional.of(stampUser));
 
         // when
@@ -319,11 +319,5 @@ public class StampUserServiceTest {
         // when & then
         assertThatThrownBy(() -> stampUserService.deleteStampByUuid(anyString()))
                 .isInstanceOf(StampUserNotFoundException.class);
-    }
-
-    private UserMission setupUserMission(Long id, StampUser stampUser, Mission mission) {
-        UserMission userMission = UserMission.create(mission, stampUser);
-        setField(userMission, "id", id);
-        return userMission;
     }
 }
