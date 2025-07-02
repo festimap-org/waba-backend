@@ -50,23 +50,24 @@ public class StampUser {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
     private Custom custom;
 
-    public StampUser(Stamp stamp, String encryptedPhone, String encryptedName, int participantCount) {
-        this.stamp = stamp;
-        this.uuid = UUID.randomUUID().toString();
+    public StampUser(String encryptedPhone, String encryptedName, int participantCount) {
         this.phone = encryptedPhone;
         this.name = encryptedName;
         this.isFinished = false;
         this.participantCount = participantCount;
     }
 
-    public StampUser(Stamp stamp, String encryptedPhone, String encryptedName, int participantCount, String schoolNo) {
-        this.stamp = stamp;
-        this.uuid = UUID.randomUUID().toString();
+    public StampUser(String encryptedPhone, String encryptedName, int participantCount, String schoolNo) {
         this.phone = encryptedPhone;
         this.name = encryptedName;
         this.isFinished = false;
         this.participantCount = participantCount;
         this.schoolNo = schoolNo;
+    }
+
+    public void addStamp(Stamp stamp){
+        this.stamp = stamp;
+        stamp.getStampUsers().add(this);
     }
 
     public void markAsFinished() {

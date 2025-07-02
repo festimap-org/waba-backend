@@ -37,7 +37,6 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
-@ActiveProfiles("test")
 @SuppressWarnings("NonAsciiCharacters")
 public class StampUserServiceTest {
 
@@ -88,8 +87,7 @@ public class StampUserServiceTest {
         mission.addStamp(stamp);
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(stamp));
         given(encryptService.encryptInfo(anyString())).willReturn(ENCRYPTED_STRING);
-        given(stampUserRepository.existsByStampIdAndPhone(anyLong(), anyString()))
-                .willReturn(false);
+        given(stampUserRepository.existsByStampIdAndPhone(anyLong(), anyString())).willReturn(false);
         given(stampUserRepository.save(any(StampUser.class))).willReturn(stampUser);
         // when
 
@@ -127,7 +125,7 @@ public class StampUserServiceTest {
                 .willReturn(false);
         setField(signupDto, "schoolNo", "test school no");
         // when
-        StampUserGetDto result = stampUserService.signup(1L, signupDto);
+        StampUserGetDto result = stampUserService.signupV2(1L, signupDto);
 
         // then
         assertThat(result).isNotNull();
@@ -276,8 +274,9 @@ public class StampUserServiceTest {
     @Test
     void v2_사용자_미션_완료_상태_확인_미완료_성공() {
         // given
-        given(stampUserRepository.findByUuid(anyString())).willReturn(Optional.of(stampUser));
+        stampUser.addStamp(stamp);
         stamp.defineFinishCnt(3);
+        given(stampUserRepository.findByUuid(anyString())).willReturn(Optional.of(stampUser));
 
         // when
         String result = stampUserService.checkV2Finish(anyString());
@@ -290,6 +289,7 @@ public class StampUserServiceTest {
     @Test
     void v2_사용자_미션_완료_상태_확인_완료_성공() {
         // given
+        stampUser.addStamp(stamp);
         given(stampUserRepository.findByUuid(anyString())).willReturn(Optional.of(stampUser));
 
         // when

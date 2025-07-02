@@ -16,7 +16,6 @@ import com.halo.eventer.domain.stamp.Stamp;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ActiveProfiles("test")
 @SuppressWarnings("NonAsciiCharacters")
 public class StampRepositoryTest {
 

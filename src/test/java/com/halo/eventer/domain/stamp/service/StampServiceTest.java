@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.FestivalCreateDto;
@@ -34,7 +33,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
-@ActiveProfiles("test")
 @SuppressWarnings("NonAsciiCharacters")
 public class StampServiceTest {
 
@@ -72,15 +70,20 @@ public class StampServiceTest {
     @Test
     void 축제id로_스탬프_생성_성공() {
         // given
+        setField(stamp, "id", 1L);
         given(festivalRepository.findById(anyLong())).willReturn(Optional.ofNullable(festival));
         given(stampRepository.save(any(Stamp.class))).willReturn(stamp);
         given(stampRepository.findByFestival(festival)).willReturn(List.of(stamp));
 
         // when
-        List<StampGetDto> result = stampService.registerStamp(1L);
+        List<StampGetDto> results = stampService.registerStamp(1L);
+        StampGetDto result = results.get(0);
 
         // then
-        assertThat(result).hasSize(1);
+        assertThat(results).hasSize(1);
+        assertThat(result.isStampOn()).isEqualTo(stamp.isActive());
+        assertThat(result.getStampId()).isEqualTo(stamp.getId());
+        assertThat(result.getStampFinishCnt()).isEqualTo(stamp.getFinishCount());
     }
 
     @Test
@@ -96,15 +99,20 @@ public class StampServiceTest {
 
     @Test
     void 축제_id로_스탬프_조회_성공() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.ofNullable(festival));
+        // given
         List<Stamp> stamps = List.of(Stamp.create(festival));
+        given(festivalRepository.findById(anyLong())).willReturn(Optional.ofNullable(festival));
         given(stampRepository.findByFestival(festival)).willReturn(stamps);
 
         // when
-        List<StampGetDto> result = stampService.getStampByFestivalId(1L);
+        List<StampGetDto> results = stampService.getStampByFestivalId(1L);
+        StampGetDto result = results.get(0);
 
         // then
-        assertThat(result).hasSize(1);
+        assertThat(results).hasSize(1);
+        assertThat(result.isStampOn()).isEqualTo(stamp.isActive());
+        assertThat(result.getStampId()).isEqualTo(stamp.getId());
+        assertThat(result.getStampFinishCnt()).isEqualTo(stamp.getFinishCount());
     }
 
     @Test
@@ -120,14 +128,15 @@ public class StampServiceTest {
     @Test
     void 스탬프_상태_변경_성공() {
         // given
-        stamp.switchActivation();
         given(stampRepository.findById(anyLong())).willReturn(Optional.ofNullable(stamp));
+        boolean before = stamp.isActive();
 
         // when
         stampService.updateStampOn(1L);
+        boolean after = stamp.isActive();
 
         // then
-        assertThat(stamp.isActive()).isTrue();
+        assertThat(after).isEqualTo(!before);
     }
 
     @Test
@@ -152,6 +161,16 @@ public class StampServiceTest {
     }
 
     @Test
+    void 스탬프_삭제_실패_스탬프없음() {
+        // given
+        given(stampRepository.findById(anyLong())).willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> stampService.deleteStamp(1L))
+                .isInstanceOf(StampNotFoundException.class);
+    }
+
+    @Test
     void 미션_생성_성공() {
         // given
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(stamp));
@@ -161,10 +180,14 @@ public class StampServiceTest {
 
         // then
         verify(missionRepository, times(1)).saveAll(anyList());
+        assertThat(stamp.getMissions()).hasSize(2);
+        assertThat(stamp.getMissions())
+                .extracting("title")
+                .containsExactly("부스 A", "부스 B");
     }
 
     @Test
-    void 미션_생성_실패() {
+    void 미션_생성_스탬프_비활성화_실패() {
         // given
         stamp.switchActivation();
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(stamp));
@@ -203,8 +226,8 @@ public class StampServiceTest {
     @Test
     void 해당_스탬프_유저들_조회_성공() {
         // given
-        StampUser stampUser1 = new StampUser(stamp, "암호화번호1", "암호화이름1", 1);
-        stamp.getStampUsers().add(stampUser1);
+        StampUser stampUser1 = new StampUser("암호화번호1", "암호화이름1", 1);
+        stampUser1.addStamp(stamp);
         given(stampRepository.findById(anyLong())).willReturn(Optional.ofNullable(stamp));
         given(encryptService.decryptInfo(anyString())).willReturn("암호화");
 
@@ -240,7 +263,6 @@ public class StampServiceTest {
 
     private Mission setUpMission(Long id, String missionTitle) {
         Mission mission = new Mission();
-        setField(mission, "id", id);
         setField(mission, "title", missionTitle);
         return mission;
     }

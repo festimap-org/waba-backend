@@ -53,13 +53,13 @@ public class Mission {
     }
 
     public void updateMission(MissionUpdateDto request) {
-        this.boothId = request.getBoothId();
-        this.title = request.getTitle();
-        this.content = request.getContent();
-        this.place = request.getPlace();
-        this.time = request.getTime();
-        this.clearedThumbnail = request.getClearedThumbnail();
-        this.notClearedThumbnail = request.getNotClearedThumbnail();
+        if (request.getBoothId() != null) this.boothId = request.getBoothId();
+        if (request.getTitle() != null) this.title = request.getTitle();
+        if (request.getContent() != null) this.content = request.getContent();
+        if (request.getPlace() != null) this.place = request.getPlace();
+        if (request.getTime() != null) this.time = request.getTime();
+        if (request.getClearedThumbnail() != null) this.clearedThumbnail = request.getClearedThumbnail();
+        if (request.getNotClearedThumbnail() != null) this.notClearedThumbnail = request.getNotClearedThumbnail();
     }
 
     public void addStamp(Stamp stamp) {

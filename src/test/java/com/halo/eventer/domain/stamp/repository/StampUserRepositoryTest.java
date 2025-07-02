@@ -40,8 +40,8 @@ public class StampUserRepositoryTest {
         festival = festivalRepository.save(Festival.from(dto));
         stamp = Stamp.create(festival);
         stampRepository.save(stamp);
-
-        stampUser = new StampUser(stamp, "encryptedPhone", "encryptedName", 1);
+        stampUser = new StampUser("encryptedPhone", "encryptedName", 1);
+        stampUser.addStamp(stamp);
         stampUserRepository.save(stampUser);
     }
 

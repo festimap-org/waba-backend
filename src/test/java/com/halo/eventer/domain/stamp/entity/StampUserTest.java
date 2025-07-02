@@ -3,6 +3,7 @@ package com.halo.eventer.domain.stamp.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.halo.eventer.domain.stamp.Stamp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,12 +22,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SuppressWarnings("NonAsciiCharacters")
 public class StampUserTest {
 
+    private Stamp stamp;
     private StampUser stampUser;
     private Mission mission;
 
     @BeforeEach
     void setUp() {
         stampUser = StampUserFixture.스탬프유저_엔티티_생성(StampFixture.스탬프_엔티티_생성());
+        stamp = new Stamp();
+        stamp.defineFinishCnt(1);
+        stampUser.addStamp(stamp);
     }
 
     @Test
@@ -97,7 +102,6 @@ public class StampUserTest {
     @Test
     void 스탬프투어_종료_가능() {
         // given
-        stampUser.getStamp().defineFinishCnt(1);
         UserMission mission = UserMissionFixture.유저미션_엔티티_생성(1L, stampUser, MissionFixture.미션_엔티티_생성());
         mission.markAsComplete();
         stampUser.assignUserMissions(List.of(mission));

@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SuppressWarnings("NonAsciiCharacters")
-class StampTest {
+public class StampTest {
 
     private Stamp stamp;
     private Festival festival;
@@ -93,7 +93,8 @@ class StampTest {
         mission1.addStamp(stamp);
         mission2.addStamp(stamp);
 
-        StampUser stampUser = new StampUser(stamp, "encryptedPhone", "encryptedName", 1);
+        StampUser stampUser = new StampUser("encryptedPhone", "encryptedName", 1);
+        stampUser.addStamp(stamp);
 
         // when
         stamp.assignAllMissionsTo(stampUser);
