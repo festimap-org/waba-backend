@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -82,7 +81,7 @@ public class MissionServiceTest {
     }
 
     @Test
-    void 미션_일부수정_성공(){
+    void 미션_일부수정_성공() {
         // given
         MissionUpdateDto dto = MissionFixture.미션_업데이트_DTO_일부수정_생성();
         given(missionRepository.findById(anyLong())).willReturn(Optional.of(mission));

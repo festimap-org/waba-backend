@@ -65,7 +65,7 @@ public class StampUser {
         this.schoolNo = schoolNo;
     }
 
-    public void addStamp(Stamp stamp){
+    public void addStamp(Stamp stamp) {
         this.stamp = stamp;
         stamp.getStampUsers().add(this);
     }

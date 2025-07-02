@@ -3,11 +3,11 @@ package com.halo.eventer.domain.stamp.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.halo.eventer.domain.stamp.Stamp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.halo.eventer.domain.stamp.Mission;
+import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
 import com.halo.eventer.domain.stamp.exception.UserMissionNotFoundException;

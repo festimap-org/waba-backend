@@ -4,8 +4,6 @@ import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.FestivalCreateDto;
 import com.halo.eventer.domain.stamp.Stamp;
 
-import static org.springframework.test.util.ReflectionTestUtils.setField;
-
 @SuppressWarnings("NonAsciiCharacters")
 public class StampFixture {
 

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.Stamp;
@@ -87,7 +86,8 @@ public class StampUserServiceTest {
         mission.addStamp(stamp);
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(stamp));
         given(encryptService.encryptInfo(anyString())).willReturn(ENCRYPTED_STRING);
-        given(stampUserRepository.existsByStampIdAndPhone(anyLong(), anyString())).willReturn(false);
+        given(stampUserRepository.existsByStampIdAndPhone(anyLong(), anyString()))
+                .willReturn(false);
         given(stampUserRepository.save(any(StampUser.class))).willReturn(stampUser);
         // when
 

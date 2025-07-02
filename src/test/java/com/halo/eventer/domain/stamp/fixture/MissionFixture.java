@@ -37,7 +37,7 @@ public class MissionFixture {
         return dto;
     }
 
-    public static MissionUpdateDto 미션_업데이트_DTO_일부수정_생성(){
+    public static MissionUpdateDto 미션_업데이트_DTO_일부수정_생성() {
         MissionUpdateDto dto = new MissionUpdateDto();
         // setField(dto, "boothId", 2L);
         setField(dto, "title", "수정된 제목");

@@ -166,8 +166,7 @@ public class StampServiceTest {
         given(stampRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> stampService.deleteStamp(1L))
-                .isInstanceOf(StampNotFoundException.class);
+        assertThatThrownBy(() -> stampService.deleteStamp(1L)).isInstanceOf(StampNotFoundException.class);
     }
 
     @Test
@@ -181,9 +180,7 @@ public class StampServiceTest {
         // then
         verify(missionRepository, times(1)).saveAll(anyList());
         assertThat(stamp.getMissions()).hasSize(2);
-        assertThat(stamp.getMissions())
-                .extracting("title")
-                .containsExactly("부스 A", "부스 B");
+        assertThat(stamp.getMissions()).extracting("title").containsExactly("부스 A", "부스 B");
     }
 
     @Test
