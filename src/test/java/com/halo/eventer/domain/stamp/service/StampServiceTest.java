@@ -193,9 +193,9 @@ public class StampServiceTest {
         // then
         verify(missionRepository, times(1)).saveAll(anyList());
         assertThat(stamp1.getMissions()).hasSize(5);
-//        assertThat(stamp.getMissions())
-//                .extracting("title")
-//                .containsExactly("부스 A", "부스 B");
+        //        assertThat(stamp.getMissions())
+        //                .extracting("title")
+        //                .containsExactly("부스 A", "부스 B");
     }
 
     @Test
@@ -223,8 +223,7 @@ public class StampServiceTest {
 
         // then
         assertThat(result).hasSize(2);
-        assertThat(result).extracting("title")
-                .containsExactly("미션 1", "미션 2");
+        assertThat(result).extracting("title").containsExactly("미션 1", "미션 2");
     }
 
     @Test

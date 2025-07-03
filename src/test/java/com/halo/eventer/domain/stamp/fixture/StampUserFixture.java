@@ -22,7 +22,7 @@ public class StampUserFixture {
     private static final Long 스탬프유저6 = 6L;
     private static final Long 스탬프유저7 = 7L;
 
-    public static StampUser 스탬프유저1_생성(){
+    public static StampUser 스탬프유저1_생성() {
         return new StampUser("encryptedPhone", "encryptedName", 1);
     }
 

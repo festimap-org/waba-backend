@@ -1,10 +1,10 @@
 package com.halo.eventer.domain.stamp.fixture;
 
+import java.util.List;
+
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.FestivalCreateDto;
 import com.halo.eventer.domain.stamp.Stamp;
-
-import java.util.List;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class StampFixture {
@@ -32,11 +32,7 @@ public class StampFixture {
     }
 
     public static List<Stamp> 모든_스탬프() {
-        return List.of(
-                스탬프1_생성(),
-                스탬프2_생성(),
-                스탬프3_생성()
-        );
+        return List.of(스탬프1_생성(), 스탬프2_생성(), 스탬프3_생성());
     }
 
     public static Stamp 스탬프_엔티티_생성() {

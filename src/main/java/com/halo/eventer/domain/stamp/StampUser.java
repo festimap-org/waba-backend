@@ -6,7 +6,6 @@ import java.util.UUID;
 import jakarta.persistence.*;
 
 import com.halo.eventer.domain.stamp.exception.UserMissionNotFoundException;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

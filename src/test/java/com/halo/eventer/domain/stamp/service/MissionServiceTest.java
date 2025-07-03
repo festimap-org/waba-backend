@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.dto.mission.MissionDetailGetDto;

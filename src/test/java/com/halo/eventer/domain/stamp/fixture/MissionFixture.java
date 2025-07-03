@@ -1,10 +1,10 @@
 package com.halo.eventer.domain.stamp.fixture;
 
+import java.util.List;
+
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
 import com.halo.eventer.domain.stamp.dto.stamp.MissionSetDto;
-
-import java.util.List;
 
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
@@ -19,8 +19,7 @@ public class MissionFixture {
     public static final Long 미션6 = 6L;
     public static final Long 미션7 = 7L;
 
-
-    public static Mission 미션1_생성(){
+    public static Mission 미션1_생성() {
         return Mission.builder()
                 .boothId(1L)
                 .title("미션 1")
@@ -105,15 +104,7 @@ public class MissionFixture {
     }
 
     public static List<Mission> 모든_미션_생성() {
-        return List.of(
-                미션1_생성(),
-                미션2_생성(),
-                미션3_생성(),
-                미션4_생성(),
-                미션5_생성(),
-                미션6_생성(),
-                미션7_생성()
-        );
+        return List.of(미션1_생성(), 미션2_생성(), 미션3_생성(), 미션4_생성(), 미션5_생성(), 미션6_생성(), 미션7_생성());
     }
 
     public static List<MissionSetDto> 미션_셋업_리스트() {
@@ -122,8 +113,7 @@ public class MissionFixture {
                 new MissionSetDto(2L, "미션 2", "내용 2", "장소 2", "시간 2", "c2.jpg", "nc2.jpg"),
                 new MissionSetDto(3L, "미션 3", "내용 3", "장소 3", "시간 3", "c3.jpg", "nc3.jpg"),
                 new MissionSetDto(4L, "미션 4", "내용 4", "장소 4", "시간 4", "c4.jpg", "nc4.jpg"),
-                new MissionSetDto(5L, "미션 5", "내용 5", "장소 5", "시간 5", "c5.jpg", "nc5.jpg")
-        );
+                new MissionSetDto(5L, "미션 5", "내용 5", "장소 5", "시간 5", "c5.jpg", "nc5.jpg"));
     }
 
     public static Mission 미션_엔티티_생성() {

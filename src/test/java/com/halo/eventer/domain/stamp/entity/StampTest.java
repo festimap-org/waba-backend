@@ -11,10 +11,10 @@ import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
 import com.halo.eventer.domain.stamp.exception.StampClosedException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static com.halo.eventer.domain.stamp.fixture.MissionFixture.*;
 import static com.halo.eventer.domain.stamp.fixture.StampUserFixture.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class StampTest {
@@ -46,7 +46,7 @@ public class StampTest {
     }
 
     @Test
-    void 스탬프_비활성_토글_성공(){
+    void 스탬프_비활성_토글_성공() {
         // when
         stamp.switchActivation();
         stamp.switchActivation();
