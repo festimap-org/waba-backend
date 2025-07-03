@@ -23,7 +23,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-@ActiveProfiles("test")
 @SuppressWarnings("NonAsciiCharacters")
 public class MissionServiceTest {
 

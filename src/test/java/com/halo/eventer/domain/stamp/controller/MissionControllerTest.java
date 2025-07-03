@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = MissionController.class)
-@AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
 public class MissionControllerTest {
 

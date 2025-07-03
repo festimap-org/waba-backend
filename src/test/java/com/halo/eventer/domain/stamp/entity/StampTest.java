@@ -10,10 +10,11 @@ import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
 import com.halo.eventer.domain.stamp.exception.StampClosedException;
-import com.halo.eventer.domain.stamp.fixture.MissionFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static com.halo.eventer.domain.stamp.fixture.MissionFixture.*;
+import static com.halo.eventer.domain.stamp.fixture.StampUserFixture.*;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class StampTest {
@@ -36,14 +37,18 @@ public class StampTest {
     }
 
     @Test
-    void 스탬프_활성_비활성_토글_성공() {
+    void 스탬프_활성_토글_성공() {
         // given & when
         stamp.switchActivation();
 
         // then
         assertThat(stamp.isActive()).isFalse();
+    }
 
+    @Test
+    void 스탬프_비활성_토글_성공(){
         // when
+        stamp.switchActivation();
         stamp.switchActivation();
 
         // then
@@ -71,29 +76,13 @@ public class StampTest {
     }
 
     @Test
-    void 스탬프에_미션_추가_성공() {
-        // given
-        Mission mission1 = MissionFixture.미션_엔티티_생성();
-        Mission mission2 = MissionFixture.미션_엔티티_생성();
-
-        // when
-        mission1.addStamp(stamp);
-        mission2.addStamp(stamp);
-
-        // then
-        assertThat(stamp.getMissions()).hasSize(2).contains(mission1, mission2);
-    }
-
-    @Test
     void 유저에게_미션할당_성공() {
         // given
-        Mission mission1 = MissionFixture.미션_엔티티_생성();
-        Mission mission2 = MissionFixture.미션_엔티티_생성();
-
+        Mission mission1 = 미션1_생성();
+        Mission mission2 = 미션2_생성();
+        StampUser stampUser = 스탬프유저1_생성();
         mission1.addStamp(stamp);
         mission2.addStamp(stamp);
-
-        StampUser stampUser = new StampUser("encryptedPhone", "encryptedName", 1);
         stampUser.addStamp(stamp);
 
         // when

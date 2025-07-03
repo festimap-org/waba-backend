@@ -14,6 +14,18 @@ public class StampUserFixture {
 
     private static final String ENCRYPTED_STRING = "encrypted string";
 
+    private static final Long 스탬프유저1 = 1L;
+    private static final Long 스탬프유저2 = 2L;
+    private static final Long 스탬프유저3 = 3L;
+    private static final Long 스탬프유저4 = 4L;
+    private static final Long 스탬프유저5 = 5L;
+    private static final Long 스탬프유저6 = 6L;
+    private static final Long 스탬프유저7 = 7L;
+
+    public static StampUser 스탬프유저1_생성(){
+        return new StampUser("encryptedPhone", "encryptedName", 1);
+    }
+
     public static SignupDto 회원가입_DTO_생성() {
         SignupDto signupDto = new SignupDto();
         setField(signupDto, "name", "test name");

@@ -36,7 +36,7 @@ public class StampController {
     }
 
     @PostMapping("/mission")
-    public void setMissionList(@RequestParam("stampId") Long stampId, @RequestBody MissionSetListDto dto) {
+    public void setMissionList(@RequestParam("stampId") Long stampId, @RequestBody List<MissionSetDto> dto) {
         stampService.createMission(stampId, dto);
     }
 

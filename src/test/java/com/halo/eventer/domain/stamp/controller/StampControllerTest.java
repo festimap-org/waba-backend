@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SuppressWarnings("NonAsciiCharacters")
-@ActiveProfiles("test")
 @WebMvcTest(controllers = StampController.class)
 @Import({ControllerTestSecurityBeans.class, SecurityConfig.class})
 public class StampControllerTest {
