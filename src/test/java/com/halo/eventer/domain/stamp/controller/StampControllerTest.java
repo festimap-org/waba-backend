@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.stamp.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -85,7 +86,7 @@ public class StampControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void 미션_생성_성공() throws Exception {
-        MissionSetListDto dto = new MissionSetListDto();
+        List<MissionSetDto> dto = new ArrayList<>();
         mockMvc.perform(post("/stamp/mission")
                         .header("Authorization", ADMIN_TOKEN)
                         .param("stampId", "1")
