@@ -13,11 +13,6 @@ public class MissionFixture {
 
     public static final Long 미션1 = 1L;
     public static final Long 미션2 = 2L;
-    public static final Long 미션3 = 3L;
-    public static final Long 미션4 = 4L;
-    public static final Long 미션5 = 5L;
-    public static final Long 미션6 = 6L;
-    public static final Long 미션7 = 7L;
 
     public static Mission 미션1_생성() {
         return Mission.builder()
@@ -41,70 +36,6 @@ public class MissionFixture {
                 .clearedThumbnail("미션2 성공 사진")
                 .notClearedThumbnail("미션2 실패 사진")
                 .build();
-    }
-
-    public static Mission 미션3_생성() {
-        return Mission.builder()
-                .boothId(3L)
-                .title("미션 3")
-                .content("미션3입니다.")
-                .place("미션3 장소")
-                .time("미션3 시간")
-                .clearedThumbnail("미션3 성공 사진")
-                .notClearedThumbnail("미션3 실패 사진")
-                .build();
-    }
-
-    public static Mission 미션4_생성() {
-        return Mission.builder()
-                .boothId(4L)
-                .title("미션 4")
-                .content("미션4입니다.")
-                .place("미션4 장소")
-                .time("미션4 시간")
-                .clearedThumbnail("미션4 성공 사진")
-                .notClearedThumbnail("미션4 실패 사진")
-                .build();
-    }
-
-    public static Mission 미션5_생성() {
-        return Mission.builder()
-                .boothId(5L)
-                .title("미션 5")
-                .content("미션5입니다.")
-                .place("미션5 장소")
-                .time("미션5 시간")
-                .clearedThumbnail("미션5 성공 사진")
-                .notClearedThumbnail("미션5 실패 사진")
-                .build();
-    }
-
-    public static Mission 미션6_생성() {
-        return Mission.builder()
-                .boothId(6L)
-                .title("미션 6")
-                .content("미션6입니다.")
-                .place("미션6 장소")
-                .time("미션6 시간")
-                .clearedThumbnail("미션6 성공 사진")
-                .notClearedThumbnail("미션6 실패 사진")
-                .build();
-    }
-
-    public static Mission 미션7_생성() {
-        return Mission.builder()
-                .boothId(7L)
-                .title("미션 7")
-                .content("미션7입니다.")
-                .place("미션7 장소")
-                .time("미션7 시간")
-                .clearedThumbnail("미션7 성공 사진")
-                .notClearedThumbnail("미션7 실패 사진")
-                .build();
-    }
-
-    public static List<Mission> 모든_미션_생성() {
-        return List.of(미션1_생성(), 미션2_생성(), 미션3_생성(), 미션4_생성(), 미션5_생성(), 미션6_생성(), 미션7_생성());
     }
 
     public static List<MissionSetDto> 미션_셋업_리스트() {
@@ -146,13 +77,8 @@ public class MissionFixture {
 
     public static MissionUpdateDto 미션_업데이트_DTO_일부수정_생성() {
         MissionUpdateDto dto = new MissionUpdateDto();
-        // setField(dto, "boothId", 2L);
         setField(dto, "title", "수정된 제목");
         setField(dto, "content", "수정된 내용");
-        // setField(dto, "place", "수정된 장소");
-        // setField(dto, "time", "14:00");
-        // setField(dto, "clearedThumbnail", "cleared.png");
-        // setField(dto, "notClearedThumbnail", "not-cleared.png");
         return dto;
     }
 }

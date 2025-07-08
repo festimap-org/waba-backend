@@ -39,13 +39,8 @@ public class Stamp {
     }
 
     public void assignAllMissionsTo(StampUser stampUser) {
-        // TODO : 할당할 미션이 없는 경우를 위한 예외 정의
-        if (missions.isEmpty()) {
-            throw new IllegalStateException("등록된 미션이 없습니다.");
-        }
-        List<UserMission> userMissions = missions.stream()
-                .map(mission -> UserMission.create(mission, stampUser))
-                .collect(Collectors.toList());
+        List<UserMission> userMissions =
+                missions.stream().map(m -> UserMission.create(m, stampUser)).collect(Collectors.toList());
         stampUser.assignUserMissions(userMissions);
     }
 

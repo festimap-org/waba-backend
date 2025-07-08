@@ -181,7 +181,7 @@ public class StampServiceTest {
         assertThatThrownBy(() -> stampService.deleteStamp(스탬프1)).isInstanceOf(StampNotFoundException.class);
     }
 
-    // TODO : 미션 관련 로직들은 MissionService로 옮길 예정
+    // TODO : MissionService로 옮길 예정
     @Test
     void 미션_생성_성공() {
         // given
@@ -199,6 +199,7 @@ public class StampServiceTest {
     }
 
     @Test
+    // TODO : MissionService로 옮길 예정
     void 미션_생성_스탬프_비활성화_실패() {
         // given
         stamp1.switchActivation();
@@ -210,6 +211,7 @@ public class StampServiceTest {
     }
 
     @Test
+    // TODO : MissionService로 옮길 예정
     void 미션_리스트_조회_성공() {
         // given
         Mission mission1 = 미션1_생성();
@@ -227,6 +229,7 @@ public class StampServiceTest {
     }
 
     @Test
+    // TODO : MissionService로 옮길 예정
     void 미션_리스트_조회_실패() {
         // given
         given(stampRepository.findById(anyLong())).willReturn(Optional.empty());
@@ -236,6 +239,7 @@ public class StampServiceTest {
     }
 
     @Test
+    // TODO : StampUserService로 이동 예정
     void 해당_스탬프_유저들_조회_성공() {
         // given
         StampUser stampUser1 = new StampUser("암호화번호1", "암호화이름1", 1);

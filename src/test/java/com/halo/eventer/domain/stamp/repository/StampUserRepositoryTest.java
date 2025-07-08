@@ -6,18 +6,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.halo.eventer.domain.festival.Festival;
-import com.halo.eventer.domain.festival.dto.FestivalCreateDto;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
 
+import static com.halo.eventer.domain.festival.FestivalFixture.축제_엔티티;
+import static com.halo.eventer.domain.stamp.fixture.StampUserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ActiveProfiles("test")
 @SuppressWarnings("NonAsciiCharacters")
 public class StampUserRepositoryTest {
 
@@ -36,11 +35,11 @@ public class StampUserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        FestivalCreateDto dto = new FestivalCreateDto("축제", "univ");
-        festival = festivalRepository.save(Festival.from(dto));
+        festival = 축제_엔티티();
+        festivalRepository.save(festival);
         stamp = Stamp.create(festival);
         stampRepository.save(stamp);
-        stampUser = new StampUser("encryptedPhone", "encryptedName", 1);
+        stampUser = 스탬프유저1_생성();
         stampUser.addStamp(stamp);
         stampUserRepository.save(stampUser);
     }
@@ -58,7 +57,7 @@ public class StampUserRepositoryTest {
     @Test
     void 스탬프ID와_전화번호로_스탬프유저_존재확인() {
         // when
-        boolean result = stampUserRepository.existsByStampIdAndPhone(stamp.getId(), "encryptedPhone");
+        boolean result = stampUserRepository.existsByStampIdAndPhone(stamp.getId(), 암호화된_번호);
 
         // then
         assertThat(result).isTrue();
@@ -76,8 +75,7 @@ public class StampUserRepositoryTest {
     @Test
     void 스탬프ID_전화번호_이름으로_스탬프유저_조회() {
         // when
-        Optional<StampUser> result =
-                stampUserRepository.findByStampIdAndPhoneAndName(stamp.getId(), "encryptedPhone", "encryptedName");
+        Optional<StampUser> result = stampUserRepository.findByStampIdAndPhoneAndName(stamp.getId(), 암호화된_번호, 암호화된_이름);
 
         // then
         assertThat(result).isPresent();

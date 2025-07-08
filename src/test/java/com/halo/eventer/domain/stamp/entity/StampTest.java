@@ -11,8 +11,9 @@ import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
 import com.halo.eventer.domain.stamp.exception.StampClosedException;
 
-import static com.halo.eventer.domain.stamp.fixture.MissionFixture.*;
-import static com.halo.eventer.domain.stamp.fixture.StampUserFixture.*;
+import static com.halo.eventer.domain.stamp.fixture.MissionFixture.미션1_생성;
+import static com.halo.eventer.domain.stamp.fixture.MissionFixture.미션2_생성;
+import static com.halo.eventer.domain.stamp.fixture.StampUserFixture.스탬프유저1_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -73,6 +74,20 @@ public class StampTest {
         assertThatThrownBy(() -> stamp.validateActivation())
                 .isInstanceOf(StampClosedException.class)
                 .hasMessageContaining(String.valueOf(stamp.getId()));
+    }
+
+    @Test
+    void 스탬프에_미션_추가_성공() {
+        // given
+        Mission mission1 = 미션1_생성();
+        Mission mission2 = 미션2_생성();
+
+        // when
+        mission1.addStamp(stamp);
+        mission2.addStamp(stamp);
+
+        // then
+        assertThat(stamp.getMissions()).hasSize(2).contains(mission1, mission2);
     }
 
     @Test
