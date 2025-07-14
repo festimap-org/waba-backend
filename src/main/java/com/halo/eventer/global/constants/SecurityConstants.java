@@ -18,6 +18,7 @@ public class SecurityConstants {
         "/stamp/users",
         "/stamp/missions",
         "/stamp/mission",
+        "/stamp/mission/all",
         "/splash",
         "/missingPerson",
         "/missingPerson/*",
@@ -50,6 +51,7 @@ public class SecurityConstants {
 
     public static final String[] PUBLIC_POST_URLS = {
         "/stamp/user",
+        "/stamp/mission",
         "/stamp/user/login",
         "/stamp/user/custom",
         "/missingPerson",
@@ -58,9 +60,7 @@ public class SecurityConstants {
         "/inquiry/forUser/*",
     };
 
-    public static final String[] PUBLIC_PATCH_URLS = {
-        "/stamp/user/*/*",
-    };
+    public static final String[] PUBLIC_PATCH_URLS = {"/stamp/user/*/*", "/stamp/mission"};
 
     public static final String[] ACTUATOR_URL = {"/actuator/prometheus"};
 }

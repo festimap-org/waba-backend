@@ -86,11 +86,11 @@ public class StampUser {
         return userMissions.stream().allMatch(UserMission::isComplete);
     }
 
-    public void userMissionComplete(Long missionId) {
+    public void completeUserMission(Long userMissionId) {
         this.userMissions.stream()
-                .filter(m -> m.getId().equals(missionId))
+                .filter(userMission -> userMission.getId().equals(userMissionId))
                 .findFirst()
-                .orElseThrow(() -> new UserMissionNotFoundException(missionId))
+                .orElseThrow(() -> new UserMissionNotFoundException(userMissionId))
                 .markAsComplete();
     }
 

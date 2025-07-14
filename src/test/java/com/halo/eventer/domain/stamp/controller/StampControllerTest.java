@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.stamp.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SuppressWarnings("NonAsciiCharacters")
-@ActiveProfiles("test")
 @WebMvcTest(controllers = StampController.class)
 @Import({ControllerTestSecurityBeans.class, SecurityConfig.class})
 public class StampControllerTest {
@@ -87,7 +86,7 @@ public class StampControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void 미션_생성_성공() throws Exception {
-        MissionSetListDto dto = new MissionSetListDto();
+        List<MissionSetDto> dto = new ArrayList<>();
         mockMvc.perform(post("/stamp/mission")
                         .header("Authorization", ADMIN_TOKEN)
                         .param("stampId", "1")
