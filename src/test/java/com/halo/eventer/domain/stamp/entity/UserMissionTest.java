@@ -6,10 +6,9 @@ import org.junit.jupiter.api.Test;
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
-import com.halo.eventer.domain.stamp.fixture.MissionFixture;
-import com.halo.eventer.domain.stamp.fixture.StampFixture;
-import com.halo.eventer.domain.stamp.fixture.StampUserFixture;
 
+import static com.halo.eventer.domain.stamp.fixture.MissionFixture.미션_엔티티_생성;
+import static com.halo.eventer.domain.stamp.fixture.StampUserFixture.스탬프유저1_생성;
 import static org.assertj.core.api.Assertions.*;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -21,8 +20,8 @@ public class UserMissionTest {
 
     @BeforeEach
     void setUp() {
-        mission = MissionFixture.미션_엔티티_생성();
-        stampUser = StampUserFixture.스탬프유저_엔티티_생성(StampFixture.스탬프_엔티티_생성());
+        mission = 미션_엔티티_생성();
+        stampUser = 스탬프유저1_생성();
     }
 
     @Test

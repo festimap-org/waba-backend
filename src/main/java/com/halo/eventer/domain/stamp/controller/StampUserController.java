@@ -1,7 +1,10 @@
 package com.halo.eventer.domain.stamp.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
+import com.halo.eventer.domain.stamp.dto.stamp.StampUsersGetDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.*;
 import com.halo.eventer.domain.stamp.service.StampUserService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +40,11 @@ public class StampUserController {
     @GetMapping("/{uuid}")
     public UserMissionInfoWithFinishedGetListDto getMissionInfo(@PathVariable String uuid) {
         return stampUserService.getUserMissionWithFinished(uuid);
+    }
+
+    @GetMapping("/all")
+    public List<StampUsersGetDto> getStampUsers(@RequestParam("stampId") Long stampId) {
+        return stampUserService.getStampUsers(stampId);
     }
 
     @PatchMapping("/{uuid}/{userMissionId}")

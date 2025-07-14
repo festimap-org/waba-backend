@@ -7,9 +7,10 @@ import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
 import com.halo.eventer.domain.stamp.dto.stamp.MissionSetDto;
-import com.halo.eventer.domain.stamp.fixture.MissionFixture;
-import com.halo.eventer.domain.stamp.fixture.StampFixture;
 
+import static com.halo.eventer.domain.stamp.fixture.MissionFixture.미션_생성_DTO_생성;
+import static com.halo.eventer.domain.stamp.fixture.MissionFixture.미션_업데이트_DTO_생성;
+import static com.halo.eventer.domain.stamp.fixture.StampFixture.스탬프1_생성;
 import static org.assertj.core.api.Assertions.*;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -23,11 +24,10 @@ public class MissionTest {
 
     @BeforeEach
     void setUp() {
-        setDto = MissionFixture.미션_생성_DTO_생성();
-        updateDto = MissionFixture.미션_업데이트_DTO_생성();
-
+        setDto = 미션_생성_DTO_생성();
+        updateDto = 미션_업데이트_DTO_생성();
         mission = Mission.from(setDto);
-        stamp = StampFixture.스탬프_엔티티_생성();
+        stamp = 스탬프1_생성();
     }
 
     @Test

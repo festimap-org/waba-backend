@@ -1,11 +1,15 @@
 package com.halo.eventer.domain.stamp.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.halo.eventer.domain.stamp.Custom;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
+import com.halo.eventer.domain.stamp.dto.stamp.StampUsersGetDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.*;
 import com.halo.eventer.domain.stamp.exception.*;
 import com.halo.eventer.domain.stamp.repository.StampRepository;
@@ -57,6 +61,19 @@ public class StampUserService {
     }
 
     @Transactional(readOnly = true)
+    public List<StampUsersGetDto> getStampUsers(Long stampId) {
+        Stamp stamp = loadStampOrThrow(stampId);
+        return stamp.getStampUsers().stream()
+                .map(user -> new StampUsersGetDto(
+                        user.getUuid(),
+                        encryptService.decryptInfo(user.getName()),
+                        encryptService.decryptInfo(user.getPhone()),
+                        user.isFinished(),
+                        user.getParticipantCount()))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public UserMissionInfoWithFinishedGetListDto getUserMissionWithFinished(String uuid) {
         StampUser stampUser = loadStampUserFromUuid(uuid);
         return UserMissionInfoWithFinishedGetListDto.from(stampUser);
@@ -65,7 +82,7 @@ public class StampUserService {
     @Transactional
     public void updateUserMission(String uuid, Long userMissionId) {
         StampUser stampUser = loadStampUserFromUuid(uuid);
-        stampUser.userMissionComplete(userMissionId);
+        stampUser.completeUserMission(userMissionId);
     }
 
     @Transactional
