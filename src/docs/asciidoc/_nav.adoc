@@ -1,8 +1,0 @@
-xref:{navroot}/index.adoc[pass:[<span class="nav-root">API 문서</span>]]
-
-.기간 (Duration)
-[%collapsible]
-====
-xref:{navroot}/duration/create-duration.adoc[duration 생성] +
-xref:{navroot}/duration/get-durations.adoc[duration 전체 조회]
-====

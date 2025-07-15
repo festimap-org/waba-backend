@@ -4,7 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
     id 'com.diffplug.spotless' version '7.0.4'
-    id "org.asciidoctor.jvm.convert" version "3.3.2"
+    id 'com.epages.restdocs-api-spec' version '0.18.2'
 }
 
 group = 'com.halo'
@@ -52,7 +52,6 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-    asciidoctorExt
 }
 
 repositories {
@@ -106,7 +105,10 @@ dependencies {
 
     //rest docs
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
+    //restdocs-api-spec
+    testImplementation("com.epages:restdocs-api-spec:0.18.2")
+    testImplementation("com.epages:restdocs-api-spec-mockmvc:0.18.2")
 }
 
 tasks.named('bootBuildImage') {
@@ -118,23 +120,52 @@ tasks.named('test') {
     outputs.dir snippetsDir
 }
 
-tasks.named('asciidoctor') {
-    inputs.dir snippetsDir
-    configurations 'asciidoctorExt'
-    dependsOn tasks.test
-    baseDirFollowsSourceFile()
+bootJar {
+    dependsOn 'openapi3'
 
-    resources {
-        from('src/docs/asciidoc/styles') {
-            into 'styles'
-        }
+    from("build/api-spec/openapi3.yaml") {
+        into 'static/docs'
+    }
+    from("src/docs/index.html") {
+        into 'static/docs'
     }
 }
 
-bootJar {
-    dependsOn tasks.asciidoctor
+openapi3 {
+    server = 'https://localhost:8080'
+    title = 'Festimap API'
+    description = 'Api docs with redoc - v1'
+    version = '0.1.0'
+    format = 'yaml'
+}
 
-    from ("${asciidoctor.outputDir}") {
-        into 'static/docs'
+import com.fasterxml.jackson.databind.node.ObjectNode
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+
+def yamlMapper = new YAMLMapper()
+def jsonMapper = new ObjectMapper()
+
+tasks.register('fixOpenApiExamples') {
+    dependsOn tasks.openapi3
+    doLast {
+        def file = file("build/api-spec/openapi3.yaml")
+        def root = yamlMapper.readTree(file)
+
+        root.findParents('value')
+                .each { JsonNode parent ->
+                    JsonNode v = parent.get('value')
+                    if (v?.isTextual()) {
+                        String txt = v.asText().trim()
+                        if (txt.startsWith('{') || txt.startsWith('[')) {
+                            try {
+                                ((ObjectNode) parent)
+                                        .set('value', jsonMapper.readTree(txt))
+                            } catch (ignored) {}
+                        }
+                    }
+                }
+        yamlMapper.writeValue(file, root)
     }
 }
