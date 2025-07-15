@@ -1,6 +1,8 @@
 package com.halo.eventer.domain.duration.controller;
 
 import java.util.List;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +19,13 @@ public class DurationController {
 
     @PostMapping()
     public void createDurations(
-            @RequestParam("festivalId") Long festivalId, @RequestBody List<DurationCreateDto> durationCreateDtos) {
+            @Min(1) @RequestParam("festivalId") long festivalId,
+            @RequestBody List<@Valid DurationCreateDto> durationCreateDtos) {
         durationService.createDurations(festivalId, durationCreateDtos);
     }
 
     @GetMapping()
-    public List<DurationResDto> getDurations(@RequestParam("festivalId") Long festivalId) {
+    public List<DurationResDto> getDurations(@Min(1) @RequestParam("festivalId") Long festivalId) {
         return durationService.getDurations(festivalId);
     }
 }

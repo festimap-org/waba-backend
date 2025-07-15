@@ -1,5 +1,0 @@
-=== 인증 오류 (401 Unauthenticated)
-
-
-include::{snippets}/common/unauthenticated/response-body.adoc[]
-include::{snippets}/common/unauthenticated/response-fields.adoc[]

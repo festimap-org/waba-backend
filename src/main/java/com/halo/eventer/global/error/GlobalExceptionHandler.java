@@ -5,9 +5,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import com.halo.eventer.global.error.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +62,28 @@ public class GlobalExceptionHandler {
                 ? ErrorResponse.of(e.getErrorCode())
                 : ErrorResponse.of(e.getMessage(), e.getErrorCode());
         return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .map(fieldError -> fieldError.getDefaultMessage())
+                .findFirst()
+                .orElse("Validation Failed");
+        final ErrorResponse response = ErrorResponse.of(message, ErrorCode.VALIDATION_FAILED);
+        return ResponseEntity.status(ErrorCode.VALIDATION_FAILED.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ErrorResponse> handleHandlerMethodValidationException(HandlerMethodValidationException e) {
+        String message = e
+                .getAllErrors() // 또는 e.getAllConstraintViolations()
+                .stream()
+                .map(error -> error.getDefaultMessage())
+                .findFirst()
+                .orElse("Validation Failed");
+        final ErrorResponse response = ErrorResponse.of(message, ErrorCode.VALIDATION_FAILED);
+        return ResponseEntity.status(ErrorCode.VALIDATION_FAILED.getStatus()).body(response);
     }
 
     // Exception 핸들링
