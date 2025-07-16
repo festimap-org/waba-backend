@@ -12,39 +12,49 @@ public class SplashFixture {
 
     public static Long 스플래시1 = 1L;
 
+    public static String 기본_배경_이미지 = "기본_배경_이미지";
+    public static String 기본_상단_이미지 = "기본_상단_이미지";
+    public static String 기본_중앙_이미지 = "기본_중앙_이미지";
+    public static String 기본_하단_이미지 = "기본_하단_이미지";
+
+    public static String 변경_배경_이미지 = "변경_배경_이미지";
+    public static String 변경_상단_이미지 = "변경_상단_이미지";
+    public static String 변경_중앙_이미지 = "변경_중앙_이미지";
+    public static String 변경_하단_이미지 = "변경_하단_이미지";
+
     public static Splash 스플래시1_생성(Festival festival) {
         Splash splash = new Splash(festival);
-        splash.setBackgroundImage("background image 1");
-        splash.setTopLayerImage("top layer image 1");
-        splash.setCenterLayerImage("center layer image 1");
-        splash.setBottomLayerImage("bottom layer image 1");
+        splash.setBackgroundImage(기본_배경_이미지);
+        splash.setTopLayerImage(기본_상단_이미지);
+        splash.setCenterLayerImage(기본_중앙_이미지);
+        splash.setBottomLayerImage(기본_하단_이미지);
         return splash;
     }
 
     public static ImageLayerDto 배경_이미지_업로드_DTO() {
         ImageLayerDto dto = new ImageLayerDto();
-        setField(dto, "url", "background url 1");
+        setField(dto, "url", 변경_배경_이미지);
         setField(dto, "layerType", "background");
         return dto;
     }
 
     public static ImageLayerDto 상단_이미지_업로드_DTO() {
         ImageLayerDto dto = new ImageLayerDto();
-        setField(dto, "url", "top url 1");
+        setField(dto, "url", 변경_상단_이미지);
         setField(dto, "layerType", "top");
         return dto;
     }
 
     public static ImageLayerDto 중앙_이미지_업로드_DTO() {
         ImageLayerDto dto = new ImageLayerDto();
-        setField(dto, "url", "center url 1");
+        setField(dto, "url", 변경_중앙_이미지);
         setField(dto, "layerType", "center");
         return dto;
     }
 
     public static ImageLayerDto 하단_이미지_업로드_DTO() {
         ImageLayerDto dto = new ImageLayerDto();
-        setField(dto, "url", "bottom url 1");
+        setField(dto, "url", 변경_하단_이미지);
         setField(dto, "layerType", "bottom");
         return dto;
     }

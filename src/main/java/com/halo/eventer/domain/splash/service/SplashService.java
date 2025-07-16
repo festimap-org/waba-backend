@@ -25,6 +25,7 @@ public class SplashService {
     public void uploadSplashImage(long festivalId, List<ImageLayerDto> dto) {
         Festival festival = loadFestivalOrThrow(festivalId);
         Splash splash = loadSplashOrThrow(festivalId);
+        // TODO : 지정된 레이어 값을 벗어난 값들이 들어올 때의 예외 처리 필요. enum?
         for (ImageLayerDto layer : dto) {
             switch (layer.getLayerType()) {
                 case "background":
