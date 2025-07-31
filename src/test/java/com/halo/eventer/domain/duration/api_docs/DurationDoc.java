@@ -17,7 +17,7 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 
 public class DurationDoc {
 
-    private static final String TAG = "Duration";
+    private static final String TAG = "축제 기간";
 
     public static RestDocumentationResultHandler createDuration() {
         return document(
