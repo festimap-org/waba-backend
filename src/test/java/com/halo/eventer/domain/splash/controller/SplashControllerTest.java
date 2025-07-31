@@ -80,6 +80,15 @@ public class SplashControllerTest {
     }
 
     @Test
+    void 스플래시_업로드_권한검증_실패() throws Exception {
+        mockMvc.perform(post("/splash")
+                        .param("festivalId", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void 스플레시_업로드_festivalId_검증_실패() throws Exception {
         mockMvc.perform(post("/splash")
@@ -142,6 +151,15 @@ public class SplashControllerTest {
                         .content(objectMapper.writeValueAsString(layerTypes)))
                 .andExpect(status().isOk())
                 .andDo(SplashDocs.deleteSplash());
+    }
+
+    @Test
+    void 스플래시_삭제_권한검증_실패() throws Exception {
+        mockMvc.perform(delete("/splash")
+                        .param("festivalId", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(layerTypes)))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
