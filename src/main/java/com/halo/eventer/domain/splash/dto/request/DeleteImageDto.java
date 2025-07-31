@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.splash.dto;
+package com.halo.eventer.domain.splash.dto.request;
 
 import java.util.List;
 
