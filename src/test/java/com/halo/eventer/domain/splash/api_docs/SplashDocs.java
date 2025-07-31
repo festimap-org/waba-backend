@@ -56,8 +56,8 @@ public class SplashDocs {
                         .queryParameters(parameterWithName("festivalId")
                                 .description("축제 id")
                                 .attributes(key("constraints").value("1 이상의 양의 정수")))
-                        .requestFields(fieldWithPath("[].layerTypes")
-                                .type(JsonFieldType.STRING)
+                        .requestFields(fieldWithPath("[]")
+                                .type(JsonFieldType.ARRAY)
                                 .description("삭제할 레이어 타입 (background | top | center | bottom)")
                                 .attributes(key("constraints").value("NotBlank, 지정된 값만 허용")))
                         .build()));
