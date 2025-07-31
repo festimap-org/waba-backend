@@ -16,7 +16,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.halo.eventer.domain.duration.api_docs.DurationDoc;
 import com.halo.eventer.domain.festival.FestivalFixture;
 import com.halo.eventer.domain.splash.Splash;
 import com.halo.eventer.domain.splash.api_docs.SplashDocs;
@@ -85,7 +84,8 @@ public class SplashControllerTest {
                         .param("festivalId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized())
+                .andDo(SplashDocs.errorSnippet("권한 검증 실패"));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class SplashControllerTest {
                 .andExpect(jsonPath("$.code").value("C013"))
                 .andExpect(jsonPath("$.message").value("must be greater than or equal to 1"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andDo(DurationDoc.errorSnippet("festivalId 위반"));
+                .andDo(SplashDocs.errorSnippet("festivalId 위반"));
     }
 
     @Test
@@ -119,7 +119,7 @@ public class SplashControllerTest {
                 .andExpect(jsonPath("$.code").value("C013"))
                 .andExpect(jsonPath("$.message").value("url은 필수 값입니다."))
                 .andExpect(jsonPath("$.status").value(400))
-                .andDo(DurationDoc.errorSnippet("ImageLayerDto 위반 - url 누락"));
+                .andDo(SplashDocs.errorSnippet("ImageLayerDto 위반 - url 누락"));
     }
 
     @Test
@@ -138,7 +138,7 @@ public class SplashControllerTest {
                 .andExpect(jsonPath("$.code").value("C013"))
                 .andExpect(jsonPath("$.message").value("layerType은 필수값입니다."))
                 .andExpect(jsonPath("$.status").value(400))
-                .andDo(DurationDoc.errorSnippet("ImageLayerDto 위반 - layerType 올바르지 않음"));
+                .andDo(SplashDocs.errorSnippet("ImageLayerDto 위반 - layerType 올바르지 않음"));
     }
 
     @Test
@@ -159,7 +159,8 @@ public class SplashControllerTest {
                         .param("festivalId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(layerTypes)))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized())
+                .andDo(SplashDocs.errorSnippet("권한검증_실패"));
     }
 
     @Test
@@ -174,7 +175,7 @@ public class SplashControllerTest {
                 .andExpect(jsonPath("$.code").value("C013"))
                 .andExpect(jsonPath("$.message").value("must be greater than or equal to 1"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andDo(DurationDoc.errorSnippet("festivalId 위반"));
+                .andDo(SplashDocs.errorSnippet("festivalId 위반"));
     }
 
     @Test
@@ -190,7 +191,7 @@ public class SplashControllerTest {
                 .andExpect(jsonPath("$.code").value("C013"))
                 .andExpect(jsonPath("$.message").value("must not be blank"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andDo(DurationDoc.errorSnippet("ImageLayerDto 위반 - layerType 올바르지 않음"));
+                .andDo(SplashDocs.errorSnippet("ImageLayerDto 위반 - layerType 올바르지 않음"));
     }
 
     @Test
@@ -219,6 +220,6 @@ public class SplashControllerTest {
                 .andExpect(jsonPath("$.code").value("C013"))
                 .andExpect(jsonPath("$.message").value("must be greater than or equal to 1"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andDo(DurationDoc.errorSnippet("festivalId 위반"));
+                .andDo(SplashDocs.errorSnippet("festivalId 위반"));
     }
 }
