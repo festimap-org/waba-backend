@@ -35,11 +35,6 @@ public class StampController {
         stampService.deleteStamp(stampId);
     }
 
-    @PostMapping("/mission")
-    public void setMissionList(@RequestParam("stampId") Long stampId, @RequestBody List<MissionSetDto> dto) {
-        stampService.createMission(stampId, dto);
-    }
-
     @GetMapping("/missions")
     public List<MissionSummaryGetDto> getMissionList(@RequestParam("stampId") Long stampId) {
         return stampService.getMissions(stampId);
