@@ -35,8 +35,8 @@ public class SecurityConstants {
         "/lost-items/*",
         "/inquiry/paging",
         "/inquiry/forUser",
-        "/festival",
-        "/festival/**",
+        "/festivals",
+        "/festivals/**",
         "/duration/*",
         "/duration",
         "/concertInfo",
@@ -46,7 +46,8 @@ public class SecurityConstants {
         "/home/*",
         "/notices/*",
         "/notices",
-        "/menus"
+        "/menus",
+        "/test/festival"
     };
 
     public static final String[] PUBLIC_POST_URLS = {

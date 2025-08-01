@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.halo.eventer.domain.festival.dto.FestivalListDto;
+import com.halo.eventer.domain.festival.dto.FestivalSummaryDto;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.home.dto.HomeDto;
 import com.halo.eventer.domain.home.service.HomeService;
@@ -29,7 +29,7 @@ public class HomeController {
     }
 
     @GetMapping("/univ")
-    public FestivalListDto getFestivalSubAddress(@RequestParam("subAddress") String name) {
+    public FestivalSummaryDto getFestivalSubAddress(@RequestParam("subAddress") String name) {
         return festivalService.findBySubAddress(name);
     }
 
