@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FestivalListDto {
+public class FestivalSummaryDto {
 
     private Long id;
     private String festivalName;
@@ -16,7 +16,7 @@ public class FestivalListDto {
     private double latitude; // 위도
     private double longitude; // 경도
 
-    public FestivalListDto(Festival festival) {
+    public FestivalSummaryDto(Festival festival) {
         this.festivalName = festival.getName();
         this.id = festival.getId();
         this.subAddress = festival.getSubAddress();
