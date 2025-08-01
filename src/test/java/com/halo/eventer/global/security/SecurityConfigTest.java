@@ -53,7 +53,7 @@ public class SecurityConfigTest {
 
         @Test
         void CORS_거부_테스트() throws Exception {
-            mockMvc.perform(MockMvcRequestBuilders.get("/festival")
+            mockMvc.perform(MockMvcRequestBuilders.get("/test/festival")
                             .header("Origin", "http://not-allowed.com")
                             .header("Access-Control-Request-Method", "GET"))
                     .andExpect(status().isForbidden())
@@ -62,7 +62,7 @@ public class SecurityConfigTest {
 
         @Test
         void CORS_허용_테스트() throws Exception {
-            mockMvc.perform(MockMvcRequestBuilders.get("/festival")
+            mockMvc.perform(MockMvcRequestBuilders.get("/test/festival")
                             .header("Origin", "http://localhost:3000")
                             .header("Access-Control-Request-Method", "GET"))
                     .andExpect(status().isOk())
@@ -83,7 +83,7 @@ public class SecurityConfigTest {
         void AuthenticationException_인증_예외처리_테스트() throws Exception {
             given(jwtProvider.resolveToken(any())).willReturn(null);
 
-            mockMvc.perform(post("/festival")
+            mockMvc.perform(post("/test/festival")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(testDto)))
                     .andExpect(status().is(401))
@@ -103,7 +103,7 @@ public class SecurityConfigTest {
                     customUserDetails, null, Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
             given(jwtProvider.getAuthentication("valid.token.here")).willReturn(auth);
 
-            mockMvc.perform(post("/festival")
+            mockMvc.perform(post("/test/festival")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(testDto)))
                     .andExpect(status().is(403))
