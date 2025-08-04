@@ -1,13 +1,11 @@
 package com.halo.eventer.domain.festival.dto;
 
 import com.halo.eventer.domain.festival.Festival;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class FestivalSummaryDto {
 
     private Long id;
@@ -22,5 +20,13 @@ public class FestivalSummaryDto {
         this.subAddress = festival.getSubAddress();
         this.latitude = festival.getLatitude();
         this.longitude = festival.getLongitude();
+    }
+
+    public FestivalSummaryDto(Long id, String festivalName, String subAddress, double latitude, double longitude) {
+        this.id = id;
+        this.festivalName = festivalName;
+        this.subAddress = subAddress;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 }
