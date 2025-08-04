@@ -25,6 +25,16 @@ public class DownWidget extends BaseWidget implements DisplayOrderUpdatable {
     private DownWidget(Festival festival, String name, String url, Integer displayOrder) {
         super(festival, name, url);
         this.displayOrderFeature = DisplayOrderFeature.of(displayOrder);
+        festival.applyBaseWidget(this);
+    }
+
+    public static DownWidget of(Festival festival, String name, String url, Integer displayOrder) {
+        return DownWidget.builder()
+                .festival(festival)
+                .name(name)
+                .url(url)
+                .displayOrder(displayOrder)
+                .build();
     }
 
     public static DownWidget from(Festival festival, DownWidgetCreateDto downWidgetCreateDto) {

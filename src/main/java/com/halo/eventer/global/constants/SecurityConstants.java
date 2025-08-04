@@ -44,6 +44,7 @@ public class SecurityConstants {
         "/api/upWidgets/datetime",
         "/univ",
         "/home/*",
+        "/home",
         "/notices/*",
         "/notices",
         "/menus",

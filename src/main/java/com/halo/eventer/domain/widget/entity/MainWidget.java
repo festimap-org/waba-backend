@@ -29,7 +29,17 @@ public class MainWidget extends BaseWidget {
         super(festival, name, url);
         this.imageFeature = ImageFeature.of(image);
         this.descriptionFeature = DescriptionFeature.of(description);
-        ;
+        festival.applyBaseWidget(this);
+    }
+
+    public static MainWidget of(Festival festival, String name, String url, String image, String description) {
+        return MainWidget.builder()
+                .festival(festival)
+                .name(name)
+                .url(url)
+                .image(image)
+                .description(description)
+                .build();
     }
 
     public static MainWidget from(Festival festival, MainWidgetCreateDto mainWidgetCreateDto) {
