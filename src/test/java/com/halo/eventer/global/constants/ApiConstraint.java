@@ -14,7 +14,19 @@ public class ApiConstraint {
         return new Constraint("javax.validation.constraints.Min", Map.of("value", 1));
     }
 
+    public static Constraint JavaxMin2(int value) {
+        return new Constraint("javax.validation.constraints.Min", Map.of("value", value));
+    }
+
+    public static Constraint JavaxMax(int value) {
+        return new Constraint("javax.validation.constraints.Max", Map.of("value", value));
+    }
+
     public static Constraint JavaxPattern(String regexp) {
         return new Constraint("javax.validation.constraints.Pattern", Map.of("regexp", regexp));
+    }
+
+    public static Constraint JavaxSize(int min, int max) {
+        return new Constraint("javax.validation.constraints.Size", Map.of("min", min, "max", max));
     }
 }
