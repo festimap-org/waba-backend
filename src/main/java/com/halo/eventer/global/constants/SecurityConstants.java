@@ -33,8 +33,8 @@ public class SecurityConstants {
         "/manager",
         "/*/lost-items",
         "/lost-items/*",
-        "/inquiry/paging",
-        "/inquiry/forUser",
+        "/inquiries/paging",
+        "/inquiries/forUser",
         "/festivals",
         "/festivals/**",
         "/duration/*",
@@ -59,8 +59,8 @@ public class SecurityConstants {
         "/stamp/user/custom",
         "/missingPerson",
         "/login",
-        "/inquiry",
-        "/inquiry/forUser/*",
+        "/inquiries",
+        "/inquiries/forUser/*",
     };
 
     public static final String[] PUBLIC_PATCH_URLS = {"/stamp/user/*/*", "/stamp/mission"};
