@@ -134,7 +134,7 @@ public class MapCategoryControllerTest {
     @Test
     void 지도카테고리_아이콘_핀_수정_인증거부() throws Exception {
         // when & then
-        ResultActions result = mockMvc.perform(patch("/mapCategory/image/{mapCategoryId}", mapCategoryId)
+        ResultActions result = mockMvc.perform(patch("/map-categories/{mapCategoryId}/image", mapCategoryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(mapCategoryImageDto)))
                 .andExpect(status().isUnauthorized())
