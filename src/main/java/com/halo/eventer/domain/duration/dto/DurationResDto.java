@@ -24,6 +24,12 @@ public class DurationResDto {
         this.dayNumber = duration.getDayNumber();
     }
 
+    public DurationResDto(Long durationId, LocalDate date, Integer dayNumber) {
+        this.durationId = durationId;
+        this.date = date;
+        this.dayNumber = dayNumber;
+    }
+
     public static List<DurationResDto> fromDurations(List<Duration> durations) {
         return durations.stream().map(DurationResDto::new).collect(Collectors.toList());
     }
