@@ -99,7 +99,7 @@ public class FestivalControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(errorRequest)))
                     .andExpect(status().isBadRequest())
-                    .andDo(FestivalDoc.errorSnippet("dto 필드 NULL"));
+                    .andDo(FestivalDoc.errorSnippet("축제_생성시_dto_내부필드_NULL"));
             assertError(resultActions, "C013", "must not be null", 400);
         }
 
@@ -154,7 +154,7 @@ public class FestivalControllerTest {
                             .content(objectMapper.writeValueAsString(errorRequest))
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest())
-                    .andDo(FestivalDoc.errorSnippet("색상 필드 오류"));
+                    .andDo(FestivalDoc.errorSnippet("축제_색상_수정_필드_오류"));
             assertError(result, "C013", "색상은 #RGB 또는 #RRGGBB 형식이어야 합니다.", 400);
         }
 
@@ -201,12 +201,12 @@ public class FestivalControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(dto)))
                     .andExpect(status().isUnauthorized())
-                    .andDo(FestivalDoc.errorSnippet("인증 거부"));
+                    .andDo(FestivalDoc.errorSnippet("축제_생성_인증_거부"));
             assertError(result, "A002", "Unauthenticated", 401);
         }
 
         @Test
-        void 축제수정시_토큰이_없는_경우() throws Exception {
+        void 축제수정시_권한이_없는_경우() throws Exception {
             // given
             given(festivalService.update(any(), any())).willReturn(festivalResDto);
 
@@ -216,7 +216,7 @@ public class FestivalControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(festivalCreateDto)))
                     .andExpect(status().isUnauthorized())
-                    .andDo(FestivalDoc.errorSnippet("인증 거부"));
+                    .andDo(FestivalDoc.errorSnippet("축제_수정_인증_거부"));
             assertError(result, "A002", "Unauthenticated", 401);
         }
 
@@ -229,7 +229,7 @@ public class FestivalControllerTest {
             ResultActions result = mockMvc.perform(
                             delete("/festivals").param("id", "1").contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isUnauthorized())
-                    .andDo(FestivalDoc.errorSnippet("인증 거부"));
+                    .andDo(FestivalDoc.errorSnippet("축제_삭제_인증_거부"));
             assertError(result, "A002", "Unauthenticated", 401);
         }
 
@@ -242,7 +242,7 @@ public class FestivalControllerTest {
                             .content(objectMapper.writeValueAsString(festivalCreateDto))
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isUnauthorized())
-                    .andDo(FestivalDoc.errorSnippet("인증 거부"));
+                    .andDo(FestivalDoc.errorSnippet("축제_색_수정_인증_거부"));
             assertError(result, "A002", "Unauthenticated", 401);
         }
 
@@ -257,7 +257,7 @@ public class FestivalControllerTest {
                             .content(objectMapper.writeValueAsString(fileDto))
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isUnauthorized())
-                    .andDo(FestivalDoc.errorSnippet("인증 거부"));
+                    .andDo(FestivalDoc.errorSnippet("축제_로고_수정_인증_거부"));
             assertError(result, "A002", "Unauthenticated", 401);
         }
 
@@ -272,7 +272,7 @@ public class FestivalControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(festivalCreateDto)))
                     .andExpect(status().isUnauthorized())
-                    .andDo(FestivalDoc.errorSnippet("인증 거부"));
+                    .andDo(FestivalDoc.errorSnippet("축제_위치_정보_수정_인증_거부"));
             assertError(result, "A002", "Unauthenticated", 401);
         }
     }

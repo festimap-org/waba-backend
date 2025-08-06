@@ -102,7 +102,7 @@ public class InquiryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(errorRequest)))
                 .andExpect(status().isBadRequest())
-                .andDo(InquiryDoc.errorSnippet("비밀번호 검증 오류"));
+                .andDo(InquiryDoc.errorSnippet("문의사항_생성시_비밀번호가_4자리가_아닌경우"));
         assertError(result, "C013", "비밀번호는 숫자 4자리여야 합니다.", 400);
     }
 
@@ -118,7 +118,7 @@ public class InquiryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(errorRequest)))
                 .andExpect(status().isBadRequest())
-                .andDo(InquiryDoc.errorSnippet("유저 아이디 검증 오류"));
+                .andDo(InquiryDoc.errorSnippet("문의사항_생성시_유저_아이디_검증_오류"));
         assertError(result, "C013", "size must be between 1 and 16", 400);
     }
 
@@ -158,12 +158,12 @@ public class InquiryControllerTest {
     @Test
     void 일반사용자가_어드민용_문의사항_페이징_조회_인증거부() throws Exception {
         // when & then
-        ResultActions result = mockMvc.perform(get("/inquiry/forAdmin")
+        ResultActions result = mockMvc.perform(get("/inquiries/forAdmin")
                         .param("festivalId", "1")
                         .param("lastId", "0")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
-                .andDo(InquiryDoc.errorSnippet("인증 거부"));
+                .andDo(InquiryDoc.errorSnippet("어드민용_문의사항_페이징조회_인증_거부"));
         assertError(result, "A002", "Unauthenticated", 401);
     }
 
@@ -196,7 +196,7 @@ public class InquiryControllerTest {
         ResultActions result = mockMvc.perform(
                         get("/inquiries/forAdmin/{inquiryId}", inquiryId).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
-                .andDo(InquiryDoc.errorSnippet("인증 거부"));
+                .andDo(InquiryDoc.errorSnippet("어드민용_문의사항_단일조회_인증_거부"));
         assertError(result, "A002", "Unauthenticated", 401);
     }
 
@@ -238,7 +238,7 @@ public class InquiryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(answerReqDto)))
                 .andExpect(status().isUnauthorized())
-                .andDo(InquiryDoc.errorSnippet("인증 거부"));
+                .andDo(InquiryDoc.errorSnippet("문의_답변_달기_인증_거부"));
         assertError(result, "A002", "Unauthenticated", 401);
     }
 
@@ -265,7 +265,7 @@ public class InquiryControllerTest {
         // when & then
         mockMvc.perform(delete("/inquiries/forAdmin").param("inquiryId", "1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
-                .andDo(InquiryDoc.errorSnippet("인증 거부"));
+                .andDo(InquiryDoc.errorSnippet("문의사항_삭제_인증_거부"));
     }
 
     @Test
