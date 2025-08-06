@@ -87,7 +87,7 @@ public class LostItemControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer {access-token}")
                         .content(objectMapper.writeValueAsString(lostItemReqDto)))
                 .andExpect(status().isUnauthorized())
-                .andDo(LostItemDoc.errorSnippet("인증 실패"));
+                .andDo(LostItemDoc.errorSnippet("분실물_생성시_인증_거부"));
         assertError(result, "A002", "Unauthenticated", 401);
     }
 
@@ -104,7 +104,7 @@ public class LostItemControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer {access-token}")
                         .content(objectMapper.writeValueAsString(errorRequest)))
                 .andExpect(status().isBadRequest())
-                .andDo(LostItemDoc.errorSnippet("name 필드 null"));
+                .andDo(LostItemDoc.errorSnippet("분실물_생성시_name_필드_null"));
         assertError(result, "C013", "must not be null", 400);
     }
 
@@ -124,7 +124,7 @@ public class LostItemControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer {access-token}")
                         .content(errorRequest))
                 .andExpect(status().isBadRequest())
-                .andDo(LostItemDoc.errorSnippet("날짜 형식 오류"));
+                .andDo(LostItemDoc.errorSnippet("분실물_생성시_날짜_형식_오류"));
         assertError(result, "C008", "Invalid JSON Format", 400);
     }
 
@@ -163,7 +163,7 @@ public class LostItemControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer {access-token}")
                         .content(objectMapper.writeValueAsString(lostItemReqDto)))
                 .andExpect(status().isUnauthorized())
-                .andDo(LostItemDoc.errorSnippet("인증 실패"));
+                .andDo(LostItemDoc.errorSnippet("분실물_수정_인증_거부"));
         assertError(result, "A002", "Unauthenticated", 401);
     }
 
@@ -188,7 +188,7 @@ public class LostItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer {access-token}"))
                 .andExpect(status().isUnauthorized())
-                .andDo(LostItemDoc.errorSnippet("인증 실패"));
+                .andDo(LostItemDoc.errorSnippet("분실물_삭제시_인증_거부"));
         assertError(result, "A002", "Unauthenticated", 401);
     }
 

@@ -66,7 +66,7 @@ public class DurationControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void 어드민_축제기간_생성() throws Exception {
+    void 축제기간_생성() throws Exception {
         // given
         doNothing().when(durationService).createDurations(any(), any());
 
@@ -82,7 +82,7 @@ public class DurationControllerTest {
     }
 
     @Test
-    void 일반유저_축제기간_생성_인증거부() throws Exception {
+    void 축제기간_생성_인증거부() throws Exception {
         // when & then
         mockMvc.perform(post("/duration")
                         .param("festivalId", "1")
@@ -92,12 +92,12 @@ public class DurationControllerTest {
                 .andExpect(jsonPath("$.code").value("A002"))
                 .andExpect(jsonPath("$.message").value("Unauthenticated"))
                 .andExpect(jsonPath("$.status").value(401))
-                .andDo(DurationDoc.errorSnippet("인증 실패"));
+                .andDo(DurationDoc.errorSnippet("축제_기간_생성_인증_거부"));
     }
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void 축제_생성시_DTO의_date_값이_NULL일_때_검증_실패() throws Exception {
+    void 축제기간_생성시_DTO의_date_값이_NULL일_때_검증_실패() throws Exception {
         // given
         DurationCreateDto errorRequest = new DurationCreateDto(null, 1);
 
@@ -110,12 +110,12 @@ public class DurationControllerTest {
                 .andExpect(jsonPath("$.code").value("C013"))
                 .andExpect(jsonPath("$.message").value("date는 필수 값입니다."))
                 .andExpect(jsonPath("$.status").value(400))
-                .andDo(DurationDoc.errorSnippet("date 필드 NULL"));
+                .andDo(DurationDoc.errorSnippet("축제_기간_생성_date_필드_NULL"));
     }
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void 축제_생성시_메서드_DTO의_dayNumber_값이_1_미만일때_검증_실패() throws Exception {
+    void 축제기간_생성시_메서드_DTO의_dayNumber_값이_1_미만일때_검증_실패() throws Exception {
         // given
         DurationCreateDto errorRequest = new DurationCreateDto(LocalDate.now(), 0);
 
@@ -128,12 +128,12 @@ public class DurationControllerTest {
                 .andExpect(jsonPath("$.code").value("C013"))
                 .andExpect(jsonPath("$.message").value("must be greater than or equal to 1"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andDo(DurationDoc.errorSnippet("dayNumber 1 미만"));
+                .andDo(DurationDoc.errorSnippet("축제_기간_생성시_dayNumber_1_미만"));
     }
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void 축제_생성시_festivalId이_1_미만일때_검증_실패() throws Exception {
+    void 축제기간_생성시_festivalId이_1_미만일때_검증_실패() throws Exception {
         // when & then
         mockMvc.perform(post("/duration")
                         .param("festivalId", "0")
@@ -143,7 +143,7 @@ public class DurationControllerTest {
                 .andExpect(jsonPath("$.code").value("C013"))
                 .andExpect(jsonPath("$.message").value("must be greater than or equal to 1"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andDo(DurationDoc.errorSnippet("festivalId 1 미만"));
+                .andDo(DurationDoc.errorSnippet("축제_기간_생성시_festivalId_1_미만"));
     }
 
     @Test
@@ -174,6 +174,6 @@ public class DurationControllerTest {
                 .andExpect(jsonPath("$.code").value("C013"))
                 .andExpect(jsonPath("$.message").value("must be greater than or equal to 1"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andDo(DurationDoc.errorSnippet("festivalId 1 미만"));
+                .andDo(DurationDoc.errorSnippet("축제_기간_리스트_조회시_festivalId_1_미만"));
     }
 }
