@@ -54,6 +54,7 @@ public class SecurityConstants {
 
     public static final String[] PUBLIC_POST_URLS = {
         "/stamp/user",
+        "/stamp/user/signup",
         "/stamp/mission",
         "/stamp/user/login",
         "/stamp/user/custom",
@@ -63,7 +64,7 @@ public class SecurityConstants {
         "/inquiries/forUser/*",
     };
 
-    public static final String[] PUBLIC_PATCH_URLS = {"/stamp/user/*/*", "/stamp/mission"};
+    public static final String[] PUBLIC_PATCH_URLS = {"/stamp/user/*/*", "/stamp/user/check/v2/*", "/stamp/mission"};
 
     public static final String[] ACTUATOR_URL = {"/actuator/prometheus"};
 }
