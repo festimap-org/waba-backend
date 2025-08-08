@@ -283,10 +283,7 @@ class StampUserControllerTest {
     void 스탬프_유저_전체_조회_성공() throws Exception {
         List<StampUsersGetDto> responseDtos = 스탬프유저들_응답_DTO_생성();
         given(stampUserService.getStampUsers(anyLong())).willReturn(responseDtos);
-        mockMvc.perform(get("/stamp/user/all")
-                        .param("stampId", "1")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
+        mockMvc.perform(get("/stamp/user/all").param("stampId", "1").header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].uuid").value(유저1_UUID))
                 .andExpect(jsonPath("$[0].name").value(유저1_이름))

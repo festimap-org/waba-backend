@@ -34,12 +34,12 @@ public class StampUserController {
 
     @PostMapping("/signup")
     public StampUserGetDto signup(
-            @Min(1) @RequestParam("stampId") Long stampId, @RequestBody @Valid SignupDto signupDto) {
+            @Min(1) @RequestParam("stampId") long stampId, @RequestBody @Valid SignupDto signupDto) {
         return stampUserService.signupV2(stampId, signupDto);
     }
 
     @PostMapping("/login")
-    public StampUserGetDto login(@Min(1) @RequestParam("stampId") Long stampId, @RequestBody @Valid LoginDto loginDto) {
+    public StampUserGetDto login(@Min(1) @RequestParam("stampId") long stampId, @RequestBody @Valid LoginDto loginDto) {
         return stampUserService.login(stampId, loginDto);
     }
 
@@ -49,13 +49,13 @@ public class StampUserController {
     }
 
     @GetMapping("/all")
-    public List<StampUsersGetDto> getStampUsers(@Min(1) @RequestParam("stampId") Long stampId) {
+    public List<StampUsersGetDto> getStampUsers(@Min(1) @RequestParam("stampId") long stampId) {
         return stampUserService.getStampUsers(stampId);
     }
 
     @PatchMapping("/{uuid}/{userMissionId}")
     public void updateUserMission(
-            @Size(min = 36, max = 36) @PathVariable String uuid, @Min(1) @PathVariable Long userMissionId) {
+            @Size(min = 36, max = 36) @PathVariable String uuid, @Min(1) @PathVariable long userMissionId) {
         stampUserService.updateUserMission(uuid, userMissionId);
     }
 
