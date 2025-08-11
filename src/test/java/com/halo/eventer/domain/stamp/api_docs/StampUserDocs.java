@@ -6,6 +6,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -208,6 +209,7 @@ public class StampUserDocs {
                         .tag(TAG)
                         .summary("스탬프 유저 미션 현황 조회")
                         .pathParameters(parameterWithName("uuid").description("유저 UUID"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
                                 fieldWithPath("finished")
                                         .type(JsonFieldType.BOOLEAN)
@@ -276,6 +278,7 @@ public class StampUserDocs {
                         .tag(TAG)
                         .summary("스탬프 유저 전체 조회")
                         .queryParameters(parameterWithName("stampId").description("스탬프 ID"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
                                 fieldWithPath("[].uuid")
                                         .type(JsonFieldType.STRING)
@@ -302,6 +305,7 @@ public class StampUserDocs {
                         .tag(TAG)
                         .summary("스탬프 유저 삭제")
                         .pathParameters(parameterWithName("uuid").description("유저 UUID"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .build()));
     }
 

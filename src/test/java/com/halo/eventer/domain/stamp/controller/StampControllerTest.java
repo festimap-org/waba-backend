@@ -75,8 +75,8 @@ public class StampControllerTest {
         void 스탬프_등록() throws Exception {
             given(stampService.registerStamp(축제_1번)).willReturn(stampGetDtos);
             mockMvc.perform(post("/stamp")
-                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                            .param("festivalId", "1")
+                            .queryParam("festivalId", "1")
+                            .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$[0].stampId").value(스탬프1_ID))
@@ -94,7 +94,10 @@ public class StampControllerTest {
         @Test
         @WithMockUser(username = "admin", roles = "ADMIN")
         void 스탬프_등록_축제Id_검증_실패() throws Exception {
-            mockMvc.perform(post("/stamp").param("festivalId", "0"))
+            mockMvc.perform(post("/stamp")
+                            .queryParam("festivalId", "0")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isBadRequest())
                     .andDo(StampDocs.errorSnippet("스탬프_등록_축제Id_검증_실패"));
         }
@@ -112,7 +115,10 @@ public class StampControllerTest {
         @Test
         void 스탬프_조회() throws Exception {
             given(stampService.getStampByFestivalId(축제_1번)).willReturn(stampGetDtos);
-            mockMvc.perform(get("/stamp").param("festivalId", "1").header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
+            mockMvc.perform(get("/stamp")
+                            .queryParam("festivalId", "1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$[0].stampId").value(스탬프1_ID))
                     .andExpect(jsonPath("$[0].stampOn").value(스탬프1_활성화))
@@ -128,7 +134,10 @@ public class StampControllerTest {
 
         @Test
         void 스탬프_조회_축제Id_검증_실패() throws Exception {
-            mockMvc.perform(get("/stamp").param("festivalId", "0"))
+            mockMvc.perform(get("/stamp")
+                            .queryParam("festivalId", "0")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isBadRequest())
                     .andDo(StampDocs.errorSnippet("스탬프_조회_축제Id_검증_실패"));
         }
@@ -140,8 +149,8 @@ public class StampControllerTest {
         @WithMockUser(username = "admin", roles = "ADMIN")
         void 스탬프_활성화() throws Exception {
             mockMvc.perform(patch("/stamp")
-                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                            .param("stampId", "1")
+                            .queryParam("stampId", "1")
+                            .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isOk())
                     .andDo(StampDocs.updateStampOn());
@@ -150,14 +159,20 @@ public class StampControllerTest {
         @Test
         @WithMockUser(username = "admin", roles = "ADMIN")
         void 스탬프_활성화_스탬프Id_검증_실패() throws Exception {
-            mockMvc.perform(patch("/stamp").param("stampId", "0"))
+            mockMvc.perform(patch("/stamp")
+                            .queryParam("stampId", "0")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isBadRequest())
                     .andDo(StampDocs.errorSnippet("스탬프_활성화_스탬프Id_검증_실패"));
         }
 
         @Test
         void 스탬프_활성화_권한_없음_실패() throws Exception {
-            mockMvc.perform(patch("/stamp").param("stampId", "1"))
+            mockMvc.perform(patch("/stamp")
+                            .queryParam("stampId", "1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isUnauthorized())
                     .andDo(StampDocs.errorSnippet("스탬프_활성화_권한_없음_실패"));
         }
@@ -169,8 +184,8 @@ public class StampControllerTest {
         @WithMockUser(username = "admin", roles = "ADMIN")
         void 스탬프_삭제() throws Exception {
             mockMvc.perform(delete("/stamp")
-                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                            .param("stampId", "1")
+                            .queryParam("stampId", "1")
+                            .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isOk())
                     .andDo(StampDocs.deleteStamp());
@@ -179,14 +194,14 @@ public class StampControllerTest {
         @Test
         @WithMockUser(username = "admin", roles = "ADMIN")
         void 스탬프_삭제_스탬프Id_검증_실패() throws Exception {
-            mockMvc.perform(delete("/stamp").param("stampId", "0"))
+            mockMvc.perform(delete("/stamp").queryParam("stampId", "0"))
                     .andExpect(status().isBadRequest())
                     .andDo(StampDocs.errorSnippet("스탬프_삭제_스탬프Id_검증_실패"));
         }
 
         @Test
         void 스탬프_삭제_권한_없음_실패() throws Exception {
-            mockMvc.perform(delete("/stamp").param("stampId", "1"))
+            mockMvc.perform(delete("/stamp").queryParam("stampId", "1"))
                     .andExpect(status().isUnauthorized())
                     .andDo(StampDocs.errorSnippet("스탬프_삭제_권한_없음_실패"));
         }
@@ -197,7 +212,10 @@ public class StampControllerTest {
         @Test
         void 미션_목록_조회() throws Exception {
             given(stampService.getMissions(스탬프1_ID)).willReturn(missionSummaryGetDtos);
-            mockMvc.perform(get("/stamp/missions").param("stampId", "1").header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
+            mockMvc.perform(get("/stamp/missions")
+                            .queryParam("stampId", "1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$[0].missionId").value(미션1_ID))
                     .andExpect(jsonPath("$[0].title").value(미션1_제목))
@@ -212,7 +230,10 @@ public class StampControllerTest {
 
         @Test
         void 미션_목록_조회_스탬프Id_검증_실패() throws Exception {
-            mockMvc.perform(get("/stamp/missions").param("stampId", "0"))
+            mockMvc.perform(get("/stamp/missions")
+                            .queryParam("stampId", "0")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isBadRequest())
                     .andDo(StampDocs.errorSnippet("미션_목록_조회_스탬프Id_검증_실패"));
         }
@@ -221,10 +242,11 @@ public class StampControllerTest {
     @Nested
     class 스탬프_참가자_조회 {
         @Test
-        void 스탬프_참가자_조회() throws Exception {
+        void 스탬프_참가자_조회_성공() throws Exception {
             given(stampService.getStampUsers(스탬프1_ID)).willReturn(stampUsersGetDtos);
             mockMvc.perform(get("/stamp/users")
-                            .param("stampId", String.valueOf(스탬프1_ID))
+                            .queryParam("stampId", String.valueOf(스탬프1_ID))
+                            .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$[0].uuid").value(유저1_UUID))
@@ -242,7 +264,10 @@ public class StampControllerTest {
 
         @Test
         void 스탬프_참가자_조회_스탬프Id_검증_실패() throws Exception {
-            mockMvc.perform(get("/stamp/users").param("stampId", "0").header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
+            mockMvc.perform(get("/stamp/users")
+                            .queryParam("stampId", "0")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isBadRequest())
                     .andDo(StampDocs.errorSnippet("스탬프_참가자_조회_스탬프Id_검증_실패"));
         }
@@ -252,11 +277,11 @@ public class StampControllerTest {
     class 완료_카운트_설정 {
         @Test
         @WithMockUser(username = "admin", roles = "ADMIN")
-        void 완료_카운트_설정() throws Exception {
+        void 완료_카운트_설정_성공() throws Exception {
             mockMvc.perform(post("/stamp/finishCnt")
-                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                            .param("stampId", "1")
-                            .param("cnt", "5")
+                            .queryParam("stampId", "1")
+                            .queryParam("cnt", "5")
+                            .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isOk())
                     .andDo(StampDocs.setFinishCnt());
@@ -266,8 +291,9 @@ public class StampControllerTest {
         @WithMockUser(username = "admin", roles = "ADMIN")
         void 완료_카운트_설정_스탬프Id_count_검증_실패() throws Exception {
             mockMvc.perform(post("/stamp/finishCnt")
-                            .param("stampId", "0")
-                            .param("cnt", "0")
+                            .queryParam("stampId", "0")
+                            .queryParam("cnt", "0")
+                            .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isBadRequest())
                     .andDo(StampDocs.errorSnippet("완료_카운트_설정_스탬프Id_count_검증_실패"));
@@ -275,7 +301,11 @@ public class StampControllerTest {
 
         @Test
         void 완료_카운트_설정_권한_없음_실패() throws Exception {
-            mockMvc.perform(post("/stamp/finishCnt").param("stampId", "1").param("cnt", "5"))
+            mockMvc.perform(post("/stamp/finishCnt")
+                            .queryParam("stampId", "1")
+                            .queryParam("cnt", "5")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN))
                     .andExpect(status().isUnauthorized())
                     .andDo(StampDocs.errorSnippet("완료_카운트_설정_권한_없음_실패"));
         }

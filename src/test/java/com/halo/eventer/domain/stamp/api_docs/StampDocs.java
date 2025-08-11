@@ -6,6 +6,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -21,7 +22,8 @@ public class StampDocs {
                         .tag(TAG)
                         .summary("스탬프 등록")
                         .description("페스티벌 ID를 받아 해당 페스티벌에 스탬프를 등록합니다.")
-                        .formParameters(parameterWithName("festivalId")
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .queryParameters(parameterWithName("festivalId")
                                 .description("페스티벌 ID")
                                 .attributes(key("constraints").value("1 이상의 양의 정수")))
                         .responseFields(
@@ -44,6 +46,7 @@ public class StampDocs {
                         .tag(TAG)
                         .summary("스탬프 리스트 조회")
                         .description("해당 festivalId에 대한 스탬프 리스트를 조회합니다.")
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .queryParameters(parameterWithName("festivalId").description("축제 ID"))
                         .build()));
     }
@@ -55,7 +58,8 @@ public class StampDocs {
                         .tag(TAG)
                         .summary("스탬프 활성화")
                         .description("해당 스탬프를 활성화 상태로 변경합니다.")
-                        .formParameters(parameterWithName("stampId").description("스탬프 ID"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .queryParameters(parameterWithName("stampId").description("스탬프 ID"))
                         .build()));
     }
 
@@ -66,7 +70,8 @@ public class StampDocs {
                         .tag(TAG)
                         .summary("스탬프 삭제")
                         .description("해당 스탬프를 삭제합니다.")
-                        .formParameters(parameterWithName("stampId").description("스탬프 ID"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .queryParameters(parameterWithName("stampId").description("스탬프 ID"))
                         .build()));
     }
 
@@ -88,6 +93,7 @@ public class StampDocs {
                         .tag(TAG)
                         .summary("스탬프 참가자 목록 조회")
                         .description("해당 스탬프에 참여한 유저들의 정보를 반환합니다.")
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .queryParameters(parameterWithName("stampId").description("스탬프 ID"))
                         .build()));
     }
@@ -99,7 +105,8 @@ public class StampDocs {
                         .tag(TAG)
                         .summary("완료 기준 미션 수 설정")
                         .description("해당 스탬프의 완료 기준 미션 수(cnt)를 설정합니다.")
-                        .formParameters(
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .queryParameters(
                                 parameterWithName("stampId").description("스탬프 ID"),
                                 parameterWithName("cnt").description("완료로 간주할 미션 수"))
                         .build()));

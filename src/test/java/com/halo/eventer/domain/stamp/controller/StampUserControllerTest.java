@@ -71,8 +71,6 @@ class StampUserControllerTest {
         userMissionInfoWithFinishedGetListDto = 유저미션_완료여부_응답_생성();
     }
 
-    // TODO : 403 처리 (인증 유저이지만 권한은 없음) 필요
-
     @Test
     void 스탬프유저_회원가입_성공() throws Exception {
         given(stampUserService.signup(anyLong(), any(SignupWithoutCustomDto.class)))
