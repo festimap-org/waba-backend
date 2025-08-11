@@ -1,6 +1,9 @@
 package com.halo.eventer.domain.stamp.controller;
 
 import java.util.List;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -19,23 +22,25 @@ public class MissionController {
     private final MissionService missionService;
 
     @PostMapping
-    public void createMissionList(@RequestParam("stampId") Long stampId, @RequestBody List<MissionSetDto> dto) {
+    public void createMissionList(
+            @Min(1) @RequestParam("stampId") Long stampId,
+            @RequestBody @Valid @NotEmpty List<@Valid MissionSetDto> dto) {
         missionService.createMission(stampId, dto);
     }
 
     @GetMapping
-    public MissionDetailGetDto getMission(@RequestParam("missionId") Long missionId) {
+    public MissionDetailGetDto getMission(@Min(1) @RequestParam("missionId") Long missionId) {
         return missionService.getMission(missionId);
     }
 
     @GetMapping("/all")
-    public List<MissionSummaryGetDto> getMissionList(@RequestParam("stampId") Long stampId) {
+    public List<MissionSummaryGetDto> getMissionList(@Min(1) @RequestParam("stampId") Long stampId) {
         return missionService.getMissions(stampId);
     }
 
     @PatchMapping
     public void updateMission(
-            @RequestParam("missionId") Long missionId, @RequestBody MissionUpdateDto missionUpdateDto) {
+            @Min(1) @RequestParam("missionId") Long missionId, @RequestBody MissionUpdateDto missionUpdateDto) {
         missionService.updateMission(missionId, missionUpdateDto);
     }
 }
