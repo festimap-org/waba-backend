@@ -5,14 +5,30 @@ import java.util.List;
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
 import com.halo.eventer.domain.stamp.dto.stamp.MissionSetDto;
+import com.halo.eventer.domain.stamp.dto.stamp.MissionSummaryGetDto;
 
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class MissionFixture {
 
-    public static final Long 미션1 = 1L;
-    public static final Long 미션2 = 2L;
+    public static final Long 미션1_ID = 1L;
+    public static final Long 미션1_부스_ID = 1L;
+    public static final String 미션1_제목 = "미션 1";
+    public static final String 미션1_내용 = "미션1입니다.";
+    public static final String 미션1_장소 = "미션1 장소";
+    public static final String 미션1_시간 = "미션1 시간";
+    public static final String 미션1_성공사진 = "미션1 성공 사진";
+    public static final String 미션1_실패사진 = "미션1 실패 사진";
+
+    public static final Long 미션2_ID = 2L;
+    public static final Long 미션2_부스_ID = 2L;
+    public static final String 미션2_제목 = "미션 2";
+    public static final String 미션2_내용 = "미션2입니다.";
+    public static final String 미션2_장소 = "미션2 장소";
+    public static final String 미션2_시간 = "미션2 시간";
+    public static final String 미션2_성공사진 = "미션2 성공 사진";
+    public static final String 미션2_실패사진 = "미션2 실패 사진";
 
     public static Mission 미션1_생성() {
         return Mission.builder()
@@ -80,5 +96,11 @@ public class MissionFixture {
         setField(dto, "title", "수정된 제목");
         setField(dto, "content", "수정된 내용");
         return dto;
+    }
+
+    public static List<MissionSummaryGetDto> 미션_조회_리스트_생성() {
+        return List.of(
+                new MissionSummaryGetDto(미션1_ID, 미션1_제목, 미션1_성공사진, 미션1_실패사진),
+                new MissionSummaryGetDto(미션2_ID, 미션2_제목, 미션2_성공사진, 미션2_실패사진));
     }
 }

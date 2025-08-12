@@ -50,7 +50,7 @@ public class StampUserService {
     private StampUser createStampUserFromSignUpDtoV2(Long stampId, SignupDto signupDto) {
         String encryptedPhone = encryptService.encryptInfo(signupDto.getPhone());
         String encryptedName = encryptService.encryptInfo(signupDto.getName());
-        validateExistStamp(stampId, encryptedPhone);
+        validateExistStampUser(stampId, encryptedPhone);
         return new StampUser(encryptedPhone, encryptedName, signupDto.getParticipantCount(), signupDto.getSchoolNo());
     }
 
@@ -128,7 +128,7 @@ public class StampUserService {
                 .orElseThrow(StampUserNotFoundException::new);
     }
 
-    private void validateExistStamp(Long stampId, String encryptedPhone) {
+    private void validateExistStampUser(Long stampId, String encryptedPhone) {
         if (stampUserRepository.existsByStampIdAndPhone(stampId, encryptedPhone)) {
             throw new StampUserAlreadyExistsException();
         }
@@ -137,7 +137,7 @@ public class StampUserService {
     private StampUser createStampUserFromSignUpDto(Long stampId, SignupDto signupDto) {
         String encryptedPhone = encryptService.encryptInfo(signupDto.getPhone());
         String encryptedName = encryptService.encryptInfo(signupDto.getName());
-        validateExistStamp(stampId, encryptedPhone);
+        validateExistStampUser(stampId, encryptedPhone);
         StampUser stampUser = new StampUser(encryptedPhone, encryptedName, signupDto.getParticipantCount());
         if (signupDto instanceof SignupWithCustomDto) {
             SignupWithCustomDto customDto = (SignupWithCustomDto) signupDto;
