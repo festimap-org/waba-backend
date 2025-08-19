@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({ControllerTestSecurityBeans.class, SecurityConfig.class, CustomRestDocsConfig.class})
 @ActiveProfiles("test")
 @SuppressWarnings("NonAsciiCharacters")
-class StampTourAdminControllerTest {
+public class StampTourAdminControllerTest {
 
     private static final String AUTH = "Bearer admin-token";
     private static final long 축제_ID = 1L;
