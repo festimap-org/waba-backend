@@ -1,0 +1,62 @@
+package com.halo.eventer.domain.stamp;
+
+import jakarta.persistence.*;
+
+import com.halo.eventer.domain.stamp.dto.stamp.enums.ButtonAction;
+import com.halo.eventer.domain.stamp.dto.stamp.request.ButtonReqDto;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor
+public class Button {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private int sequenceIndex;
+
+    private String content;
+
+    private String iconImg;
+
+    @Enumerated(EnumType.STRING)
+    private ButtonAction action = ButtonAction.OPEN_URL;
+
+    private String targetUrl; // action = OPEN_URL 일 때만 사용
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "page_template_id")
+    private PageTemplate page;
+
+    private Button(int sequenceIndex, String iconImg, String content, ButtonAction action, String targetUrl) {
+        this.sequenceIndex = sequenceIndex;
+        this.iconImg = iconImg;
+        this.content = content;
+        this.action = action;
+        this.targetUrl = targetUrl;
+        validateInvariants();
+    }
+
+    private void attachTo(PageTemplate page) {
+        this.page = page;
+        page.getButtons().add(this);
+    }
+
+    private void validateInvariants() {
+        if (action == ButtonAction.OPEN_URL) {
+            if (targetUrl == null || targetUrl.isBlank()) {
+                throw new IllegalArgumentException("OPEN_URL 버튼은 targetUrl이 필요합니다.");
+            }
+        }
+    }
+
+    public static Button from(PageTemplate page, ButtonReqDto dto) {
+        Button b = new Button(
+                dto.getSequenceIndex(), dto.getIconImg(), dto.getContent(), dto.getAction(), dto.getTargetUrl());
+        b.attachTo(page);
+        return b;
+    }
+}

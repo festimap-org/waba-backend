@@ -39,7 +39,7 @@ public class StampUserRepositoryTest {
     void setUp() {
         festival = 축제_엔티티();
         festivalRepository.save(festival);
-        stamp = Stamp.create(festival);
+        stamp = Stamp.createWith(festival, "title");
         stampRepository.save(stamp);
         stampUser = 스탬프유저1_생성();
         stampUser.addStamp(stamp);
