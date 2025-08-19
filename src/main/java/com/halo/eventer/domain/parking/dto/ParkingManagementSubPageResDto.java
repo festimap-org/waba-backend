@@ -1,11 +1,11 @@
 package com.halo.eventer.domain.parking.dto;
 
+import java.util.List;
+
 import com.halo.eventer.domain.image.Image;
 import com.halo.eventer.domain.image.dto.ImageDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Getter
 @NoArgsConstructor

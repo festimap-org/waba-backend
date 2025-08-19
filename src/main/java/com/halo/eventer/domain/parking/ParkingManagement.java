@@ -1,18 +1,18 @@
 package com.halo.eventer.domain.parking;
 
+import java.util.*;
+import java.util.stream.Collectors;
+import jakarta.persistence.*;
+
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.image.Image;
 import com.halo.eventer.domain.parking.enums.ParkingInfoType;
 import com.halo.eventer.global.constants.DisplayOrderConstants;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
-import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -60,7 +60,16 @@ public class ParkingManagement {
     @OneToMany(mappedBy = "parkingManagement", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
-    private ParkingManagement(Festival festival, String headerName, ParkingInfoType parkingInfoType, String title, String description, String buttonName, String buttonTargetUrl, String backgroundImage, boolean visible) {
+    private ParkingManagement(
+            Festival festival,
+            String headerName,
+            ParkingInfoType parkingInfoType,
+            String title,
+            String description,
+            String buttonName,
+            String buttonTargetUrl,
+            String backgroundImage,
+            boolean visible) {
         this.festival = festival;
         this.headerName = headerName;
         this.parkingInfoType = parkingInfoType;
@@ -72,13 +81,39 @@ public class ParkingManagement {
         this.visible = visible;
     }
 
-    public static ParkingManagement of(Festival festival, String headerName, ParkingInfoType parkingInfoType, String title, String description, String buttonName, String buttonTargetUrl, String backgroundImage, boolean visible){
-        ParkingManagement parkingManagement = new ParkingManagement(festival, headerName, parkingInfoType, title, description, buttonName, buttonTargetUrl, backgroundImage, visible);
+    public static ParkingManagement of(
+            Festival festival,
+            String headerName,
+            ParkingInfoType parkingInfoType,
+            String title,
+            String description,
+            String buttonName,
+            String buttonTargetUrl,
+            String backgroundImage,
+            boolean visible) {
+        ParkingManagement parkingManagement = new ParkingManagement(
+                festival,
+                headerName,
+                parkingInfoType,
+                title,
+                description,
+                buttonName,
+                buttonTargetUrl,
+                backgroundImage,
+                visible);
         festival.getParkingManagements().add(parkingManagement);
         return parkingManagement;
     }
 
-    public void update(String headerName, ParkingInfoType parkingInfoType, String title, String description, String buttonName, String buttonTargetUrl, String backgroundImage, boolean visible){
+    public void update(
+            String headerName,
+            ParkingInfoType parkingInfoType,
+            String title,
+            String description,
+            String buttonName,
+            String buttonTargetUrl,
+            String backgroundImage,
+            boolean visible) {
         this.headerName = headerName;
         this.parkingInfoType = parkingInfoType;
         this.title = title;
@@ -89,17 +124,17 @@ public class ParkingManagement {
         this.visible = visible;
     }
 
-    public void updateSubPageHeaderName(String subPageHeaderName){
+    public void updateSubPageHeaderName(String subPageHeaderName) {
         this.subPageHeaderName = subPageHeaderName;
     }
 
-    public void addImage(String imageUrl){
+    public void addImage(String imageUrl) {
         validateImageCount();
         Image image = Image.ofParkingManagement(imageUrl, this);
         images.add(image);
     }
 
-    public void reorderImages(List<Long> orderedIds){
+    public void reorderImages(List<Long> orderedIds) {
         validateReorderIdsDuplicationAndSize(orderedIds);
         validateNoMissingIds(orderedIds);
 
@@ -110,27 +145,29 @@ public class ParkingManagement {
         images.sort(Comparator.comparingInt((Image img) -> rank.get(img.getId())));
     }
 
-    public void removeImages(List<Long> imageIds){
+    public void removeImages(List<Long> imageIds) {
         Set<Long> removdIds = new HashSet<>(imageIds);
         images.removeIf(image -> removdIds.contains(image.getId()));
     }
 
-    private void validateReorderIdsDuplicationAndSize(List<Long> orderedIds){
+    private void validateReorderIdsDuplicationAndSize(List<Long> orderedIds) {
         Set<Long> targets = new HashSet<>(orderedIds);
-        if(targets.size() != orderedIds.size() || targets.size() != images.size()){
+        if (targets.size() != orderedIds.size() || targets.size() != images.size()) {
             throw new BaseException(ErrorCode.INVALID_INPUT_VALUE);
         }
     }
+
     private void validateNoMissingIds(List<Long> orderedIds) {
         Set<Long> existingIds = images.stream().map(Image::getId).collect(Collectors.toSet());
-        List<Long> unknown = orderedIds.stream().filter(id -> !existingIds.contains(id)).toList();
+        List<Long> unknown =
+                orderedIds.stream().filter(id -> !existingIds.contains(id)).toList();
         if (!unknown.isEmpty()) {
             throw new BaseException(ErrorCode.INVALID_INPUT_VALUE);
         }
     }
 
-    private void validateImageCount(){
-        if(images.size() >= DisplayOrderConstants.DISPLAY_ORDER_LIMIT_VALUE){
+    private void validateImageCount() {
+        if (images.size() >= DisplayOrderConstants.DISPLAY_ORDER_LIMIT_VALUE) {
             throw new BaseException(ErrorCode.MAX_COUNT_EXCEEDED);
         }
     }

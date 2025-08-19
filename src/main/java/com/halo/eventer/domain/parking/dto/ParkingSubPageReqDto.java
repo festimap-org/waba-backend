@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.parking.dto;
 
 import jakarta.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

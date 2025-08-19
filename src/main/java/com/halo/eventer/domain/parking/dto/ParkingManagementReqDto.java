@@ -2,6 +2,7 @@ package com.halo.eventer.domain.parking.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +13,7 @@ public class ParkingManagementReqDto {
     private String headerName;
 
     @NotNull
-    @Pattern(regexp = "BASIC|BUTTON|SIMPLE",
-            message = "parkingInfoType must be one of: BASIC, BUTTON, SIMPLE")
+    @Pattern(regexp = "BASIC|BUTTON|SIMPLE", message = "parkingInfoType must be one of: BASIC, BUTTON, SIMPLE")
     private String parkingInfoType;
 
     private String title;
@@ -26,7 +26,15 @@ public class ParkingManagementReqDto {
     private boolean visible;
 
     @Builder
-    public ParkingManagementReqDto(String headerName, String parkingInfoType, String title, String description, String buttonName, String buttonTargetUrl, String backgroundImage, boolean visible) {
+    public ParkingManagementReqDto(
+            String headerName,
+            String parkingInfoType,
+            String title,
+            String description,
+            String buttonName,
+            String buttonTargetUrl,
+            String backgroundImage,
+            boolean visible) {
         this.headerName = headerName;
         this.parkingInfoType = parkingInfoType;
         this.title = title;

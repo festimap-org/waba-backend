@@ -1,18 +1,8 @@
 package com.halo.eventer.domain.parking.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.halo.eventer.domain.image.dto.FileDto;
-import com.halo.eventer.domain.image.dto.ImageDto;
-import com.halo.eventer.domain.parking.api_docs.ParkingManagementDoc;
-import com.halo.eventer.domain.parking.dto.ParkingManagementReqDto;
-import com.halo.eventer.domain.parking.dto.ParkingManagementResDto;
-import com.halo.eventer.domain.parking.dto.ParkingManagementSubPageResDto;
-import com.halo.eventer.domain.parking.dto.ParkingMapImageReqDto;
-import com.halo.eventer.domain.parking.dto.ParkingSubPageReqDto;
-import com.halo.eventer.domain.parking.service.ParkingManagementService;
-import com.halo.eventer.global.config.ControllerTestSecurityBeans;
-import com.halo.eventer.global.config.security.SecurityConfig;
-import com.halo.eventer.global.security.provider.JwtProvider;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,8 +18,19 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.halo.eventer.domain.image.dto.FileDto;
+import com.halo.eventer.domain.image.dto.ImageDto;
+import com.halo.eventer.domain.parking.api_docs.ParkingManagementDoc;
+import com.halo.eventer.domain.parking.dto.ParkingManagementReqDto;
+import com.halo.eventer.domain.parking.dto.ParkingManagementResDto;
+import com.halo.eventer.domain.parking.dto.ParkingManagementSubPageResDto;
+import com.halo.eventer.domain.parking.dto.ParkingMapImageReqDto;
+import com.halo.eventer.domain.parking.dto.ParkingSubPageReqDto;
+import com.halo.eventer.domain.parking.service.ParkingManagementService;
+import com.halo.eventer.global.config.ControllerTestSecurityBeans;
+import com.halo.eventer.global.config.security.SecurityConfig;
+import com.halo.eventer.global.security.provider.JwtProvider;
 
 import static com.halo.eventer.global.common.ApiErrorAssert.assertError;
 import static org.mockito.ArgumentMatchers.*;
@@ -45,11 +46,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({ControllerTestSecurityBeans.class, SecurityConfig.class})
 class ParkingManagementControllerTest {
 
-    @Autowired MockMvc mockMvc;
-    @Autowired ObjectMapper objectMapper;
+    @Autowired
+    MockMvc mockMvc;
 
-    @MockitoBean ParkingManagementService parkingManagementService;
-    @MockitoBean JwtProvider jwtProvider;
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @MockitoBean
+    ParkingManagementService parkingManagementService;
+
+    @MockitoBean
+    JwtProvider jwtProvider;
 
     private static final String ADMIN_TOKEN = "Bearer admin-token";
     private static final long VALID_ID = 1L;
@@ -68,8 +75,7 @@ class ParkingManagementControllerTest {
                 "buttonName", "자세히 보기",
                 "buttonTargetUrl", "https://example.com/parking",
                 "backgroundImage", "https://cdn/bg.png",
-                "visible", true
-        );
+                "visible", true);
     }
 
     // ======================= ADMIN =======================
@@ -91,10 +97,11 @@ class ParkingManagementControllerTest {
 
         @Test
         void 생성_실패_festivalId_Min_검증() throws Exception {
-            ResultActions result = mockMvc.perform(post("/api/v2/admin/festivals/{festivalId}/parking-managements", INVALID_ID)
-                            .header("Authorization", ADMIN_TOKEN)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(validCreateBody)))
+            ResultActions result = mockMvc.perform(
+                            post("/api/v2/admin/festivals/{festivalId}/parking-managements", INVALID_ID)
+                                    .header("Authorization", ADMIN_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(validCreateBody)))
                     .andExpect(status().isBadRequest())
                     .andDo(ParkingManagementDoc.errorSnippet("주차 관리 시스템 생성 festivalId 검증 실패"));
             assertError(result, "C013", "must be greater than or equal to 1", 400);
@@ -110,13 +117,13 @@ class ParkingManagementControllerTest {
                     "buttonName", "자세히 보기",
                     "buttonTargetUrl", "https://example.com/parking",
                     "backgroundImage", "https://cdn/bg.png",
-                    "visible", true
-            );
+                    "visible", true);
 
-            ResultActions result = mockMvc.perform(post("/api/v2/admin/festivals/{festivalId}/parking-managements", VALID_ID)
-                            .header("Authorization", ADMIN_TOKEN)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(badRequest)))
+            ResultActions result = mockMvc.perform(
+                            post("/api/v2/admin/festivals/{festivalId}/parking-managements", VALID_ID)
+                                    .header("Authorization", ADMIN_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(badRequest)))
                     .andExpect(status().isBadRequest())
                     .andDo(ParkingManagementDoc.errorSnippet("주차 관리 시스템 생성시 parkingInfoType 패턴 오류"));
             assertError(result, "C013", "parkingInfoType must be one of: BASIC, BUTTON, SIMPLE", 400);
@@ -147,7 +154,9 @@ class ParkingManagementControllerTest {
 
         @Test
         void 서브페이지_헤더명_수정_성공() throws Exception {
-            doNothing().when(parkingManagementService).updateSubPageHeaderName(eq(VALID_ID), any(ParkingSubPageReqDto.class));
+            doNothing()
+                    .when(parkingManagementService)
+                    .updateSubPageHeaderName(eq(VALID_ID), any(ParkingSubPageReqDto.class));
 
             Map<String, Object> body = Map.of("subPageHeaderName", "주차구역 안내");
             mockMvc.perform(patch("/api/v2/admin/parking-managements/{id}/sub-page-header-name", VALID_ID)
@@ -161,10 +170,11 @@ class ParkingManagementControllerTest {
         @Test
         void 서브페이지_헤더명_수정_실패_id_Min_검증() throws Exception {
             ParkingSubPageReqDto body = new ParkingSubPageReqDto("주차 구역안내");
-            ResultActions result = mockMvc.perform(patch("/api/v2/admin/parking-managements/{id}/sub-page-header-name", INVALID_ID)
-                            .header("Authorization", ADMIN_TOKEN)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
+            ResultActions result = mockMvc.perform(
+                            patch("/api/v2/admin/parking-managements/{id}/sub-page-header-name", INVALID_ID)
+                                    .header("Authorization", ADMIN_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isBadRequest())
                     .andDo(ParkingManagementDoc.errorSnippet("서브페이지 헤더명 수정시 id 오류"));
             assertError(result, "C013", "must be greater than or equal to 1", 400);
@@ -174,10 +184,11 @@ class ParkingManagementControllerTest {
         void 서브페이지_헤더명_수정_실패_필드_NotNull() throws Exception {
             ParkingSubPageReqDto body = new ParkingSubPageReqDto();
 
-            ResultActions result = mockMvc.perform(patch("/api/v2/admin/parking-managements/{id}/sub-page-header-name", VALID_ID)
-                            .header("Authorization", ADMIN_TOKEN)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
+            ResultActions result = mockMvc.perform(
+                            patch("/api/v2/admin/parking-managements/{id}/sub-page-header-name", VALID_ID)
+                                    .header("Authorization", ADMIN_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isBadRequest())
                     .andDo(ParkingManagementDoc.errorSnippet("서브페이지 헤더명 Null일 경우"));
             assertError(result, "C013", "must not be null", 400);
@@ -200,10 +211,11 @@ class ParkingManagementControllerTest {
         void 주차맵이미지_등록_실패_id_Min_검증() throws Exception {
             FileDto fileDto = new FileDto("url");
 
-            ResultActions result = mockMvc.perform(post("/api/v2/admin/parking-managements/{id}/parking-map-images", INVALID_ID)
-                            .header("Authorization", ADMIN_TOKEN)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(fileDto)))
+            ResultActions result = mockMvc.perform(
+                            post("/api/v2/admin/parking-managements/{id}/parking-map-images", INVALID_ID)
+                                    .header("Authorization", ADMIN_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(fileDto)))
                     .andExpect(status().isBadRequest())
                     .andDo(ParkingManagementDoc.errorSnippet("주차맵이미지_등록시_id_오류"));
             assertError(result, "C013", "must be greater than or equal to 1", 400);
@@ -211,7 +223,9 @@ class ParkingManagementControllerTest {
 
         @Test
         void 주차맵이미지_정렬변경_성공() throws Exception {
-            doNothing().when(parkingManagementService).updateParkingMapImageDisplayOrder(eq(VALID_ID), any(ParkingMapImageReqDto.class));
+            doNothing()
+                    .when(parkingManagementService)
+                    .updateParkingMapImageDisplayOrder(eq(VALID_ID), any(ParkingMapImageReqDto.class));
 
             Map<String, Object> body = Map.of("imageIds", List.of(3L, 1L, 2L));
             mockMvc.perform(patch("/api/v2/admin/parking-managements/{id}/parking-map-images/display-order", VALID_ID)
@@ -225,10 +239,11 @@ class ParkingManagementControllerTest {
         @Test
         void 주차맵이미지_정렬변경_실패_id_Min_검증() throws Exception {
             Map<String, Object> body = Map.of("imageIds", List.of(3L, 1L, 0L));
-            ResultActions result = mockMvc.perform(patch("/api/v2/admin/parking-managements/{id}/parking-map-images/display-order", INVALID_ID)
-                            .header("Authorization", ADMIN_TOKEN)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
+            ResultActions result = mockMvc.perform(
+                            patch("/api/v2/admin/parking-managements/{id}/parking-map-images/display-order", INVALID_ID)
+                                    .header("Authorization", ADMIN_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isBadRequest())
                     .andDo(ParkingManagementDoc.errorSnippet("주차맵이미지 순서변경시 id 오류"));
             assertError(result, "C013", "must be greater than or equal to 1", 400);
@@ -236,7 +251,9 @@ class ParkingManagementControllerTest {
 
         @Test
         void 주차맵이미지_삭제_성공() throws Exception {
-            doNothing().when(parkingManagementService).deleteParkingMapImages(eq(VALID_ID), any(ParkingMapImageReqDto.class));
+            doNothing()
+                    .when(parkingManagementService)
+                    .deleteParkingMapImages(eq(VALID_ID), any(ParkingMapImageReqDto.class));
 
             Map<String, Object> body = Map.of("imageIds", List.of(10L, 11L));
             mockMvc.perform(delete("/api/v2/admin/parking-managements/{id}/parking-map-images", VALID_ID)
@@ -250,10 +267,11 @@ class ParkingManagementControllerTest {
         @Test
         void 주차맵이미지_삭제_실패_id_Min_검증() throws Exception {
             Map<String, Object> body = Map.of("imageIds", List.of(0L, 11L));
-            ResultActions result = mockMvc.perform(delete("/api/v2/admin/parking-managements/{id}/parking-map-images", INVALID_ID)
-                            .header("Authorization", ADMIN_TOKEN)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
+            ResultActions result = mockMvc.perform(
+                            delete("/api/v2/admin/parking-managements/{id}/parking-map-images", INVALID_ID)
+                                    .header("Authorization", ADMIN_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isBadRequest())
                     .andDo(ParkingManagementDoc.errorSnippet("주차맵이미지 삭제시 id 오류"));
             assertError(result, "C013", "must be greater than or equal to 1", 400);
@@ -262,10 +280,11 @@ class ParkingManagementControllerTest {
         @Test
         void 주차맵이미지_삭제_실패_imageIds_NotNull() throws Exception {
             Map<String, Object> body = Map.of();
-            ResultActions result = mockMvc.perform(delete("/api/v2/admin/parking-managements/{id}/parking-map-images", VALID_ID)
-                            .header("Authorization", ADMIN_TOKEN)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
+            ResultActions result = mockMvc.perform(
+                            delete("/api/v2/admin/parking-managements/{id}/parking-map-images", VALID_ID)
+                                    .header("Authorization", ADMIN_TOKEN)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isBadRequest())
                     .andDo(ParkingManagementDoc.errorSnippet("주차맵이미지 삭제시 id가 NULL"));
             assertError(result, "C013", "must not be null", 400);
@@ -277,9 +296,10 @@ class ParkingManagementControllerTest {
 
         @Test
         void 생성_권한없음() throws Exception {
-            ResultActions result = mockMvc.perform(post("/api/v2/admin/festivals/{festivalId}/parking-managements", VALID_ID)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(validCreateBody)))
+            ResultActions result = mockMvc.perform(
+                            post("/api/v2/admin/festivals/{festivalId}/parking-managements", VALID_ID)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(validCreateBody)))
                     .andExpect(status().isUnauthorized())
                     .andDo(ParkingManagementDoc.errorSnippet("주차관리 생성시 인증 거부"));
             assertError(result, "A002", "Unauthenticated", 401);
@@ -298,9 +318,10 @@ class ParkingManagementControllerTest {
         @Test
         void 서브페이지_헤더명_수정_권한없음() throws Exception {
             Map<String, Object> body = Map.of("subPageHeaderName", "주차구역 안내");
-            ResultActions result = mockMvc.perform(patch("/api/v2/admin/parking-managements/{id}/sub-page-header-name", VALID_ID)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
+            ResultActions result = mockMvc.perform(
+                            patch("/api/v2/admin/parking-managements/{id}/sub-page-header-name", VALID_ID)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isUnauthorized())
                     .andDo(ParkingManagementDoc.errorSnippet("서브페이지 수정시 인증 거부"));
             assertError(result, "A002", "Unauthenticated", 401);
@@ -309,9 +330,10 @@ class ParkingManagementControllerTest {
         @Test
         void 정렬변경_권한없음() throws Exception {
             Map<String, Object> body = Map.of("imageIds", List.of(1L, 2L));
-            ResultActions result = mockMvc.perform(patch("/api/v2/admin/parking-managements/{id}/parking-map-images/display-order", VALID_ID)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
+            ResultActions result = mockMvc.perform(
+                            patch("/api/v2/admin/parking-managements/{id}/parking-map-images/display-order", VALID_ID)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isUnauthorized())
                     .andDo(ParkingManagementDoc.errorSnippet("주차맵이미지 순서변경 인증 거부"));
             assertError(result, "A002", "Unauthenticated", 401);
@@ -320,9 +342,10 @@ class ParkingManagementControllerTest {
         @Test
         void 이미지삭제_권한없음() throws Exception {
             Map<String, Object> body = Map.of("imageIds", List.of(1L, 2L));
-            ResultActions result = mockMvc.perform(delete("/api/v2/admin/parking-managements/{id}/parking-map-images", VALID_ID)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
+            ResultActions result = mockMvc.perform(
+                            delete("/api/v2/admin/parking-managements/{id}/parking-map-images", VALID_ID)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isUnauthorized())
                     .andDo(ParkingManagementDoc.errorSnippet("주차맵이미지 삭제시 인증 거부"));
             assertError(result, "A002", "Unauthenticated", 401);
@@ -360,19 +383,19 @@ class ParkingManagementControllerTest {
         }
 
         @Test
-
         void 서브페이지조회_성공() throws Exception {
             ParkingManagementSubPageResDto res = new ParkingManagementSubPageResDto();
             ImageDto imageDto1 = new ImageDto();
             ImageDto imageDto2 = new ImageDto();
-            ReflectionTestUtils.setField(imageDto1, "id",1L);
-            ReflectionTestUtils.setField(imageDto1, "image","image1");
-            ReflectionTestUtils.setField(imageDto2, "id",2L);
-            ReflectionTestUtils.setField(imageDto2, "image","image2");
+            ReflectionTestUtils.setField(imageDto1, "id", 1L);
+            ReflectionTestUtils.setField(imageDto1, "image", "image1");
+            ReflectionTestUtils.setField(imageDto2, "id", 2L);
+            ReflectionTestUtils.setField(imageDto2, "image", "image2");
             ReflectionTestUtils.setField(res, "subPageHeaderName", "주차구역 안내");
             ReflectionTestUtils.setField(res, "images", List.of(imageDto1, imageDto2));
 
-            given(parkingManagementService.getParkingManagementSubPage(VALID_ID)).willReturn(res);
+            given(parkingManagementService.getParkingManagementSubPage(VALID_ID))
+                    .willReturn(res);
 
             mockMvc.perform(get("/api/v2/admin/parking-managements/{id}/sub-page-info", VALID_ID)
                             .header("Authorization", ADMIN_TOKEN))

@@ -15,7 +15,15 @@ public class ParkingManagementResDto {
     private String backgroundImage;
     private boolean visible;
 
-    private ParkingManagementResDto(String headerName, String parkingInfoType, String title, String description, String buttonName, String buttonTargetUrl, String backgroundImage, boolean visible) {
+    private ParkingManagementResDto(
+            String headerName,
+            String parkingInfoType,
+            String title,
+            String description,
+            String buttonName,
+            String buttonTargetUrl,
+            String backgroundImage,
+            boolean visible) {
         this.headerName = headerName;
         this.parkingInfoType = parkingInfoType;
         this.title = title;
@@ -26,7 +34,16 @@ public class ParkingManagementResDto {
         this.visible = visible;
     }
 
-    public static ParkingManagementResDto of(String headerName, String parkingInfoType, String title, String description, String buttonName, String buttonTargetUrl, String backgroundImage, boolean visible) {
-        return new ParkingManagementResDto(headerName, parkingInfoType, title, description, buttonName, buttonTargetUrl, backgroundImage, visible);
+    public static ParkingManagementResDto of(
+            String headerName,
+            String parkingInfoType,
+            String title,
+            String description,
+            String buttonName,
+            String buttonTargetUrl,
+            String backgroundImage,
+            boolean visible) {
+        return new ParkingManagementResDto(
+                headerName, parkingInfoType, title, description, buttonName, buttonTargetUrl, backgroundImage, visible);
     }
 }

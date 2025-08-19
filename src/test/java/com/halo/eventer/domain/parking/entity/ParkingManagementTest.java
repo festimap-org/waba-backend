@@ -3,15 +3,14 @@ package com.halo.eventer.domain.parking.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.halo.eventer.domain.parking.ParkingManagement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.image.Image;
+import com.halo.eventer.domain.parking.ParkingManagement;
 import com.halo.eventer.domain.parking.enums.ParkingInfoType;
 import com.halo.eventer.global.constants.DisplayOrderConstants;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -42,9 +41,8 @@ class ParkingManagementTest {
         boolean visible = true;
 
         // when
-        ParkingManagement pm = ParkingManagement.of(
-                축제, header, infoType, title, description, buttonName, buttonUrl, bg, visible
-        );
+        ParkingManagement pm =
+                ParkingManagement.of(축제, header, infoType, title, description, buttonName, buttonUrl, bg, visible);
 
         // then
         assertThat(pm.getFestival()).isEqualTo(축제);
@@ -63,9 +61,7 @@ class ParkingManagementTest {
     @Test
     void 기본정보_update_호출시_모든_필드가_갱신된다() {
         // given: 초기 엔티티
-        ParkingManagement pm = ParkingManagement.of(
-                축제, "헤더", null, "제목", "설명", "버튼", "url", "bg", true
-        );
+        ParkingManagement pm = ParkingManagement.of(축제, "헤더", null, "제목", "설명", "버튼", "url", "bg", true);
 
         // when
         pm.update("변경헤더", null, "변경제목", "변경설명", "변경버튼", "변경url", "변경bg", false);
@@ -84,9 +80,7 @@ class ParkingManagementTest {
     @Test
     void 서브페이지_헤더명_updateSubPageHeaderName_갱신된다() {
         // given
-        ParkingManagement pm = ParkingManagement.of(
-                축제, "헤더", null, "제목", null, "버튼", null, null, true
-        );
+        ParkingManagement pm = ParkingManagement.of(축제, "헤더", null, "제목", null, "버튼", null, null, true);
 
         // when
         pm.updateSubPageHeaderName("서브헤더");
@@ -126,8 +120,7 @@ class ParkingManagementTest {
             assertThat(pm.getImages()).hasSize(limit);
 
             // when // then
-            assertThatThrownBy(() -> pm.addImage("overflow.jpg"))
-                    .isInstanceOf(BaseException.class);
+            assertThatThrownBy(() -> pm.addImage("overflow.jpg")).isInstanceOf(BaseException.class);
         }
 
         @Test
@@ -165,25 +158,21 @@ class ParkingManagementTest {
             pm.reorderImages(List.of(3L, 1L, 2L));
 
             // then
-            assertThat(pm.getImages()).extracting(Image::getId)
-                    .containsExactly(3L, 1L, 2L);
+            assertThat(pm.getImages()).extracting(Image::getId).containsExactly(3L, 1L, 2L);
         }
 
         @Test
         void 재정렬_ID_중복이_있거나_크기_불일치면_INVALID_INPUT_VALUE() {
             // 크기 불일치
-            assertThatThrownBy(() -> pm.reorderImages(List.of(1L, 2L)))
-                    .isInstanceOf(BaseException.class);
+            assertThatThrownBy(() -> pm.reorderImages(List.of(1L, 2L))).isInstanceOf(BaseException.class);
 
             // 중복
-            assertThatThrownBy(() -> pm.reorderImages(List.of(1L, 1L, 2L)))
-                    .isInstanceOf(BaseException.class);
+            assertThatThrownBy(() -> pm.reorderImages(List.of(1L, 1L, 2L))).isInstanceOf(BaseException.class);
         }
 
         @Test
         void 재정렬_ID에_없는_ID가_포함되면_INVALID_INPUT_VALUE() {
-            assertThatThrownBy(() -> pm.reorderImages(List.of(999L, 1L, 2L)))
-                    .isInstanceOf(BaseException.class);
+            assertThatThrownBy(() -> pm.reorderImages(List.of(999L, 1L, 2L))).isInstanceOf(BaseException.class);
         }
     }
 

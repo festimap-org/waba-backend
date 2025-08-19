@@ -1,11 +1,9 @@
 package com.halo.eventer.domain.image;
 
-import com.halo.eventer.domain.parking.ParkingManagement;
-import com.halo.eventer.domain.widget.entity.DisplayOrderUpdatable;
-import com.halo.eventer.global.constants.DisplayOrderConstants;
 import jakarta.persistence.*;
 
 import com.halo.eventer.domain.notice.Notice;
+import com.halo.eventer.domain.parking.ParkingManagement;
 import com.halo.eventer.domain.widget_item.WidgetItem;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,17 +41,11 @@ public class Image {
     }
 
     public static Image ofNotice(String imageUrl, Notice notice) {
-        return Image.builder()
-                .imageUrl(imageUrl)
-                .notice(notice)
-                .build();
+        return Image.builder().imageUrl(imageUrl).notice(notice).build();
     }
 
     public static Image ofWidgetItem(String imageUrl, WidgetItem widgetItem) {
-        return Image.builder()
-                .imageUrl(imageUrl)
-                .widgetItem(widgetItem)
-                .build();
+        return Image.builder().imageUrl(imageUrl).widgetItem(widgetItem).build();
     }
 
     public static Image ofParkingManagement(String imageUrl, ParkingManagement parkingManagement) {
@@ -62,5 +54,4 @@ public class Image {
                 .parkingManagement(parkingManagement)
                 .build();
     }
-
 }

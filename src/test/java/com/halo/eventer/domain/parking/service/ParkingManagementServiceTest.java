@@ -104,10 +104,8 @@ class ParkingManagementServiceTest {
     @Test
     void 주차관리_단건_조회_성공() {
         // given
-        ParkingManagement pm = ParkingManagement.of(
-                축제, "헤더", ParkingInfoType.values()[0], "제목", "설명",
-                "버튼", "url", "bg", true
-        );
+        ParkingManagement pm =
+                ParkingManagement.of(축제, "헤더", ParkingInfoType.values()[0], "제목", "설명", "버튼", "url", "bg", true);
         given(parkingManagementRepository.findById(1L)).willReturn(Optional.of(pm));
 
         // when
@@ -135,10 +133,8 @@ class ParkingManagementServiceTest {
     @Test
     void 주차관리_기본정보_수정_성공() {
         // given
-        ParkingManagement pm = ParkingManagement.of(
-                축제, "헤더", ParkingInfoType.values()[0], "제목", "설명",
-                "버튼", "url", "bg", true
-        );
+        ParkingManagement pm =
+                ParkingManagement.of(축제, "헤더", ParkingInfoType.values()[0], "제목", "설명", "버튼", "url", "bg", true);
         given(parkingManagementRepository.findById(1L)).willReturn(Optional.of(pm));
 
         var 요청 = mock(ParkingManagementReqDto.class);
@@ -177,10 +173,8 @@ class ParkingManagementServiceTest {
 
         @Test
         void 서브페이지_조회_성공() {
-            ParkingManagement pm = ParkingManagement.of(
-                    축제, "헤더", ParkingInfoType.values()[0], "제목", "설명",
-                    "버튼", "url", "bg", true
-            );
+            ParkingManagement pm =
+                    ParkingManagement.of(축제, "헤더", ParkingInfoType.values()[0], "제목", "설명", "버튼", "url", "bg", true);
             pm.updateSubPageHeaderName("서브");
             pm.addImage("a.jpg");
             pm.addImage("b.jpg");
@@ -202,10 +196,8 @@ class ParkingManagementServiceTest {
 
         @Test
         void 서브페이지_헤더명_수정_성공() {
-            ParkingManagement pm = ParkingManagement.of(
-                    축제, "헤더", ParkingInfoType.values()[0], "제목", "설명",
-                    "버튼", "url", "bg", true
-            );
+            ParkingManagement pm =
+                    ParkingManagement.of(축제, "헤더", ParkingInfoType.values()[0], "제목", "설명", "버튼", "url", "bg", true);
             given(parkingManagementRepository.findById(1L)).willReturn(Optional.of(pm));
 
             var 요청 = mock(ParkingSubPageReqDto.class);
@@ -218,10 +210,8 @@ class ParkingManagementServiceTest {
 
         @Test
         void 주차맵_이미지_생성_성공() {
-            ParkingManagement pm = ParkingManagement.of(
-                    축제, "헤더", ParkingInfoType.values()[0], "제목", "설명",
-                    "버튼", "url", "bg", true
-            );
+            ParkingManagement pm =
+                    ParkingManagement.of(축제, "헤더", ParkingInfoType.values()[0], "제목", "설명", "버튼", "url", "bg", true);
             given(parkingManagementRepository.findById(1L)).willReturn(Optional.of(pm));
 
             var 파일 = mock(FileDto.class);
@@ -235,10 +225,8 @@ class ParkingManagementServiceTest {
 
         @Test
         void 주차맵_이미지_생성_실패_상한초과() {
-            ParkingManagement pm = ParkingManagement.of(
-                    축제, "헤더", ParkingInfoType.values()[0], "제목", "설명",
-                    "버튼", "url", "bg", true
-            );
+            ParkingManagement pm =
+                    ParkingManagement.of(축제, "헤더", ParkingInfoType.values()[0], "제목", "설명", "버튼", "url", "bg", true);
             int limit = DisplayOrderConstants.DISPLAY_ORDER_LIMIT_VALUE;
             for (int i = 0; i < limit; i++) pm.addImage("img-" + i);
 
@@ -247,16 +235,13 @@ class ParkingManagementServiceTest {
             var 파일 = mock(FileDto.class);
             given(파일.getUrl()).willReturn("overflow.jpg");
 
-            assertThatThrownBy(() -> service.createParkingMapImage(1L, 파일))
-                    .isInstanceOf(BaseException.class);
+            assertThatThrownBy(() -> service.createParkingMapImage(1L, 파일)).isInstanceOf(BaseException.class);
         }
 
         @Test
         void 이미지_표시순서_변경_성공() {
-            ParkingManagement pm = ParkingManagement.of(
-                    축제, "헤더", ParkingInfoType.values()[0], "제목", "설명",
-                    "버튼", "url", "bg", true
-            );
+            ParkingManagement pm =
+                    ParkingManagement.of(축제, "헤더", ParkingInfoType.values()[0], "제목", "설명", "버튼", "url", "bg", true);
             pm.addImage("1.jpg");
             pm.addImage("2.jpg");
             pm.addImage("3.jpg");
@@ -286,10 +271,8 @@ class ParkingManagementServiceTest {
 
         @Test
         void 이미지_표시순서_변경_실패_검증오류() {
-            ParkingManagement pm = ParkingManagement.of(
-                    축제, "헤더", ParkingInfoType.values()[0], "제목", "설명",
-                    "버튼", "url", "bg", true
-            );
+            ParkingManagement pm =
+                    ParkingManagement.of(축제, "헤더", ParkingInfoType.values()[0], "제목", "설명", "버튼", "url", "bg", true);
             pm.addImage("1.jpg");
             pm.addImage("2.jpg");
             ReflectionTestUtils.setField(pm.getImages().get(0), "id", 1L);
@@ -306,10 +289,8 @@ class ParkingManagementServiceTest {
 
         @Test
         void 이미지_삭제_성공() {
-            ParkingManagement pm = ParkingManagement.of(
-                    축제, "헤더", ParkingInfoType.values()[0], "제목", "설명",
-                    "버튼", "url", "bg", true
-            );
+            ParkingManagement pm =
+                    ParkingManagement.of(축제, "헤더", ParkingInfoType.values()[0], "제목", "설명", "버튼", "url", "bg", true);
             pm.addImage("1.jpg");
             pm.addImage("2.jpg");
             pm.addImage("3.jpg");
@@ -338,4 +319,3 @@ class ParkingManagementServiceTest {
         }
     }
 }
-
