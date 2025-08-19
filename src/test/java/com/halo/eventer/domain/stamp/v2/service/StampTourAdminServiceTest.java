@@ -94,7 +94,7 @@ public class StampTourAdminServiceTest {
         given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.save(any(Stamp.class))).willAnswer(inv -> inv.getArgument(0));
 
-        service.createStampTourForFestival(축제_id, 새로운_스탬프투어_제목);
+        service.createStampTourByFestival(축제_id, 새로운_스탬프투어_제목);
 
         then(festivalRepository).should().findById(축제_id);
         then(stampRepository).should().save(any(Stamp.class));
@@ -105,7 +105,7 @@ public class StampTourAdminServiceTest {
     void 축제에_스탬프투어_생성_실패_축제없음() {
         given(festivalRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.createStampTourForFestival(1L, "title"))
+        assertThatThrownBy(() -> service.createStampTourByFestival(1L, "title"))
                 .isInstanceOf(FestivalNotFoundException.class);
     }
 
@@ -113,7 +113,7 @@ public class StampTourAdminServiceTest {
     void 축제별_스탬프투어_목록_조회_성공() {
         given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
 
-        var 결과 = service.getStampTourListForFestival(축제_id);
+        var 결과 = service.getStampTourListByFestival(축제_id);
 
         assertThat(결과).hasSize(1);
         assertThat(결과.get(0).getTitle()).isEqualTo(스탬프.getTitle());
@@ -123,7 +123,7 @@ public class StampTourAdminServiceTest {
     void 축제별_스탬프투어_목록_조회_실패_축제없음() {
         given(festivalRepository.findById(존재하지_않는_스탬프)).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.getStampTourListForFestival(존재하지_않는_스탬프))
+        assertThatThrownBy(() -> service.getStampTourListByFestival(존재하지_않는_스탬프))
                 .isInstanceOf(FestivalNotFoundException.class);
     }
 
@@ -132,7 +132,7 @@ public class StampTourAdminServiceTest {
         given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
 
-        var 결과 = service.getStampTourSettingBasicForFestival(축제_id, 스탬프투어1_ID);
+        var 결과 = service.getStampTourSettingBasicByFestival(축제_id, 스탬프투어1_ID);
 
         assertThat(결과.getStampTourId()).isEqualTo(스탬프.getId());
         assertThat(결과.getTitle()).isEqualTo(스탬프.getTitle());
@@ -142,7 +142,7 @@ public class StampTourAdminServiceTest {
     void 기본설정_조회_실패_축제없음() {
         given(festivalRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.getStampTourSettingBasicForFestival(축제_id, 스탬프투어1_ID))
+        assertThatThrownBy(() -> service.getStampTourSettingBasicByFestival(축제_id, 스탬프투어1_ID))
                 .isInstanceOf(FestivalNotFoundException.class);
     }
 
@@ -151,7 +151,7 @@ public class StampTourAdminServiceTest {
         given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(존재하지_않는_스탬프)).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.getStampTourSettingBasicForFestival(축제_id, 존재하지_않는_스탬프))
+        assertThatThrownBy(() -> service.getStampTourSettingBasicByFestival(축제_id, 존재하지_않는_스탬프))
                 .isInstanceOf(StampNotFoundException.class);
     }
 
@@ -161,7 +161,7 @@ public class StampTourAdminServiceTest {
         given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(다른축제_스탬프));
 
-        assertThatThrownBy(() -> service.getStampTourSettingBasicForFestival(축제_id, 다른축제_스탬프_id))
+        assertThatThrownBy(() -> service.getStampTourSettingBasicByFestival(축제_id, 다른축제_스탬프_id))
                 .isInstanceOf(BaseException.class);
     }
 

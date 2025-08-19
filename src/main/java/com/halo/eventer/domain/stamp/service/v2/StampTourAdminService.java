@@ -37,20 +37,20 @@ public class StampTourAdminService {
     private final ParticipateGuidePageRepository participateGuidePageRepository;
 
     @Transactional
-    public void createStampTourForFestival(long festivalId, String title) {
+    public void createStampTourByFestival(long festivalId, String title) {
         Festival festival = loadFestivalOrThrow(festivalId);
         Stamp stamp = Stamp.createWith(festival, title);
         stampRepository.save(stamp);
     }
 
     @Transactional(readOnly = true)
-    public List<StampTourSummaryResDto> getStampTourListForFestival(long festivalId) {
+    public List<StampTourSummaryResDto> getStampTourListByFestival(long festivalId) {
         Festival festival = loadFestivalOrThrow(festivalId);
         return StampTourSummaryResDto.from(festival.getStamps());
     }
 
     @Transactional(readOnly = true)
-    public StampTourSettingBasicResDto getStampTourSettingBasicForFestival(long festivalId, long stampId) {
+    public StampTourSettingBasicResDto getStampTourSettingBasicByFestival(long festivalId, long stampId) {
         Festival festival = loadFestivalOrThrow(festivalId);
         Stamp stamp = loadStampOrThrow(stampId);
         stamp.ensureStampInFestival(festival);

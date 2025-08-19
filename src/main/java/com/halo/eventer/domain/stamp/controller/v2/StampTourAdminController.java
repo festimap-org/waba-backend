@@ -24,12 +24,12 @@ public class StampTourAdminController {
     @PostMapping
     public void createStampTour(
             @PathVariable @Min(1) long festivalId, @RequestBody @Valid StampTourCreateReqDto request) {
-        stampTourAdminService.createStampTourForFestival(festivalId, request.getTitle());
+        stampTourAdminService.createStampTourByFestival(festivalId, request.getTitle());
     }
 
     @GetMapping
     public List<StampTourSummaryResDto> getStampToursList(@PathVariable @Min(1) long festivalId) {
-        return stampTourAdminService.getStampTourListForFestival(festivalId);
+        return stampTourAdminService.getStampTourListByFestival(festivalId);
     }
 
     // stamp toyr 기본 설정 화면
@@ -37,7 +37,7 @@ public class StampTourAdminController {
     @GetMapping("/{stampTourId}/settings/basic")
     public StampTourSettingBasicResDto getSettingBasicForStampTour(
             @PathVariable long festivalId, @PathVariable long stampTourId) {
-        return stampTourAdminService.getStampTourSettingBasicForFestival(festivalId, stampTourId);
+        return stampTourAdminService.getStampTourSettingBasicByFestival(festivalId, stampTourId);
     }
 
     @PutMapping("/{stampTourId}/settings/basic")

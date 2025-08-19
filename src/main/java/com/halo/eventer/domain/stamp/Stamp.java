@@ -39,7 +39,7 @@ public class Stamp {
     private Festival festival;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "notice_id")
+    @JoinColumn(name = "stamp_notice_id")
     private StampNotice notice;
 
     @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL)

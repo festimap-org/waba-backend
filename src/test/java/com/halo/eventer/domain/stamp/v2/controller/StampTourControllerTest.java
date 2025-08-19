@@ -107,7 +107,7 @@ class StampTourAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 스탬프투어_목록_조회_성공() throws Exception {
-            given(service.getStampTourListForFestival(축제_ID)).willReturn(summaryList);
+            given(service.getStampTourListByFestival(축제_ID)).willReturn(summaryList);
 
             mockMvc.perform(get("/v2/admin/festivals/{festivalId}/stamp-tours", 축제_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
@@ -141,7 +141,7 @@ class StampTourAdminControllerTest {
         @WithMockUser(roles = "ADMIN")
         void 기본설정_조회_성공() throws Exception {
             var res = new StampTourSettingBasicResDto(스탬프_ID, "제목", AuthMethod.TAG_SCAN, "pw");
-            given(service.getStampTourSettingBasicForFestival(축제_ID, 스탬프_ID)).willReturn(res);
+            given(service.getStampTourSettingBasicByFestival(축제_ID, 스탬프_ID)).willReturn(res);
 
             mockMvc.perform(get(
                                     "/v2/admin/festivals/{festivalId}/stamp-tours/{stampTourId}/settings/basic",
