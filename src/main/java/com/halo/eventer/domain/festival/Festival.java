@@ -2,6 +2,9 @@ package com.halo.eventer.domain.festival;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.halo.eventer.domain.parking.ParkingManagement;
+import com.halo.eventer.domain.parking.enums.ParkingInfoType;
 import jakarta.persistence.*;
 
 import com.halo.eventer.domain.duration.Duration;
@@ -75,6 +78,9 @@ public class Festival {
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MissingPerson> missingPersons = new ArrayList<>();
+
+    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ParkingManagement> parkingManagements = new ArrayList<>();
 
     private Festival(String name, String subAddress) {
         this.name = name;
