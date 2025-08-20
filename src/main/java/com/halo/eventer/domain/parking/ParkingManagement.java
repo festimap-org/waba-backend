@@ -52,13 +52,16 @@ public class ParkingManagement {
     @Column(name = "visible", nullable = false)
     private boolean visible = true;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
     private Festival festival;
 
     @OrderColumn(name = "display_order")
     @OneToMany(mappedBy = "parkingManagement", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "parkingManagement", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ParkingNotice> parkingNotices = new ArrayList<>();
 
     private ParkingManagement(
             Festival festival,
@@ -132,6 +135,10 @@ public class ParkingManagement {
         validateImageCount();
         Image image = Image.ofParkingManagement(imageUrl, this);
         images.add(image);
+    }
+
+    public void addParkingNotice(ParkingNotice parkingNotice) {
+        parkingNotices.add(parkingNotice);
     }
 
     public void reorderImages(List<Long> orderedIds) {
