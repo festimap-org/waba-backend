@@ -121,8 +121,9 @@ public class SecurityConfig {
                 "https://business.festimap.kr",
                 "https://adelante.festimap.kr",
                 "https://jejulhfestival.festimap.kr",
-                "https://m.jejulhfestival.festimap.kr"
-
+                "https://m.jejulhfestival.festimap.kr",
+                "https://jejulhfestival.kr",
+                "https://m.jejulhfestival.kr"
                 )
         );
         configuration.setAllowedMethods(Arrays.asList("*"));
