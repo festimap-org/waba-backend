@@ -3,7 +3,7 @@ package com.halo.eventer.domain.stamp.dto.stamp.response;
 import java.util.List;
 
 import com.halo.eventer.domain.stamp.ParticipateGuidePage;
-import com.halo.eventer.domain.stamp.dto.stamp.enums.GuideMediaSpec;
+import com.halo.eventer.domain.stamp.dto.stamp.enums.MediaSpec;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class ParticipateGuidePageDetailsResDto {
     private long pageId;
     private String title;
-    private GuideMediaSpec guideMediaSpec;
+    private MediaSpec guideMediaSpec;
     private String mediaUrl;
     private String summary;
     private String details;

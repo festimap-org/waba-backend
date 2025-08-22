@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 
 import org.springframework.web.bind.annotation.*;
 
+import com.halo.eventer.domain.stamp.dto.mission.response.MissionSummaryResDto;
 import com.halo.eventer.domain.stamp.dto.stamp.*;
 import com.halo.eventer.domain.stamp.service.StampService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class StampController {
     }
 
     @GetMapping("/missions")
-    public List<MissionSummaryGetDto> getMissionList(@Min(1) @RequestParam("stampId") Long stampId) {
+    public List<MissionSummaryResDto> getMissionList(@Min(1) @RequestParam("stampId") Long stampId) {
         return stampService.getMissions(stampId);
     }
 

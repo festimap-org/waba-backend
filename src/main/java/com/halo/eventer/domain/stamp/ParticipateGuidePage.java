@@ -2,7 +2,7 @@ package com.halo.eventer.domain.stamp;
 
 import jakarta.persistence.*;
 
-import com.halo.eventer.domain.stamp.dto.stamp.enums.GuideMediaSpec;
+import com.halo.eventer.domain.stamp.dto.stamp.enums.MediaSpec;
 import com.halo.eventer.domain.stamp.dto.stamp.request.StampTourParticipateGuidePageReqDto;
 import com.halo.eventer.domain.widget.entity.DisplayOrderUpdatable;
 import com.halo.eventer.domain.widget.feature.DisplayOrderFeature;
@@ -23,7 +23,7 @@ public class ParticipateGuidePage implements DisplayOrderUpdatable {
     private String title;
 
     @Enumerated(EnumType.STRING)
-    private GuideMediaSpec guideMediaSpec = GuideMediaSpec.NONE;
+    private MediaSpec guideMediaSpec = MediaSpec.NONE;
 
     private String mediaUrl;
     private String summary;
@@ -41,7 +41,7 @@ public class ParticipateGuidePage implements DisplayOrderUpdatable {
     @Builder
     private ParticipateGuidePage(
             String title,
-            GuideMediaSpec guideMediaSpec,
+            MediaSpec guideMediaSpec,
             String mediaUrl,
             String summary,
             String details,
@@ -77,7 +77,7 @@ public class ParticipateGuidePage implements DisplayOrderUpdatable {
 
     public static ParticipateGuidePage from(
             String title,
-            GuideMediaSpec guideMediaSpec,
+            MediaSpec guideMediaSpec,
             String mediaUrl,
             String summary,
             String details,

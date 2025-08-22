@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.stamp.api_docs.StampDocs;
-import com.halo.eventer.domain.stamp.dto.stamp.MissionSummaryGetDto;
+import com.halo.eventer.domain.stamp.dto.mission.response.MissionSummaryResDto;
 import com.halo.eventer.domain.stamp.dto.stamp.StampGetDto;
 import com.halo.eventer.domain.stamp.dto.stamp.StampUsersGetDto;
 import com.halo.eventer.domain.stamp.service.StampService;
@@ -56,7 +56,7 @@ public class StampControllerTest {
     private final Long 축제_1번 = 1L;
 
     private List<StampGetDto> stampGetDtos;
-    private List<MissionSummaryGetDto> missionSummaryGetDtos;
+    private List<MissionSummaryResDto> missionSummaryGetDtos;
     private List<StampUsersGetDto> stampUsersGetDtos;
 
     private final String ADMIN_TOKEN = "Bearer admin-token";

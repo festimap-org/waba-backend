@@ -19,10 +19,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.stamp.api_docs.MissionDocs;
-import com.halo.eventer.domain.stamp.dto.mission.MissionDetailGetDto;
 import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
-import com.halo.eventer.domain.stamp.dto.stamp.MissionSetDto;
-import com.halo.eventer.domain.stamp.dto.stamp.MissionSummaryGetDto;
+import com.halo.eventer.domain.stamp.dto.mission.request.MissionSetReqDto;
+import com.halo.eventer.domain.stamp.dto.mission.response.MissionDetailGetResDto;
+import com.halo.eventer.domain.stamp.dto.mission.response.MissionSummaryResDto;
 import com.halo.eventer.domain.stamp.service.MissionService;
 import com.halo.eventer.global.config.ControllerTestSecurityBeans;
 import com.halo.eventer.global.config.CustomRestDocsConfig;
@@ -58,9 +58,9 @@ public class MissionControllerTest {
 
     private final String ADMIN_TOKEN = "Bearer admin-token";
 
-    private List<MissionSetDto> missionSetDtos;
-    private List<MissionSummaryGetDto> missionSummaryGetDtos;
-    private MissionDetailGetDto missionDetailGetDto;
+    private List<MissionSetReqDto> missionSetDtos;
+    private List<MissionSummaryResDto> missionSummaryGetDtos;
+    private MissionDetailGetResDto missionDetailGetDto;
     private MissionUpdateDto missionUpdateDto;
 
     @BeforeEach
@@ -68,7 +68,7 @@ public class MissionControllerTest {
         // Fixture 사용
         missionSetDtos = 미션_셋업_리스트();
         missionSummaryGetDtos = 미션_조회_리스트_생성();
-        missionDetailGetDto = new MissionDetailGetDto(미션1_ID, 미션1_제목, 미션1_내용, 미션1_장소, 미션1_시간, 미션1_성공사진, 미션1_실패사진);
+        missionDetailGetDto = new MissionDetailGetResDto(미션1_ID, 미션1_제목, 미션1_내용, 미션1_장소, 미션1_시간, 미션1_성공사진, 미션1_실패사진);
         missionUpdateDto = 미션_업데이트_DTO_생성();
     }
 

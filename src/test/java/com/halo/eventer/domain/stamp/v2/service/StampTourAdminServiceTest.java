@@ -129,7 +129,6 @@ public class StampTourAdminServiceTest {
 
     @Test
     void 기본설정_조회_성공() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
 
         var 결과 = service.getStampTourSettingBasicByFestival(축제_id, 스탬프투어1_ID);
@@ -139,16 +138,7 @@ public class StampTourAdminServiceTest {
     }
 
     @Test
-    void 기본설정_조회_실패_축제없음() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.empty());
-
-        assertThatThrownBy(() -> service.getStampTourSettingBasicByFestival(축제_id, 스탬프투어1_ID))
-                .isInstanceOf(FestivalNotFoundException.class);
-    }
-
-    @Test
     void 기본설정_조회_실패_스탬프없음() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(존재하지_않는_스탬프)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.getStampTourSettingBasicByFestival(축제_id, 존재하지_않는_스탬프))
@@ -158,7 +148,6 @@ public class StampTourAdminServiceTest {
     @Test
     void 기본설정_조회_실패_축제불일치() {
         long 다른축제_스탬프_id = 20L;
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(다른축제_스탬프));
 
         assertThatThrownBy(() -> service.getStampTourSettingBasicByFestival(축제_id, 다른축제_스탬프_id))
@@ -167,7 +156,6 @@ public class StampTourAdminServiceTest {
 
     @Test
     void 기본설정_수정_성공() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         var 요청 = new StampTourBasicUpdateReqDto(바뀐_스탬프투어_제목, 바뀐_스탬프투어_활성화, 바뀐_스탬프투어_유저인증방법, 바뀐_스탬프투어_관리자비번);
 
@@ -180,17 +168,7 @@ public class StampTourAdminServiceTest {
     }
 
     @Test
-    void 기본설정_수정_실패_축제없음() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.empty());
-        var 요청 = new StampTourBasicUpdateReqDto(바뀐_스탬프투어_제목, 바뀐_스탬프투어_활성화, 바뀐_스탬프투어_유저인증방법, 바뀐_스탬프투어_관리자비번);
-
-        assertThatThrownBy(() -> service.updateBasicSettings(축제_id, 스탬프투어1_ID, 요청))
-                .isInstanceOf(FestivalNotFoundException.class);
-    }
-
-    @Test
     void 기본설정_수정_실패_스탬프없음() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.empty());
         var 요청 = new StampTourBasicUpdateReqDto(바뀐_스탬프투어_제목, 바뀐_스탬프투어_활성화, 바뀐_스탬프투어_유저인증방법, 바뀐_스탬프투어_관리자비번);
 
@@ -200,7 +178,6 @@ public class StampTourAdminServiceTest {
 
     @Test
     void 기본설정_수정_실패_축제불일치() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(다른축제_스탬프));
         var 요청 = new StampTourBasicUpdateReqDto(바뀐_스탬프투어_제목, 바뀐_스탬프투어_활성화, 바뀐_스탬프투어_유저인증방법, 바뀐_스탬프투어_관리자비번);
 
@@ -211,7 +188,6 @@ public class StampTourAdminServiceTest {
     @Test
     void 안내사항_조회_성공() {
         스탬프.upsertNotice(공지2_주의사항, 공지2_개인정보);
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
 
         var 결과 = service.getStampTourNotification(축제_id, 스탬프투어1_ID);
@@ -220,15 +196,7 @@ public class StampTourAdminServiceTest {
     }
 
     @Test
-    void 안내사항_조회_실패_축제없음() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.empty());
-        assertThatThrownBy(() -> service.getStampTourNotification(축제_id, 스탬프투어1_ID))
-                .isInstanceOf(FestivalNotFoundException.class);
-    }
-
-    @Test
     void 안내사항_수정_성공() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
 
         service.updateStampTourNotification(축제_id, 스탬프투어1_ID, 공지2_주의사항, 공지2_개인정보);
@@ -240,7 +208,6 @@ public class StampTourAdminServiceTest {
 
     @Test
     void 안내사항_수정_실패_스탬프없음() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.updateStampTourNotification(축제_id, 스탬프투어1_ID, 공지2_주의사항, 공지2_개인정보))
@@ -252,7 +219,6 @@ public class StampTourAdminServiceTest {
         PageTemplate 랜딩페이지 = 랜딩페이지_생성(스탬프);
         랜딩페이지.updateLandingPageTemplate(랜딩페이지_요청_생성(TWO_SYM, 버튼2개()));
 
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(pageTemplateRepository.findFirstByStampIdAndType(anyLong(), any(PageType.class)))
                 .willReturn(Optional.of(랜딩페이지));
@@ -266,7 +232,6 @@ public class StampTourAdminServiceTest {
 
     @Test
     void 랜딩페이지_설정_조회_성공_템플릿없어_생성() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(pageTemplateRepository.findFirstByStampIdAndType(anyLong(), any(PageType.class)))
                 .willReturn(Optional.empty());
@@ -283,7 +248,6 @@ public class StampTourAdminServiceTest {
         PageTemplate 랜딩페이지 = 랜딩페이지_생성(스탬프);
 
         var 요청 = 랜딩페이지_요청_생성(ButtonLayout.TWO_ASYM, 버튼2개());
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(pageTemplateRepository.findFirstByStampIdAndType(anyLong(), any(PageType.class)))
                 .willReturn(Optional.of(랜딩페이지));
@@ -299,7 +263,6 @@ public class StampTourAdminServiceTest {
     void 랜딩페이지_설정_수정_성공_템플릿없어_생성() {
         var 요청 = 랜딩페이지_요청_생성(ButtonLayout.ONE, 버튼1개());
 
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(pageTemplateRepository.findFirstByStampIdAndType(anyLong(), any(PageType.class)))
                 .willReturn(Optional.empty());
@@ -316,7 +279,6 @@ public class StampTourAdminServiceTest {
         var 요청 = 메인페이지_요청_생성(TWO_SYM, 버튼2개());
         메인페이지.updateMainPageTemplate(요청);
 
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(pageTemplateRepository.findFirstByStampIdAndType(anyLong(), any(PageType.class)))
                 .willReturn(Optional.of(메인페이지));
@@ -332,7 +294,6 @@ public class StampTourAdminServiceTest {
         PageTemplate 메인페이지 = 메인페이지_생성(스탬프);
         var 요청 = 메인페이지_요청_생성(ButtonLayout.ONE, 버튼1개());
 
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(pageTemplateRepository.findFirstByStampIdAndType(anyLong(), any(PageType.class)))
                 .willReturn(Optional.of(메인페이지));
@@ -348,7 +309,6 @@ public class StampTourAdminServiceTest {
     void 참여가이드_조회_성공_존재() {
         ParticipateGuide guide = 참여가이드_기본값(스탬프);
         setField(guide, "id", 100L);
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuideRepository.findFirstByStampId(anyLong())).willReturn(Optional.of(guide));
 
@@ -360,7 +320,6 @@ public class StampTourAdminServiceTest {
 
     @Test
     void 참여가이드_조회_성공_없어서_생성() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuideRepository.findFirstByStampId(anyLong())).willReturn(Optional.empty());
         given(participateGuideRepository.save(any(ParticipateGuide.class))).willAnswer(inv -> {
@@ -377,7 +336,6 @@ public class StampTourAdminServiceTest {
     @Test
     void 참여가이드_업서트_성공() {
         ParticipateGuide guide = 참여가이드_기본값(스탬프);
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuideRepository.findFirstByStampId(anyLong())).willReturn(Optional.of(guide));
 
@@ -391,7 +349,6 @@ public class StampTourAdminServiceTest {
 
     @Test
     void 참여가이드_업서트_실패_가이드없음() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuideRepository.findFirstByStampId(anyLong())).willReturn(Optional.empty());
 
@@ -406,7 +363,6 @@ public class StampTourAdminServiceTest {
         ParticipateGuidePage page = 참여방법_페이지1(참여가이드_기본값(스탬프));
         setField(page, "id", 100L);
 
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuidePageRepository.findById(anyLong())).willReturn(Optional.of(page));
 
@@ -417,7 +373,6 @@ public class StampTourAdminServiceTest {
 
     @Test
     void 참여가이드_페이지_삭제_실패_페이지없음() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuidePageRepository.findById(anyLong())).willReturn(Optional.empty());
 
@@ -429,7 +384,6 @@ public class StampTourAdminServiceTest {
     void 참여가이드_페이지_생성_성공() {
         ParticipateGuide guide = 참여가이드_기본값(스탬프);
 
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuideRepository.findFirstByStampId(anyLong())).willReturn(Optional.of(guide));
 
@@ -447,7 +401,6 @@ public class StampTourAdminServiceTest {
         ParticipateGuidePage page = 참여방법_페이지2(참여가이드_기본값(스탬프));
         setField(page, "id", 200L);
 
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuidePageRepository.findById(anyLong())).willReturn(Optional.of(page));
 
@@ -459,7 +412,6 @@ public class StampTourAdminServiceTest {
 
     @Test
     void 참여가이드_페이지_상세_조회_실패_페이지없음() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuidePageRepository.findById(anyLong())).willReturn(Optional.empty());
 
@@ -472,7 +424,6 @@ public class StampTourAdminServiceTest {
         ParticipateGuidePage page = 참여방법_페이지3(참여가이드_기본값(스탬프));
         setField(page, "id", 300L);
 
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuidePageRepository.findById(anyLong())).willReturn(Optional.of(page));
 
@@ -490,7 +441,6 @@ public class StampTourAdminServiceTest {
 
     @Test
     void 참여가이드_페이지_수정_실패_페이지없음() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuidePageRepository.findById(anyLong())).willReturn(Optional.empty());
 
@@ -511,7 +461,6 @@ public class StampTourAdminServiceTest {
             setField(p, "id", id++);
         }
 
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuideRepository.findFirstByStampId(anyLong())).willReturn(Optional.of(guide));
 
@@ -531,7 +480,6 @@ public class StampTourAdminServiceTest {
 
     @Test
     void 참여가이드_페이지_노출순서_수정_실패_가이드없음() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuideRepository.findFirstByStampId(anyLong())).willReturn(Optional.empty());
 
@@ -540,15 +488,7 @@ public class StampTourAdminServiceTest {
     }
 
     @Test
-    void 랜딩페이지_설정_조회_실패_축제없음() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.empty());
-        assertThatThrownBy(() -> service.getLandingPageSettings(축제_id, 스탬프투어1_ID))
-                .isInstanceOf(FestivalNotFoundException.class);
-    }
-
-    @Test
     void 메인페이지_설정_조회_실패_스탬프없음() {
-        given(festivalRepository.findById(anyLong())).willReturn(Optional.of(축제));
         given(stampRepository.findById(anyLong())).willReturn(Optional.empty());
         assertThatThrownBy(() -> service.getMainPageSettings(축제_id, 스탬프투어1_ID))
                 .isInstanceOf(StampNotFoundException.class);

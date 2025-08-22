@@ -13,10 +13,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.Stamp;
-import com.halo.eventer.domain.stamp.dto.mission.MissionDetailGetDto;
 import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
-import com.halo.eventer.domain.stamp.dto.stamp.MissionSetDto;
-import com.halo.eventer.domain.stamp.dto.stamp.MissionSummaryGetDto;
+import com.halo.eventer.domain.stamp.dto.mission.request.MissionSetReqDto;
+import com.halo.eventer.domain.stamp.dto.mission.response.MissionDetailGetResDto;
+import com.halo.eventer.domain.stamp.dto.mission.response.MissionSummaryResDto;
 import com.halo.eventer.domain.stamp.exception.MissionNotFoundException;
 import com.halo.eventer.domain.stamp.exception.StampClosedException;
 import com.halo.eventer.domain.stamp.exception.StampNotFoundException;
@@ -52,7 +52,7 @@ public class MissionServiceTest {
     private Festival festival;
     private Stamp stamp1;
     private Mission mission;
-    private List<MissionSetDto> missionSetDtos;
+    private List<MissionSetReqDto> missionSetDtos;
 
     @BeforeEach
     void setUp() {
@@ -107,10 +107,10 @@ public class MissionServiceTest {
         given(missionRepository.findById(anyLong())).willReturn(Optional.of(mission));
 
         // when
-        MissionDetailGetDto result = missionService.getMission(1L);
+        MissionDetailGetResDto result = missionService.getMission(1L);
 
         // then
-        assertThat(result).usingRecursiveComparison().isEqualTo(MissionDetailGetDto.from(mission));
+        assertThat(result).usingRecursiveComparison().isEqualTo(MissionDetailGetResDto.from(mission));
     }
 
     @Test
@@ -132,7 +132,7 @@ public class MissionServiceTest {
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(stamp1));
 
         // when
-        List<MissionSummaryGetDto> result = missionService.getMissions(1L);
+        List<MissionSummaryResDto> result = missionService.getMissions(1L);
 
         // then
         assertThat(result).hasSize(2);

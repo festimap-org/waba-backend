@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.stamp.dto.stamp;
+package com.halo.eventer.domain.stamp.dto.mission.response;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,18 +11,18 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MissionSummaryGetDto {
+public class MissionSummaryResDto {
     private Long missionId;
     private String title;
     private String clearedThumbnail;
     private String notClearedThumbnail;
 
-    public static List<MissionSummaryGetDto> fromEntities(List<Mission> missions) {
-        return missions.stream().map(MissionSummaryGetDto::from).collect(Collectors.toList());
+    public static List<MissionSummaryResDto> fromEntities(List<Mission> missions) {
+        return missions.stream().map(MissionSummaryResDto::from).collect(Collectors.toList());
     }
 
-    public static MissionSummaryGetDto from(Mission mission) {
-        return new MissionSummaryGetDto(
+    public static MissionSummaryResDto from(Mission mission) {
+        return new MissionSummaryResDto(
                 mission.getId(), mission.getTitle(), mission.getClearedThumbnail(), mission.getNotClearedThumbnail());
     }
 }

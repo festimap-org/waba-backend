@@ -42,6 +42,9 @@ public class Stamp {
     @JoinColumn(name = "stamp_notice_id")
     private StampNotice notice;
 
+    @OneToOne(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private StampMissionBasicSetting basicSetting;
+
     @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL)
     private List<PageTemplate> templates = new ArrayList<>();
 
@@ -88,6 +91,10 @@ public class Stamp {
         festival.getStamps().add(this);
     }
 
+    public void registerMissionBasicSetting(StampMissionBasicSetting setting) {
+        this.basicSetting = setting;
+    }
+
     public void changeBasicSettings(String newTitle, boolean activation, AuthMethod authMethod, String boothPassword) {
         this.title = newTitle;
         this.isActive = activation;
@@ -105,8 +112,8 @@ public class Stamp {
         }
     }
 
-    public void ensureStampInFestival(Festival festival) {
-        if (this.festival == null || !this.festival.getId().equals(festival.getId())) {
+    public void ensureStampInFestival(long festivalId) {
+        if (this.festival == null || !this.festival.getId().equals(festivalId)) {
             throw new BaseException(ErrorCode.STAMP_NOT_IN_FESTIVAL);
         }
     }

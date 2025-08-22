@@ -1,7 +1,7 @@
 package com.halo.eventer.domain.stamp.dto.stamp.enums;
 
-public enum GuideMediaSpec {
+public enum MissionDetailsLayout {
     NONE,
-    ONE_TO_ONE,
-    SIXTEEN_TO_NINE
+    IMAGE,
+    VIDEO
 }

@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.stamp.dto.mission;
+package com.halo.eventer.domain.stamp.dto.mission.response;
 
 import com.halo.eventer.domain.stamp.Mission;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class MissionDetailGetDto {
+public class MissionDetailGetResDto {
     private Long boothId;
     private String title;
     private String content;
@@ -17,8 +17,8 @@ public class MissionDetailGetDto {
     private String clearedThumbnail;
     private String notClearedThumbnail;
 
-    public static MissionDetailGetDto from(Mission mission) {
-        return MissionDetailGetDto.builder()
+    public static MissionDetailGetResDto from(Mission mission) {
+        return MissionDetailGetResDto.builder()
                 .boothId(mission.getBoothId())
                 .title(mission.getTitle())
                 .content(mission.getContent())
