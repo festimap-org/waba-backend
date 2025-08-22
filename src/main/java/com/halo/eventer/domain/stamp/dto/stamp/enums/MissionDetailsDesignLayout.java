@@ -5,11 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ButtonLayout {
-    ONE,
-    TWO_ASYM,
-    TWO_SYM,
-    TWO_UP_DOWN,
-    NONE,
-    ;
+public enum MissionDetailsDesignLayout {
+    CARD,
+    IMAGE_TOP,
+    IMAGE_SIDE,
+    TEXT_ONLY;
 }

@@ -7,7 +7,7 @@ import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
-import com.halo.eventer.domain.stamp.dto.stamp.MissionSetDto;
+import com.halo.eventer.domain.stamp.dto.mission.request.MissionSetReqDto;
 
 import static com.halo.eventer.domain.festival.FestivalFixture.축제_엔티티;
 import static com.halo.eventer.domain.stamp.fixture.MissionFixture.미션_생성_DTO_생성;
@@ -22,7 +22,7 @@ public class MissionTest {
     private Mission mission;
     private Stamp stamp;
 
-    private MissionSetDto setDto;
+    private MissionSetReqDto setDto;
     private MissionUpdateDto updateDto;
 
     @BeforeEach

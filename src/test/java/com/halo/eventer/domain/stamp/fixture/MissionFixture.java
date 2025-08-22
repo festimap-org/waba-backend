@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
-import com.halo.eventer.domain.stamp.dto.stamp.MissionSetDto;
-import com.halo.eventer.domain.stamp.dto.stamp.MissionSummaryGetDto;
+import com.halo.eventer.domain.stamp.dto.mission.request.MissionSetReqDto;
+import com.halo.eventer.domain.stamp.dto.mission.response.MissionSummaryResDto;
 
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
@@ -54,21 +54,21 @@ public class MissionFixture {
                 .build();
     }
 
-    public static List<MissionSetDto> 미션_셋업_리스트() {
+    public static List<MissionSetReqDto> 미션_셋업_리스트() {
         return List.of(
-                new MissionSetDto(1L, "미션 1", "내용 1", "장소 1", "시간 1", "c1.jpg", "nc1.jpg"),
-                new MissionSetDto(2L, "미션 2", "내용 2", "장소 2", "시간 2", "c2.jpg", "nc2.jpg"),
-                new MissionSetDto(3L, "미션 3", "내용 3", "장소 3", "시간 3", "c3.jpg", "nc3.jpg"),
-                new MissionSetDto(4L, "미션 4", "내용 4", "장소 4", "시간 4", "c4.jpg", "nc4.jpg"),
-                new MissionSetDto(5L, "미션 5", "내용 5", "장소 5", "시간 5", "c5.jpg", "nc5.jpg"));
+                new MissionSetReqDto(1L, "미션 1", "내용 1", "장소 1", "시간 1", "c1.jpg", "nc1.jpg"),
+                new MissionSetReqDto(2L, "미션 2", "내용 2", "장소 2", "시간 2", "c2.jpg", "nc2.jpg"),
+                new MissionSetReqDto(3L, "미션 3", "내용 3", "장소 3", "시간 3", "c3.jpg", "nc3.jpg"),
+                new MissionSetReqDto(4L, "미션 4", "내용 4", "장소 4", "시간 4", "c4.jpg", "nc4.jpg"),
+                new MissionSetReqDto(5L, "미션 5", "내용 5", "장소 5", "시간 5", "c5.jpg", "nc5.jpg"));
     }
 
     public static Mission 미션_엔티티_생성() {
         return Mission.from(미션_생성_DTO_생성());
     }
 
-    public static MissionSetDto 미션_생성_DTO_생성() {
-        MissionSetDto dto = new MissionSetDto();
+    public static MissionSetReqDto 미션_생성_DTO_생성() {
+        MissionSetReqDto dto = new MissionSetReqDto();
         setField(dto, "boothId", 1L);
         setField(dto, "title", "미션 제목");
         setField(dto, "content", "미션 설명");
@@ -98,9 +98,9 @@ public class MissionFixture {
         return dto;
     }
 
-    public static List<MissionSummaryGetDto> 미션_조회_리스트_생성() {
+    public static List<MissionSummaryResDto> 미션_조회_리스트_생성() {
         return List.of(
-                new MissionSummaryGetDto(미션1_ID, 미션1_제목, 미션1_성공사진, 미션1_실패사진),
-                new MissionSummaryGetDto(미션2_ID, 미션2_제목, 미션2_성공사진, 미션2_실패사진));
+                new MissionSummaryResDto(미션1_ID, 미션1_제목, 미션1_성공사진, 미션1_실패사진),
+                new MissionSummaryResDto(미션2_ID, 미션2_제목, 미션2_성공사진, 미션2_실패사진));
     }
 }

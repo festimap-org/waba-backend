@@ -48,7 +48,8 @@ public class PageTemplate {
     @JoinColumn(name = "stamp_id")
     private Stamp stamp;
 
-    @OneToMany(mappedBy = "page", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "pageTemplate", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("sequenceIndex ASC")
     private List<Button> buttons = new ArrayList<>();
 
     private PageTemplate(Stamp stamp, PageType type) {

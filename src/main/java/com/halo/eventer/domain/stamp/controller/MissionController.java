@@ -7,10 +7,10 @@ import jakarta.validation.constraints.NotEmpty;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.halo.eventer.domain.stamp.dto.mission.MissionDetailGetDto;
 import com.halo.eventer.domain.stamp.dto.mission.MissionUpdateDto;
-import com.halo.eventer.domain.stamp.dto.stamp.MissionSetDto;
-import com.halo.eventer.domain.stamp.dto.stamp.MissionSummaryGetDto;
+import com.halo.eventer.domain.stamp.dto.mission.request.MissionSetReqDto;
+import com.halo.eventer.domain.stamp.dto.mission.response.MissionDetailGetResDto;
+import com.halo.eventer.domain.stamp.dto.mission.response.MissionSummaryResDto;
 import com.halo.eventer.domain.stamp.service.MissionService;
 import lombok.RequiredArgsConstructor;
 
@@ -24,17 +24,17 @@ public class MissionController {
     @PostMapping
     public void createMissionList(
             @Min(1) @RequestParam("stampId") Long stampId,
-            @RequestBody @Valid @NotEmpty List<@Valid MissionSetDto> dto) {
+            @RequestBody @Valid @NotEmpty List<@Valid MissionSetReqDto> dto) {
         missionService.createMission(stampId, dto);
     }
 
     @GetMapping
-    public MissionDetailGetDto getMission(@Min(1) @RequestParam("missionId") Long missionId) {
+    public MissionDetailGetResDto getMission(@Min(1) @RequestParam("missionId") Long missionId) {
         return missionService.getMission(missionId);
     }
 
     @GetMapping("/all")
-    public List<MissionSummaryGetDto> getMissionList(@Min(1) @RequestParam("stampId") Long stampId) {
+    public List<MissionSummaryResDto> getMissionList(@Min(1) @RequestParam("stampId") Long stampId) {
         return missionService.getMissions(stampId);
     }
 

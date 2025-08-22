@@ -21,9 +21,8 @@ public class ButtonReqDto {
     @NotEmpty
     private String content;
 
-    @NotEmpty
+    @NotNull
     private ButtonAction action;
 
-    @NotEmpty
     private String targetUrl;
 }

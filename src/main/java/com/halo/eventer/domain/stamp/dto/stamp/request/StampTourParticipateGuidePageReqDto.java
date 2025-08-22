@@ -3,7 +3,7 @@ package com.halo.eventer.domain.stamp.dto.stamp.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import com.halo.eventer.domain.stamp.dto.stamp.enums.GuideMediaSpec;
+import com.halo.eventer.domain.stamp.dto.stamp.enums.MediaSpec;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ public class StampTourParticipateGuidePageReqDto {
     private String title;
 
     @NotNull
-    private GuideMediaSpec guideMediaSpec;
+    private MediaSpec guideMediaSpec;
 
     private String mediaUrl;
 

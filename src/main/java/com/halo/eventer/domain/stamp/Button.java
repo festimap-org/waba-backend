@@ -29,7 +29,11 @@ public class Button {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "page_template_id")
-    private PageTemplate page;
+    private PageTemplate pageTemplate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mission_details_template_id")
+    private MissionDetailsTemplate missionDetailsTemplate;
 
     private Button(int sequenceIndex, String iconImg, String content, ButtonAction action, String targetUrl) {
         this.sequenceIndex = sequenceIndex;
@@ -41,8 +45,13 @@ public class Button {
     }
 
     private void attachTo(PageTemplate page) {
-        this.page = page;
+        this.pageTemplate = page;
         page.getButtons().add(this);
+    }
+
+    private void attachTo(MissionDetailsTemplate template) {
+        this.missionDetailsTemplate = template;
+        template.getButtons().add(this);
     }
 
     private void validateInvariants() {
@@ -53,10 +62,17 @@ public class Button {
         }
     }
 
-    public static Button from(PageTemplate page, ButtonReqDto dto) {
+    public static Button from(PageTemplate template, ButtonReqDto dto) {
         Button b = new Button(
                 dto.getSequenceIndex(), dto.getIconImg(), dto.getContent(), dto.getAction(), dto.getTargetUrl());
-        b.attachTo(page);
+        b.attachTo(template);
+        return b;
+    }
+
+    public static Button from(MissionDetailsTemplate template, ButtonReqDto dto) {
+        Button b = new Button(
+                dto.getSequenceIndex(), dto.getIconImg(), dto.getContent(), dto.getAction(), dto.getTargetUrl());
+        b.attachTo(template);
         return b;
     }
 }

@@ -133,7 +133,6 @@ public class StampTourAdminControllerTest {
         }
     }
 
-    // ---------- 기본 설정 ----------
     @Nested
     class 기본설정 {
 
@@ -493,8 +492,7 @@ public class StampTourAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 페이지_생성_성공() throws Exception {
-            var req = new StampTourParticipateGuidePageReqDto(
-                    1L, "title", GuideMediaSpec.NONE, null, "sum", "det", "add");
+            var req = new StampTourParticipateGuidePageReqDto(1L, "title", MediaSpec.NONE, null, "sum", "det", "add");
 
             mockMvc.perform(post(
                                     "/v2/admin/festivals/{festivalId}/stamp-tours/{stampTourId}/settings/guides/pages",
@@ -509,7 +507,7 @@ public class StampTourAdminControllerTest {
 
         @Test
         void 페이지_생성_실패_권한없음() throws Exception {
-            var req = new StampTourParticipateGuidePageReqDto(1L, "title", GuideMediaSpec.NONE, null, "s", "d", "a");
+            var req = new StampTourParticipateGuidePageReqDto(1L, "title", MediaSpec.NONE, null, "s", "d", "a");
             mockMvc.perform(post(
                                     "/v2/admin/festivals/{festivalId}/stamp-tours/{stampTourId}/settings/guides/pages",
                                     축제_ID,
@@ -523,7 +521,7 @@ public class StampTourAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 페이지_상세_조회_성공() throws Exception {
-            var res = new ParticipateGuidePageDetailsResDto(페이지_ID, "t", GuideMediaSpec.NONE, null, "s", "d", "a");
+            var res = new ParticipateGuidePageDetailsResDto(페이지_ID, "t", MediaSpec.NONE, null, "s", "d", "a");
             given(service.getParticipateGuidePageDetails(축제_ID, 스탬프_ID, 페이지_ID)).willReturn(res);
 
             mockMvc.perform(get(
@@ -540,8 +538,7 @@ public class StampTourAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 페이지_수정_성공() throws Exception {
-            var req =
-                    new StampTourParticipateGuidePageReqDto(1L, "title2", GuideMediaSpec.NONE, null, "s2", "d2", "a2");
+            var req = new StampTourParticipateGuidePageReqDto(1L, "title2", MediaSpec.NONE, null, "s2", "d2", "a2");
 
             mockMvc.perform(put(
                                     "/v2/admin/festivals/{festivalId}/stamp-tours/{stampTourId}/settings/guides/pages/{pageId}",
@@ -557,8 +554,7 @@ public class StampTourAdminControllerTest {
 
         @Test
         void 페이지_수정_실패_권한없음() throws Exception {
-            var req =
-                    new StampTourParticipateGuidePageReqDto(1L, "title2", GuideMediaSpec.NONE, null, "s2", "d2", "a2");
+            var req = new StampTourParticipateGuidePageReqDto(1L, "title2", MediaSpec.NONE, null, "s2", "d2", "a2");
 
             mockMvc.perform(put(
                                     "/v2/admin/festivals/{festivalId}/stamp-tours/{stampTourId}/settings/guides/pages/{pageId}",

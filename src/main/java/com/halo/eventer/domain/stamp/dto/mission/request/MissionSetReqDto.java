@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.stamp.dto.stamp;
+package com.halo.eventer.domain.stamp.dto.mission.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MissionSetDto {
+public class MissionSetReqDto {
     @NotNull
     @Positive
-    private Long boothId;
+    private long boothId;
 
     @NotEmpty
     private String title;

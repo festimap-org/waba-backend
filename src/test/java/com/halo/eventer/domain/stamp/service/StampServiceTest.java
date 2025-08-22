@@ -16,6 +16,8 @@ import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
+import com.halo.eventer.domain.stamp.dto.mission.request.MissionSetReqDto;
+import com.halo.eventer.domain.stamp.dto.mission.response.MissionSummaryResDto;
 import com.halo.eventer.domain.stamp.dto.stamp.*;
 import com.halo.eventer.domain.stamp.exception.StampClosedException;
 import com.halo.eventer.domain.stamp.exception.StampNotFoundException;
@@ -55,7 +57,7 @@ public class StampServiceTest {
     private Festival festival;
     private Stamp stamp1;
     private List<Stamp> stamps;
-    private List<MissionSetDto> missionSetDtos;
+    private List<MissionSetReqDto> missionSetDtos;
 
     @BeforeEach
     void setUp() {
@@ -223,7 +225,7 @@ public class StampServiceTest {
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(stamp1));
 
         // when
-        List<MissionSummaryGetDto> result = stampService.getMissions(1L);
+        List<MissionSummaryResDto> result = stampService.getMissions(1L);
 
         // then
         assertThat(result).hasSize(2);
