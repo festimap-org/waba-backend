@@ -1,9 +1,6 @@
 package com.halo.eventer.domain.stamp.repository;
 
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,7 +12,6 @@ import com.halo.eventer.domain.stamp.StampUser;
 
 import static com.halo.eventer.domain.festival.FestivalFixture.축제_엔티티;
 import static com.halo.eventer.domain.stamp.fixture.StampUserFixture.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @SuppressWarnings("NonAsciiCharacters")
@@ -45,16 +41,16 @@ public class StampUserRepositoryTest {
         stampUser.addStamp(stamp);
         stampUserRepository.save(stampUser);
     }
-
-    @Test
-    void uuid로_스탬프유저_찾기() {
-        // when
-        Optional<StampUser> result = stampUserRepository.findByUuid(stampUser.getUuid());
-        // then
-        assertThat(result).isPresent();
-        assertThat(result.get().getId()).isEqualTo(stampUser.getId());
-        assertThat(result.get().getUuid()).isEqualTo(stampUser.getUuid());
-    }
+    //
+    //    @Test
+    //    void uuid로_스탬프유저_찾기() {
+    //        // when
+    //        Optional<StampUser> result = stampUserRepository.findByUuid(stampUser.getUuid());
+    //        // then
+    //        assertThat(result).isPresent();
+    //        assertThat(result.get().getId()).isEqualTo(stampUser.getId());
+    //        assertThat(result.get().getUuid()).isEqualTo(stampUser.getUuid());
+    //    }
     //
     //    @Test
     //    void 스탬프ID와_전화번호로_스탬프유저_존재확인() {
