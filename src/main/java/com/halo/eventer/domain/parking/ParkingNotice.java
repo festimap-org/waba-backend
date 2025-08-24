@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.parking;
 
 import jakarta.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,10 +29,10 @@ public class ParkingNotice {
     @JoinColumn(name = "parking_management_id")
     private ParkingManagement parkingManagement;
 
-    private ParkingNotice(String title, String content, Boolean visible) {
+    private ParkingNotice(String title, String content) {
         this.title = title;
         this.content = content;
-        this.visible = visible;
+        this.visible = true;
     }
 
     public void updateNotice(String title, String content) {
@@ -43,8 +44,8 @@ public class ParkingNotice {
         this.visible = visible;
     }
 
-    public static ParkingNotice of(String title, String content, Boolean visible, ParkingManagement parkingManagement) {
-        ParkingNotice parkingNotice = new ParkingNotice(title, content, visible);
+    public static ParkingNotice of(String title, String content, ParkingManagement parkingManagement) {
+        ParkingNotice parkingNotice = new ParkingNotice(title, content);
         parkingNotice.setParkingManagement(parkingManagement);
         return parkingNotice;
     }
@@ -53,5 +54,4 @@ public class ParkingNotice {
         this.parkingManagement = parkingManagement;
         parkingManagement.addParkingNotice(this);
     }
-
 }

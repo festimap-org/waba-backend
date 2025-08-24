@@ -55,7 +55,9 @@ public class SecurityConstants {
         "/test/festival",
         "/upload/preSigned",
         "/api/v2/admin/parking-managements/*/sub-page-info",
-        "/api/v2/common/parking-managements/*",
+        "/api/v2/user/parking-managements/*",
+        "/api/v2/user/parking-notices/*",
+        "/api/v2/user/parking-managements/*/parking-zones"
     };
 
     public static final String[] PUBLIC_POST_URLS = {

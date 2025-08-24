@@ -7,14 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ParkingNoticeReqDto {
-
+public class ParkingNoticeContentReqDto {
     @NotNull
     private String title;
 
     private String content;
 
-    public ParkingNoticeReqDto(String title, String content) {
+    public ParkingNoticeContentReqDto(String title, String content) {
         this.title = title;
         this.content = content;
     }

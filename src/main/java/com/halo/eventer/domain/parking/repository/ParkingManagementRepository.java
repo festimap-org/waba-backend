@@ -12,4 +12,9 @@ public interface ParkingManagementRepository extends JpaRepository<ParkingManage
 
     @Query("SELECT pm FROM ParkingManagement pm JOIN FETCH pm.images i WHERE pm.id = :id ")
     Optional<ParkingManagement> findByIdWithImages(@Param("id") Long id);
+
+    Optional<ParkingManagement> findByIdAndVisible(Long id, Boolean visible);
+
+    @Query("SELECT pm FROM ParkingManagement pm LEFT JOIN FETCH pm.parkingZones WHERE pm.id = :id ")
+    Optional<ParkingManagement> findByIdWithParkingZone(@Param("id") Long id);
 }

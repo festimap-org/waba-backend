@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.parking.dto;
+package com.halo.eventer.domain.parking.dto.parking_management;
 
 import java.util.List;
 

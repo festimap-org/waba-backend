@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.parking.dto;
+package com.halo.eventer.domain.parking.dto.common;
 
 import java.util.List;
 import jakarta.validation.constraints.Min;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ParkingMapImageReqDto {
-    private @NotNull List<@Min(1) Long> imageIds;
+public class DisplayOrderChangeReqDto {
+    private @NotNull List<@Min(1) Long> ids;
 }

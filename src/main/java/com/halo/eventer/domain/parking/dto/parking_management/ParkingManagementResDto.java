@@ -1,32 +1,23 @@
-package com.halo.eventer.domain.parking.dto;
+package com.halo.eventer.domain.parking.dto.parking_management;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ParkingManagementReqDto {
+public class ParkingManagementResDto {
+    private Long id;
     private String headerName;
-
-    @NotNull
-    @Pattern(regexp = "BASIC|BUTTON|SIMPLE", message = "parkingInfoType must be one of: BASIC, BUTTON, SIMPLE")
     private String parkingInfoType;
-
     private String title;
     private String description;
     private String buttonName;
     private String buttonTargetUrl;
     private String backgroundImage;
-
-    @NotNull
     private boolean visible;
 
-    @Builder
-    public ParkingManagementReqDto(
+    private ParkingManagementResDto(
+            Long id,
             String headerName,
             String parkingInfoType,
             String title,
@@ -35,6 +26,7 @@ public class ParkingManagementReqDto {
             String buttonTargetUrl,
             String backgroundImage,
             boolean visible) {
+        this.id = id;
         this.headerName = headerName;
         this.parkingInfoType = parkingInfoType;
         this.title = title;
@@ -43,5 +35,27 @@ public class ParkingManagementReqDto {
         this.buttonTargetUrl = buttonTargetUrl;
         this.backgroundImage = backgroundImage;
         this.visible = visible;
+    }
+
+    public static ParkingManagementResDto of(
+            Long id,
+            String headerName,
+            String parkingInfoType,
+            String title,
+            String description,
+            String buttonName,
+            String buttonTargetUrl,
+            String backgroundImage,
+            boolean visible) {
+        return new ParkingManagementResDto(
+                id,
+                headerName,
+                parkingInfoType,
+                title,
+                description,
+                buttonName,
+                buttonTargetUrl,
+                backgroundImage,
+                visible);
     }
 }

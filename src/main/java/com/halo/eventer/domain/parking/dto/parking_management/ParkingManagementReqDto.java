@@ -1,21 +1,32 @@
-package com.halo.eventer.domain.parking.dto;
+package com.halo.eventer.domain.parking.dto.parking_management;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ParkingManagementResDto {
+public class ParkingManagementReqDto {
     private String headerName;
+
+    @NotNull
+    @Pattern(regexp = "BASIC|BUTTON|SIMPLE", message = "parkingInfoType must be one of: BASIC, BUTTON, SIMPLE")
     private String parkingInfoType;
+
     private String title;
     private String description;
     private String buttonName;
     private String buttonTargetUrl;
     private String backgroundImage;
+
+    @NotNull
     private boolean visible;
 
-    private ParkingManagementResDto(
+    @Builder
+    public ParkingManagementReqDto(
             String headerName,
             String parkingInfoType,
             String title,
@@ -32,18 +43,5 @@ public class ParkingManagementResDto {
         this.buttonTargetUrl = buttonTargetUrl;
         this.backgroundImage = backgroundImage;
         this.visible = visible;
-    }
-
-    public static ParkingManagementResDto of(
-            String headerName,
-            String parkingInfoType,
-            String title,
-            String description,
-            String buttonName,
-            String buttonTargetUrl,
-            String backgroundImage,
-            boolean visible) {
-        return new ParkingManagementResDto(
-                headerName, parkingInfoType, title, description, buttonName, buttonTargetUrl, backgroundImage, visible);
     }
 }

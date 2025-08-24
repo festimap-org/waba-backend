@@ -44,21 +44,22 @@ public class ParkingManagementDoc {
                 resource(ResourceSnippetParameters.builder()
                         .tag(TAG)
                         .summary("주차 관리 생성 (ADMIN)")
-                        .description("축제 ID에 해당하는 주차 관리 영역을 생성합니다.")
+                        .description(
+                                "축제 ID에 해당하는 주차 관리 페이지를 생성합니다. visible 필드의 경우 (웹 사이트 사용 여부 = 소개 컴포넌트 사용여부)로 결정해서 연동하면 됩니다. 이유는 2개가 굳이 필요없어요. 결국 소개 컴포넌트를 끄는 행위랑 웹사이트 표시 여부를 바꾸는 행위는 같습니다.")
                         .requestSchema(Schema.schema("ParkingManagementReqDto"))
                         .pathParameters(parameterWithName("festivalId")
                                 .description("축제 ID")
-                                .attributes(key("constraints").value("필수, 1 이상의 양의 정수")))
+                                .attributes(key("validationConstraints").value(List.of(ApiConstraint.JavaxMin2(1)))))
                         .requestHeaders(headerWithName("Authorization").description("Bearer {JWT}"))
                         .requestFields(
                                 fieldWithPath("headerName")
                                         .type(JsonFieldType.STRING)
-                                        .description("헤더명")
-                                        .attributes(key("constraints").value("필수, NotBlank")),
+                                        .description("헤더명"),
                                 fieldWithPath("parkingInfoType")
                                         .type(JsonFieldType.STRING)
                                         .description("표시 타입 (BASIC|BUTTON|SIMPLE)")
-                                        .attributes(key("constraints").value("필수, 패턴: BASIC|BUTTON|SIMPLE 중 선택")),
+                                        .attributes(key("validationConstraints")
+                                                .value(List.of(ApiConstraint.JavaxPattern("BASIC|BUTTON|SIMPLE")))),
                                 fieldWithPath("title")
                                         .type(JsonFieldType.STRING)
                                         .description("타이틀")
@@ -74,15 +75,14 @@ public class ParkingManagementDoc {
                                 fieldWithPath("buttonTargetUrl")
                                         .type(JsonFieldType.STRING)
                                         .description("버튼 링크 URL")
-                                        .optional()
-                                        .attributes(key("constraints").value("URL 형식 권장")),
+                                        .optional(),
                                 fieldWithPath("backgroundImage")
                                         .type(JsonFieldType.STRING)
                                         .description("배경 이미지 URL")
                                         .optional(),
                                 fieldWithPath("visible")
                                         .type(JsonFieldType.BOOLEAN)
-                                        .description("노출 여부")
+                                        .description("노출 여부 (웹 사이트 사용 여부 = 소개 컴포넌트 사용여부)")
                                         .optional())
                         .build()));
     }
@@ -154,82 +154,122 @@ public class ParkingManagementDoc {
 
     public static RestDocumentationResultHandler createParkingMapImage() {
         return document(
-                "parking-management 주차맵이미지 등록",
+                "parking-management 주차장 지도 이미지 등록",
                 resource(ResourceSnippetParameters.builder()
                         .tag(TAG)
-                        .summary("주차맵 이미지 등록 (ADMIN)")
-                        .description("주차 맵 이미지를 1건 등록합니다.")
+                        .summary("주차장 지도 이미지 등록 (ADMIN)")
+                        .description("주차장 지도 이미지를 1건 등록합니다. (최대 이미지 20개 등록 가능)")
                         .requestSchema(Schema.schema("FileDto"))
                         .pathParameters(parameterWithName("id")
                                 .description("주차 관리 ID")
                                 .attributes(key("validationConstraints").value(List.of(ApiConstraint.JavaxMin2(1)))))
                         .requestHeaders(headerWithName("Authorization").description("Bearer {JWT}"))
-                        .requestFields(
-                                // 프로젝트에 따라 필드명이 image 또는 url일 수 있어, 실제 DTO에 맞춰 한쪽을 사용하세요.
-                                fieldWithPath("image")
-                                        .type(JsonFieldType.STRING)
-                                        .description("이미지 URL/식별자")
-                                        .optional(),
-                                fieldWithPath("url")
-                                        .type(JsonFieldType.STRING)
-                                        .description("이미지 URL (대체 필드)")
-                                        .optional())
+                        .requestFields(fieldWithPath("url")
+                                .type(JsonFieldType.STRING)
+                                .description("이미지 URL (대체 필드)")
+                                .optional())
                         .build()));
     }
 
     public static RestDocumentationResultHandler updateParkingMapImageDisplayOrder() {
         return document(
-                "parking-management 주차맵이미지 정렬변경",
+                "parking-management 주차장 지도 이미지 순서변경",
                 resource(ResourceSnippetParameters.builder()
                         .tag(TAG)
-                        .summary("주차맵 이미지 정렬 변경 (ADMIN)")
-                        .description("전달된 순서대로 이미지 표시 순서를 재배치합니다.")
+                        .summary("주차장 지도 이미지 순서 변경 (ADMIN)")
+                        .description("배열에 전달된 인덱스 순서대로 이미지 표시 순서를 재배치합니다.")
                         .requestSchema(Schema.schema("ParkingMapImageReqDto"))
                         .pathParameters(parameterWithName("id")
                                 .description("주차 관리 ID")
                                 .attributes(key("validationConstraints").value(List.of(ApiConstraint.JavaxMin2(1)))))
                         .requestHeaders(headerWithName("Authorization").description("Bearer {JWT}"))
                         .requestFields(
-                                fieldWithPath("imageIds")
+                                fieldWithPath("ids")
                                         .type(JsonFieldType.ARRAY)
-                                        .description("표시 순서대로 정렬할 이미지 ID 목록")
-                                        .attributes(key("constraints").value("필수, 각 원소는 1 이상의 양의 정수")),
-                                fieldWithPath("imageIds[].").ignored())
+                                        .description("이미지 id 리스트(배열 인덱스로 순서 변경함)")
+                                        .attributes(key("validationConstraints")
+                                                .value(List.of(ApiConstraint.JavaxMin2(1)))),
+                                fieldWithPath("ids[].").ignored())
                         .build()));
     }
 
     public static RestDocumentationResultHandler deleteParkingMapImages() {
         return document(
-                "parking-management 주차맵이미지 삭제",
+                "parking-management 주차장 지도 이미지 삭제",
                 resource(ResourceSnippetParameters.builder()
                         .tag(TAG)
-                        .summary("주차맵 이미지 삭제 (ADMIN)")
-                        .description("전달된 이미지 ID 목록을 삭제합니다.")
+                        .summary("주차장 지도 이미지 삭제 (ADMIN)")
+                        .description("전달된 이미지 ID 목록을 삭제합니다. 전체삭제도 이 API 이용하기")
                         .requestSchema(Schema.schema("ParkingMapImageReqDto"))
                         .pathParameters(parameterWithName("id")
                                 .description("주차 관리 ID")
                                 .attributes(key("validationConstraints").value(List.of(ApiConstraint.JavaxMin2(1)))))
                         .requestHeaders(headerWithName("Authorization").description("Bearer {JWT}"))
-                        .requestFields(fieldWithPath("imageIds")
+                        .requestFields(fieldWithPath("ids")
                                 .type(JsonFieldType.ARRAY)
                                 .description("삭제할 이미지 ID 목록")
-                                .attributes(key("constraints").value("필수, 각 원소는 1 이상의 양의 정수")))
+                                .attributes(key("validationConstraints").value(List.of(ApiConstraint.JavaxMin2(1)))))
                         .build()));
     }
 
-    // ========== 조회 ==========
     public static RestDocumentationResultHandler getOne() {
         return document(
-                "parking-management 단건조회",
+                "parking-management ADMIN 단건조회",
                 resource(ResourceSnippetParameters.builder()
                         .tag(TAG)
-                        .summary("주차 관리 단건 조회 (COMMON)")
-                        .description("주차 관리 영역(공통)을 조회합니다.")
+                        .summary("주차 관리 단건 조회 (ADMIN)")
+                        .description("주차 관리 정보를 조회합니다.")
                         .responseSchema(Schema.schema("ParkingManagementResDto"))
                         .pathParameters(parameterWithName("id")
                                 .description("주차 관리 ID")
                                 .attributes(key("validationConstraints").value(List.of(ApiConstraint.JavaxMin2(1)))))
                         .responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("주차 관리 id"),
+                                fieldWithPath("headerName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("헤더명"),
+                                fieldWithPath("parkingInfoType")
+                                        .type(JsonFieldType.STRING)
+                                        .description("표시 타입"),
+                                fieldWithPath("title")
+                                        .type(JsonFieldType.STRING)
+                                        .description("타이틀")
+                                        .optional(),
+                                fieldWithPath("description")
+                                        .type(JsonFieldType.STRING)
+                                        .description("설명")
+                                        .optional(),
+                                fieldWithPath("buttonName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("버튼명")
+                                        .optional(),
+                                fieldWithPath("buttonTargetUrl")
+                                        .type(JsonFieldType.STRING)
+                                        .description("버튼 링크 URL")
+                                        .optional(),
+                                fieldWithPath("backgroundImage")
+                                        .type(JsonFieldType.STRING)
+                                        .description("배경 이미지 URL")
+                                        .optional(),
+                                fieldWithPath("visible")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("노출 여부"))
+                        .build()));
+    }
+
+    public static RestDocumentationResultHandler getOneForUser() {
+        return document(
+                "parking-management User 단건조회",
+                resource(ResourceSnippetParameters.builder()
+                        .tag(TAG)
+                        .summary("주차 관리 단건 조회 (USER)")
+                        .description("visible = true 상태인 주차 관리 정보를 조회합니다.")
+                        .responseSchema(Schema.schema("ParkingManagementResDto"))
+                        .pathParameters(parameterWithName("id")
+                                .description("주차 관리 ID")
+                                .attributes(key("validationConstraints").value(List.of(ApiConstraint.JavaxMin2(1)))))
+                        .responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("주차 관리 id"),
                                 fieldWithPath("headerName")
                                         .type(JsonFieldType.STRING)
                                         .description("헤더명"),
@@ -268,7 +308,7 @@ public class ParkingManagementDoc {
                 resource(ResourceSnippetParameters.builder()
                         .tag(TAG)
                         .summary("서브페이지 정보 조회 (ADMIN)")
-                        .description("서브페이지 헤더명과 주차 맵 이미지 목록을 조회합니다.")
+                        .description("서브페이지 헤더명과 주차장 지도 이미지 목록을 조회합니다. 주차 관리에서는 주차 지도 수정하는 페이지 정보 전달입니다.")
                         .responseSchema(Schema.schema("ParkingManagementSubPageResDto"))
                         .pathParameters(parameterWithName("id")
                                 .description("주차 관리 ID")

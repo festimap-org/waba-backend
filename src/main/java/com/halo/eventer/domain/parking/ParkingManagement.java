@@ -60,6 +60,10 @@ public class ParkingManagement {
     @OneToMany(mappedBy = "parkingManagement", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
+    @OrderColumn(name = "display_order")
+    @OneToMany(mappedBy = "parkingManagement", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ParkingZone> parkingZones = new ArrayList<>();
+
     @OneToMany(mappedBy = "parkingManagement", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ParkingNotice> parkingNotices = new ArrayList<>();
 
@@ -141,6 +145,26 @@ public class ParkingManagement {
         parkingNotices.add(parkingNotice);
     }
 
+    public void addParkingZone(ParkingZone parkingZone) {
+        validateZoneCount();
+        parkingZones.add(parkingZone);
+    }
+
+    public void reorderParkingZones(List<Long> orderedIds) {
+        validateReorderIdsDuplicationAndSizeForZone(orderedIds);
+        validateNoMissingIdsForZone(orderedIds);
+
+        Map<Long, Integer> rank = new HashMap<>();
+        for (int i = 0; i < orderedIds.size(); i++) {
+            rank.put(orderedIds.get(i), i);
+        }
+        parkingZones.sort(Comparator.comparingInt((ParkingZone zone) -> rank.get(zone.getId())));
+    }
+
+    public void removeParkingZone(Long parkingZoneId) {
+        parkingZones.removeIf(parkingZone -> parkingZoneId == parkingZone.getId());
+    }
+
     public void reorderImages(List<Long> orderedIds) {
         validateReorderIdsDuplicationAndSize(orderedIds);
         validateNoMissingIds(orderedIds);
@@ -153,8 +177,8 @@ public class ParkingManagement {
     }
 
     public void removeImages(List<Long> imageIds) {
-        Set<Long> removdIds = new HashSet<>(imageIds);
-        images.removeIf(image -> removdIds.contains(image.getId()));
+        Set<Long> removedIds = new HashSet<>(imageIds);
+        images.removeIf(image -> removedIds.contains(image.getId()));
     }
 
     private void validateReorderIdsDuplicationAndSize(List<Long> orderedIds) {
@@ -175,6 +199,28 @@ public class ParkingManagement {
 
     private void validateImageCount() {
         if (images.size() >= DisplayOrderConstants.DISPLAY_ORDER_LIMIT_VALUE) {
+            throw new BaseException(ErrorCode.MAX_COUNT_EXCEEDED);
+        }
+    }
+
+    private void validateReorderIdsDuplicationAndSizeForZone(List<Long> orderedIds) {
+        Set<Long> targets = new HashSet<>(orderedIds);
+        if (targets.size() != orderedIds.size() || targets.size() != parkingZones.size()) {
+            throw new BaseException(ErrorCode.INVALID_INPUT_VALUE);
+        }
+    }
+
+    private void validateNoMissingIdsForZone(List<Long> orderedIds) {
+        Set<Long> existingIds = parkingZones.stream().map(ParkingZone::getId).collect(Collectors.toSet());
+        List<Long> unknown =
+                orderedIds.stream().filter(id -> !existingIds.contains(id)).toList();
+        if (!unknown.isEmpty()) {
+            throw new BaseException(ErrorCode.INVALID_INPUT_VALUE);
+        }
+    }
+
+    private void validateZoneCount() {
+        if (parkingZones.size() >= DisplayOrderConstants.DISPLAY_ORDER_LIMIT_VALUE) {
             throw new BaseException(ErrorCode.MAX_COUNT_EXCEEDED);
         }
     }

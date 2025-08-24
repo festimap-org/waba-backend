@@ -22,11 +22,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.image.dto.FileDto;
 import com.halo.eventer.domain.image.dto.ImageDto;
 import com.halo.eventer.domain.parking.api_docs.ParkingManagementDoc;
-import com.halo.eventer.domain.parking.dto.ParkingManagementReqDto;
-import com.halo.eventer.domain.parking.dto.ParkingManagementResDto;
-import com.halo.eventer.domain.parking.dto.ParkingManagementSubPageResDto;
-import com.halo.eventer.domain.parking.dto.ParkingMapImageReqDto;
-import com.halo.eventer.domain.parking.dto.ParkingSubPageReqDto;
+import com.halo.eventer.domain.parking.dto.common.DisplayOrderChangeReqDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementReqDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementResDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementSubPageResDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingSubPageReqDto;
 import com.halo.eventer.domain.parking.service.ParkingManagementService;
 import com.halo.eventer.global.config.ControllerTestSecurityBeans;
 import com.halo.eventer.global.config.security.SecurityConfig;
@@ -225,9 +225,9 @@ class ParkingManagementControllerTest {
         void 주차맵이미지_정렬변경_성공() throws Exception {
             doNothing()
                     .when(parkingManagementService)
-                    .updateParkingMapImageDisplayOrder(eq(VALID_ID), any(ParkingMapImageReqDto.class));
+                    .updateParkingMapImageDisplayOrder(eq(VALID_ID), any(DisplayOrderChangeReqDto.class));
 
-            Map<String, Object> body = Map.of("imageIds", List.of(3L, 1L, 2L));
+            Map<String, Object> body = Map.of("ids", List.of(3L, 1L, 2L));
             mockMvc.perform(patch("/api/v2/admin/parking-managements/{id}/parking-map-images/display-order", VALID_ID)
                             .header("Authorization", ADMIN_TOKEN)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -253,9 +253,9 @@ class ParkingManagementControllerTest {
         void 주차맵이미지_삭제_성공() throws Exception {
             doNothing()
                     .when(parkingManagementService)
-                    .deleteParkingMapImages(eq(VALID_ID), any(ParkingMapImageReqDto.class));
+                    .deleteParkingMapImages(eq(VALID_ID), any(DisplayOrderChangeReqDto.class));
 
-            Map<String, Object> body = Map.of("imageIds", List.of(10L, 11L));
+            Map<String, Object> body = Map.of("ids", List.of(10L, 11L));
             mockMvc.perform(delete("/api/v2/admin/parking-managements/{id}/parking-map-images", VALID_ID)
                             .header("Authorization", ADMIN_TOKEN)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -302,6 +302,14 @@ class ParkingManagementControllerTest {
                                     .content(objectMapper.writeValueAsString(validCreateBody)))
                     .andExpect(status().isUnauthorized())
                     .andDo(ParkingManagementDoc.errorSnippet("주차관리 생성시 인증 거부"));
+            assertError(result, "A002", "Unauthenticated", 401);
+        }
+
+        @Test
+        void 단건조회_권한없음() throws Exception {
+            ResultActions result = mockMvc.perform(get("/api/v2/admin/parking-managements/{id}", VALID_ID))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(ParkingManagementDoc.errorSnippet("어드민 단건조회 권한없음"));
             assertError(result, "A002", "Unauthenticated", 401);
         }
 
@@ -356,8 +364,39 @@ class ParkingManagementControllerTest {
     class 조회_엔드포인트 {
 
         @Test
-        void 단건조회_COMMON_성공() throws Exception {
+        @WithMockUser(username = "admin", roles = "ADMIN")
+        void 단건조회_ADNMIN_성공() throws Exception {
             ParkingManagementResDto res = new ParkingManagementResDto();
+            ReflectionTestUtils.setField(res, "id", 1L);
+            ReflectionTestUtils.setField(res, "headerName", "주차 안내");
+            ReflectionTestUtils.setField(res, "parkingInfoType", "BASIC");
+            ReflectionTestUtils.setField(res, "title", "캠퍼스 주차 정보");
+            ReflectionTestUtils.setField(res, "description", "요약");
+            ReflectionTestUtils.setField(res, "buttonName", "자세히");
+            ReflectionTestUtils.setField(res, "buttonTargetUrl", "https://example.com");
+            ReflectionTestUtils.setField(res, "backgroundImage", "https://cdn/bg.png");
+            ReflectionTestUtils.setField(res, "visible", false);
+
+            given(parkingManagementService.getParkingManagement(VALID_ID)).willReturn(res);
+
+            mockMvc.perform(get("/api/v2/admin/parking-managements/{id}", VALID_ID))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(1L))
+                    .andExpect(jsonPath("$.headerName").value("주차 안내"))
+                    .andExpect(jsonPath("$.parkingInfoType").value("BASIC"))
+                    .andExpect(jsonPath("$.title").value("캠퍼스 주차 정보"))
+                    .andExpect(jsonPath("$.visible").value(false))
+                    .andExpect(jsonPath("$.description").value(res.getDescription()))
+                    .andExpect(jsonPath("$.buttonName").value(res.getButtonName()))
+                    .andExpect(jsonPath("$.buttonTargetUrl").value(res.getButtonTargetUrl()))
+                    .andExpect(jsonPath("$.backgroundImage").value(res.getBackgroundImage()))
+                    .andDo(ParkingManagementDoc.getOne());
+        }
+
+        @Test
+        void 단건조회_USER_성공() throws Exception {
+            ParkingManagementResDto res = new ParkingManagementResDto();
+            ReflectionTestUtils.setField(res, "id", 1L);
             ReflectionTestUtils.setField(res, "headerName", "주차 안내");
             ReflectionTestUtils.setField(res, "parkingInfoType", "BASIC");
             ReflectionTestUtils.setField(res, "title", "캠퍼스 주차 정보");
@@ -367,10 +406,12 @@ class ParkingManagementControllerTest {
             ReflectionTestUtils.setField(res, "backgroundImage", "https://cdn/bg.png");
             ReflectionTestUtils.setField(res, "visible", true);
 
-            given(parkingManagementService.getParkingManagement(VALID_ID)).willReturn(res);
+            given(parkingManagementService.getVisibleParkingManagement(VALID_ID))
+                    .willReturn(res);
 
-            mockMvc.perform(get("/api/v2/common/parking-managements/{id}", VALID_ID))
+            mockMvc.perform(get("/api/v2/user/parking-managements/{id}", VALID_ID))
                     .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(1L))
                     .andExpect(jsonPath("$.headerName").value("주차 안내"))
                     .andExpect(jsonPath("$.parkingInfoType").value("BASIC"))
                     .andExpect(jsonPath("$.title").value("캠퍼스 주차 정보"))
@@ -379,7 +420,7 @@ class ParkingManagementControllerTest {
                     .andExpect(jsonPath("$.buttonName").value(res.getButtonName()))
                     .andExpect(jsonPath("$.buttonTargetUrl").value(res.getButtonTargetUrl()))
                     .andExpect(jsonPath("$.backgroundImage").value(res.getBackgroundImage()))
-                    .andDo(ParkingManagementDoc.getOne());
+                    .andDo(ParkingManagementDoc.getOneForUser());
         }
 
         @Test
