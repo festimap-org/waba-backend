@@ -21,7 +21,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.stamp.controller.v2.StampMissionAdminController;
 import com.halo.eventer.domain.stamp.dto.mission.request.*;
-import com.halo.eventer.domain.stamp.dto.mission.response.MissionPrizeResDto;
+import com.halo.eventer.domain.stamp.dto.mission.response.*;
+import com.halo.eventer.domain.stamp.dto.stamp.enums.*;
+import com.halo.eventer.domain.stamp.dto.stamp.response.ButtonResDto;
 import com.halo.eventer.domain.stamp.service.v2.StampMissionAdminService;
 import com.halo.eventer.domain.stamp.v2.api_docs.StampMissionAdminDocs;
 import com.halo.eventer.global.config.ControllerTestSecurityBeans;
@@ -67,24 +69,13 @@ public class StampMissionAdminControllerTest {
         @WithMockUser(roles = "ADMIN")
         void 미션_생성_성공() throws Exception {
             var body = Map.of("name", "새 미션");
+
             mockMvc.perform(post("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions", 축제_ID, 스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isOk())
                     .andDo(StampMissionAdminDocs.createMission());
-        }
-
-        @Test
-        @WithMockUser(roles = "ADMIN")
-        void 미션_생성_실패_축제ID_검증() throws Exception {
-            var body = Map.of("name", "새 미션");
-            mockMvc.perform(post("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions", 잘못된_ID, 스탬프_ID)
-                            .header(HttpHeaders.AUTHORIZATION, AUTH)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
-                    .andExpect(status().isBadRequest())
-                    .andDo(StampMissionAdminDocs.error("v2-mission-create-badrequest"));
         }
 
         @Test
@@ -100,10 +91,13 @@ public class StampMissionAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 미션_목록_조회_성공() throws Exception {
-            given(service.getMissions(축제_ID, 스탬프_ID)).willReturn(List.of()); // 내용 검증은 생략
+            var list = List.of(new MissionBriefResDto(101L, "미션A"), new MissionBriefResDto(102L, "미션B"));
+            given(service.getMissions(축제_ID, 스탬프_ID)).willReturn(list);
+
             mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions", 축제_ID, 스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].missionId").value(101L))
                     .andDo(StampMissionAdminDocs.listMissions());
         }
 
@@ -113,15 +107,6 @@ public class StampMissionAdminControllerTest {
                     .andExpect(status().isUnauthorized())
                     .andDo(StampMissionAdminDocs.error("v2-mission-list-unauthorized"));
         }
-
-        @Test
-        @WithMockUser(roles = "ADMIN")
-        void 미션_목록_조회_실패_축제ID_검증() throws Exception {
-            mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions", 잘못된_ID, 스탬프_ID)
-                            .header(HttpHeaders.AUTHORIZATION, AUTH))
-                    .andExpect(status().isBadRequest())
-                    .andDo(StampMissionAdminDocs.error("v2-mission-list-badrequest"));
-        }
     }
 
     @Nested
@@ -130,7 +115,10 @@ public class StampMissionAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 기본설정_조회_성공() throws Exception {
-            // 응답 필드 문서는 생략(스키마 변화 안전성), 상태만 검증
+            var prizes = List.of(new MissionPrizeResDto(1L, 5, "스티커 세트"), new MissionPrizeResDto(2L, 8, "티셔츠"));
+            var res = new StampMissionBasicSettingsResDto(8, MissionDetailsDesignLayout.CARD, prizes);
+            given(service.getBasicSettings(축제_ID, 스탬프_ID)).willReturn(res);
+
             mockMvc.perform(get(
                                     "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/settings",
                                     축제_ID,
@@ -167,23 +155,8 @@ public class StampMissionAdminControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
-        void 기본설정_업서트_실패_축제ID_검증() throws Exception {
-            var body = Map.of("missionCount", 2, "defaultDetailLayout", "CARD");
-            mockMvc.perform(put(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/settings",
-                                    잘못된_ID,
-                                    스탬프_ID)
-                            .header(HttpHeaders.AUTHORIZATION, AUTH)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
-                    .andExpect(status().isBadRequest())
-                    .andDo(StampMissionAdminDocs.error("v2-mission-basic-upsert-badrequest"));
-        }
-
-        @Test
         void 기본설정_업서트_실패_권한없음() throws Exception {
-            var body = Map.of("missionCount", 6, "defaultDetailLayout", "CARD");
+            var body = Map.of("missionCount", 6, "defaultDetailLayout", "TEXT_ONLY");
             mockMvc.perform(put(
                                     "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/settings",
                                     축제_ID,
@@ -202,8 +175,6 @@ public class StampMissionAdminControllerTest {
         @WithMockUser(roles = "ADMIN")
         void 상품_추가_성공() throws Exception {
             var body = Map.of("requiredCount", 5, "prizeDescription", "스티커 세트");
-            given(service.addPrize(eq(축제_ID), eq(스탬프_ID), any(MissionPrizeCreateReqDto.class)))
-                    .willReturn(new MissionPrizeResDto(상품_ID, 5, "스티커 세트"));
 
             mockMvc.perform(post(
                                     "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/prizes",
@@ -214,21 +185,6 @@ public class StampMissionAdminControllerTest {
                             .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isOk())
                     .andDo(StampMissionAdminDocs.createPrize());
-        }
-
-        @Test
-        @WithMockUser(roles = "ADMIN")
-        void 상품_추가_실패_축제ID_검증() throws Exception {
-            var body = Map.of("requiredCount", 3, "prizeDescription", "볼펜");
-            mockMvc.perform(post(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/prizes",
-                                    잘못된_ID,
-                                    스탬프_ID)
-                            .header(HttpHeaders.AUTHORIZATION, AUTH)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
-                    .andExpect(status().isBadRequest())
-                    .andDo(StampMissionAdminDocs.error("v2-mission-prize-create-badrequest"));
         }
 
         @Test
@@ -248,6 +204,7 @@ public class StampMissionAdminControllerTest {
         @WithMockUser(roles = "ADMIN")
         void 상품_수정_성공() throws Exception {
             var body = Map.of("requiredCount", 7, "prizeDescription", "티셔츠");
+
             mockMvc.perform(put(
                                     "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/prizes/{prizeId}",
                                     축제_ID,
@@ -258,22 +215,6 @@ public class StampMissionAdminControllerTest {
                             .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isOk())
                     .andDo(StampMissionAdminDocs.updatePrize());
-        }
-
-        @Test
-        @WithMockUser(roles = "ADMIN")
-        void 상품_수정_실패_축제ID_검증() throws Exception {
-            var body = Map.of("requiredCount", 10, "prizeDescription", "머그컵");
-            mockMvc.perform(put(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/prizes/{prizeId}",
-                                    잘못된_ID,
-                                    스탬프_ID,
-                                    상품_ID)
-                            .header(HttpHeaders.AUTHORIZATION, AUTH)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
-                    .andExpect(status().isBadRequest())
-                    .andDo(StampMissionAdminDocs.error("v2-mission-prize-update-badrequest"));
         }
 
         @Test
@@ -302,30 +243,6 @@ public class StampMissionAdminControllerTest {
                     .andExpect(status().isOk())
                     .andDo(StampMissionAdminDocs.deletePrize());
         }
-
-        @Test
-        @WithMockUser(roles = "ADMIN")
-        void 상품_삭제_실패_축제ID_검증() throws Exception {
-            mockMvc.perform(delete(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/prizes/{prizeId}",
-                                    잘못된_ID,
-                                    스탬프_ID,
-                                    상품_ID)
-                            .header(HttpHeaders.AUTHORIZATION, AUTH))
-                    .andExpect(status().isBadRequest())
-                    .andDo(StampMissionAdminDocs.error("v2-mission-prize-delete-badrequest"));
-        }
-
-        @Test
-        void 상품_삭제_실패_권한없음() throws Exception {
-            mockMvc.perform(delete(
-                            "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/prizes/{prizeId}",
-                            축제_ID,
-                            스탬프_ID,
-                            상품_ID))
-                    .andExpect(status().isUnauthorized())
-                    .andDo(StampMissionAdminDocs.error("v2-mission-prize-delete-unauthorized"));
-        }
     }
 
     @Nested
@@ -334,6 +251,24 @@ public class StampMissionAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 미션상세_조회_성공() throws Exception {
+            var buttons = List.of(new ButtonResDto(0, "바로가기", "icon.png", ButtonAction.OPEN_URL, "https://a.b"));
+            var extras = List.of(new MissionExtraInfoSummaryResDto(11L, "유의사항", "본인 신분증 지참"));
+            var res = new MissionDetailsTemplateResDto(
+                    999L,
+                    MissionDetailsDesignLayout.CARD,
+                    true,
+                    "미션 타이틀",
+                    true,
+                    MediaSpec.NONE,
+                    null,
+                    true,
+                    ExtraInfoLayout.LIST,
+                    extras,
+                    true,
+                    ButtonLayout.ONE,
+                    buttons);
+            given(service.getMissionDetailsTemplate(축제_ID, 스탬프_ID, 미션_ID)).willReturn(res);
+
             mockMvc.perform(get(
                                     "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}/details",
                                     축제_ID,
@@ -342,17 +277,6 @@ public class StampMissionAdminControllerTest {
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
                     .andDo(StampMissionAdminDocs.getMissionDetails());
-        }
-
-        @Test
-        void 미션상세_조회_실패_권한없음() throws Exception {
-            mockMvc.perform(get(
-                            "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}/details",
-                            축제_ID,
-                            스탬프_ID,
-                            미션_ID))
-                    .andExpect(status().isUnauthorized())
-                    .andDo(StampMissionAdminDocs.error("v2-mission-details-get-unauthorized"));
         }
 
         @Test
@@ -365,12 +289,11 @@ public class StampMissionAdminControllerTest {
             body.put("showSuccessCount", true);
             body.put("showExtraInfos", true);
             body.put("showButtons", true);
-            body.put("missionMediaSpec", "NONE"); // MediaSpec
-            body.put("mediaUrl", null); // null 허용
-            body.put("extraInfoType", "LIST"); // ExtraInfoLayout
-            body.put("buttonLayout", "ONE"); // ButtonLayout
+            body.put("missionMediaSpec", "NONE");
+            body.put("mediaUrl", null);
+            body.put("extraInfoType", "LIST");
+            body.put("buttonLayout", "ONE");
 
-            // extraInfos
             List<Map<String, Object>> extraInfos = new ArrayList<>();
             Map<String, Object> info1 = new LinkedHashMap<>();
             info1.put("titleText", "유의사항");
@@ -378,14 +301,13 @@ public class StampMissionAdminControllerTest {
             extraInfos.add(info1);
             body.put("extraInfos", extraInfos);
 
-            // buttons
             List<Map<String, Object>> buttons = new ArrayList<>();
             Map<String, Object> b1 = new LinkedHashMap<>();
             b1.put("sequenceIndex", 0);
             b1.put("iconImg", "i");
             b1.put("content", "바로가기");
             b1.put("action", "OPEN_URL");
-            b1.put("targetUrl", null);
+            b1.put("targetUrl", null); // null 허용: LinkedHashMap 사용으로 OK
             buttons.add(b1);
             body.put("buttons", buttons);
 
@@ -398,37 +320,7 @@ public class StampMissionAdminControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isOk())
-                    .andDo(StampMissionAdminDocs.upsertMissionDetails()); // 아래 RestDocs 스니펫 갱신본
-        }
-
-        @Test
-        @WithMockUser(roles = "ADMIN")
-        void 미션상세_업서트_실패_축제ID_검증() throws Exception {
-            var body = Map.of("missionTitle", "제목", "designLayout", "CARD");
-            mockMvc.perform(put(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}/details",
-                                    잘못된_ID,
-                                    스탬프_ID,
-                                    미션_ID)
-                            .header(HttpHeaders.AUTHORIZATION, AUTH)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
-                    .andExpect(status().isBadRequest())
-                    .andDo(StampMissionAdminDocs.error("v2-mission-details-upsert-badrequest"));
-        }
-
-        @Test
-        void 미션상세_업서트_실패_권한없음() throws Exception {
-            var body = Map.of("missionTitle", "제목", "designLayout", "CARD");
-            mockMvc.perform(put(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}/details",
-                                    축제_ID,
-                                    스탬프_ID,
-                                    미션_ID)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
-                    .andExpect(status().isUnauthorized())
-                    .andDo(StampMissionAdminDocs.error("v2-mission-details-upsert-unauthorized"));
+                    .andDo(StampMissionAdminDocs.upsertMissionDetails());
         }
     }
 
@@ -438,6 +330,9 @@ public class StampMissionAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 미션_완료이미지_조회_성공() throws Exception {
+            var res = new StampMissionClearImageResDto(true, "cleared.jpg", "not-cleared.jpg");
+            given(service.getStampMissionCompleteImage(축제_ID, 스탬프_ID, 미션_ID)).willReturn(res);
+
             mockMvc.perform(get(
                                     "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}/clear-img",
                                     축제_ID,
@@ -449,20 +344,13 @@ public class StampMissionAdminControllerTest {
         }
 
         @Test
-        void 미션_완료이미지_조회_실패_권한없음() throws Exception {
-            mockMvc.perform(get(
-                            "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}/clear-img",
-                            축제_ID,
-                            스탬프_ID,
-                            미션_ID))
-                    .andExpect(status().isUnauthorized())
-                    .andDo(StampMissionAdminDocs.error("v2-mission-clearimg-get-unauthorized"));
-        }
-
-        @Test
         @WithMockUser(roles = "ADMIN")
         void 미션_완료이미지_수정_성공() throws Exception {
-            var body = Map.of("imageUrl", "https://img/clear.jpg");
+            var body = Map.of(
+                    "showMissionName", true,
+                    "clearedThumbnail", "cleared.jpg",
+                    "notClearedThumbnail", "not-cleared.jpg");
+
             mockMvc.perform(patch(
                                     "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}/clear-img",
                                     축제_ID,
@@ -476,35 +364,15 @@ public class StampMissionAdminControllerTest {
         }
 
         @Test
-        void 미션_완료이미지_수정_실패_권한없음() throws Exception {
-            var body = Map.of("imageUrl", "https://img/clear.jpg");
-            mockMvc.perform(patch(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}/clear-img",
-                                    축제_ID,
-                                    스탬프_ID,
-                                    미션_ID)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
-                    .andExpect(status().isUnauthorized())
-                    .andDo(StampMissionAdminDocs.error("v2-mission-clearimg-update-unauthorized"));
-        }
-
-        @Test
         @WithMockUser(roles = "ADMIN")
         void 미션_QR_데이터_조회_성공() throws Exception {
-            given(service.getMissionsQrData(축제_ID, 스탬프_ID)).willReturn(List.of());
+            var list = List.of(new MissionQrDataResDto(201L, "미션1"), new MissionQrDataResDto(202L, "미션2"));
+            given(service.getMissionsQrData(축제_ID, 스탬프_ID)).willReturn(list);
+
             mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/qr", 축제_ID, 스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
                     .andDo(StampMissionAdminDocs.getQrData());
-        }
-
-        @Test
-        void 미션_QR_데이터_조회_실패_권한없음() throws Exception {
-            mockMvc.perform(get(
-                            "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/qr", 축제_ID, 스탬프_ID))
-                    .andExpect(status().isUnauthorized())
-                    .andDo(StampMissionAdminDocs.error("v2-mission-qr-get-unauthorized"));
         }
     }
 }

@@ -19,36 +19,35 @@ public class StampMissionPrize {
     private int requiredCount;
 
     @Column(nullable = false, length = 1000)
-    private String rewardDescription;
+    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "setting_id", nullable = false)
-    private StampMissionBasicSetting setting;
+    @JoinColumn(name = "stamp_id")
+    private Stamp stamp;
 
     @Builder
-    private StampMissionPrize(int requiredCount, String rewardDescription, StampMissionBasicSetting setting) {
+    private StampMissionPrize(int requiredCount, String description, Stamp stamp) {
         this.requiredCount = requiredCount;
-        this.rewardDescription = rewardDescription;
-        this.setting = setting;
-        registerSettings(setting);
+        this.description = description;
+        this.stamp = stamp;
+        registerSettings(stamp);
     }
 
-    private void registerSettings(StampMissionBasicSetting setting) {
-        this.setting = setting;
-        setting.getPrizes().add(this);
+    private void registerSettings(Stamp stamp) {
+        this.stamp = stamp;
+        stamp.getPrizes().add(this);
     }
 
-    public void update(int requiredCount, String rewardDescription) {
+    public void update(int requiredCount, String description) {
         this.requiredCount = requiredCount;
-        this.rewardDescription = rewardDescription;
+        this.description = description;
     }
 
-    public static StampMissionPrize from(
-            int requiredCount, String rewardDescription, StampMissionBasicSetting setting) {
+    public static StampMissionPrize from(int requiredCount, String description, Stamp stamp) {
         return StampMissionPrize.builder()
-                .rewardDescription(rewardDescription)
+                .description(description)
                 .requiredCount(requiredCount)
-                .setting(setting)
+                .stamp(stamp)
                 .build();
     }
 }

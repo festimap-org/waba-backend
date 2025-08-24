@@ -14,7 +14,7 @@ public class StampMissionAdminDocs {
 
     private static final String TAG = "스탬프투어 미션(v2)";
 
-    // ---------- 미션 생성/목록 ----------
+    // ------ 미션 생성/목록 ------
     public static RestDocumentationResultHandler createMission() {
         return document(
                 "v2-mission-create",
@@ -40,11 +40,12 @@ public class StampMissionAdminDocs {
                                 parameterWithName("festivalId").description("축제 ID"),
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
-                        // 응답 필드는 DTO 확정 후 추가 가능
+                        .responseFields(
+                                fieldWithPath("[].missionId").type(NUMBER).description("미션 ID"),
+                                fieldWithPath("[].title").type(STRING).description("제목"))
                         .build()));
     }
 
-    // ---------- 기본 설정 ----------
     public static RestDocumentationResultHandler getBasicSettings() {
         return document(
                 "v2-mission-basic-get",
@@ -55,6 +56,17 @@ public class StampMissionAdminDocs {
                                 parameterWithName("festivalId").description("축제 ID"),
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .responseFields(
+                                fieldWithPath("missionCount").type(NUMBER).description("미션 총 개수"),
+                                fieldWithPath("layout").type(STRING).description("기본 상세 레이아웃"),
+                                fieldWithPath("prizes").type(ARRAY).description("리워드(상품) 목록"),
+                                fieldWithPath("prizes[].id").type(NUMBER).description("상품 ID"),
+                                fieldWithPath("prizes[].requiredCount")
+                                        .type(NUMBER)
+                                        .description("필요 스탬프 수"),
+                                fieldWithPath("prizes[].description")
+                                        .type(STRING)
+                                        .description("상품 설명"))
                         .build()));
     }
 
@@ -76,7 +88,7 @@ public class StampMissionAdminDocs {
                         .build()));
     }
 
-    // ---------- 리워드(상품) ----------
+    // ------ 리워드(상품) ------
     public static RestDocumentationResultHandler createPrize() {
         return document(
                 "v2-mission-prize-create",
@@ -124,7 +136,7 @@ public class StampMissionAdminDocs {
                         .build()));
     }
 
-    // ---------- 미션 상세설정 ----------
+    // ------ 미션 상세 설정 ------
     public static RestDocumentationResultHandler getMissionDetails() {
         return document(
                 "v2-mission-details-get",
@@ -136,6 +148,50 @@ public class StampMissionAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"),
                                 parameterWithName("missionId").description("미션 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .responseFields(
+                                fieldWithPath("templateId").type(NUMBER).description("템플릿 ID"),
+                                fieldWithPath("layout").type(STRING).description("디자인 레이아웃"),
+                                fieldWithPath("showMissionName").type(BOOLEAN).description("제목 표시"),
+                                fieldWithPath("missionName").type(STRING).description("미션 제목"),
+                                fieldWithPath("showSuccessCount").type(BOOLEAN).description("성공횟수 표시"),
+                                fieldWithPath("mediaSpec").type(STRING).description("미디어 스펙"),
+                                fieldWithPath("mediaUrl")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("미디어 URL"),
+                                fieldWithPath("showExtraInfos").type(BOOLEAN).description("추가정보 표시"),
+                                fieldWithPath("extraInfoType")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("추가정보 레이아웃"),
+                                fieldWithPath("extraInfos").type(ARRAY).description("추가정보 요약 목록"),
+                                fieldWithPath("extraInfos[].extraInfoId")
+                                        .type(NUMBER)
+                                        .description("추가정보 ID"),
+                                fieldWithPath("extraInfos[].titleText")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("제목"),
+                                fieldWithPath("extraInfos[].bodyText")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("본문"),
+                                fieldWithPath("showButtons").type(BOOLEAN).description("버튼 표시"),
+                                fieldWithPath("buttonLayout").type(STRING).description("버튼 레이아웃"),
+                                fieldWithPath("buttons").type(ARRAY).description("버튼 목록"),
+                                fieldWithPath("buttons[].sequenceIndex")
+                                        .type(NUMBER)
+                                        .description("순서(0-base)"),
+                                fieldWithPath("buttons[].content").type(STRING).description("라벨"),
+                                fieldWithPath("buttons[].iconImgUrl")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("아이콘 URL"),
+                                fieldWithPath("buttons[].action").type(STRING).description("동작"),
+                                fieldWithPath("buttons[].targetUrl")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("URL"))
                         .build()));
     }
 
@@ -145,25 +201,20 @@ public class StampMissionAdminDocs {
                 resource(builder()
                         .tag(TAG)
                         .summary("미션 상세 설정 업서트")
-                        .description("미션 상세 페이지의 템플릿/추가정보/버튼 구성을 한 번에 갱신합니다.")
+                        .description("템플릿/추가정보/버튼을 일괄 갱신합니다.")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
                                 parameterWithName("stampId").description("스탬프투어 ID (>=1)"),
                                 parameterWithName("missionId").description("미션 ID (>=1)"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("layout")
-                                        .type(STRING)
-                                        .description("세부 디자인 레이아웃(enum: CARD, IMAGE_TOP, IMAGE_SIDE, TEXT_ONLY)"),
+                                fieldWithPath("layout").type(STRING).description("디자인 레이아웃"),
                                 fieldWithPath("missionTitle").type(STRING).description("미션 제목"),
-                                fieldWithPath("showMissionName").type(BOOLEAN).description("제목 표시 여부"),
-                                fieldWithPath("showSuccessCount").type(BOOLEAN).description("성공 횟수(기준) 표시 여부"),
-                                fieldWithPath("showExtraInfos").type(BOOLEAN).description("추가정보 영역 표시 여부"),
-                                fieldWithPath("showButtons").type(BOOLEAN).description("버튼 영역 표시 여부"),
-                                fieldWithPath("missionMediaSpec")
-                                        .type(STRING)
-                                        .description(
-                                                "미디어 스펙(enum: NONE, ONE_TO_ONE, SIXTEEN_TO_NINE, RATIO_NO_CHANGE)"),
+                                fieldWithPath("showMissionName").type(BOOLEAN).description("제목 표시"),
+                                fieldWithPath("showSuccessCount").type(BOOLEAN).description("성공횟수 표시"),
+                                fieldWithPath("showExtraInfos").type(BOOLEAN).description("추가정보 표시"),
+                                fieldWithPath("showButtons").type(BOOLEAN).description("버튼 표시"),
+                                fieldWithPath("missionMediaSpec").type(STRING).description("미디어 스펙"),
                                 fieldWithPath("mediaUrl")
                                         .type(STRING)
                                         .optional()
@@ -171,60 +222,38 @@ public class StampMissionAdminDocs {
                                 fieldWithPath("extraInfoType")
                                         .type(STRING)
                                         .optional()
-                                        .description("추가정보 레이아웃(enum: LIST)"),
+                                        .description("추가정보 레이아웃"),
                                 fieldWithPath("extraInfos")
                                         .type(ARRAY)
                                         .optional()
-                                        .description("추가정보 항목 배열(타입에 따라 페이로드 달라짐)"),
+                                        .description("추가정보 배열"),
                                 fieldWithPath("extraInfos[].titleText")
                                         .type(STRING)
                                         .optional()
-                                        .description("항목 제목"),
+                                        .description("제목"),
                                 fieldWithPath("extraInfos[].bodyText")
                                         .type(STRING)
                                         .optional()
-                                        .description("본문/설명"),
-                                fieldWithPath("extraInfos[].freeText")
-                                        .type(STRING)
-                                        .optional()
-                                        .description("자유 텍스트"),
-                                fieldWithPath("extraInfos[].displayOrder")
-                                        .type(NUMBER)
-                                        .optional()
-                                        .description("표시 순서"),
-                                fieldWithPath("extraInfos[].images")
-                                        .type(ARRAY)
-                                        .optional()
-                                        .description("이미지 리스트"),
-                                fieldWithPath("extraInfos[].images[].imageUrl")
-                                        .type(STRING)
-                                        .optional()
-                                        .description("이미지 URL"),
-                                fieldWithPath("extraInfos[].images[].displayOrder")
-                                        .type(NUMBER)
-                                        .optional()
-                                        .description("이미지 표시 순서"),
-                                fieldWithPath("buttonLayout")
-                                        .type(STRING)
-                                        .description("버튼 레이아웃(enum: ONE, TWO_ASYM, TWO_SYM, TWO_UP_DOWN, NONE)"),
+                                        .description("본문"),
+                                fieldWithPath("buttonLayout").type(STRING).description("버튼 레이아웃"),
                                 fieldWithPath("buttons").type(ARRAY).optional().description("버튼 목록"),
                                 fieldWithPath("buttons[].sequenceIndex")
                                         .type(NUMBER)
-                                        .description("버튼 순서(0-base)"),
+                                        .description("순서(0-base)"),
                                 fieldWithPath("buttons[].iconImg")
                                         .type(STRING)
                                         .optional()
                                         .description("아이콘 이미지"),
-                                fieldWithPath("buttons[].content").type(STRING).description("버튼 라벨"),
-                                fieldWithPath("buttons[].action").type(STRING).description("동작(enum: OPEN_URL 등)"),
+                                fieldWithPath("buttons[].content").type(STRING).description("라벨"),
+                                fieldWithPath("buttons[].action").type(STRING).description("동작"),
                                 fieldWithPath("buttons[].targetUrl")
                                         .type(STRING)
                                         .optional()
-                                        .description("OPEN_URL 대상 URL"))
+                                        .description("URL(OPEN_URL)"))
                         .build()));
     }
 
-    // ---------- 완료 이미지 / QR ----------
+    // ------ 완료 이미지 / QR ------
     public static RestDocumentationResultHandler getMissionClearImg() {
         return document(
                 "v2-mission-clearimg-get",
@@ -236,6 +265,16 @@ public class StampMissionAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"),
                                 parameterWithName("missionId").description("미션 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .responseFields(
+                                fieldWithPath("showMissionName").type(BOOLEAN).description("제목 표시"),
+                                fieldWithPath("clearedThumbnail")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("완료 썸네일"),
+                                fieldWithPath("notClearedThumbnail")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("미완료 썸네일"))
                         .build()));
     }
 
@@ -250,7 +289,16 @@ public class StampMissionAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"),
                                 parameterWithName("missionId").description("미션 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
-                        .requestFields(fieldWithPath("imageUrl").type(STRING).description("완료 이미지 URL"))
+                        .requestFields(
+                                fieldWithPath("showMissionName").type(BOOLEAN).description("제목 표시"),
+                                fieldWithPath("clearedThumbnail")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("완료 썸네일"),
+                                fieldWithPath("notClearedThumbnail")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("미완료 썸네일"))
                         .build()));
     }
 
@@ -264,11 +312,13 @@ public class StampMissionAdminDocs {
                                 parameterWithName("festivalId").description("축제 ID"),
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
-                        // 응답 필드는 DTO 확정 후 추가
+                        .responseFields(
+                                fieldWithPath("[].missionId").type(NUMBER).description("미션 ID"),
+                                fieldWithPath("[].title").type(STRING).description("미션 제목"))
                         .build()));
     }
 
-    // ---------- 에러 ----------
+    // ------ 에러 ------
     public static RestDocumentationResultHandler error(String id) {
         return document(
                 id,

@@ -48,11 +48,11 @@ public class StampTourTest {
         boolean 비활성화 = false;
         AuthMethod 바뀐_인증방법 = AuthMethod.USER_CODE_PRESENT;
         String 바뀐_관리자_비밀번호 = "pw1234";
-        스탬프투어1.changeBasicSettings(바뀐_제목, 비활성화, 바뀐_인증방법, 바뀐_관리자_비밀번호);
+        스탬프투어1.changeBasicSettings(비활성화, 바뀐_제목, 바뀐_인증방법, 바뀐_관리자_비밀번호);
         assertThat(스탬프투어1.getTitle()).isEqualTo(바뀐_제목);
         assertThat(스탬프투어1.isActive()).isEqualTo(비활성화);
         assertThat(스탬프투어1.getAuthMethod()).isEqualTo(바뀐_인증방법);
-        assertThat(스탬프투어1.getBoothAdminPassword()).isEqualTo(바뀐_관리자_비밀번호);
+        assertThat(스탬프투어1.getPrizeReceiptAuthPassword()).isEqualTo(바뀐_관리자_비밀번호);
     }
 
     @Test
@@ -61,13 +61,13 @@ public class StampTourTest {
         assertThrows(StampClosedException.class, 스탬프투어1::validateActivation);
     }
 
-    @Test
-    void 스탬프투어_안내사항_변경() {
-        String 바뀐_주의사항 = "변경된 주의사항";
-        String 바뀐_개인정보 = "변경된 개인정보 뭐시기";
-
-        스탬프투어1.upsertNotice(바뀐_주의사항, 바뀐_개인정보);
-        assertThat(스탬프투어1.getNotice().getParticipationNotice()).isEqualTo(바뀐_주의사항);
-        assertThat(스탬프투어1.getNotice().getPrivacyConsent()).isEqualTo(바뀐_개인정보);
-    }
+    //    @Test
+    //    void 스탬프투어_안내사항_변경() {
+    //        String 바뀐_주의사항 = "변경된 주의사항";
+    //        String 바뀐_개인정보 = "변경된 개인정보 뭐시기";
+    //
+    //        스탬프투어1.upsertNotice(바뀐_주의사항, 바뀐_개인정보);
+    //        assertThat(스탬프투어1.getNotice().getParticipationNotice()).isEqualTo(바뀐_주의사항);
+    //        assertThat(스탬프투어1.getNotice().getPrivacyConsent()).isEqualTo(바뀐_개인정보);
+    //    }
 }

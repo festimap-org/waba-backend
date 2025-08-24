@@ -33,7 +33,7 @@ public class ParticipateGuidePageTest {
     @Test
     void 참여가이드_페이지_1_생성_검증() {
         assertThat(참여방법_페이지.getTitle()).isEqualTo(참여방법_페이지1_제목);
-        assertThat(참여방법_페이지.getGuideMediaSpec()).isEqualTo(참여방법_페이지1_미디어_제공_형식);
+        assertThat(참여방법_페이지.getMediaSpec()).isEqualTo(참여방법_페이지1_미디어_제공_형식);
         assertThat(참여방법_페이지.getMediaUrl()).isEqualTo(참여방법_페이지1_미디어_url);
         assertThat(참여방법_페이지.getSummary()).isEqualTo(참여방법_페이지1_요약);
         assertThat(참여방법_페이지.getDetails()).isEqualTo(참여방법_페이지1_상세);
@@ -54,7 +54,7 @@ public class ParticipateGuidePageTest {
         var 참여가이드_페이지_수정 = 페이지_수정();
         참여방법_페이지.update(참여가이드_페이지_수정);
         assertThat(참여방법_페이지.getTitle()).isEqualTo(참여방법_수정_제목);
-        assertThat(참여방법_페이지.getGuideMediaSpec()).isEqualTo(참여방법_수정_미디어_제공_형식);
+        assertThat(참여방법_페이지.getMediaSpec()).isEqualTo(참여방법_수정_미디어_제공_형식);
         assertThat(참여방법_페이지.getMediaUrl()).isEqualTo(참여방법_수정_미디어_url);
         assertThat(참여방법_페이지.getSummary()).isEqualTo(참여방법_수정_요약);
         assertThat(참여방법_페이지.getDetails()).isEqualTo(참여방법_수정_상세);

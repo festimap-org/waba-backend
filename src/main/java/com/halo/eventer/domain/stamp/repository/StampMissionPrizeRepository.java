@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.halo.eventer.domain.stamp.StampMissionPrize;
 
 public interface StampMissionPrizeRepository extends JpaRepository<StampMissionPrize, Long> {
-    List<StampMissionPrize> findAllBySettingIdOrderByRequiredCountAsc(Long settingId);
+    List<StampMissionPrize> findAllByStampIdOrderByRequiredCountAsc(Long stampId);
 }

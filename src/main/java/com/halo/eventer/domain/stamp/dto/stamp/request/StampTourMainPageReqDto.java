@@ -19,7 +19,7 @@ public class StampTourMainPageReqDto {
     private MainPageDesignTemplate designTemplate;
 
     @NotEmpty
-    private String backgroundImg;
+    private String backgroundImgUrl;
 
     @NotNull
     private ButtonLayout buttonLayout;

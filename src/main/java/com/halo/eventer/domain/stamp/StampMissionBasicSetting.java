@@ -1,7 +1,5 @@
 package com.halo.eventer.domain.stamp;
 
-import java.util.ArrayList;
-import java.util.List;
 import jakarta.persistence.*;
 
 import com.halo.eventer.domain.stamp.dto.stamp.enums.MissionDetailsDesignLayout;
@@ -28,17 +26,13 @@ public class StampMissionBasicSetting {
     @JoinColumn(name = "stamp_id", nullable = false, unique = true)
     private Stamp stamp;
 
-    @OneToMany(mappedBy = "setting", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("requiredCount ASC")
-    private List<StampMissionPrize> prizes = new ArrayList<>();
-
     @Builder
     private StampMissionBasicSetting(Stamp stamp) {
         this.stamp = stamp;
         stamp.registerMissionBasicSetting(this);
     }
 
-    public void upsertBasic(int missionCount, MissionDetailsDesignLayout layout) {
+    public void updateBasic(int missionCount, MissionDetailsDesignLayout layout) {
         this.missionCount = missionCount;
         this.defaultDetailLayout = layout;
     }

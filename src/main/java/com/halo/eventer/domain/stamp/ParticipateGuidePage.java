@@ -23,7 +23,7 @@ public class ParticipateGuidePage implements DisplayOrderUpdatable {
     private String title;
 
     @Enumerated(EnumType.STRING)
-    private MediaSpec guideMediaSpec = MediaSpec.NONE;
+    private MediaSpec mediaSpec = MediaSpec.NONE;
 
     private String mediaUrl;
     private String summary;
@@ -41,14 +41,14 @@ public class ParticipateGuidePage implements DisplayOrderUpdatable {
     @Builder
     private ParticipateGuidePage(
             String title,
-            MediaSpec guideMediaSpec,
+            MediaSpec mediaSpec,
             String mediaUrl,
             String summary,
             String details,
             String additional,
             ParticipateGuide participateGuide) {
         this.title = title;
-        this.guideMediaSpec = guideMediaSpec;
+        this.mediaSpec = mediaSpec;
         this.mediaUrl = mediaUrl;
         this.summary = summary;
         this.details = details;
@@ -59,7 +59,7 @@ public class ParticipateGuidePage implements DisplayOrderUpdatable {
 
     public void update(StampTourParticipateGuidePageReqDto request) {
         this.title = request.getTitle();
-        this.guideMediaSpec = request.getGuideMediaSpec();
+        this.mediaSpec = request.getMediaSpec();
         this.mediaUrl = request.getMediaUrl();
         this.summary = request.getSummary();
         this.details = request.getDetails();
@@ -77,13 +77,12 @@ public class ParticipateGuidePage implements DisplayOrderUpdatable {
 
     public static ParticipateGuidePage from(
             String title,
-            MediaSpec guideMediaSpec,
+            MediaSpec mediaSpec,
             String mediaUrl,
             String summary,
             String details,
             String additional,
             ParticipateGuide participateGuide) {
-        return new ParticipateGuidePage(
-                title, guideMediaSpec, mediaUrl, summary, details, additional, participateGuide);
+        return new ParticipateGuidePage(title, mediaSpec, mediaUrl, summary, details, additional, participateGuide);
     }
 }

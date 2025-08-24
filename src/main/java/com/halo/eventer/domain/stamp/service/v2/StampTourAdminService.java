@@ -13,17 +13,18 @@ import com.halo.eventer.domain.stamp.*;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.PageType;
 import com.halo.eventer.domain.stamp.dto.stamp.request.*;
 import com.halo.eventer.domain.stamp.dto.stamp.response.*;
+import com.halo.eventer.domain.stamp.exception.PageTemplateNotFoundException;
 import com.halo.eventer.domain.stamp.exception.ParticipateGuideNotFoundException;
 import com.halo.eventer.domain.stamp.exception.ParticipateGuidePageNotFoundException;
 import com.halo.eventer.domain.stamp.exception.StampNotFoundException;
-import com.halo.eventer.domain.stamp.repository.PageTemplateRepository;
-import com.halo.eventer.domain.stamp.repository.ParticipateGuidePageRepository;
-import com.halo.eventer.domain.stamp.repository.ParticipateGuideRepository;
-import com.halo.eventer.domain.stamp.repository.StampRepository;
+import com.halo.eventer.domain.stamp.repository.*;
 import com.halo.eventer.global.common.dto.OrderUpdateRequest;
 import com.halo.eventer.global.util.DisplayOrderUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import static com.halo.eventer.domain.stamp.dto.stamp.enums.PageType.LANDING;
+import static com.halo.eventer.domain.stamp.dto.stamp.enums.PageType.MAIN;
 
 @Service
 @RequiredArgsConstructor
@@ -32,98 +33,103 @@ public class StampTourAdminService {
 
     private final FestivalRepository festivalRepository;
     private final StampRepository stampRepository;
+    private final StampNoticeRepository stampNoticeRepository;
     private final PageTemplateRepository pageTemplateRepository;
     private final ParticipateGuideRepository participateGuideRepository;
     private final ParticipateGuidePageRepository participateGuidePageRepository;
 
     @Transactional
-    public void createStampTourByFestival(long festivalId, String title) {
+    public void createStampTourByFestival(long festivalId, StampTourCreateReqDto request) {
         Festival festival = loadFestivalOrThrow(festivalId);
-        Stamp stamp = Stamp.createWith(festival, title);
+        Stamp stamp = Stamp.createWith(festival, request.getTitle());
+        stamp.changeShowStamp(request.isShowStamp());
         stampRepository.save(stamp);
     }
 
     @Transactional(readOnly = true)
     public List<StampTourSummaryResDto> getStampTourListByFestival(long festivalId) {
-        Festival festival = loadFestivalOrThrow(festivalId); // TODO : 쿼리 1개로 축제의 모든 스탬프투어 조회하도록
-        return StampTourSummaryResDto.from(festival.getStamps());
+        Festival festival = loadFestivalOrThrow(festivalId);
+        return StampTourSummaryResDto.fromEntities(festival.getStamps());
+    }
+
+    @Transactional
+    public void deleteStampTour(long festivalId, long stampId) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        stampRepository.delete(stamp);
     }
 
     @Transactional(readOnly = true)
     public StampTourSettingBasicResDto getStampTourSettingBasicByFestival(long festivalId, long stampId) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
+        Stamp stamp = ensureStamp(festivalId, stampId);
         return StampTourSettingBasicResDto.from(stamp);
     }
 
     @Transactional
     public void updateBasicSettings(long festivalId, long stampId, final StampTourBasicUpdateReqDto request) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
+        Stamp stamp = ensureStamp(festivalId, stampId);
         stamp.changeBasicSettings(
-                request.getNewTitle(), request.isActivation(), request.getAuthMethod(), request.getBoothPassword());
+                request.isStampActivate(),
+                request.getTitle(),
+                request.getAuthMethod(),
+                request.getPrizeReceiptAuthPassword());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public StampTourNotificationResDto getStampTourNotification(long festivalId, long stampId) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
-        StampNotice stampNotice = stamp.getNotice();
-        return StampTourNotificationResDto.from(stampNotice);
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        var existing = stampNoticeRepository.findAllByStampIdOrderByIdDesc(stampId);
+        if (!existing.isEmpty()) {
+            return StampTourNotificationResDto.from(existing.get(0));
+        }
+        StampNotice created = StampNotice.defaultNotice(stamp);
+        stampNoticeRepository.save(created);
+        return StampTourNotificationResDto.from(created);
     }
 
     @Transactional
     public void updateStampTourNotification(
             long festivalId, long stampId, String cautionContent, String personalInformationContent) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
-        stamp.upsertNotice(cautionContent, personalInformationContent);
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        StampNotice stampNotice =
+                stampNoticeRepository.findAllByStampIdOrderByIdDesc(stampId).get(0); // TODO : 하드 코딩 수정 필요
+        stampNotice.update(cautionContent, personalInformationContent);
     }
 
     @Transactional
     public StampTourLandingPageResDto getLandingPageSettings(long festivalId, long stampId) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
+        Stamp stamp = ensureStamp(festivalId, stampId);
         PageTemplate pageTemplate = pageTemplateRepository
-                .findFirstByStampIdAndType(stampId, PageType.LANDING)
+                .findFirstByStampIdAndType(stampId, LANDING)
                 .orElseGet(() -> createNewLandingTemplate(stamp));
         return StampTourLandingPageResDto.from(pageTemplate);
     }
 
     @Transactional
     public void updateLandingPage(long festivalId, long stampId, StampTourLandingPageReqDto request) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
-        PageTemplate pageTemplate = pageTemplateRepository
-                .findFirstByStampIdAndType(stampId, PageType.LANDING)
-                .orElseGet(() -> createNewLandingTemplate(stamp));
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        PageTemplate pageTemplate = loadPageTemplateOrThrow(stampId, LANDING);
         pageTemplate.updateLandingPageTemplate(request);
     }
 
     @Transactional
     public StampTourMainPageResDto getMainPageSettings(long festivalId, long stampId) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
+        Stamp stamp = ensureStamp(festivalId, stampId);
         PageTemplate pageTemplate = pageTemplateRepository
-                .findFirstByStampIdAndType(stampId, PageType.MAIN)
+                .findFirstByStampIdAndType(stampId, MAIN)
                 .orElseGet(() -> createNewMainTemplate(stamp));
         return StampTourMainPageResDto.from(pageTemplate);
     }
 
     @Transactional
     public void updateMainPageSettings(long festivalId, long stampId, StampTourMainPageReqDto request) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
-        PageTemplate pageTemplate = pageTemplateRepository
-                .findFirstByStampIdAndType(stampId, PageType.MAIN)
-                .orElseGet(() -> createNewMainTemplate(stamp));
+        ensureStamp(festivalId, stampId);
+        PageTemplate pageTemplate = loadPageTemplateOrThrow(stampId, MAIN);
         pageTemplate.updateMainPageTemplate(request);
     }
 
     @Transactional
     public StampTourParticipateGuideResDto getParticipateGuide(long festivalId, long stampId) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
+        Stamp stamp = ensureStamp(festivalId, stampId);
         ParticipateGuide guide = participateGuideRepository
                 .findFirstByStampId(stampId)
                 .orElseGet(() -> createNewParticipateGuide(stamp));
@@ -131,41 +137,38 @@ public class StampTourAdminService {
     }
 
     @Transactional
-    public void upsertParticipateGuide(long festivalId, long stampId, StampTourParticipateGuideReqDto request) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
+    public void updateParticipateGuide(long festivalId, long stampId, StampTourParticipateGuideReqDto request) {
+        ensureStamp(festivalId, stampId);
         ParticipateGuide guide = loadParticipateGuideOrThrow(stampId);
         guide.update(request.getTemplate(), request.getMethod());
     }
 
     @Transactional
     public void deleteParticipateGuidePage(long festivalId, long stampId, long pageId) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
+        ensureStamp(festivalId, stampId);
         ParticipateGuidePage page = loadParticipateGuidePageOrThrow(pageId);
         participateGuidePageRepository.delete(page);
     }
 
     @Transactional
     public void createParticipateGuidePage(long festivalId, long stampId, StampTourParticipateGuidePageReqDto request) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
+        ensureStamp(festivalId, stampId);
         ParticipateGuide guide = loadParticipateGuideOrThrow(stampId);
-        ParticipateGuidePage.from(
+        ParticipateGuidePage page = ParticipateGuidePage.from(
                 request.getTitle(),
-                request.getGuideMediaSpec(),
+                request.getMediaSpec(),
                 request.getMediaUrl(),
                 request.getSummary(),
                 request.getDetails(),
                 request.getAdditional(),
                 guide);
+        participateGuidePageRepository.save(page);
     }
 
     @Transactional(readOnly = true)
     public ParticipateGuidePageDetailsResDto getParticipateGuidePageDetails(
             long festivalId, long stampId, long pageId) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
+        ensureStamp(festivalId, stampId);
         ParticipateGuidePage page = loadParticipateGuidePageOrThrow(pageId);
         return ParticipateGuidePageDetailsResDto.from(page);
     }
@@ -173,8 +176,7 @@ public class StampTourAdminService {
     @Transactional
     public void updateParticipateGuidePage(
             long festivalId, long stampId, long pageId, StampTourParticipateGuidePageReqDto request) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
+        ensureStamp(festivalId, stampId);
         ParticipateGuidePage page = loadParticipateGuidePageOrThrow(pageId);
         page.update(request);
     }
@@ -182,8 +184,7 @@ public class StampTourAdminService {
     @Transactional
     public List<ParticipateGuidePageSummaryResDto> updateDisplayOrder(
             long festivalId, long stampId, List<OrderUpdateRequest> orderRequests) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
+        ensureStamp(festivalId, stampId);
         ParticipateGuide guide = loadParticipateGuideOrThrow(stampId);
         List<ParticipateGuidePage> pages = guide.getParticipateGuidePages();
         DisplayOrderUtils.updateDisplayOrder(pages, orderRequests);
@@ -205,12 +206,24 @@ public class StampTourAdminService {
         return participateGuideRepository.save(participationGuide);
     }
 
+    private Stamp ensureStamp(long festivalId, long stampId) {
+        Stamp stamp = loadStampOrThrow(stampId);
+        stamp.ensureStampInFestival(festivalId);
+        return stamp;
+    }
+
     private Festival loadFestivalOrThrow(long id) {
         return festivalRepository.findById(id).orElseThrow(() -> new FestivalNotFoundException(id));
     }
 
     private Stamp loadStampOrThrow(long stampId) {
         return stampRepository.findById(stampId).orElseThrow(() -> new StampNotFoundException(stampId));
+    }
+
+    private PageTemplate loadPageTemplateOrThrow(long stampId, PageType pageType) {
+        return pageTemplateRepository
+                .findFirstByStampIdAndType(stampId, pageType)
+                .orElseThrow(() -> new PageTemplateNotFoundException(stampId));
     }
 
     private ParticipateGuide loadParticipateGuideOrThrow(long stampId) {

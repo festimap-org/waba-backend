@@ -29,7 +29,9 @@ public class Stamp {
     @Column(nullable = false)
     private int finishCount = 0;
 
-    private String boothAdminPassword;
+    private String prizeReceiptAuthPassword;
+
+    private boolean showStamp = true;
 
     @Enumerated(EnumType.STRING)
     private AuthMethod authMethod = AuthMethod.TAG_SCAN;
@@ -38,9 +40,8 @@ public class Stamp {
     @JoinColumn(name = "festival_id")
     private Festival festival;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "stamp_notice_id")
-    private StampNotice notice;
+    @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<StampNotice> stampNotices = new ArrayList<>();
 
     @OneToOne(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private StampMissionBasicSetting basicSetting;
@@ -56,6 +57,10 @@ public class Stamp {
 
     @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Mission> missions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("requiredCount ASC")
+    private List<StampMissionPrize> prizes = new ArrayList<>();
 
     private Stamp(Festival festival) {
         this.festival = festival;
@@ -95,27 +100,22 @@ public class Stamp {
         this.basicSetting = setting;
     }
 
-    public void changeBasicSettings(String newTitle, boolean activation, AuthMethod authMethod, String boothPassword) {
+    public void changeBasicSettings(
+            boolean activation, String newTitle, AuthMethod authMethod, String prizeReceiptAuthPassword) {
         this.title = newTitle;
         this.isActive = activation;
         this.authMethod = authMethod;
-        this.boothAdminPassword = boothPassword;
-    }
-
-    public void upsertNotice(String caution, String privacy) {
-        String safeCaution = (caution == null) ? "" : caution;
-        String safePrivacy = (privacy == null) ? "" : privacy;
-        if (this.notice == null) {
-            this.notice = StampNotice.from(this, safeCaution, safePrivacy);
-        } else {
-            this.notice.upsert(safeCaution, safePrivacy);
-        }
+        this.prizeReceiptAuthPassword = prizeReceiptAuthPassword;
     }
 
     public void ensureStampInFestival(long festivalId) {
         if (this.festival == null || !this.festival.getId().equals(festivalId)) {
             throw new BaseException(ErrorCode.STAMP_NOT_IN_FESTIVAL);
         }
+    }
+
+    public void changeShowStamp(boolean show) {
+        this.showStamp = show;
     }
 
     public static Stamp create(Festival festival) {

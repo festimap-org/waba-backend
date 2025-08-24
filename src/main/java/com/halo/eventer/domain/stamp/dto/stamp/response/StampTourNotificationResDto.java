@@ -13,6 +13,7 @@ public class StampTourNotificationResDto {
     private String personalInformationContent;
 
     public static StampTourNotificationResDto from(StampNotice stampNotice) {
-        return new StampTourNotificationResDto(stampNotice.getParticipationNotice(), stampNotice.getPrivacyConsent());
+        return new StampTourNotificationResDto(
+                stampNotice.getCautionContent(), stampNotice.getPersonalInformationContent());
     }
 }

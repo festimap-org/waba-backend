@@ -18,7 +18,7 @@ public class StampTourParticipateGuidePageReqDto {
     private String title;
 
     @NotNull
-    private MediaSpec guideMediaSpec;
+    private MediaSpec mediaSpec;
 
     private String mediaUrl;
 

@@ -18,10 +18,10 @@ public class StampTourLandingPageReqDto {
     private LandingPageDesignTemplate designTemplate;
 
     @NotEmpty
-    private String backgroundImg;
+    private String backgroundImgUrl;
 
     @NotEmpty
-    private String iconImg;
+    private String iconImgUrl;
 
     @NotEmpty
     private String description;

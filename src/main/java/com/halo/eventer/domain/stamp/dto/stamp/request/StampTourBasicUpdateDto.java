@@ -3,7 +3,6 @@ package com.halo.eventer.domain.stamp.dto.stamp.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import com.halo.eventer.domain.stamp.dto.stamp.enums.AuthMethod;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,16 +10,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StampTourBasicUpdateReqDto {
-    @NotNull
-    private boolean isStampActivate;
-
+public class StampTourBasicUpdateDto {
     @NotBlank
-    private String title;
+    private String newTitle;
 
     @NotNull
-    private AuthMethod authMethod;
+    private boolean activation;
 
     @NotBlank
-    private String prizeReceiptAuthPassword;
+    private String authMethod;
+
+    @NotBlank
+    private String boothPassword;
 }

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class ParticipateGuidePageDetailsResDto {
     private long pageId;
     private String title;
-    private MediaSpec guideMediaSpec;
+    private MediaSpec mediaSpec;
     private String mediaUrl;
     private String summary;
     private String details;
@@ -24,7 +24,7 @@ public class ParticipateGuidePageDetailsResDto {
         return new ParticipateGuidePageDetailsResDto(
                 page.getId(),
                 page.getTitle(),
-                page.getGuideMediaSpec(),
+                page.getMediaSpec(),
                 page.getMediaUrl(),
                 page.getSummary(),
                 page.getDetails(),
