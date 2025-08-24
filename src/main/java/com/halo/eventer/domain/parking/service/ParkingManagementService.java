@@ -8,7 +8,11 @@ import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.image.dto.FileDto;
 import com.halo.eventer.domain.parking.ParkingManagement;
-import com.halo.eventer.domain.parking.dto.*;
+import com.halo.eventer.domain.parking.dto.common.DisplayOrderChangeReqDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementReqDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementResDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementSubPageResDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingSubPageReqDto;
 import com.halo.eventer.domain.parking.enums.ParkingInfoType;
 import com.halo.eventer.domain.parking.exception.ParkingManagementNotFoundException;
 import com.halo.eventer.domain.parking.repository.ParkingManagementRepository;
@@ -44,6 +48,24 @@ public class ParkingManagementService {
         ParkingManagement parkingManagement =
                 parkingManagementRepository.findById(id).orElseThrow(() -> new ParkingManagementNotFoundException(id));
         return ParkingManagementResDto.of(
+                parkingManagement.getId(),
+                parkingManagement.getHeaderName(),
+                parkingManagement.getParkingInfoType().name(),
+                parkingManagement.getTitle(),
+                parkingManagement.getDescription(),
+                parkingManagement.getButtonName(),
+                parkingManagement.getButtonTargetUrl(),
+                parkingManagement.getBackgroundImage(),
+                parkingManagement.isVisible());
+    }
+
+    @Transactional(readOnly = true)
+    public ParkingManagementResDto getVisibleParkingManagement(Long id) {
+        ParkingManagement parkingManagement = parkingManagementRepository
+                .findByIdAndVisible(id, true)
+                .orElseThrow(() -> new ParkingManagementNotFoundException(id));
+        return ParkingManagementResDto.of(
+                parkingManagement.getId(),
                 parkingManagement.getHeaderName(),
                 parkingManagement.getParkingInfoType().name(),
                 parkingManagement.getTitle(),
@@ -90,20 +112,20 @@ public class ParkingManagementService {
     }
 
     @Transactional
-    public void updateParkingMapImageDisplayOrder(Long id, ParkingMapImageReqDto parkingMapImageReqDto) {
+    public void updateParkingMapImageDisplayOrder(Long id, DisplayOrderChangeReqDto displayOrderChangeReqDto) {
         ParkingManagement parkingManagement = parkingManagementRepository
                 .findByIdWithImages(id)
                 .orElseThrow(() -> new ParkingManagementNotFoundException(id));
 
-        parkingManagement.reorderImages(parkingMapImageReqDto.getImageIds());
+        parkingManagement.reorderImages(displayOrderChangeReqDto.getIds());
     }
 
     @Transactional
-    public void deleteParkingMapImages(Long id, ParkingMapImageReqDto parkingMapImageReqDto) {
+    public void deleteParkingMapImages(Long id, DisplayOrderChangeReqDto displayOrderChangeReqDto) {
         ParkingManagement parkingManagement = parkingManagementRepository
                 .findByIdWithImages(id)
                 .orElseThrow(() -> new ParkingManagementNotFoundException(id));
-        parkingManagement.removeImages(parkingMapImageReqDto.getImageIds());
+        parkingManagement.removeImages(displayOrderChangeReqDto.getIds());
     }
 
     private ParkingManagement loadParkingManagementOrThrow(Long id) {

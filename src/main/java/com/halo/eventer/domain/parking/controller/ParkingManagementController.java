@@ -6,7 +6,11 @@ import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.*;
 
 import com.halo.eventer.domain.image.dto.FileDto;
-import com.halo.eventer.domain.parking.dto.*;
+import com.halo.eventer.domain.parking.dto.common.DisplayOrderChangeReqDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementReqDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementResDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementSubPageResDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingSubPageReqDto;
 import com.halo.eventer.domain.parking.service.ParkingManagementService;
 import lombok.RequiredArgsConstructor;
 
@@ -24,9 +28,14 @@ public class ParkingManagementController {
         parkingManagementService.create(festivalId, parkingManagementReqDto);
     }
 
-    @GetMapping("/common/parking-managements/{id}")
+    @GetMapping("/admin/parking-managements/{id}")
     public ParkingManagementResDto getParkingManagement(@PathVariable("id") Long id) {
         return parkingManagementService.getParkingManagement(id);
+    }
+
+    @GetMapping("/user/parking-managements/{id}")
+    public ParkingManagementResDto getParkingManagementByUserId(@PathVariable("id") Long id) {
+        return parkingManagementService.getVisibleParkingManagement(id);
     }
 
     @PutMapping("/admin/parking-managements/{id}")
@@ -54,13 +63,15 @@ public class ParkingManagementController {
 
     @PatchMapping("/admin/parking-managements/{id}/parking-map-images/display-order")
     public void updateParkingMapImageDisplayOrder(
-            @Min(1) @PathVariable("id") Long id, @Valid @RequestBody ParkingMapImageReqDto parkingMapImageReqDto) {
-        parkingManagementService.updateParkingMapImageDisplayOrder(id, parkingMapImageReqDto);
+            @Min(1) @PathVariable("id") Long id,
+            @Valid @RequestBody DisplayOrderChangeReqDto displayOrderChangeReqDto) {
+        parkingManagementService.updateParkingMapImageDisplayOrder(id, displayOrderChangeReqDto);
     }
 
     @DeleteMapping("/admin/parking-managements/{id}/parking-map-images")
     public void deleteParkingMapImages(
-            @Min(1) @PathVariable("id") Long id, @Valid @RequestBody ParkingMapImageReqDto parkingMapImageReqDto) {
-        parkingManagementService.deleteParkingMapImages(id, parkingMapImageReqDto);
+            @Min(1) @PathVariable("id") Long id,
+            @Valid @RequestBody DisplayOrderChangeReqDto displayOrderChangeReqDto) {
+        parkingManagementService.deleteParkingMapImages(id, displayOrderChangeReqDto);
     }
 }

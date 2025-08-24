@@ -17,11 +17,11 @@ import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.image.dto.FileDto;
 import com.halo.eventer.domain.parking.ParkingManagement;
-import com.halo.eventer.domain.parking.dto.ParkingManagementReqDto;
-import com.halo.eventer.domain.parking.dto.ParkingManagementResDto;
-import com.halo.eventer.domain.parking.dto.ParkingManagementSubPageResDto;
-import com.halo.eventer.domain.parking.dto.ParkingMapImageReqDto;
-import com.halo.eventer.domain.parking.dto.ParkingSubPageReqDto;
+import com.halo.eventer.domain.parking.dto.common.DisplayOrderChangeReqDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementReqDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementResDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementSubPageResDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingSubPageReqDto;
 import com.halo.eventer.domain.parking.enums.ParkingInfoType;
 import com.halo.eventer.domain.parking.exception.ParkingManagementNotFoundException;
 import com.halo.eventer.domain.parking.repository.ParkingManagementRepository;
@@ -251,8 +251,8 @@ class ParkingManagementServiceTest {
 
             given(parkingManagementRepository.findByIdWithImages(1L)).willReturn(Optional.of(pm));
 
-            var 요청 = mock(ParkingMapImageReqDto.class);
-            given(요청.getImageIds()).willReturn(List.of(30L, 10L, 20L));
+            var 요청 = mock(DisplayOrderChangeReqDto.class);
+            given(요청.getIds()).willReturn(List.of(30L, 10L, 20L));
 
             service.updateParkingMapImageDisplayOrder(1L, 요청);
 
@@ -265,7 +265,8 @@ class ParkingManagementServiceTest {
         void 이미지_표시순서_변경_실패_주차관리없음() {
             given(parkingManagementRepository.findByIdWithImages(anyLong())).willReturn(Optional.empty());
 
-            assertThatThrownBy(() -> service.updateParkingMapImageDisplayOrder(1L, mock(ParkingMapImageReqDto.class)))
+            assertThatThrownBy(
+                            () -> service.updateParkingMapImageDisplayOrder(1L, mock(DisplayOrderChangeReqDto.class)))
                     .isInstanceOf(ParkingManagementNotFoundException.class);
         }
 
@@ -280,8 +281,8 @@ class ParkingManagementServiceTest {
 
             given(parkingManagementRepository.findByIdWithImages(1L)).willReturn(Optional.of(pm));
 
-            var 요청 = mock(ParkingMapImageReqDto.class);
-            given(요청.getImageIds()).willReturn(List.of(1L)); // 크기 불일치
+            var 요청 = mock(DisplayOrderChangeReqDto.class);
+            given(요청.getIds()).willReturn(List.of(1L)); // 크기 불일치
 
             assertThatThrownBy(() -> service.updateParkingMapImageDisplayOrder(1L, 요청))
                     .isInstanceOf(BaseException.class);
@@ -300,8 +301,8 @@ class ParkingManagementServiceTest {
 
             given(parkingManagementRepository.findByIdWithImages(1L)).willReturn(Optional.of(pm));
 
-            var 요청 = mock(ParkingMapImageReqDto.class);
-            given(요청.getImageIds()).willReturn(List.of(10L, 30L));
+            var 요청 = mock(DisplayOrderChangeReqDto.class);
+            given(요청.getIds()).willReturn(List.of(10L, 30L));
 
             service.deleteParkingMapImages(1L, 요청);
 
@@ -314,7 +315,7 @@ class ParkingManagementServiceTest {
         void 이미지_삭제_실패_주차관리없음() {
             given(parkingManagementRepository.findByIdWithImages(anyLong())).willReturn(Optional.empty());
 
-            assertThatThrownBy(() -> service.deleteParkingMapImages(1L, mock(ParkingMapImageReqDto.class)))
+            assertThatThrownBy(() -> service.deleteParkingMapImages(1L, mock(DisplayOrderChangeReqDto.class)))
                     .isInstanceOf(ParkingManagementNotFoundException.class);
         }
     }
