@@ -14,13 +14,13 @@ import lombok.NoArgsConstructor;
 public class StampTourSummaryResDto {
     private Long stampTourId;
     private String title;
-    private boolean stampOn;
+    private boolean showStamp;
 
     public static StampTourSummaryResDto from(Stamp stamp) {
         return new StampTourSummaryResDto(stamp.getId(), stamp.getTitle(), stamp.isActive());
     }
 
-    public static List<StampTourSummaryResDto> from(List<Stamp> stamps) {
+    public static List<StampTourSummaryResDto> fromEntities(List<Stamp> stamps) {
         return stamps.stream().map(StampTourSummaryResDto::from).collect(Collectors.toList());
     }
 }

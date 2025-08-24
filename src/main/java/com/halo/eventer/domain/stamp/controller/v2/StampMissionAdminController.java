@@ -43,15 +43,15 @@ public class StampMissionAdminController {
             @PathVariable @Min(1) long festivalId,
             @PathVariable @Min(1) long stampId,
             @RequestBody @Valid MissionBasicSettingsReqDto request) {
-        stampMissionAdminService.upsertBasicSettings(festivalId, stampId, request);
+        stampMissionAdminService.updateBasicSettings(festivalId, stampId, request);
     }
 
     @PostMapping("/prizes")
-    public MissionPrizeResDto addPrize(
+    public void addPrize(
             @PathVariable @Min(1) long festivalId,
             @PathVariable @Min(1) long stampId,
             @RequestBody @Valid MissionPrizeCreateReqDto request) {
-        return stampMissionAdminService.addPrize(festivalId, stampId, request);
+        stampMissionAdminService.addPrize(festivalId, stampId, request);
     }
 
     @PutMapping("/prizes/{prizeId}")

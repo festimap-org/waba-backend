@@ -8,10 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.halo.eventer.domain.stamp.*;
 import com.halo.eventer.domain.stamp.dto.mission.request.*;
 import com.halo.eventer.domain.stamp.dto.mission.response.*;
-import com.halo.eventer.domain.stamp.exception.MissionDetailsTemplateNotFoundException;
-import com.halo.eventer.domain.stamp.exception.MissionNotFoundException;
-import com.halo.eventer.domain.stamp.exception.MissionPrizeNotFoundException;
-import com.halo.eventer.domain.stamp.exception.StampNotFoundException;
+import com.halo.eventer.domain.stamp.exception.*;
 import com.halo.eventer.domain.stamp.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,37 +40,38 @@ public class StampMissionAdminService {
         return MissionBriefResDto.fromEntities(missions);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public StampMissionBasicSettingsResDto getBasicSettings(long festivalId, long stampId) {
-        StampMissionBasicSetting setting = getSettingEnsuring(festivalId, stampId);
-        return StampMissionBasicSettingsResDto.from(setting);
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        StampMissionBasicSetting setting = getSettingEnsuring(stampId, stamp);
+        return StampMissionBasicSettingsResDto.from(setting, stamp);
     }
 
     @Transactional
-    public void upsertBasicSettings(long festivalId, long stampId, final MissionBasicSettingsReqDto request) {
-        StampMissionBasicSetting setting = getSettingEnsuring(festivalId, stampId);
-        setting.upsertBasic(request.getMissionCount(), request.getDefaultDetailLayout());
+    public void updateBasicSettings(long festivalId, long stampId, final MissionBasicSettingsReqDto request) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        StampMissionBasicSetting setting = loadSettingOrThrow(stampId);
+        setting.updateBasic(request.getMissionCount(), request.getDefaultDetailLayout());
     }
 
     @Transactional
-    public MissionPrizeResDto addPrize(long festivalId, long stampId, final MissionPrizeCreateReqDto request) {
-        StampMissionBasicSetting setting = getSettingEnsuring(festivalId, stampId);
+    public void addPrize(long festivalId, long stampId, final MissionPrizeCreateReqDto request) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
         StampMissionPrize prize =
-                StampMissionPrize.from(request.getRequiredCount(), request.getPrizeDescription(), setting);
+                StampMissionPrize.from(request.getRequiredCount(), request.getPrizeDescription(), stamp);
         prizeRepository.save(prize);
-        return MissionPrizeResDto.from(prize);
     }
 
     @Transactional
     public void updatePrize(long festivalId, long stampId, long prizeId, final MissionPrizeUpdateReqDto request) {
-        StampMissionBasicSetting setting = getSettingEnsuring(festivalId, stampId);
+        ensureStamp(festivalId, stampId);
         StampMissionPrize prize = loadStampMissionPrizeOrThrow(prizeId);
         prize.update(request.getRequiredCount(), request.getPrizeDescription());
     }
 
     @Transactional
     public void deletePrize(long festivalId, long stampId, long prizeId) {
-        StampMissionBasicSetting setting = getSettingEnsuring(festivalId, stampId);
+        ensureStamp(festivalId, stampId);
         StampMissionPrize prize = loadStampMissionPrizeOrThrow(prizeId);
         prizeRepository.delete(prize);
     }
@@ -132,9 +130,10 @@ public class StampMissionAdminService {
         return MissionQrDataResDto.fromEntities(missions);
     }
 
-    private void ensureStamp(long festivalId, long stampId) {
+    private Stamp ensureStamp(long festivalId, long stampId) {
         Stamp stamp = loadStampOrThrow(stampId);
         stamp.ensureStampInFestival(festivalId);
+        return stamp;
     }
 
     private MissionDetailsTemplate loadOrCreateMissionDetailsTemplate(Mission mission) {
@@ -157,9 +156,13 @@ public class StampMissionAdminService {
         return prizeRepository.findById(prizeId).orElseThrow(() -> new MissionPrizeNotFoundException(prizeId));
     }
 
-    private StampMissionBasicSetting getSettingEnsuring(long festivalId, long stampId) {
-        Stamp stamp = loadStampOrThrow(stampId);
-        stamp.ensureStampInFestival(festivalId);
+    private StampMissionBasicSetting loadSettingOrThrow(long stampId) {
+        return settingRepository
+                .findByStampId(stampId)
+                .orElseThrow(() -> new StampMissionBasicSettingException(stampId));
+    }
+
+    private StampMissionBasicSetting getSettingEnsuring(long stampId, Stamp stamp) {
         return settingRepository
                 .findByStampId(stampId)
                 .orElseGet(() -> settingRepository.save(StampMissionBasicSetting.defaultFor(stamp)));

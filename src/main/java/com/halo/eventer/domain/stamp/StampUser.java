@@ -6,6 +6,7 @@ import java.util.UUID;
 import jakarta.persistence.*;
 
 import com.halo.eventer.domain.stamp.exception.UserMissionNotFoundException;
+import com.halo.eventer.global.common.BaseTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
             @Index(name = "idx_uuid", columnList = "uuid"),
             @Index(name = "idx_phone_name_stamp", columnList = "phone, name, stamp_id")
         })
-public class StampUser {
+public class StampUser extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -70,8 +71,8 @@ public class StampUser {
         stamp.getStampUsers().add(this);
     }
 
-    public void markAsFinished() {
-        this.isFinished = true;
+    public void markAsFinished(boolean finished) {
+        this.isFinished = finished;
     }
 
     public void setCustom(Custom custom) {

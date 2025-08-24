@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StampTourLandingPageResDto {
     private LandingPageDesignTemplate designTemplate;
-    private String backgroundImg;
-    private String iconImg;
+    private String backgroundImgUrl;
+    private String iconImgUrl;
     private String description;
     private ButtonLayout buttonLayout;
     private List<ButtonResDto> buttons;

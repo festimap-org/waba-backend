@@ -39,8 +39,8 @@ public class PageTemplateTest {
 
         랜딩페이지.updateLandingPageTemplate(랜딩페이지_업데이트);
 
-        assertThat(랜딩페이지.getBackgroundImg()).isEqualTo(랜딩페이지_업데이트.getBackgroundImg());
-        assertThat(랜딩페이지.getIconImg()).isEqualTo(랜딩페이지_업데이트.getIconImg());
+        assertThat(랜딩페이지.getBackgroundImg()).isEqualTo(랜딩페이지_업데이트.getBackgroundImgUrl());
+        assertThat(랜딩페이지.getIconImg()).isEqualTo(랜딩페이지_업데이트.getIconImgUrl());
         assertThat(랜딩페이지.getDescription()).isEqualTo(랜딩페이지_업데이트.getDescription());
         assertThat(랜딩페이지.getButtonLayout()).isEqualTo(랜딩페이지_업데이트.getButtonLayout());
         assertThat(랜딩페이지.getButtons().size()).isEqualTo(2);
@@ -52,7 +52,7 @@ public class PageTemplateTest {
 
         메인페이지.updateMainPageTemplate(메인페이지_업데이트);
 
-        assertThat(메인페이지.getBackgroundImg()).isEqualTo(메인페이지_업데이트.getBackgroundImg());
+        assertThat(메인페이지.getBackgroundImg()).isEqualTo(메인페이지_업데이트.getBackgroundImgUrl());
         assertThat(메인페이지.getMainPageDesignTemplate()).isEqualTo(메인페이지_업데이트.getDesignTemplate());
         assertThat(메인페이지.getButtons().size()).isEqualTo(2);
     }

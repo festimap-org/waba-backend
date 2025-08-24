@@ -11,12 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StampTourSettingBasicResDto {
     private long stampTourId;
+    private boolean isStampActive;
     private String title;
-    private AuthMethod authenticationMethod;
-    private String boothAdminPassword;
+    private AuthMethod authMethod;
+    private String prizeReceiptAuthPassword;
 
     public static StampTourSettingBasicResDto from(Stamp stamp) {
         return new StampTourSettingBasicResDto(
-                stamp.getId(), stamp.getTitle(), stamp.getAuthMethod(), stamp.getBoothAdminPassword());
+                stamp.getId(),
+                stamp.isActive(),
+                stamp.getTitle(),
+                stamp.getAuthMethod(),
+                stamp.getPrizeReceiptAuthPassword());
     }
 }

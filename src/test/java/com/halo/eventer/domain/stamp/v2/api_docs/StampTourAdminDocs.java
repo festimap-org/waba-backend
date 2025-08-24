@@ -14,16 +14,18 @@ public class StampTourAdminDocs {
 
     private static final String TAG = "스탬프투어(v2) 관리";
 
+    // 생성/목록/삭제
     public static RestDocumentationResultHandler createStampTour() {
         return document(
                 "v2-stamptour-create",
                 resource(builder()
                         .tag(TAG)
                         .summary("스탬프투어 생성")
-                        .description("festivalId 에 새로운 스탬프투어를 생성합니다.")
-                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .pathParameters(parameterWithName("festivalId").description("축제 ID (>=1)"))
-                        .requestFields(fieldWithPath("title").type(STRING).description("스탬프투어 제목"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .requestFields(
+                                fieldWithPath("title").type(STRING).description("제목"),
+                                fieldWithPath("showStamp").type(BOOLEAN).description("목록 노출 여부"))
                         .build()));
     }
 
@@ -33,15 +35,29 @@ public class StampTourAdminDocs {
                 resource(builder()
                         .tag(TAG)
                         .summary("스탬프투어 목록 조회")
-                        .pathParameters(parameterWithName("festivalId").description("축제 ID (>=1)"))
+                        .pathParameters(parameterWithName("festivalId").description("축제 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
                                 fieldWithPath("[].stampTourId").type(NUMBER).description("ID"),
                                 fieldWithPath("[].title").type(STRING).description("제목"),
-                                fieldWithPath("[].stampOn").type(BOOLEAN).description("활성화 여부"))
+                                fieldWithPath("[].showStamp").type(BOOLEAN).description("목록 노출 여부"))
                         .build()));
     }
 
+    public static RestDocumentationResultHandler deleteStampTour() {
+        return document(
+                "v2-stamptour-delete",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("스탬프투어 삭제")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID"),
+                                parameterWithName("stampId").description("스탬프투어 ID"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .build()));
+    }
+
+    // 기본 설정
     public static RestDocumentationResultHandler getBasic() {
         return document(
                 "v2-stamptour-basic-get",
@@ -50,37 +66,40 @@ public class StampTourAdminDocs {
                         .summary("기본 설정 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"))
+                                parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
                                 fieldWithPath("stampTourId").type(NUMBER).description("ID"),
+                                fieldWithPath("stampActive").type(BOOLEAN).description("활성화 여부"),
                                 fieldWithPath("title").type(STRING).description("제목"),
-                                fieldWithPath("authenticationMethod")
+                                fieldWithPath("authMethod").type(STRING).description("인증 방식"),
+                                fieldWithPath("prizeReceiptAuthPassword")
                                         .type(STRING)
-                                        .optional()
-                                        .description("인증 방식"),
-                                fieldWithPath("boothAdminPassword").type(STRING).description("부스 관리자 비밀번호"))
+                                        .description("수령 비밀번호"))
                         .build()));
     }
 
     public static RestDocumentationResultHandler updateBasic() {
         return document(
-                "v2-stamptour-basic-update",
+                "v2-stamptour-basic-upsert",
                 resource(builder()
                         .tag(TAG)
                         .summary("기본 설정 수정")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"))
+                                parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("newTitle").type(STRING).description("새 제목"),
-                                fieldWithPath("activation").type(BOOLEAN).description("활성화 여부"),
+                                fieldWithPath("isStampActivate").type(BOOLEAN).description("활성화"),
+                                fieldWithPath("title").type(STRING).description("제목"),
                                 fieldWithPath("authMethod").type(STRING).description("인증 방식"),
-                                fieldWithPath("boothPassword").type(STRING).description("부스 관리자 비밀번호"))
+                                fieldWithPath("prizeReceiptAuthPassword")
+                                        .type(STRING)
+                                        .description("수령 비밀번호"))
                         .build()));
     }
 
+    // 안내사항
     public static RestDocumentationResultHandler getNotice() {
         return document(
                 "v2-stamptour-notice-get",
@@ -89,34 +108,35 @@ public class StampTourAdminDocs {
                         .summary("안내사항 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"))
+                                parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
                                 fieldWithPath("cautionContent").type(STRING).description("주의사항"),
                                 fieldWithPath("personalInformationContent")
                                         .type(STRING)
-                                        .description("개인정보 안내"))
+                                        .description("개인정보"))
                         .build()));
     }
 
     public static RestDocumentationResultHandler updateNotice() {
         return document(
-                "v2-stamptour-notice-update",
+                "v2-stamptour-notice-upsert",
                 resource(builder()
                         .tag(TAG)
                         .summary("안내사항 수정")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"))
+                                parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
                                 fieldWithPath("cautionContent").type(STRING).description("주의사항"),
                                 fieldWithPath("personalInformationContent")
                                         .type(STRING)
-                                        .description("개인정보 안내"))
+                                        .description("개인정보"))
                         .build()));
     }
 
+    // 랜딩
     public static RestDocumentationResultHandler getLanding() {
         return document(
                 "v2-stamptour-landing-get",
@@ -125,59 +145,71 @@ public class StampTourAdminDocs {
                         .summary("랜딩 페이지 설정 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"))
+                                parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
                                 fieldWithPath("designTemplate").type(STRING).description("디자인 템플릿"),
-                                fieldWithPath("backgroundImg")
+                                fieldWithPath("backgroundImgUrl")
                                         .type(STRING)
                                         .optional()
                                         .description("배경 이미지"),
-                                fieldWithPath("iconImg").type(STRING).optional().description("아이콘 이미지"),
+                                fieldWithPath("iconImgUrl")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("아이콘 이미지"),
                                 fieldWithPath("description")
                                         .type(STRING)
                                         .optional()
                                         .description("설명"),
                                 fieldWithPath("buttonLayout").type(STRING).description("버튼 배치"),
-                                fieldWithPath("buttons").type(ARRAY).description("버튼 목록"))
+                                fieldWithPath("buttons").type(ARRAY).description("버튼 목록"),
+                                fieldWithPath("buttons[].sequenceIndex")
+                                        .type(NUMBER)
+                                        .description("순서"),
+                                fieldWithPath("buttons[].content").type(STRING).description("라벨"),
+                                fieldWithPath("buttons[].iconImgUrl")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("아이콘 URL"),
+                                fieldWithPath("buttons[].action").type(STRING).description("동작"),
+                                fieldWithPath("buttons[].targetUrl")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("URL"))
                         .build()));
     }
 
     public static RestDocumentationResultHandler updateLanding() {
         return document(
-                "v2-stamp-tour-landing-update",
+                "v2-stamptour-landing-upsert",
                 resource(builder()
                         .tag(TAG)
                         .summary("랜딩 페이지 설정 수정")
-                        .description("스탬프투어의 랜딩 페이지 설정을 갱신합니다.")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"))
+                                parameterWithName("stampId").description("스탬프투어 ID"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("designTemplate")
-                                        .type(STRING)
-                                        .description("랜딩 디자인 템플릿 (enum: NONE, ...)"),
-                                fieldWithPath("backgroundImg").type(STRING).description("배경 이미지 URL"),
-                                fieldWithPath("iconImg").type(STRING).description("아이콘 이미지 URL"),
-                                fieldWithPath("description").type(STRING).description("설명 텍스트"),
-                                fieldWithPath("buttonLayout")
-                                        .type(STRING)
-                                        .description("버튼 레이아웃 (enum: ONE, TWO_ASYM, TWO_SYM, NONE)"),
-                                fieldWithPath("buttons").type(ARRAY).description("버튼 목록(레이아웃이 NONE이면 빈 배열이어야 함)"),
+                                fieldWithPath("designTemplate").type(STRING).description("랜딩 템플릿"),
+                                fieldWithPath("backgroundImgUrl").type(STRING).description("배경 이미지 URL"),
+                                fieldWithPath("iconImgUrl").type(STRING).description("아이콘 이미지 URL"),
+                                fieldWithPath("description").type(STRING).description("설명"),
+                                fieldWithPath("buttonLayout").type(STRING).description("버튼 레이아웃"),
+                                fieldWithPath("buttons").type(ARRAY).optional().description("버튼 목록"),
                                 fieldWithPath("buttons[].sequenceIndex")
                                         .type(NUMBER)
-                                        .description("버튼 순서 인덱스(0-base)"),
-                                fieldWithPath("buttons[].iconImg").type(STRING).description("버튼 아이콘 이미지"),
-                                fieldWithPath("buttons[].content").type(STRING).description("버튼 표시 텍스트"),
-                                fieldWithPath("buttons[].action")
-                                        .type(STRING)
-                                        .description("버튼 동작 (enum: OPEN_URL, ...)"),
+                                        .description("순서"),
+                                fieldWithPath("buttons[].iconImg").type(STRING).description("아이콘 (요청 필드)"),
+                                fieldWithPath("buttons[].content").type(STRING).description("라벨"),
+                                fieldWithPath("buttons[].action").type(STRING).description("동작"),
                                 fieldWithPath("buttons[].targetUrl")
                                         .type(STRING)
-                                        .description("OPEN_URL일 때 이동할 URL"))
+                                        .optional()
+                                        .description("URL"))
                         .build()));
     }
 
+    // 메인
     public static RestDocumentationResultHandler getMain() {
         return document(
                 "v2-stamptour-main-get",
@@ -186,7 +218,7 @@ public class StampTourAdminDocs {
                         .summary("메인 페이지 설정 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"))
+                                parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
                                 fieldWithPath("designTemplate").type(STRING).description("디자인 템플릿"),
@@ -201,22 +233,23 @@ public class StampTourAdminDocs {
 
     public static RestDocumentationResultHandler updateMain() {
         return document(
-                "v2-stamptour-main-update",
+                "v2-stamptour-main-upsert",
                 resource(builder()
                         .tag(TAG)
                         .summary("메인 페이지 설정 수정")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"))
+                                parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
                                 fieldWithPath("designTemplate").type(STRING).description("디자인 템플릿"),
-                                fieldWithPath("backgroundImg").type(STRING).description("배경 이미지"),
-                                fieldWithPath("buttonLayout").type(STRING).description("버튼 배치"),
+                                fieldWithPath("backgroundImgUrl").type(STRING).description("배경 이미지 URL"),
+                                fieldWithPath("buttonLayout").type(STRING).description("버튼 레이아웃"),
                                 fieldWithPath("buttons").type(ARRAY).optional().description("버튼 목록"))
                         .build()));
     }
 
+    // 참여가이드
     public static RestDocumentationResultHandler getGuide() {
         return document(
                 "v2-stamptour-guide-get",
@@ -225,7 +258,7 @@ public class StampTourAdminDocs {
                         .summary("참여가이드 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"))
+                                parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
                                 fieldWithPath("participateGuideId").type(NUMBER).description("가이드 ID"),
@@ -253,7 +286,7 @@ public class StampTourAdminDocs {
                         .summary("참여가이드 생성/수정")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"))
+                                parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
                                 fieldWithPath("template").type(STRING).description("디자인 템플릿"),
@@ -269,7 +302,7 @@ public class StampTourAdminDocs {
                         .summary("참여가이드 페이지 순서 수정(일괄)")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"))
+                                parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
                                 fieldWithPath("[].id").type(NUMBER).description("페이지 ID"),
@@ -281,6 +314,7 @@ public class StampTourAdminDocs {
                         .build()));
     }
 
+    // 참여가이드 페이지
     public static RestDocumentationResultHandler createGuidePage() {
         return document(
                 "v2-stamptour-guide-page-create",
@@ -289,12 +323,12 @@ public class StampTourAdminDocs {
                         .summary("참여가이드 페이지 생성")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"))
+                                parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
                                 fieldWithPath("guideId").type(NUMBER).description("가이드 ID"),
                                 fieldWithPath("title").type(STRING).description("제목"),
-                                fieldWithPath("guideMediaSpec").type(STRING).description("미디어 스펙"),
+                                fieldWithPath("mediaSpec").type(STRING).description("미디어 스펙"),
                                 fieldWithPath("mediaUrl")
                                         .type(STRING)
                                         .optional()
@@ -313,13 +347,13 @@ public class StampTourAdminDocs {
                         .summary("참여가이드 페이지 상세 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"),
+                                parameterWithName("stampId").description("스탬프투어 ID"),
                                 parameterWithName("pageId").description("페이지 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
                                 fieldWithPath("pageId").type(NUMBER).description("페이지 ID"),
                                 fieldWithPath("title").type(STRING).description("제목"),
-                                fieldWithPath("guideMediaSpec").type(STRING).description("미디어 스펙"),
+                                fieldWithPath("mediaSpec").type(STRING).description("미디어 스펙"),
                                 fieldWithPath("mediaUrl")
                                         .type(STRING)
                                         .optional()
@@ -338,13 +372,13 @@ public class StampTourAdminDocs {
                         .summary("참여가이드 페이지 수정")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"),
+                                parameterWithName("stampId").description("스탬프투어 ID"),
                                 parameterWithName("pageId").description("페이지 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
                                 fieldWithPath("guideId").type(NUMBER).description("가이드 ID"),
                                 fieldWithPath("title").type(STRING).description("제목"),
-                                fieldWithPath("guideMediaSpec").type(STRING).description("미디어 스펙"),
+                                fieldWithPath("mediaSpec").type(STRING).description("미디어 스펙"),
                                 fieldWithPath("mediaUrl")
                                         .type(STRING)
                                         .optional()
@@ -363,12 +397,13 @@ public class StampTourAdminDocs {
                         .summary("참여가이드 페이지 삭제")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID"),
+                                parameterWithName("stampId").description("스탬프투어 ID"),
                                 parameterWithName("pageId").description("페이지 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .build()));
     }
 
+    // 공통 에러
     public static RestDocumentationResultHandler error(String id) {
         return document(
                 id,

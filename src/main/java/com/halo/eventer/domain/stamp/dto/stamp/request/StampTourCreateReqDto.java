@@ -12,4 +12,6 @@ import lombok.NoArgsConstructor;
 public class StampTourCreateReqDto {
     @NotBlank
     private String title;
+
+    private boolean showStamp;
 }

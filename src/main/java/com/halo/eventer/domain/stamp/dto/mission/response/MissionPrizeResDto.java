@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MissionPrizeResDto {
-    private Long prizeId;
+    private long id;
     private int requiredCount;
-    private String prizeDescription;
+    private String description;
 
     public static MissionPrizeResDto from(StampMissionPrize prize) {
-        return new MissionPrizeResDto(prize.getId(), prize.getRequiredCount(), prize.getRewardDescription());
+        return new MissionPrizeResDto(prize.getId(), prize.getRequiredCount(), prize.getDescription());
     }
 }

@@ -30,17 +30,16 @@ public class StampNoticeTest {
 
     @Test
     void 공지사항_생성_정상() {
-        assertThat(안내사항.getParticipationNotice()).isEqualTo(공지1_주의사항);
-        assertThat(안내사항.getPrivacyConsent()).isEqualTo(공지1_개인정보);
+        assertThat(안내사항.getCautionContent()).isEqualTo(공지1_주의사항);
+        assertThat(안내사항.getPersonalInformationContent()).isEqualTo(공지1_개인정보);
     }
 
     @Test
     void 공지사항_내용_수정() {
         String 바뀐_주의사항 = "변경된 공지 제목";
         String 바뀐_개인정보 = "변경된 내용입니다.";
-        안내사항.upsert(바뀐_주의사항, 바뀐_개인정보);
-
-        assertThat(안내사항.getParticipationNotice()).isEqualTo(바뀐_주의사항);
-        assertThat(안내사항.getPrivacyConsent()).isEqualTo(바뀐_개인정보);
+        안내사항.update(바뀐_주의사항, 바뀐_개인정보);
+        assertThat(안내사항.getCautionContent()).isEqualTo(바뀐_주의사항);
+        assertThat(안내사항.getPersonalInformationContent()).isEqualTo(바뀐_개인정보);
     }
 }

@@ -31,6 +31,10 @@ public class UserMission {
         this.isComplete = true;
     }
 
+    public void markAsIncomplete() {
+        this.isComplete = false;
+    }
+
     private void setStampUser(StampUser stampUser) {
         this.stampUser = stampUser;
         stampUser.getUserMissions().add(this);

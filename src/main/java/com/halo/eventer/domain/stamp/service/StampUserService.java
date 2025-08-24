@@ -89,7 +89,7 @@ public class StampUserService {
     public String checkFinish(String uuid) {
         StampUser stampUser = loadStampUserFromUuid(uuid);
         if (stampUser.isMissionsAllCompleted()) {
-            stampUser.markAsFinished();
+            stampUser.markAsFinished(true);
             return "스탬프 투어 완료";
         }
         return "미완료";
@@ -101,7 +101,7 @@ public class StampUserService {
         if (!stampUser.canFinishTour()) {
             return "미완료";
         }
-        stampUser.markAsFinished();
+        stampUser.markAsFinished(true);
         return "스탬프 투어 완료";
     }
 
