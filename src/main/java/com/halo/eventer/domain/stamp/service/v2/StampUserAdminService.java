@@ -64,7 +64,9 @@ public class StampUserAdminService {
                 stampUser.getPhone(),
                 stampUser.getUuid(),
                 stampUser.isFinished(),
-                missions);
+                missions,
+                stampUser.getExtraText(),
+                stampUser.getParticipantCount());
     }
 
     @Transactional
@@ -72,13 +74,11 @@ public class StampUserAdminService {
             long festivalId, long stampId, long userId, boolean complete) {
         ensureStamp(festivalId, stampId);
         StampUser su = loadUserWithMissionsOrThrow(stampId, userId);
-
         for (UserMission um : su.getUserMissions()) {
             if (complete) um.markAsComplete();
             else um.markAsIncomplete();
         }
         syncUserFinishedFlag(su);
-
         return toDetailDto(su);
     }
 
@@ -140,6 +140,13 @@ public class StampUserAdminService {
                 .toList();
 
         return new StampUserDetailResDto(
-                su.getId(), su.getName(), su.getPhone(), su.getUuid(), su.isFinished(), missions);
+                su.getId(),
+                su.getName(),
+                su.getPhone(),
+                su.getUuid(),
+                su.isFinished(),
+                missions,
+                su.getExtraText(),
+                su.getParticipantCount());
     }
 }

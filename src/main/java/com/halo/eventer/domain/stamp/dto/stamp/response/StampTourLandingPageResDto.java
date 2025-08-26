@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StampTourLandingPageResDto {
     private LandingPageDesignTemplate designTemplate;
-    private String backgroundImgUrl;
     private String iconImgUrl;
+    private String backgroundImgUrl;
     private String description;
     private ButtonLayout buttonLayout;
     private List<ButtonResDto> buttons;
@@ -23,8 +23,8 @@ public class StampTourLandingPageResDto {
     public static StampTourLandingPageResDto from(PageTemplate pageTemplate) {
         return new StampTourLandingPageResDto(
                 pageTemplate.getLandingPageDesignTemplate(),
-                pageTemplate.getBackgroundImg(),
                 pageTemplate.getIconImg(),
+                pageTemplate.getBackgroundImg(),
                 pageTemplate.getDescription(),
                 pageTemplate.getButtonLayout(),
                 ButtonResDto.fromEntities(pageTemplate.getButtons()));

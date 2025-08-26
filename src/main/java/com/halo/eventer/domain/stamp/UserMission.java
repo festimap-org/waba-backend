@@ -2,6 +2,7 @@ package com.halo.eventer.domain.stamp;
 
 import jakarta.persistence.*;
 
+import com.halo.eventer.domain.stamp.exception.UserMissionAlreadyCleared;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,8 @@ public class UserMission {
 
     @Column(nullable = false)
     private boolean isComplete = false;
+
+    private int successCount = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stamp_user_id")
@@ -42,6 +45,16 @@ public class UserMission {
 
     private void setMission(Mission mission) {
         this.mission = mission;
+    }
+
+    public void increaseSuccess(long missionId) {
+        if (isComplete) {
+            throw new UserMissionAlreadyCleared(missionId);
+        }
+        if (mission.getRequiredSuccessCount() > successCount) successCount++;
+        if (successCount >= mission.getRequiredSuccessCount()) {
+            isComplete = true;
+        }
     }
 
     public static UserMission create(Mission mission, StampUser stampUser) {

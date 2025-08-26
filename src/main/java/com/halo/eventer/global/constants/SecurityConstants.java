@@ -57,7 +57,8 @@ public class SecurityConstants {
         "/api/v2/admin/parking-managements/*/sub-page-info",
         "/api/v2/user/parking-managements/*",
         "/api/v2/user/parking-notices/*",
-        "/api/v2/user/parking-managements/*/parking-zones"
+        "/api/v2/user/parking-managements/*/parking-zones",
+        "/api/v2/template/**",
     };
 
     public static final String[] PUBLIC_POST_URLS = {
@@ -70,6 +71,8 @@ public class SecurityConstants {
         "/login",
         "/inquiries",
         "/inquiries/forUser/*",
+        "/api/v2/user/*/*/*/*/signup",
+        "/api/v2/user/*/*/*/*/login"
     };
 
     public static final String[] PUBLIC_PATCH_URLS = {"/stamp/user/*/*", "/stamp/user/check/v2/*", "/stamp/mission"};

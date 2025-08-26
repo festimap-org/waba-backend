@@ -12,7 +12,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 
 public class StampTourAdminDocs {
 
-    private static final String TAG = "스탬프투어(v2) 관리";
+    private static final String TAG = "스탬프투어(v2) 관리자";
 
     // 생성/목록/삭제
     public static RestDocumentationResultHandler createStampTour() {
@@ -54,6 +54,38 @@ public class StampTourAdminDocs {
                                 parameterWithName("festivalId").description("축제 ID"),
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .build()));
+    }
+
+    public static RestDocumentationResultHandler getUserSettings() {
+        return document(
+                "v2-stamptour-user-settings-get",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("유저 설정(참여 인증 방식) 조회")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID"),
+                                parameterWithName("stampId").description("스탬프투어 ID"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .responseFields(fieldWithPath("joinVerificationMethod")
+                                .type(STRING)
+                                .description("참여 인증 방식(enum: NONE, SMS, PASS)"))
+                        .build()));
+    }
+
+    public static RestDocumentationResultHandler updateUserSettings() {
+        return document(
+                "v2-stamptour-user-settings-update",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("유저 설정(참여 인증 방식) 수정")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID"),
+                                parameterWithName("stampId").description("스탬프투어 ID"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .requestFields(fieldWithPath("joinVerificationMethod")
+                                .type(STRING)
+                                .description("참여 인증 방식(enum: NONE, SMS, PASS)"))
                         .build()));
     }
 

@@ -35,9 +35,7 @@ public class StampUserAdminController {
 
     @GetMapping("/{uuid}")
     public StampUserDetailResDto getStampUser(
-            @PathVariable @Min(1) long festivalId,
-            @PathVariable @Min(1) long stampId,
-            @PathVariable @Min(1) String uuid) {
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId, @PathVariable String uuid) {
         return stampUserAdminService.getUserDetail(festivalId, stampId, uuid);
     }
 

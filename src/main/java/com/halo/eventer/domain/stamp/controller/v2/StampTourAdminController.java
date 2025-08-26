@@ -30,6 +30,20 @@ public class StampTourAdminController {
         return stampTourAdminService.getStampTourListByFestival(festivalId);
     }
 
+    @GetMapping("/{stampId}/settings/user-info")
+    public StampTourJoinVerificationResDto getStampTourVerificationMethod(
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+        return stampTourAdminService.getJoinVerification(festivalId, stampId);
+    }
+
+    @PatchMapping("/{stampId}/settings/user-info")
+    public void updateStampTourVerificationMethod(
+            @PathVariable @Min(1) long festivalId,
+            @PathVariable @Min(1) long stampId,
+            @RequestBody @Valid StampTourJoinVerificationReqDto request) {
+        stampTourAdminService.updateJoinVerification(festivalId, stampId, request);
+    }
+
     @DeleteMapping("/{stampId}")
     public void deleteStampTour(@PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
         stampTourAdminService.deleteStampTour(festivalId, stampId);

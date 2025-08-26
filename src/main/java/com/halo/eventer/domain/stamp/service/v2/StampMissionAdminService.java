@@ -41,6 +41,13 @@ public class StampMissionAdminService {
     }
 
     @Transactional
+    public void toggleMissionShowing(long festival, long stampId, long missionId, boolean show) {
+        ensureStamp(festival, stampId);
+        Mission mission = loadMissionOrThrow(missionId);
+        mission.updateMissionShow(show);
+    }
+
+    @Transactional
     public StampMissionBasicSettingsResDto getBasicSettings(long festivalId, long stampId) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         StampMissionBasicSetting setting = getSettingEnsuring(stampId, stamp);

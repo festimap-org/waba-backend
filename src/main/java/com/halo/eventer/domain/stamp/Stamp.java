@@ -2,11 +2,11 @@ package com.halo.eventer.domain.stamp;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import jakarta.persistence.*;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.AuthMethod;
+import com.halo.eventer.domain.stamp.dto.stamp.enums.JoinVerificationMethod;
 import com.halo.eventer.domain.stamp.exception.StampClosedException;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -26,10 +26,13 @@ public class Stamp {
 
     private boolean isActive = true;
 
+    @Enumerated(EnumType.STRING)
+    private JoinVerificationMethod joinVerificationMethod = JoinVerificationMethod.NONE;
+
     @Column(nullable = false)
     private int finishCount = 0;
 
-    private String prizeReceiptAuthPassword;
+    private String prizeReceiptAuthPassword = "0000))))";
 
     private boolean showStamp = true;
 
@@ -72,8 +75,10 @@ public class Stamp {
     }
 
     public void assignAllMissionsTo(StampUser stampUser) {
-        List<UserMission> userMissions =
-                missions.stream().map(m -> UserMission.create(m, stampUser)).collect(Collectors.toList());
+        List<UserMission> userMissions = missions.stream()
+                .filter(Mission::isShow)
+                .map(m -> UserMission.create(m, stampUser))
+                .toList();
         stampUser.assignUserMissions(userMissions);
     }
 
@@ -116,6 +121,14 @@ public class Stamp {
 
     public void changeShowStamp(boolean show) {
         this.showStamp = show;
+    }
+
+    public void updateJoinMethod(JoinVerificationMethod method) {
+        this.joinVerificationMethod = method;
+    }
+
+    public boolean willShowStamp() {
+        return showStamp && isActive;
     }
 
     public static Stamp create(Festival festival) {
