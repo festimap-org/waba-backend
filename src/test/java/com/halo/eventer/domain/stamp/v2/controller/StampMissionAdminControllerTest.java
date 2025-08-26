@@ -110,6 +110,59 @@ public class StampMissionAdminControllerTest {
     }
 
     @Nested
+    class 미션_표시여부 {
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 표시여부_수정_성공() throws Exception {
+            var body = Map.of("show", true);
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}/show",
+                                    축제_ID,
+                                    스탬프_ID,
+                                    미션_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isOk())
+                    .andDo(StampMissionAdminDocs.toggleMissionShow());
+        }
+
+        @Test
+        void 표시여부_수정_실패_권한없음() throws Exception {
+            var body = Map.of("show", false);
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}/show",
+                                    축제_ID,
+                                    스탬프_ID,
+                                    미션_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampMissionAdminDocs.error("v2-mission-show-toggle-unauthorized"));
+        }
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 표시여부_수정_실패_축제ID() throws Exception {
+            var body = Map.of("show", true);
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}/show",
+                                    잘못된_ID,
+                                    스탬프_ID,
+                                    미션_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isBadRequest())
+                    .andDo(StampMissionAdminDocs.error("v2-mission-show-toggle-badrequest"));
+        }
+    }
+
+    @Nested
     class 기본설정 {
 
         @Test

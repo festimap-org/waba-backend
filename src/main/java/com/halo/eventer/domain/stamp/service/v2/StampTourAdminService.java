@@ -58,6 +58,18 @@ public class StampTourAdminService {
         stampRepository.delete(stamp);
     }
 
+    @Transactional
+    public StampTourJoinVerificationResDto getJoinVerification(long festivalId, long stampId) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        return StampTourJoinVerificationResDto.from(stamp.getJoinVerificationMethod());
+    }
+
+    @Transactional
+    public void updateJoinVerification(long festivalId, long stampId, StampTourJoinVerificationReqDto request) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        stamp.updateJoinMethod(request.getJoinVerificationMethod());
+    }
+
     @Transactional(readOnly = true)
     public StampTourSettingBasicResDto getStampTourSettingBasicByFestival(long festivalId, long stampId) {
         Stamp stamp = ensureStamp(festivalId, stampId);

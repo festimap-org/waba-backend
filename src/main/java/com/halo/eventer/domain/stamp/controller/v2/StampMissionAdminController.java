@@ -32,6 +32,15 @@ public class StampMissionAdminController {
         return stampMissionAdminService.getMissions(festivalId, stampId);
     }
 
+    @PatchMapping("/{missionId}/show")
+    public void toggleMissionShowing(
+            @PathVariable @Min(1) long festivalId,
+            @PathVariable @Min(1) long stampId,
+            @PathVariable @Min(1) long missionId,
+            @RequestBody @Valid MissionShowReqDto request) {
+        stampMissionAdminService.toggleMissionShowing(festivalId, stampId, missionId, request.isShow());
+    }
+
     @GetMapping("/settings")
     public StampMissionBasicSettingsResDto getBasicSettings(
             @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {

@@ -12,7 +12,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 
 public class StampMissionAdminDocs {
 
-    private static final String TAG = "스탬프투어 미션(v2)";
+    private static final String TAG = "스탬프투어(v2) 관리자 미션";
 
     // ------ 미션 생성/목록 ------
     public static RestDocumentationResultHandler createMission() {
@@ -85,6 +85,22 @@ public class StampMissionAdminDocs {
                                 fieldWithPath("defaultDetailLayout")
                                         .type(STRING)
                                         .description("기본 상세 레이아웃(enum)"))
+                        .build()));
+    }
+
+    public static RestDocumentationResultHandler toggleMissionShow() {
+        return document(
+                "v2-mission-show-toggle",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("미션 표시 여부 토글")
+                        .description("해당 미션의 사용자 노출 여부를 on/off 합니다.")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID"),
+                                parameterWithName("stampId").description("스탬프투어 ID"),
+                                parameterWithName("missionId").description("미션 ID"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .requestFields(fieldWithPath("show").type(BOOLEAN).description("true=표시, false=숨김"))
                         .build()));
     }
 

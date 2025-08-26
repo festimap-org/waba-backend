@@ -14,4 +14,6 @@ public class StampUserDetailResDto {
     private String uuid;
     private boolean tourFinished;
     private List<UserMissionStatusResDto> missions;
+    private String extraText;
+    private int participantCount;
 }

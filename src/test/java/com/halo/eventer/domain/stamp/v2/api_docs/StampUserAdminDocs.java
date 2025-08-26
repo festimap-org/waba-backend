@@ -12,7 +12,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 
 public class StampUserAdminDocs {
 
-    private static final String TAG = "스탬프투어 사용자(v2)";
+    private static final String TAG = "스탬프투어(v2) 사용자 관리";
 
     public static RestDocumentationResultHandler listUsers() {
         return document(
@@ -79,6 +79,11 @@ public class StampUserAdminDocs {
                                 fieldWithPath("phone").type(STRING).description("전화번호"),
                                 fieldWithPath("uuid").type(STRING).description("UUID"),
                                 fieldWithPath("tourFinished").type(BOOLEAN).description("투어 완료 여부"),
+                                fieldWithPath("participantCount").type(NUMBER).description("동반 인원 수"),
+                                fieldWithPath("extraText")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("추가 입력값(없을 수 있음)"),
                                 fieldWithPath("missions").type(ARRAY).description("사용자의 미션 현황"),
                                 fieldWithPath("missions[].userMissionId")
                                         .type(NUMBER)
@@ -114,6 +119,11 @@ public class StampUserAdminDocs {
                                 fieldWithPath("phone").type(STRING).description("전화번호"),
                                 fieldWithPath("uuid").type(STRING).description("UUID"),
                                 fieldWithPath("tourFinished").type(BOOLEAN).description("투어 완료 여부"),
+                                fieldWithPath("participantCount").type(NUMBER).description("동반 인원 수"),
+                                fieldWithPath("extraText")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("추가 입력값(없을 수 있음)"),
                                 fieldWithPath("missions").type(ARRAY).description("사용자의 미션 현황"),
                                 fieldWithPath("missions[].userMissionId")
                                         .type(NUMBER)

@@ -136,6 +136,94 @@ public class StampTourAdminControllerTest {
         }
     }
 
+    @Nested
+    class 유저_설정_참여인증 {
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 조회_성공() throws Exception {
+            var res = new StampTourJoinVerificationResDto(JoinVerificationMethod.SMS);
+            given(service.getJoinVerification(축제_ID, 스탬프_ID)).willReturn(res);
+
+            mockMvc.perform(get(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/user-info",
+                                    축제_ID,
+                                    스탬프_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.joinVerificationMethod").value("SMS"))
+                    .andDo(StampTourAdminDocs.getUserSettings());
+        }
+
+        @Test
+        void 조회_실패_권한없음() throws Exception {
+            mockMvc.perform(get(
+                            "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/user-info",
+                            축제_ID,
+                            스탬프_ID))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-user-settings-get-unauthorized"));
+        }
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 조회_실패_축제ID() throws Exception {
+            mockMvc.perform(get(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/user-info",
+                                    잘못된_ID,
+                                    스탬프_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH))
+                    .andExpect(status().isBadRequest())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-user-settings-get-badrequest"));
+        }
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 수정_성공() throws Exception {
+            var body = Map.of("joinVerificationMethod", "PASS");
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/user-info",
+                                    축제_ID,
+                                    스탬프_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isOk())
+                    .andDo(StampTourAdminDocs.updateUserSettings());
+        }
+
+        @Test
+        void 수정_실패_권한없음() throws Exception {
+            var body = Map.of("joinVerificationMethod", "SMS");
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/user-info",
+                                    축제_ID,
+                                    스탬프_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-user-settings-update-unauthorized"));
+        }
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 수정_실패_축제ID() throws Exception {
+            var body = Map.of("joinVerificationMethod", "NONE");
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/user-info",
+                                    잘못된_ID,
+                                    스탬프_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isBadRequest())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-user-settings-update-badrequest"));
+        }
+    }
+
     // ---------------- 기본 설정 ----------------
     @Nested
     class 기본설정 {
