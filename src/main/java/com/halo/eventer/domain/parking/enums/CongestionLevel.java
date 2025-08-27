@@ -4,5 +4,6 @@ public enum CongestionLevel {
     LOW,
     MEDIUM,
     HIGH,
-    FULL
+    FULL,
+    CLOSED
 }
