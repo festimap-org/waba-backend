@@ -1,0 +1,71 @@
+package com.halo.eventer.domain.stamp.controller.v2;
+
+import java.util.List;
+import jakarta.validation.constraints.Min;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.halo.eventer.domain.stamp.dto.stamp.request.StampTourSignUpTemplateResDto;
+import com.halo.eventer.domain.stamp.dto.stamp.response.*;
+import com.halo.eventer.domain.stamp.service.v2.StampTourTemplateService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v2/template/festivals/{festivalId}/stamp-tours")
+@Slf4j
+public class StampTourTemplateController {
+
+    private final StampTourTemplateService templateService;
+
+    @GetMapping
+    public List<StampTourSummaryResDto> getStampTourList(@PathVariable @Min(1) long festivalId) {
+        return templateService.getStampTourList(festivalId);
+    }
+
+    @GetMapping("/{stampTourId}/signup")
+    public StampTourSignUpTemplateResDto getSignUpSettings(
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
+        return templateService.getSignupTemplate(festivalId, stampTourId);
+    }
+
+    @GetMapping("/{stampTourId}/landing")
+    public StampTourLandingPageResDto getStampTourLandingPage(
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
+        return templateService.getLandingPage(festivalId, stampTourId);
+    }
+
+    @GetMapping("/{stampTourId}/join-template")
+    public StampTourJoinTemplateResDto getStampUserJoinTemplate(
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
+        return templateService.getStampTourJoinMethod(festivalId, stampTourId);
+    }
+
+    @GetMapping("/{stampTourId}/auth-method")
+    public StampTourAuthMethodResDto getStampTourAuthMethod(
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
+        return templateService.getAuthMethod(festivalId, stampTourId);
+    }
+
+    @GetMapping("/{stampTourId}/main")
+    public StampTourMainPageResDto getStampTourMainPage(
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
+        return templateService.getMainPage(festivalId, stampTourId);
+    }
+
+    @GetMapping("/{stampTourId}/notice")
+    public StampTourNotificationResDto getStampTourNotification(
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
+        return templateService.getStampTourNotification(festivalId, stampTourId);
+    }
+
+    @GetMapping("/{stampTourId}/guide")
+    public StampTourGuideResDto getStampTourParticipationGuide(
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
+        return templateService.getParticipateGuide(festivalId, stampTourId);
+    }
+}

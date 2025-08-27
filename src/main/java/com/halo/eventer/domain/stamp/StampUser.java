@@ -3,9 +3,12 @@ package com.halo.eventer.domain.stamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import jakarta.persistence.*;
 
+import com.halo.eventer.domain.member.Authority;
 import com.halo.eventer.domain.stamp.exception.UserMissionNotFoundException;
+import com.halo.eventer.global.common.BaseTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +21,7 @@ import lombok.NoArgsConstructor;
             @Index(name = "idx_uuid", columnList = "uuid"),
             @Index(name = "idx_phone_name_stamp", columnList = "phone, name, stamp_id")
         })
-public class StampUser {
+public class StampUser extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,7 +37,9 @@ public class StampUser {
 
     private boolean isFinished = false;
 
-    private int participantCount;
+    private int participantCount = 1;
+
+    private String extraText;
 
     @Column(nullable = true)
     private String schoolNo;
@@ -42,6 +47,9 @@ public class StampUser {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stamp_id")
     private Stamp stamp;
+
+    @OneToMany(mappedBy = "stampUser", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Authority> authorities;
 
     @OneToMany(mappedBy = "stampUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserMission> userMissions = new ArrayList<>();
@@ -57,12 +65,24 @@ public class StampUser {
         this.participantCount = participantCount;
     }
 
-    public StampUser(String encryptedPhone, String encryptedName, int participantCount, String schoolNo) {
+    public StampUser(String encryptedPhone, String encryptedName, int participantCount, String extraText) {
         this.phone = encryptedPhone;
         this.name = encryptedName;
         this.isFinished = false;
         this.participantCount = participantCount;
-        this.schoolNo = schoolNo;
+        this.extraText = extraText;
+    }
+
+    //    public StampUser(String encryptedPhone, String encryptedName, int participantCount, String schoolNo) {
+    //        this.phone = encryptedPhone;
+    //        this.name = encryptedName;
+    //        this.isFinished = false;
+    //        this.participantCount = participantCount;
+    //        this.schoolNo = schoolNo;
+    //    }
+
+    public List<String> getRoleNames() {
+        return authorities.stream().map(Authority::getRoleName).collect(Collectors.toList());
     }
 
     public void addStamp(Stamp stamp) {
@@ -70,8 +90,8 @@ public class StampUser {
         stamp.getStampUsers().add(this);
     }
 
-    public void markAsFinished() {
-        this.isFinished = true;
+    public void markAsFinished(boolean finished) {
+        this.isFinished = finished;
     }
 
     public void setCustom(Custom custom) {
@@ -96,6 +116,10 @@ public class StampUser {
 
     public boolean canFinishTour() {
         long completed = userMissions.stream().filter(UserMission::isComplete).count();
-        return completed >= stamp.getFinishCount();
+        if (completed >= stamp.getFinishCount()) {
+            isFinished = true;
+            return true;
+        }
+        return false;
     }
 }
