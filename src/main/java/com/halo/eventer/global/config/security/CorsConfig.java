@@ -24,7 +24,10 @@ public class CorsConfig {
             "https://adelante.wabauniv.com",
             "http://m.localhost:3000",
             "https://firefestivaljeju.com",
-            "https://m.firefestivaljeju.com");
+            "https://m.firefestivaljeju.com",
+            "https://stamp.jejufestival.festiv.kr",
+            "https://parking.jejufestival.festiv.kr",
+            "https://business.festiv.kr");
 
     @Bean
     public CorsConfigurationSource customCorsConfigurationSource() {
