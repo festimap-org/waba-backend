@@ -27,45 +27,45 @@ public class StampTourTemplateController {
         return templateService.getStampTourList(festivalId);
     }
 
-    @GetMapping("/{stampTourId}/signup")
+    @GetMapping("/{stampId}/signup")
     public StampTourSignUpTemplateResDto getSignUpSettings(
-            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
-        return templateService.getSignupTemplate(festivalId, stampTourId);
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+        return templateService.getSignupTemplate(festivalId, stampId);
     }
 
-    @GetMapping("/{stampTourId}/landing")
+    @GetMapping("/{stampId}/landing")
     public StampTourLandingPageResDto getStampTourLandingPage(
-            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
-        return templateService.getLandingPage(festivalId, stampTourId);
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+        return templateService.getLandingPage(festivalId, stampId);
     }
 
-    @GetMapping("/{stampTourId}/join-template")
+    @GetMapping("/{stampId}/join-template")
     public StampTourJoinTemplateResDto getStampUserJoinTemplate(
-            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
-        return templateService.getStampTourJoinMethod(festivalId, stampTourId);
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+        return templateService.getStampTourJoinMethod(festivalId, stampId);
     }
 
-    @GetMapping("/{stampTourId}/auth-method")
+    @GetMapping("/{stampId}/auth-method")
     public StampTourAuthMethodResDto getStampTourAuthMethod(
-            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
-        return templateService.getAuthMethod(festivalId, stampTourId);
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+        return templateService.getAuthMethod(festivalId, stampId);
     }
 
-    @GetMapping("/{stampTourId}/main")
+    @GetMapping("/{stampId}/main")
     public StampTourMainPageResDto getStampTourMainPage(
-            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
-        return templateService.getMainPage(festivalId, stampTourId);
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+        return templateService.getMainPage(festivalId, stampId);
     }
 
-    @GetMapping("/{stampTourId}/notice")
+    @GetMapping("/{stampId}/notice")
     public StampTourNotificationResDto getStampTourNotification(
-            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
-        return templateService.getStampTourNotification(festivalId, stampTourId);
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+        return templateService.getStampTourNotification(festivalId, stampId);
     }
 
-    @GetMapping("/{stampTourId}/guide")
+    @GetMapping("/{stampId}/guide")
     public StampTourGuideResDto getStampTourParticipationGuide(
-            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampTourId) {
-        return templateService.getParticipateGuide(festivalId, stampTourId);
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+        return templateService.getParticipateGuide(festivalId, stampId);
     }
 }

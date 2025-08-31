@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.stamp.dto.stamp.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,5 +14,6 @@ public class StampTourCreateReqDto {
     @NotBlank
     private String title;
 
-    private boolean showStamp;
+    @NotNull
+    private Boolean showStamp;
 }

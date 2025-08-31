@@ -1,7 +1,6 @@
 package com.halo.eventer.domain.stamp.dto.stamp.request;
 
 import java.util.List;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -16,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StampTourMainPageReqDto {
     @NotNull
-    private MainPageDesignTemplate designTemplate;
+    private MainPageDesignTemplate mainPageDesignTemplate;
 
     @NotEmpty
     private String backgroundImgUrl;
@@ -24,5 +23,5 @@ public class StampTourMainPageReqDto {
     @NotNull
     private ButtonLayout buttonLayout;
 
-    private List<@Valid ButtonReqDto> buttons;
+    private List<ButtonReqDto> buttons;
 }

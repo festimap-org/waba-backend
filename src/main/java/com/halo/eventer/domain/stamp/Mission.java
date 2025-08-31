@@ -26,16 +26,16 @@ public class Mission {
     private String time;
     private String clearedThumbnail;
     private String notClearedThumbnail;
-    private boolean show = true;
-    private boolean showTitle = true;
+    private Boolean show = true;
+    private Boolean showTitle = true;
     private int requiredSuccessCount = 0;
-    private boolean showRequiredSuccessCount = true;
+    private Boolean showRequiredSuccessCount = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stamp_id")
+    @JoinColumn(name = "stamp_id", nullable = false)
     private Stamp stamp;
 
-    @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MissionDetailsTemplate> missionDetailsTemplates = new ArrayList<>();
 
     @Builder
@@ -108,9 +108,10 @@ public class Mission {
                 .build();
     }
 
-    public static Mission from(Stamp stamp, String missionName) {
+    public static Mission from(Stamp stamp, String missionName, Boolean showMission) {
         Mission mission = Mission.builder().title(missionName).build();
         mission.addStamp(stamp);
+        mission.updateMissionShow(showMission);
         return mission;
     }
 }

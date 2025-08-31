@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StampTourSettingBasicResDto {
-    private long stampTourId;
-    private boolean isStampActive;
+    private Long stampId;
+    private Boolean stampActive;
     private String title;
     private AuthMethod authMethod;
     private String prizeReceiptAuthPassword;
@@ -19,7 +19,7 @@ public class StampTourSettingBasicResDto {
     public static StampTourSettingBasicResDto from(Stamp stamp) {
         return new StampTourSettingBasicResDto(
                 stamp.getId(),
-                stamp.isActive(),
+                stamp.getActive(),
                 stamp.getTitle(),
                 stamp.getAuthMethod(),
                 stamp.getPrizeReceiptAuthPassword());

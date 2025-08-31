@@ -23,7 +23,7 @@ public class StampTourUserDocs {
                         .summary("스탬프투어 사용자 회원가입")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID (>=1)"))
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .requestFields(
                                 fieldWithPath("name").type(STRING).description("이름"),
                                 fieldWithPath("phone").type(STRING).description("전화번호"),
@@ -41,7 +41,7 @@ public class StampTourUserDocs {
                         .summary("스탬프투어 사용자 로그인")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID (>=1)"))
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .requestFields(
                                 fieldWithPath("name").type(STRING).description("이름"),
                                 fieldWithPath("phone").type(STRING).description("전화번호"))
@@ -58,7 +58,7 @@ public class StampTourUserDocs {
                         .summary("사용자 미션 보드 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID (>=1)"))
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
                                 fieldWithPath("completedCount").type(NUMBER).description("완료한 미션 수"),
@@ -87,7 +87,7 @@ public class StampTourUserDocs {
                         .summary("사용자 미션 상세 템플릿 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID (>=1)"),
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"),
                                 parameterWithName("missionId").description("미션 ID (>=1)"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
@@ -147,7 +147,7 @@ public class StampTourUserDocs {
                         .summary("미션 완료 QR 인증")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID (>=1)"))
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(fieldWithPath("missionId").type(NUMBER).description("미션 ID"))
                         .build()));
@@ -162,7 +162,7 @@ public class StampTourUserDocs {
                         .summary("경품 수령용 QR 정보 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID (>=1)"))
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
                                 fieldWithPath("userName").type(STRING).description("이름"),

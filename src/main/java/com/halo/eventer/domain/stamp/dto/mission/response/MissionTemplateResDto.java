@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MissionTemplateResDto {
-    private long missionId;
+    private Long missionId;
     private String title;
 
     private String mediaUrl;

@@ -41,8 +41,7 @@ public class StampTourAdminService {
     @Transactional
     public void createStampTourByFestival(long festivalId, StampTourCreateReqDto request) {
         Festival festival = loadFestivalOrThrow(festivalId);
-        Stamp stamp = Stamp.createWith(festival, request.getTitle());
-        stamp.changeShowStamp(request.isShowStamp());
+        Stamp stamp = Stamp.createWith(festival, request.getTitle(), request.getShowStamp());
         stampRepository.save(stamp);
     }
 
@@ -80,7 +79,7 @@ public class StampTourAdminService {
     public void updateBasicSettings(long festivalId, long stampId, final StampTourBasicUpdateReqDto request) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         stamp.changeBasicSettings(
-                request.isStampActivate(),
+                request.getStampActivate(),
                 request.getTitle(),
                 request.getAuthMethod(),
                 request.getPrizeReceiptAuthPassword());
@@ -152,7 +151,7 @@ public class StampTourAdminService {
     public void updateParticipateGuide(long festivalId, long stampId, StampTourParticipateGuideReqDto request) {
         ensureStamp(festivalId, stampId);
         ParticipateGuide guide = loadParticipateGuideOrThrow(stampId);
-        guide.update(request.getTemplate(), request.getMethod());
+        guide.update(request.getGuideDesignTemplate(), request.getGuideSlideMethod());
     }
 
     @Transactional

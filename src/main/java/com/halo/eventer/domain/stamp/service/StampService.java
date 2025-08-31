@@ -78,7 +78,7 @@ public class StampService {
                         user.getUuid(),
                         encryptService.decryptInfo(user.getName()),
                         encryptService.decryptInfo(user.getPhone()),
-                        user.isFinished(),
+                        user.getIsFinished(),
                         user.getParticipantCount()))
                 .collect(Collectors.toList());
     }

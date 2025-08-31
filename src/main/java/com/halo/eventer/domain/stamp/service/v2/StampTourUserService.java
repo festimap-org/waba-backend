@@ -73,11 +73,11 @@ public class StampTourUserService {
         UserMission userMission = loadUserMissionOrThrow(stampId, missionId, userUuid);
         return new MissionTemplateResDto(
                 mission.getId(),
-                mission.isShowTitle() ? mission.getTitle() : null,
+                mission.getShowTitle() ? mission.getTitle() : null,
                 template.getMediaUrl(),
                 template.getDesignLayout(),
                 userMission.getSuccessCount(),
-                mission.isShowRequiredSuccessCount() ? mission.getRequiredSuccessCount() : null,
+                mission.getShowRequiredSuccessCount() ? mission.getRequiredSuccessCount() : null,
                 MissionExtraInfoSummaryResDto.fromEntities(template.getExtraInfo()),
                 template.getButtonLayout(),
                 ButtonResDto.fromEntities(template.getButtons()));
@@ -125,7 +125,7 @@ public class StampTourUserService {
 
     private List<UserMission> filterUserMissionOnlyShowing(StampUser user) {
         return user.getUserMissions().stream()
-                .filter(um -> um.getMission() != null && um.getMission().isShow())
+                .filter(um -> um.getMission() != null && um.getMission().getShow())
                 .sorted(Comparator.comparing(um -> um.getMission().getId()))
                 .toList();
     }

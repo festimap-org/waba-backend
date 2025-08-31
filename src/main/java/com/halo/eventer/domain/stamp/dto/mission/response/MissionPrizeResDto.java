@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class MissionPrizeResDto {
     private long id;
     private int requiredCount;
-    private String description;
+    private String prizeDescription;
 
     public static MissionPrizeResDto from(StampMissionPrize prize) {
         return new MissionPrizeResDto(prize.getId(), prize.getRequiredCount(), prize.getDescription());

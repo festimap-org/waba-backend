@@ -16,11 +16,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MissionDetailsTemplateResDto {
-    private long templateId;
-    private MissionDetailsDesignLayout layout;
+    private MissionDetailsDesignLayout missionDetailsDesignLayout;
 
-    private boolean showMissionName;
-    private String missionName;
+    private boolean showMissionTitle;
+    private String missionTitle;
 
     private boolean showSuccessCount;
 
@@ -38,17 +37,16 @@ public class MissionDetailsTemplateResDto {
     public static MissionDetailsTemplateResDto from(
             MissionDetailsTemplate template, boolean showTitle, boolean showSuccessCount, String missionName) {
         return new MissionDetailsTemplateResDto(
-                template.getId(),
                 template.getDesignLayout(),
                 showTitle,
                 missionName,
                 showSuccessCount,
                 template.getMediaSpec(),
                 template.getMediaUrl(),
-                template.isShowExtraInfos(),
+                template.getShowExtraInfos(),
                 template.getInfoLayout(),
                 MissionExtraInfoSummaryResDto.fromEntities(template.getExtraInfo()),
-                template.isShowButtons(),
+                template.getShowButtons(),
                 template.getButtonLayout(),
                 ButtonResDto.fromEntities(template.getButtons()));
     }

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StampTourBasicUpdateReqDto {
     @NotNull
-    private boolean isStampActivate;
+    private Boolean stampActivate;
 
     @NotBlank
     private String title;

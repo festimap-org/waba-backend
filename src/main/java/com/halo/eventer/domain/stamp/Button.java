@@ -64,14 +64,14 @@ public class Button {
 
     public static Button from(PageTemplate template, ButtonReqDto dto) {
         Button b = new Button(
-                dto.getSequenceIndex(), dto.getIconImg(), dto.getContent(), dto.getAction(), dto.getTargetUrl());
+                dto.getSequenceIndex(), dto.getIconImgUrl(), dto.getContent(), dto.getAction(), dto.getTargetUrl());
         b.attachTo(template);
         return b;
     }
 
     public static Button from(MissionDetailsTemplate template, ButtonReqDto dto) {
         Button b = new Button(
-                dto.getSequenceIndex(), dto.getIconImg(), dto.getContent(), dto.getAction(), dto.getTargetUrl());
+                dto.getSequenceIndex(), dto.getIconImgUrl(), dto.getContent(), dto.getAction(), dto.getTargetUrl());
         b.attachTo(template);
         return b;
     }

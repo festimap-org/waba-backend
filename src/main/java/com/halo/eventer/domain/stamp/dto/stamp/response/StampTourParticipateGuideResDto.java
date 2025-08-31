@@ -13,14 +13,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StampTourParticipateGuideResDto {
-    private long participateGuideId;
     private GuideDesignTemplate guideDesignTemplate;
     private GuideSlideMethod guideSlideMethod;
     private List<ParticipateGuidePageSummaryResDto> participateGuidePages;
 
     public static StampTourParticipateGuideResDto from(ParticipateGuide guide) {
         return new StampTourParticipateGuideResDto(
-                guide.getId(),
                 guide.getGuideDesignTemplate(),
                 guide.getGuideSlideMethod(),
                 ParticipateGuidePageSummaryResDto.fromEntities(guide.getParticipateGuidePages()));

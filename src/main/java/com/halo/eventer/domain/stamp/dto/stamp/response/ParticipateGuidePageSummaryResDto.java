@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParticipateGuidePageSummaryResDto {
-    private long pageId;
+    private Long pageId;
     private String title;
     private int displayOrder;
 

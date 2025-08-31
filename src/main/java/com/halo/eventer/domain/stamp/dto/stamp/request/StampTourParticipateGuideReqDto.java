@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StampTourParticipateGuideReqDto {
     @NotNull
-    private GuideDesignTemplate template;
+    private GuideDesignTemplate guideDesignTemplate;
 
     @NotNull
-    private GuideSlideMethod method;
+    private GuideSlideMethod guideSlideMethod;
 }
