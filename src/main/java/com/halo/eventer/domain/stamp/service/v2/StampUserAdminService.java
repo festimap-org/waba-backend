@@ -24,7 +24,6 @@ import com.halo.eventer.domain.stamp.repository.StampRepository;
 import com.halo.eventer.domain.stamp.repository.StampUserRepository;
 import com.halo.eventer.global.common.page.PageInfo;
 import com.halo.eventer.global.common.page.PagedResponse;
-import com.halo.eventer.global.utils.EncryptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +34,6 @@ public class StampUserAdminService {
 
     private final StampRepository stampRepository;
     private final StampUserRepository stampUserRepository;
-    private final EncryptService encryptService;
 
     @Transactional(readOnly = true)
     public PagedResponse<StampUserSummaryResDto> getStampUsers(
@@ -55,7 +53,7 @@ public class StampUserAdminService {
         List<UserMissionStatusResDto> missions = stampUser.getUserMissions().stream()
                 .sorted(Comparator.comparing(um -> um.getMission().getId()))
                 .map(um -> new UserMissionStatusResDto(
-                        um.getId(), um.getMission().getId(), um.getMission().getTitle(), um.isComplete()))
+                        um.getId(), um.getMission().getId(), um.getMission().getTitle(), um.getIsComplete()))
                 .toList();
 
         return new StampUserDetailResDto(
@@ -63,7 +61,7 @@ public class StampUserAdminService {
                 stampUser.getName(),
                 stampUser.getPhone(),
                 stampUser.getUuid(),
-                stampUser.isFinished(),
+                stampUser.getIsFinished(),
                 missions,
                 stampUser.getExtraText(),
                 stampUser.getParticipantCount());
@@ -99,7 +97,7 @@ public class StampUserAdminService {
 
     private void syncUserFinishedFlag(StampUser su) {
         long completed =
-                su.getUserMissions().stream().filter(UserMission::isComplete).count();
+                su.getUserMissions().stream().filter(UserMission::getIsComplete).count();
         boolean finished = completed >= su.getStamp().getFinishCount();
         su.markAsFinished(finished);
     }
@@ -136,7 +134,7 @@ public class StampUserAdminService {
         List<UserMissionStatusResDto> missions = su.getUserMissions().stream()
                 .sorted(Comparator.comparing(um -> um.getMission().getId()))
                 .map(um -> new UserMissionStatusResDto(
-                        um.getId(), um.getMission().getId(), um.getMission().getTitle(), um.isComplete()))
+                        um.getId(), um.getMission().getId(), um.getMission().getTitle(), um.getIsComplete()))
                 .toList();
 
         return new StampUserDetailResDto(
@@ -144,7 +142,7 @@ public class StampUserAdminService {
                 su.getName(),
                 su.getPhone(),
                 su.getUuid(),
-                su.isFinished(),
+                su.getIsFinished(),
                 missions,
                 su.getExtraText(),
                 su.getParticipantCount());

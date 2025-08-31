@@ -78,10 +78,7 @@ public class StampTourUserControllerTest {
         @Test
         void 성공() throws Exception {
             var body = new StampUserSignupReqDto("홍길동", "010-1111-2222", 2, "추가메모");
-            mockMvc.perform(post(
-                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/signup",
-                                    축제_ID,
-                                    스탬프투어_ID)
+            mockMvc.perform(post("/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/signup", 축제_ID, 스탬프투어_ID)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isOk())
@@ -92,7 +89,7 @@ public class StampTourUserControllerTest {
         void 실패_검증오류() throws Exception {
             // phone 누락
             var bad = new StampUserLoginDto("홍길동", "");
-            mockMvc.perform(post("/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/login", 축제_ID, 스탬프투어_ID)
+            mockMvc.perform(post("/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/login", 축제_ID, 스탬프투어_ID)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(bad)))
                     .andExpect(status().isBadRequest())
@@ -117,7 +114,7 @@ public class StampTourUserControllerTest {
                     .when(service)
                     .login(eq(축제_ID), eq(스탬프투어_ID), any(StampUserLoginDto.class), any(HttpServletResponse.class));
 
-            mockMvc.perform(post("/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/login", 축제_ID, 스탬프투어_ID)
+            mockMvc.perform(post("/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/login", 축제_ID, 스탬프투어_ID)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isOk())
@@ -129,7 +126,7 @@ public class StampTourUserControllerTest {
         void 실패_검증오류() throws Exception {
             // phone 누락
             var bad = new StampUserLoginDto("홍길동", "");
-            mockMvc.perform(post("/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/login", 축제_ID, 스탬프투어_ID)
+            mockMvc.perform(post("/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/login", 축제_ID, 스탬프투어_ID)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(bad)))
                     .andExpect(status().isBadRequest())
@@ -158,10 +155,7 @@ public class StampTourUserControllerTest {
 
             given(service.getMissionBoard(eq(축제_ID), eq(스탬프투어_ID), anyString())).willReturn(board);
 
-            mockMvc.perform(get(
-                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/missions",
-                                    축제_ID,
-                                    스탬프투어_ID)
+            mockMvc.perform(get("/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/missions", 축제_ID, 스탬프투어_ID)
                             .with(user(스탬프_유저()))
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
@@ -173,8 +167,7 @@ public class StampTourUserControllerTest {
 
         @Test
         void 실패_권한없음() throws Exception {
-            mockMvc.perform(get(
-                            "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/missions", 축제_ID, 스탬프투어_ID))
+            mockMvc.perform(get("/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/missions", 축제_ID, 스탬프투어_ID))
                     .andExpect(status().isUnauthorized())
                     .andDo(StampTourUserDocs.error("v2-user-stamptour-mission-board-unauthorized"));
         }
@@ -182,7 +175,7 @@ public class StampTourUserControllerTest {
         @Test
         void 실패_검증오류_PathVariable() throws Exception {
             mockMvc.perform(get(
-                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/missions",
+                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/missions",
                                     축제_ID,
                                     0L) // @Min(1) 위반
                             .with(user(스탬프_유저())))
@@ -219,7 +212,7 @@ public class StampTourUserControllerTest {
             given(service.getMissionsTemplate(eq(축제_ID), eq(스탬프투어_ID), eq(미션_ID), anyString()))
                     .willReturn(res);
             mockMvc.perform(get(
-                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/missions/{missionId}",
+                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}",
                                     축제_ID,
                                     스탬프투어_ID,
                                     미션_ID)
@@ -233,7 +226,7 @@ public class StampTourUserControllerTest {
         @Test
         void 실패_권한없음() throws Exception {
             mockMvc.perform(get(
-                            "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/missions/{missionId}",
+                            "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}",
                             축제_ID,
                             스탬프투어_ID,
                             미션_ID))
@@ -244,7 +237,7 @@ public class StampTourUserControllerTest {
         @Test
         void 실패_검증오류_PathVariable() throws Exception {
             mockMvc.perform(get(
-                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/missions/{missionId}",
+                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}",
                                     축제_ID,
                                     스탬프투어_ID,
                                     0L) // missionId @Min(1) 위반
@@ -267,7 +260,7 @@ public class StampTourUserControllerTest {
             var body = new MissionQrVerifyReqDto(미션_ID);
 
             mockMvc.perform(patch(
-                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/verify/qr",
+                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/verify/qr",
                                     축제_ID,
                                     스탬프투어_ID)
                             .with(user(스탬프_유저()))
@@ -282,7 +275,7 @@ public class StampTourUserControllerTest {
         void 실패_권한없음() throws Exception {
             var body = new MissionQrVerifyReqDto(미션_ID);
             mockMvc.perform(patch(
-                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/verify/qr",
+                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/verify/qr",
                                     축제_ID,
                                     스탬프투어_ID)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -295,7 +288,7 @@ public class StampTourUserControllerTest {
         void 실패_검증오류_PathVariable() throws Exception {
             var body = new MissionQrVerifyReqDto(미션_ID);
             mockMvc.perform(patch(
-                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/verify/qr",
+                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/verify/qr",
                                     축제_ID,
                                     0L) // @Min(1) 위반
                             .with(user(스탬프_유저()))
@@ -321,10 +314,7 @@ public class StampTourUserControllerTest {
             given(service.getPrizeReceiveQr(eq(축제_ID), eq(스탬프투어_ID), anyString()))
                     .willReturn(res);
 
-            mockMvc.perform(get(
-                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/prizes/qr",
-                                    축제_ID,
-                                    스탬프투어_ID)
+            mockMvc.perform(get("/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/prizes/qr", 축제_ID, 스탬프투어_ID)
                             .with(user(스탬프_유저()))
                             .header(HttpHeaders.AUTHORIZATION, AUTH)
                             .accept(MediaType.APPLICATION_JSON))
@@ -335,8 +325,7 @@ public class StampTourUserControllerTest {
 
         @Test
         void 실패_권한없음() throws Exception {
-            mockMvc.perform(get(
-                            "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/prizes/qr", 축제_ID, 스탬프투어_ID))
+            mockMvc.perform(get("/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/prizes/qr", 축제_ID, 스탬프투어_ID))
                     .andExpect(status().isUnauthorized())
                     .andDo(StampTourUserDocs.error("v2-user-stamptour-prize-qr-unauthorized"));
         }
@@ -344,7 +333,7 @@ public class StampTourUserControllerTest {
         @Test
         void 실패_검증오류_PathVariable() throws Exception {
             mockMvc.perform(get(
-                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampTourId}/prizes/qr",
+                                    "/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/prizes/qr",
                                     축제_ID,
                                     0L) // @Min(1) 위반
                             .with(user(스탬프_유저())))

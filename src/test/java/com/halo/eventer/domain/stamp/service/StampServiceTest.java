@@ -81,7 +81,7 @@ public class StampServiceTest {
 
         // then
         assertThat(results).hasSize(1);
-        assertThat(result.isStampOn()).isEqualTo(stamp1.isActive());
+        assertThat(result.isStampOn()).isEqualTo(stamp1.getActive());
         assertThat(result.getStampId()).isEqualTo(stamp1.getId());
         assertThat(result.getStampFinishCnt()).isEqualTo(stamp1.getFinishCount());
     }
@@ -98,7 +98,7 @@ public class StampServiceTest {
 
         // then
         assertThat(results).hasSize(3);
-        assertThat(results.get(0).isStampOn()).isEqualTo(stamp1.isActive());
+        assertThat(results.get(0).isStampOn()).isEqualTo(stamp1.getActive());
         assertThat(results.get(0).getStampId()).isEqualTo(stamp1.getId());
         assertThat(results.get(0).getStampFinishCnt()).isEqualTo(stamp1.getFinishCount());
     }
@@ -126,7 +126,7 @@ public class StampServiceTest {
 
         // then
         assertThat(results).hasSize(3);
-        assertThat(result.isStampOn()).isEqualTo(stamp1.isActive());
+        assertThat(result.isStampOn()).isEqualTo(stamp1.getActive());
         assertThat(result.getStampId()).isEqualTo(stamp1.getId());
         assertThat(result.getStampFinishCnt()).isEqualTo(stamp1.getFinishCount());
     }
@@ -145,11 +145,11 @@ public class StampServiceTest {
     void 스탬프_상태_변경_성공() {
         // given
         given(stampRepository.findById(anyLong())).willReturn(Optional.ofNullable(stamp1));
-        boolean before = stamp1.isActive();
+        boolean before = stamp1.getActive();
 
         // when
         stampService.updateStampOn(스탬프1_ID);
-        boolean after = stamp1.isActive();
+        boolean after = stamp1.getActive();
 
         // then
         assertThat(after).isEqualTo(!before);

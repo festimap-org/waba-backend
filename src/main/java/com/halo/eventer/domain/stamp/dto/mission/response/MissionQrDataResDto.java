@@ -19,6 +19,9 @@ public class MissionQrDataResDto {
     }
 
     public static List<MissionQrDataResDto> fromEntities(List<Mission> missions) {
+        if (missions == null || missions.isEmpty()) {
+            return List.of();
+        }
         return missions.stream().map(MissionQrDataResDto::from).toList();
     }
 }

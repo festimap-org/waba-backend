@@ -26,7 +26,24 @@ public class StampMissionAdminDocs {
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
                                 parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
-                        .requestFields(fieldWithPath("name").type(STRING).description("미션 이름"))
+                        .requestFields(
+                                fieldWithPath("title").type(STRING).description("미션 이름"),
+                                fieldWithPath("showMission").type(BOOLEAN).description("미션 공개 여부"))
+                        .build()));
+    }
+
+    public static RestDocumentationResultHandler deleteMission() {
+        return document(
+                "v2-mission-delete",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("미션 삭제")
+                        .description("스탬프투어에서 특정 미션을 삭제합니다.")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID (>=1)"),
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"),
+                                parameterWithName("missionId").description("미션 ID (>=1)"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .build()));
     }
 
@@ -41,8 +58,24 @@ public class StampMissionAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("[].missionId").type(NUMBER).description("미션 ID"),
-                                fieldWithPath("[].title").type(STRING).description("제목"))
+                                fieldWithPath("limitMissionCount").type(NUMBER).description("최대 미션 개수 제한"),
+                                fieldWithPath("missionList").type(ARRAY).description("미션 목록(비어있을 수 있음)"),
+                                fieldWithPath("missionList[].missionId")
+                                        .type(NUMBER)
+                                        .optional()
+                                        .description("미션 ID"),
+                                fieldWithPath("missionList[].title")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("제목"),
+                                fieldWithPath("missionList[].showMission")
+                                        .type(BOOLEAN)
+                                        .optional()
+                                        .description("미션 공개 여부"),
+                                fieldWithPath("missionList[].showMissionTitle")
+                                        .type(BOOLEAN)
+                                        .optional()
+                                        .description("미션 제목 공개 여부"))
                         .build()));
     }
 
@@ -58,15 +91,17 @@ public class StampMissionAdminDocs {
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
                                 fieldWithPath("missionCount").type(NUMBER).description("미션 총 개수"),
-                                fieldWithPath("layout").type(STRING).description("기본 상세 레이아웃"),
-                                fieldWithPath("prizes").type(ARRAY).description("리워드(상품) 목록"),
+                                fieldWithPath("missionDetailsDesignLayout")
+                                        .type(STRING)
+                                        .description("기본 상세 레이아웃"),
+                                fieldWithPath("prizes").type(ARRAY).optional().description("경품 목록"),
                                 fieldWithPath("prizes[].id").type(NUMBER).description("상품 ID"),
                                 fieldWithPath("prizes[].requiredCount")
                                         .type(NUMBER)
                                         .description("필요 스탬프 수"),
-                                fieldWithPath("prizes[].description")
+                                fieldWithPath("prizes[].prizeDescription")
                                         .type(STRING)
-                                        .description("상품 설명"))
+                                        .description("경품 설명"))
                         .build()));
     }
 
@@ -82,9 +117,9 @@ public class StampMissionAdminDocs {
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
                                 fieldWithPath("missionCount").type(NUMBER).description("미션 총 개수(2~16)"),
-                                fieldWithPath("defaultDetailLayout")
+                                fieldWithPath("missionDetailsDesignLayout")
                                         .type(STRING)
-                                        .description("기본 상세 레이아웃(enum)"))
+                                        .description("기본 상세 레이아웃(   CARD, IMAGE_TOP, IMAGE_SIDE, TEXT_ONLY)"))
                         .build()));
     }
 
@@ -165,12 +200,15 @@ public class StampMissionAdminDocs {
                                 parameterWithName("missionId").description("미션 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("templateId").type(NUMBER).description("템플릿 ID"),
-                                fieldWithPath("layout").type(STRING).description("디자인 레이아웃"),
-                                fieldWithPath("showMissionName").type(BOOLEAN).description("제목 표시"),
-                                fieldWithPath("missionName").type(STRING).description("미션 제목"),
+                                fieldWithPath("missionDetailsDesignLayout")
+                                        .type(STRING)
+                                        .description("디자인 레이아웃"),
+                                fieldWithPath("showMissionTitle").type(BOOLEAN).description("제목 표시"),
+                                fieldWithPath("missionTitle").type(STRING).description("미션 제목"),
                                 fieldWithPath("showSuccessCount").type(BOOLEAN).description("성공횟수 표시"),
-                                fieldWithPath("mediaSpec").type(STRING).description("미디어 스펙"),
+                                fieldWithPath("mediaSpec")
+                                        .type(STRING)
+                                        .description("미디어 스펙 (NONE, ONE_TO_ONE, SIXTEEN_TO_NINE, RATIO_NO_CHANGE)"),
                                 fieldWithPath("mediaUrl")
                                         .type(STRING)
                                         .optional()
@@ -179,7 +217,7 @@ public class StampMissionAdminDocs {
                                 fieldWithPath("extraInfoType")
                                         .type(STRING)
                                         .optional()
-                                        .description("추가정보 레이아웃"),
+                                        .description("추가정보 레이아웃 (LIST)"),
                                 fieldWithPath("extraInfos").type(ARRAY).description("추가정보 요약 목록"),
                                 fieldWithPath("extraInfos[].extraInfoId")
                                         .type(NUMBER)
@@ -193,7 +231,9 @@ public class StampMissionAdminDocs {
                                         .optional()
                                         .description("본문"),
                                 fieldWithPath("showButtons").type(BOOLEAN).description("버튼 표시"),
-                                fieldWithPath("buttonLayout").type(STRING).description("버튼 레이아웃"),
+                                fieldWithPath("buttonLayout")
+                                        .type(STRING)
+                                        .description("버튼 레이아웃 (ONE,TWO_ASYM, TWO_SYM, TWO_UP_DOWN, NONE)"),
                                 fieldWithPath("buttons").type(ARRAY).description("버튼 목록"),
                                 fieldWithPath("buttons[].sequenceIndex")
                                         .type(NUMBER)
@@ -203,7 +243,9 @@ public class StampMissionAdminDocs {
                                         .type(STRING)
                                         .optional()
                                         .description("아이콘 URL"),
-                                fieldWithPath("buttons[].action").type(STRING).description("동작"),
+                                fieldWithPath("buttons[].action")
+                                        .type(STRING)
+                                        .description("동작 ( QR_CAMERA, NFC_SCAN, OPEN_URL, OPEN_NEW_PAGE, OPEN_POPUP)"),
                                 fieldWithPath("buttons[].targetUrl")
                                         .type(STRING)
                                         .optional()
@@ -224,13 +266,15 @@ public class StampMissionAdminDocs {
                                 parameterWithName("missionId").description("미션 ID (>=1)"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("layout").type(STRING).description("디자인 레이아웃"),
+                                fieldWithPath("missionDetailsDesignLayout")
+                                        .type(STRING)
+                                        .description("디자인 레이아웃"),
                                 fieldWithPath("missionTitle").type(STRING).description("미션 제목"),
-                                fieldWithPath("showMissionName").type(BOOLEAN).description("제목 표시"),
+                                fieldWithPath("showMissionTitle").type(BOOLEAN).description("제목 표시"),
                                 fieldWithPath("showSuccessCount").type(BOOLEAN).description("성공횟수 표시"),
                                 fieldWithPath("showExtraInfos").type(BOOLEAN).description("추가정보 표시"),
                                 fieldWithPath("showButtons").type(BOOLEAN).description("버튼 표시"),
-                                fieldWithPath("missionMediaSpec").type(STRING).description("미디어 스펙"),
+                                fieldWithPath("mediaSpec").type(STRING).description("미디어 스펙"),
                                 fieldWithPath("mediaUrl")
                                         .type(STRING)
                                         .optional()
@@ -256,7 +300,7 @@ public class StampMissionAdminDocs {
                                 fieldWithPath("buttons[].sequenceIndex")
                                         .type(NUMBER)
                                         .description("순서(0-base)"),
-                                fieldWithPath("buttons[].iconImg")
+                                fieldWithPath("buttons[].iconImgUrl")
                                         .type(STRING)
                                         .optional()
                                         .description("아이콘 이미지"),
@@ -282,7 +326,7 @@ public class StampMissionAdminDocs {
                                 parameterWithName("missionId").description("미션 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("showMissionName").type(BOOLEAN).description("제목 표시"),
+                                fieldWithPath("showMissionTitle").type(BOOLEAN).description("제목 표시"),
                                 fieldWithPath("clearedThumbnail")
                                         .type(STRING)
                                         .optional()

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StampTourLandingPageResDto {
-    private LandingPageDesignTemplate designTemplate;
+    private LandingPageDesignTemplate landingPageDesignTemplate;
     private String iconImgUrl;
     private String backgroundImgUrl;
     private String description;

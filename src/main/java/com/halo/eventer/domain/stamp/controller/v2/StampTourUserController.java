@@ -27,56 +27,55 @@ public class StampTourUserController {
 
     private final StampTourUserService stampTourUserService;
 
-    @PostMapping("/{stampTourId}/signup")
+    @PostMapping("/{stampId}/signup")
     public void stampUserSignup(
             @PathVariable @Min(1) long festivalId,
-            @PathVariable @Min(1) long stampTourId,
+            @PathVariable @Min(1) long stampId,
             @RequestBody @Valid StampUserSignupReqDto request) {
-        stampTourUserService.signup(festivalId, stampTourId, request);
+        stampTourUserService.signup(festivalId, stampId, request);
     }
 
-    @PostMapping("/{stampTourId}/login")
+    @PostMapping("/{stampId}/login")
     public StampUserGetDto login(
             @PathVariable @Min(1) long festivalId,
-            @PathVariable @Min(1) long stampTourId,
+            @PathVariable @Min(1) long stampId,
             @RequestBody @Valid StampUserLoginDto request,
             HttpServletResponse response) {
-        return stampTourUserService.login(festivalId, stampTourId, request, response);
+        return stampTourUserService.login(festivalId, stampId, request, response);
     }
 
-    @GetMapping("/{stampTourId}/missions")
+    @GetMapping("/{stampId}/missions")
     public MissionBoardResDto getUserMissionBoard(
             @AuthenticationPrincipal CustomStampUserDetails userDetails,
             @PathVariable @Min(1) long festivalId,
-            @PathVariable @Min(1) long stampTourId) {
-        return stampTourUserService.getMissionBoard(festivalId, stampTourId, userDetails.getUsername());
+            @PathVariable @Min(1) long stampId) {
+        return stampTourUserService.getMissionBoard(festivalId, stampId, userDetails.getUsername());
     }
 
-    @GetMapping("/{stampTourId}/missions/{missionId}")
+    @GetMapping("/{stampId}/missions/{missionId}")
     public MissionTemplateResDto getMissionDetails(
             @AuthenticationPrincipal CustomStampUserDetails userDetails,
             @PathVariable @Min(1) long festivalId,
-            @PathVariable @Min(1) long stampTourId,
+            @PathVariable @Min(1) long stampId,
             @PathVariable @Min(1) long missionId) {
-        return stampTourUserService.getMissionsTemplate(festivalId, stampTourId, missionId, userDetails.getUsername());
+        return stampTourUserService.getMissionsTemplate(festivalId, stampId, missionId, userDetails.getUsername());
     }
 
     // TODO : QR 인증방식 변경 필요 : 토큰 방식 고려 중
-    @PatchMapping("/{stampTourId}/verify/qr")
+    @PatchMapping("/{stampId}/verify/qr")
     public void successMissionVerifyByQr(
             @AuthenticationPrincipal CustomStampUserDetails userDetails,
             @PathVariable @Min(1) long festivalId,
-            @PathVariable @Min(1) long stampTourId,
+            @PathVariable @Min(1) long stampId,
             @RequestBody @Valid MissionQrVerifyReqDto request) {
-        stampTourUserService.successMissionByQr(
-                festivalId, stampTourId, request.getMissionId(), userDetails.getUsername());
+        stampTourUserService.successMissionByQr(festivalId, stampId, request.getMissionId(), userDetails.getUsername());
     }
 
-    @GetMapping("/{stampTourId}/prizes/qr")
+    @GetMapping("/{stampId}/prizes/qr")
     public PrizeClaimQrResDto getStampUserPrizeQrInfo(
             @AuthenticationPrincipal CustomStampUserDetails userDetails,
             @PathVariable @Min(1) long festivalId,
-            @PathVariable @Min(1) long stampTourId) {
-        return stampTourUserService.getPrizeReceiveQr(festivalId, stampTourId, userDetails.getUsername());
+            @PathVariable @Min(1) long stampId) {
+        return stampTourUserService.getPrizeReceiveQr(festivalId, stampId, userDetails.getUsername());
     }
 }

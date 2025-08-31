@@ -63,7 +63,7 @@ public class PageTemplate {
     }
 
     public void updateLandingPageTemplate(StampTourLandingPageReqDto request) {
-        this.landingPageDesignTemplate = request.getDesignTemplate();
+        this.landingPageDesignTemplate = request.getLandingPageDesignTemplate();
         this.backgroundImg = request.getBackgroundImgUrl();
         this.iconImg = request.getIconImgUrl();
         this.description = request.getDescription();
@@ -74,7 +74,7 @@ public class PageTemplate {
     }
 
     public void updateMainPageTemplate(StampTourMainPageReqDto request) {
-        this.mainPageDesignTemplate = request.getDesignTemplate();
+        this.mainPageDesignTemplate = request.getMainPageDesignTemplate();
         this.backgroundImg = request.getBackgroundImgUrl();
         this.buttonLayout = request.getButtonLayout();
         if (!request.getButtonLayout().equals(ButtonLayout.NONE)) {

@@ -131,7 +131,7 @@ public class StampTourAdminServiceTest {
 
         var 결과 = service.getStampTourSettingBasicByFestival(축제_id, 스탬프투어1_ID);
 
-        assertThat(결과.getStampTourId()).isEqualTo(스탬프.getId());
+        assertThat(결과.getStampId()).isEqualTo(스탬프.getId());
         assertThat(결과.getTitle()).isEqualTo(스탬프.getTitle());
     }
 
@@ -160,7 +160,7 @@ public class StampTourAdminServiceTest {
         service.updateBasicSettings(축제_id, 스탬프투어1_ID, 요청);
 
         assertThat(스탬프.getTitle()).isEqualTo(바뀐_스탬프투어_제목);
-        assertThat(스탬프.isActive()).isFalse();
+        assertThat(스탬프.getActive()).isFalse();
         assertThat(스탬프.getPrizeReceiptAuthPassword()).isEqualTo(바뀐_스탬프투어_관리자비번);
         assertThat(스탬프.getAuthMethod()).isEqualTo(바뀐_스탬프투어_유저인증방법);
     }
@@ -237,7 +237,7 @@ public class StampTourAdminServiceTest {
 
         var 결과 = service.getLandingPageSettings(축제_id, 스탬프투어1_ID);
 
-        assertThat(결과.getDesignTemplate()).isEqualTo(LandingPageDesignTemplate.NONE);
+        assertThat(결과.getLandingPageDesignTemplate()).isEqualTo(LandingPageDesignTemplate.NONE);
         then(pageTemplateRepository).should().save(any(PageTemplate.class));
     }
 
@@ -252,7 +252,7 @@ public class StampTourAdminServiceTest {
 
         service.updateLandingPage(축제_id, 스탬프투어1_ID, 요청);
 
-        assertThat(랜딩페이지.getLandingPageDesignTemplate()).isEqualTo(요청.getDesignTemplate());
+        assertThat(랜딩페이지.getLandingPageDesignTemplate()).isEqualTo(요청.getLandingPageDesignTemplate());
         assertThat(랜딩페이지.getBackgroundImg()).isEqualTo(요청.getBackgroundImgUrl());
         assertThat(랜딩페이지.getButtons()).hasSize(2);
     }
@@ -283,7 +283,7 @@ public class StampTourAdminServiceTest {
 
         var 결과 = service.getMainPageSettings(축제_id, 스탬프투어1_ID);
 
-        assertThat(결과.getBackgroundImg()).isEqualTo(메인페이지.getBackgroundImg());
+        assertThat(결과.getBackgroundImgUrl()).isEqualTo(메인페이지.getBackgroundImg());
         assertThat(결과.getButtons()).hasSize(2);
     }
 
@@ -298,7 +298,7 @@ public class StampTourAdminServiceTest {
 
         service.updateMainPageSettings(축제_id, 스탬프투어1_ID, 요청);
 
-        assertThat(메인페이지.getMainPageDesignTemplate()).isEqualTo(요청.getDesignTemplate());
+        assertThat(메인페이지.getMainPageDesignTemplate()).isEqualTo(요청.getMainPageDesignTemplate());
         assertThat(메인페이지.getButtonLayout()).isEqualTo(요청.getButtonLayout());
         assertThat(메인페이지.getButtons()).hasSize(1);
     }
@@ -312,7 +312,6 @@ public class StampTourAdminServiceTest {
 
         var 결과 = service.getParticipateGuide(축제_id, 스탬프투어1_ID);
 
-        assertThat(결과.getParticipateGuideId()).isEqualTo(guide.getId());
         assertThat(결과.getParticipateGuidePages()).hasSize(0);
     }
 
@@ -327,7 +326,6 @@ public class StampTourAdminServiceTest {
         });
         var 결과 = service.getParticipateGuide(축제_id, 스탬프투어1_ID);
         assertThat(결과).isNotNull();
-        assertThat(결과.getParticipateGuideId()).isEqualTo(100L);
         then(participateGuideRepository).should().save(any(ParticipateGuide.class));
     }
 
@@ -386,7 +384,7 @@ public class StampTourAdminServiceTest {
         given(participateGuideRepository.findFirstByStampId(anyLong())).willReturn(Optional.of(guide));
 
         var 요청 = new StampTourParticipateGuidePageReqDto(
-                0L, 참여방법_페이지1_제목, 참여방법_페이지1_미디어_제공_형식, 참여방법_페이지1_미디어_url, 참여방법_페이지1_요약, 참여방법_페이지1_상세, 참여방법_페이지1_추가);
+                참여방법_페이지1_제목, 참여방법_페이지1_미디어_제공_형식, 참여방법_페이지1_미디어_url, 참여방법_페이지1_요약, 참여방법_페이지1_상세, 참여방법_페이지1_추가);
 
         service.createParticipateGuidePage(축제_id, 스탬프투어1_ID, 요청);
 
@@ -425,8 +423,7 @@ public class StampTourAdminServiceTest {
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuidePageRepository.findById(anyLong())).willReturn(Optional.of(page));
 
-        var 요청 = new StampTourParticipateGuidePageReqDto(
-                0L, "수정제목", 참여방법_페이지3_미디어_제공_형식, "수정URL", "요약수정", "상세수정", "추가수정");
+        var 요청 = new StampTourParticipateGuidePageReqDto("수정제목", 참여방법_페이지3_미디어_제공_형식, "수정URL", "요약수정", "상세수정", "추가수정");
 
         service.updateParticipateGuidePage(축제_id, 스탬프투어1_ID, 300L, 요청);
 
@@ -442,8 +439,7 @@ public class StampTourAdminServiceTest {
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuidePageRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        var 요청 = new StampTourParticipateGuidePageReqDto(
-                0L, "수정제목", 참여방법_페이지3_미디어_제공_형식, "수정URL", "요약수정", "상세수정", "추가수정");
+        var 요청 = new StampTourParticipateGuidePageReqDto("수정제목", 참여방법_페이지3_미디어_제공_형식, "수정URL", "요약수정", "상세수정", "추가수정");
 
         assertThatThrownBy(() -> service.updateParticipateGuidePage(축제_id, 스탬프투어1_ID, 300L, 요청))
                 .isInstanceOf(ParticipateGuidePageNotFoundException.class);

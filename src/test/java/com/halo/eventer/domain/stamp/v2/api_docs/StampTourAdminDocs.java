@@ -38,7 +38,7 @@ public class StampTourAdminDocs {
                         .pathParameters(parameterWithName("festivalId").description("축제 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("[].stampTourId").type(NUMBER).description("ID"),
+                                fieldWithPath("[].stampId").type(NUMBER).description("스탬프 ID"),
                                 fieldWithPath("[].title").type(STRING).description("제목"),
                                 fieldWithPath("[].showStamp").type(BOOLEAN).description("목록 노출 여부"))
                         .build()));
@@ -101,13 +101,15 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("stampTourId").type(NUMBER).description("ID"),
+                                fieldWithPath("stampId").type(NUMBER).description("ID"),
                                 fieldWithPath("stampActive").type(BOOLEAN).description("활성화 여부"),
                                 fieldWithPath("title").type(STRING).description("제목"),
-                                fieldWithPath("authMethod").type(STRING).description("인증 방식"),
+                                fieldWithPath("authMethod")
+                                        .type(STRING)
+                                        .description("인증 방식 (TAG_SCAN, USER_CODE_PRESENT)"),
                                 fieldWithPath("prizeReceiptAuthPassword")
                                         .type(STRING)
-                                        .description("수령 비밀번호"))
+                                        .description("경품 수령 관리자 비밀번호"))
                         .build()));
     }
 
@@ -122,12 +124,14 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("isStampActivate").type(BOOLEAN).description("활성화"),
+                                fieldWithPath("stampActivate").type(BOOLEAN).description("활성화"),
                                 fieldWithPath("title").type(STRING).description("제목"),
-                                fieldWithPath("authMethod").type(STRING).description("인증 방식"),
+                                fieldWithPath("authMethod")
+                                        .type(STRING)
+                                        .description("인증 방식 (TAG_SCAN, USER_CODE_PRESENT)"),
                                 fieldWithPath("prizeReceiptAuthPassword")
                                         .type(STRING)
-                                        .description("수령 비밀번호"))
+                                        .description("경품 수령 관리자 비밀번호"))
                         .build()));
     }
 
@@ -180,7 +184,9 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("designTemplate").type(STRING).description("디자인 템플릿"),
+                                fieldWithPath("landingPageDesignTemplate")
+                                        .type(STRING)
+                                        .description("랜딩 페이지 디자인 템플릿 (NONE)"),
                                 fieldWithPath("backgroundImgUrl")
                                         .type(STRING)
                                         .optional()
@@ -193,8 +199,14 @@ public class StampTourAdminDocs {
                                         .type(STRING)
                                         .optional()
                                         .description("설명"),
-                                fieldWithPath("buttonLayout").type(STRING).description("버튼 배치"),
-                                fieldWithPath("buttons").type(ARRAY).description("버튼 목록"),
+                                fieldWithPath("buttonLayout")
+                                        .type(STRING)
+                                        .description(
+                                                "버튼 배치 방법(ONE(1개), TWO_ASYM(2개 비대칭), TWO_SYM(2개 대칭), TWO_UP_DOWN(2개 상하), NONE(없음))"),
+                                fieldWithPath("buttons")
+                                        .type(ARRAY)
+                                        .optional()
+                                        .description("버튼 목록, buttonLayout이 NONE인 경우 빈 리스트 반환"),
                                 fieldWithPath("buttons[].sequenceIndex")
                                         .type(NUMBER)
                                         .description("순서"),
@@ -203,11 +215,13 @@ public class StampTourAdminDocs {
                                         .type(STRING)
                                         .optional()
                                         .description("아이콘 URL"),
-                                fieldWithPath("buttons[].action").type(STRING).description("동작"),
+                                fieldWithPath("buttons[].action")
+                                        .type(STRING)
+                                        .description("버튼 기능 (QR_CAMERA, NFC_SCAN,OPEN_URL,OPEN_NEW_PAGE, OPEN_POPUP)"),
                                 fieldWithPath("buttons[].targetUrl")
                                         .type(STRING)
                                         .optional()
-                                        .description("URL"))
+                                        .description("URL, QR 카메라 혹은 NFC 일때는 null"))
                         .build()));
     }
 
@@ -222,22 +236,34 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("designTemplate").type(STRING).description("랜딩 템플릿"),
+                                fieldWithPath("landingPageDesignTemplate")
+                                        .type(STRING)
+                                        .description("랜딩 페이지 디자인 템플릿 (NONE)"),
                                 fieldWithPath("backgroundImgUrl").type(STRING).description("배경 이미지 URL"),
                                 fieldWithPath("iconImgUrl").type(STRING).description("아이콘 이미지 URL"),
                                 fieldWithPath("description").type(STRING).description("설명"),
-                                fieldWithPath("buttonLayout").type(STRING).description("버튼 레이아웃"),
-                                fieldWithPath("buttons").type(ARRAY).optional().description("버튼 목록"),
+                                fieldWithPath("buttonLayout")
+                                        .type(STRING)
+                                        .description(
+                                                "버튼 배치 방법(ONE(1개), TWO_ASYM(2개 비대칭), TWO_SYM(2개 대칭), TWO_UP_DOWN(2개 상하), NONE(없음))"),
+                                fieldWithPath("buttons")
+                                        .type(ARRAY)
+                                        .optional()
+                                        .description("버튼 목록, buttonLayout이 NONE인 경우 빈 리스트로 요청"),
                                 fieldWithPath("buttons[].sequenceIndex")
                                         .type(NUMBER)
                                         .description("순서"),
-                                fieldWithPath("buttons[].iconImg").type(STRING).description("아이콘 (요청 필드)"),
+                                fieldWithPath("buttons[].iconImgUrl")
+                                        .type(STRING)
+                                        .description("아이콘"),
                                 fieldWithPath("buttons[].content").type(STRING).description("라벨"),
-                                fieldWithPath("buttons[].action").type(STRING).description("동작"),
+                                fieldWithPath("buttons[].action")
+                                        .type(STRING)
+                                        .description("버튼 기능 (QR_CAMERA, NFC_SCAN,OPEN_URL,OPEN_NEW_PAGE, OPEN_POPUP)"),
                                 fieldWithPath("buttons[].targetUrl")
                                         .type(STRING)
                                         .optional()
-                                        .description("URL"))
+                                        .description("URL, QR 카메라 혹은 NFC 일때는 null"))
                         .build()));
     }
 
@@ -253,13 +279,32 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("designTemplate").type(STRING).description("디자인 템플릿"),
-                                fieldWithPath("backgroundImg")
+                                fieldWithPath("mainPageDesignTemplate")
+                                        .type(STRING)
+                                        .description("메인 페이지 디자인 템플릿(GRID_Nx2, GRID_Nx3)"),
+                                fieldWithPath("backgroundImgUrl")
                                         .type(STRING)
                                         .optional()
                                         .description("배경 이미지"),
-                                fieldWithPath("buttonLayout").type(STRING).description("버튼 배치"),
-                                fieldWithPath("buttons").type(ARRAY).description("버튼 목록"))
+                                fieldWithPath("buttonLayout")
+                                        .type(STRING)
+                                        .description(
+                                                "버튼 배치 방법(ONE(1개), TWO_ASYM(2개 비대칭), TWO_SYM(2개 대칭), TWO_UP_DOWN(2개 상하), NONE(없음))"),
+                                fieldWithPath("buttons").type(ARRAY).optional().description("버튼 목록"),
+                                fieldWithPath("buttons[].sequenceIndex")
+                                        .type(NUMBER)
+                                        .description("순서"),
+                                fieldWithPath("buttons[].iconImgUrl")
+                                        .type(STRING)
+                                        .description("아이콘 (요청 필드)"),
+                                fieldWithPath("buttons[].content").type(STRING).description("라벨"),
+                                fieldWithPath("buttons[].action")
+                                        .type(STRING)
+                                        .description("버튼 기능 (QR_CAMERA, NFC_SCAN, OPEN_URL,OPEN_NEW_PAGE, OPEN_POPUP)"),
+                                fieldWithPath("buttons[].targetUrl")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("URL, QR 카메라 혹은 NFC 일때는 null"))
                         .build()));
     }
 
@@ -274,10 +319,29 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("designTemplate").type(STRING).description("디자인 템플릿"),
+                                fieldWithPath("mainPageDesignTemplate")
+                                        .type(STRING)
+                                        .description("메인 페이지 디자인 템플릿(GRID_Nx2, GRID_Nx3)"),
                                 fieldWithPath("backgroundImgUrl").type(STRING).description("배경 이미지 URL"),
-                                fieldWithPath("buttonLayout").type(STRING).description("버튼 레이아웃"),
-                                fieldWithPath("buttons").type(ARRAY).optional().description("버튼 목록"))
+                                fieldWithPath("buttonLayout")
+                                        .type(STRING)
+                                        .description(
+                                                "버튼 배치 방법(ONE(1개), TWO_ASYM(2개 비대칭), TWO_SYM(2개 대칭), TWO_UP_DOWN(2개 상하), NONE(없음))"),
+                                fieldWithPath("buttons").type(ARRAY).optional().description("버튼 목록"),
+                                fieldWithPath("buttons[].sequenceIndex")
+                                        .type(NUMBER)
+                                        .description("순서"),
+                                fieldWithPath("buttons[].iconImgUrl")
+                                        .type(STRING)
+                                        .description("아이콘"),
+                                fieldWithPath("buttons[].content").type(STRING).description("라벨"),
+                                fieldWithPath("buttons[].action")
+                                        .type(STRING)
+                                        .description("버튼 기능 (QR_CAMERA, NFC_SCAN,OPEN_URL,OPEN_NEW_PAGE, OPEN_POPUP)"),
+                                fieldWithPath("buttons[].targetUrl")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("URL, QR 카메라 혹은 NFC 일때는 null"))
                         .build()));
     }
 
@@ -293,11 +357,14 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("participateGuideId").type(NUMBER).description("가이드 ID"),
                                 fieldWithPath("guideDesignTemplate")
                                         .type(STRING)
-                                        .description("디자인 템플릿"),
-                                fieldWithPath("guideSlideMethod").type(STRING).description("슬라이드 방식"),
+                                        .description("참여 방법 안내 디자인 템플릿 (FULL, NON_FULL)"),
+                                fieldWithPath("guideSlideMethod").type(STRING).description("슬라이드 방식 (SLIDE)"),
+                                fieldWithPath("participateGuidePages")
+                                        .type(ARRAY)
+                                        .optional()
+                                        .description("참여 방법 페이지들 간략 요소 (페이지 없으면 빈 리스트 반환)"),
                                 fieldWithPath("participateGuidePages[].pageId")
                                         .type(NUMBER)
                                         .description("페이지 ID"),
@@ -321,8 +388,10 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("template").type(STRING).description("디자인 템플릿"),
-                                fieldWithPath("method").type(STRING).description("슬라이드 방식"))
+                                fieldWithPath("guideDesignTemplate")
+                                        .type(STRING)
+                                        .description("참여 방법 안내 디자인 템플릿 (FULL, NON_FULL)"),
+                                fieldWithPath("guideSlideMethod").type(STRING).description("슬라이드 방식 (SLIDE)"))
                         .build()));
     }
 
@@ -358,9 +427,10 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("guideId").type(NUMBER).description("가이드 ID"),
                                 fieldWithPath("title").type(STRING).description("제목"),
-                                fieldWithPath("mediaSpec").type(STRING).description("미디어 스펙"),
+                                fieldWithPath("mediaSpec")
+                                        .type(STRING)
+                                        .description("미디어 스펙 ( NONE, ONE_TO_ONE, SIXTEEN_TO_NINE, RATIO_NO_CHANGE )"),
                                 fieldWithPath("mediaUrl")
                                         .type(STRING)
                                         .optional()
@@ -385,7 +455,9 @@ public class StampTourAdminDocs {
                         .responseFields(
                                 fieldWithPath("pageId").type(NUMBER).description("페이지 ID"),
                                 fieldWithPath("title").type(STRING).description("제목"),
-                                fieldWithPath("mediaSpec").type(STRING).description("미디어 스펙"),
+                                fieldWithPath("mediaSpec")
+                                        .type(STRING)
+                                        .description("미디어 스펙( NONE, ONE_TO_ONE, SIXTEEN_TO_NINE, RATIO_NO_CHANGE )"),
                                 fieldWithPath("mediaUrl")
                                         .type(STRING)
                                         .optional()
@@ -410,7 +482,9 @@ public class StampTourAdminDocs {
                         .requestFields(
                                 fieldWithPath("guideId").type(NUMBER).description("가이드 ID"),
                                 fieldWithPath("title").type(STRING).description("제목"),
-                                fieldWithPath("mediaSpec").type(STRING).description("미디어 스펙"),
+                                fieldWithPath("mediaSpec")
+                                        .type(STRING)
+                                        .description("미디어 스펙 ( NONE, ONE_TO_ONE, SIXTEEN_TO_NINE, RATIO_NO_CHANGE )"),
                                 fieldWithPath("mediaUrl")
                                         .type(STRING)
                                         .optional()

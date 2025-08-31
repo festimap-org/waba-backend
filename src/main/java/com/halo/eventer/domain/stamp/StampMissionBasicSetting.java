@@ -22,7 +22,7 @@ public class StampMissionBasicSetting {
     @Enumerated(EnumType.STRING)
     private MissionDetailsDesignLayout defaultDetailLayout = MissionDetailsDesignLayout.CARD;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stamp_id", nullable = false, unique = true)
     private Stamp stamp;
 

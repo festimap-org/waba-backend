@@ -192,14 +192,14 @@ public class ParkingLotDoc {
                 resource(ResourceSnippetParameters.builder()
                         .tag(TAG)
                         .summary("주차장 혼잡도 변경")
-                        .description("주차장의 혼잡도 레벨을 변경합니다. (예: LOW/MEDIUM/HIGH)")
+                        .description("주차장의 혼잡도 레벨을 변경합니다. (예: LOW/MEDIUM/HIGH/FULL/CLOSED)")
                         .requestSchema(Schema.schema("CongestionLevelReqDto"))
                         .pathParameters(parameterWithName("id")
                                 .description("주차장 id")
                                 .attributes(key("validationConstraints").value(List.of(ApiConstraint.JavaxMin2(1)))))
                         .requestFields(fieldWithPath("congestionLevel")
                                 .type(JsonFieldType.STRING)
-                                .description("혼잡도 레벨 (LOW/MEDIUM/HIGH)")
+                                .description("혼잡도 레벨 (LOW/MEDIUM/HIGH/FULL/CLOSED)")
                                 .attributes(key("validationConstraints").value(List.of(ApiConstraint.JavaxNotNull()))))
                         .build()));
     }

@@ -65,10 +65,12 @@ public class StampMissionAdminControllerTest {
     @Nested
     class 미션_생성_및_목록 {
 
+        private static final int LIMIT = 8;
+
         @Test
         @WithMockUser(roles = "ADMIN")
         void 미션_생성_성공() throws Exception {
-            var body = Map.of("name", "새 미션");
+            var body = new MissionCreateReqDto("새 미션", true);
 
             mockMvc.perform(post("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions", 축제_ID, 스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH)
@@ -91,13 +93,31 @@ public class StampMissionAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 미션_목록_조회_성공() throws Exception {
-            var list = List.of(new MissionBriefResDto(101L, "미션A"), new MissionBriefResDto(102L, "미션B"));
-            given(service.getMissions(축제_ID, 스탬프_ID)).willReturn(list);
+            var list = List.of(
+                    new MissionBriefResDto(101L, "미션A", true, true), new MissionBriefResDto(102L, "미션B", false, false));
+            var res = new MissionListResDto(LIMIT, list);
+            given(service.getMissions(축제_ID, 스탬프_ID)).willReturn(res);
 
             mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions", 축제_ID, 스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].missionId").value(101L))
+                    .andExpect(jsonPath("$.limitMissionCount").value(LIMIT))
+                    .andExpect(jsonPath("$.missionList[0].missionId").value(101L))
+                    .andExpect(jsonPath("$.missionList[0].title").value("미션A"))
+                    .andDo(StampMissionAdminDocs.listMissions());
+        }
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 미션_목록_조회_성공_빈목록() throws Exception {
+            var res = new MissionListResDto(LIMIT, List.of());
+            given(service.getMissions(축제_ID, 스탬프_ID)).willReturn(res);
+
+            mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions", 축제_ID, 스탬프_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.limitMissionCount").value(LIMIT))
+                    .andExpect(jsonPath("$.missionList.length()").value(0))
                     .andDo(StampMissionAdminDocs.listMissions());
         }
 
@@ -106,6 +126,36 @@ public class StampMissionAdminControllerTest {
             mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions", 축제_ID, 스탬프_ID))
                     .andExpect(status().isUnauthorized())
                     .andDo(StampMissionAdminDocs.error("v2-mission-list-unauthorized"));
+        }
+    }
+
+    @Nested
+    class 미션_삭제 {
+
+        private static final long 미션_ID = 101L;
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 삭제_성공() throws Exception {
+            mockMvc.perform(delete(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}",
+                                    축제_ID,
+                                    스탬프_ID,
+                                    미션_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH))
+                    .andExpect(status().isOk())
+                    .andDo(StampMissionAdminDocs.deleteMission());
+        }
+
+        @Test
+        void 삭제_실패_권한없음() throws Exception {
+            mockMvc.perform(delete(
+                            "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}",
+                            축제_ID,
+                            스탬프_ID,
+                            미션_ID))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampMissionAdminDocs.error("v2-mission-delete-unauthorized"));
         }
     }
 
@@ -194,7 +244,7 @@ public class StampMissionAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 기본설정_업서트_성공() throws Exception {
-            var body = Map.of("missionCount", 8, "defaultDetailLayout", "CARD");
+            var body = new MissionBasicSettingsReqDto(4, MissionDetailsDesignLayout.CARD);
 
             mockMvc.perform(put(
                                     "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/settings",
@@ -307,7 +357,6 @@ public class StampMissionAdminControllerTest {
             var buttons = List.of(new ButtonResDto(0, "바로가기", "icon.png", ButtonAction.OPEN_URL, "https://a.b"));
             var extras = List.of(new MissionExtraInfoSummaryResDto(11L, "유의사항", "본인 신분증 지참"));
             var res = new MissionDetailsTemplateResDto(
-                    999L,
                     MissionDetailsDesignLayout.CARD,
                     true,
                     "미션 타이틀",
@@ -336,13 +385,13 @@ public class StampMissionAdminControllerTest {
         @WithMockUser(roles = "ADMIN")
         void 미션상세_업서트_성공() throws Exception {
             Map<String, Object> body = new LinkedHashMap<>();
-            body.put("layout", "CARD");
+            body.put("missionDetailsDesignLayout", "CARD");
             body.put("missionTitle", "수정된 미션");
-            body.put("showMissionName", true);
+            body.put("showMissionTitle", true);
             body.put("showSuccessCount", true);
             body.put("showExtraInfos", true);
             body.put("showButtons", true);
-            body.put("missionMediaSpec", "NONE");
+            body.put("mediaSpec", "NONE");
             body.put("mediaUrl", null);
             body.put("extraInfoType", "LIST");
             body.put("buttonLayout", "ONE");
@@ -357,7 +406,7 @@ public class StampMissionAdminControllerTest {
             List<Map<String, Object>> buttons = new ArrayList<>();
             Map<String, Object> b1 = new LinkedHashMap<>();
             b1.put("sequenceIndex", 0);
-            b1.put("iconImg", "i");
+            b1.put("iconImgUrl", "i");
             b1.put("content", "바로가기");
             b1.put("action", "OPEN_URL");
             b1.put("targetUrl", null); // null 허용: LinkedHashMap 사용으로 OK
@@ -383,7 +432,7 @@ public class StampMissionAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 미션_완료이미지_조회_성공() throws Exception {
-            var res = new StampMissionClearImageResDto(true, "cleared.jpg", "not-cleared.jpg");
+            var res = new StampMissionClearImageResDto(true, null, "not-cleared.jpg");
             given(service.getStampMissionCompleteImage(축제_ID, 스탬프_ID, 미션_ID)).willReturn(res);
 
             mockMvc.perform(get(

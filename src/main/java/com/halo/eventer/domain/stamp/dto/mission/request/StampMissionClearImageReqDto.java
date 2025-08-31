@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StampMissionClearImageReqDto {
-    private boolean showMissionName;
+    private boolean showMissionTitle;
     private String clearedThumbnail;
     private String notClearedThumbnail;
 }

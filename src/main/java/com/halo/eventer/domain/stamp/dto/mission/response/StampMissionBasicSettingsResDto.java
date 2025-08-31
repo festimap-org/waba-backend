@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StampMissionBasicSettingsResDto {
     private int missionCount;
-    private MissionDetailsDesignLayout layout;
+    private MissionDetailsDesignLayout missionDetailsDesignLayout;
     private List<MissionPrizeResDto> prizes;
 
     public static StampMissionBasicSettingsResDto from(StampMissionBasicSetting setting, Stamp stamp) {
