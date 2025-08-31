@@ -298,6 +298,24 @@ public class StampTourAdminControllerTest {
                     .andExpect(status().isBadRequest())
                     .andDo(StampTourAdminDocs.error("v2-stamptour-basic-upsert-badrequest"));
         }
+
+        @Test
+        void 업서트_실패_권한없음() throws Exception {
+            var body = Map.of(
+                    "stampActivate", true,
+                    "title", "새제목",
+                    "authMethod", "TAG_SCAN",
+                    "prizeReceiptAuthPassword", "newPw");
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/basic",
+                                    축제_ID,
+                                    스탬프_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-basic-upsert-unauthorized"));
+        }
     }
 
     // ---------------- 안내사항 ----------------
@@ -428,6 +446,26 @@ public class StampTourAdminControllerTest {
                     .andExpect(status().isOk())
                     .andDo(StampTourAdminDocs.updateLanding());
         }
+
+        @Test
+        void 업서트_실패_권한없음() throws Exception {
+            Map<String, Object> req = new LinkedHashMap<>();
+            req.put("designTemplate", "NONE");
+            req.put("backgroundImgUrl", "bg.jpg");
+            req.put("iconImgUrl", "icon.jpg");
+            req.put("description", "설명");
+            req.put("buttonLayout", "ONE");
+            req.put("buttons", List.of());
+
+            mockMvc.perform(put(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/landing",
+                                    축제_ID,
+                                    스탬프_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(req)))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-landing-upsert-unauthorized"));
+        }
     }
 
     // ---------------- 메인 ----------------
@@ -469,6 +507,24 @@ public class StampTourAdminControllerTest {
                             .content(objectMapper.writeValueAsString(req)))
                     .andExpect(status().isOk())
                     .andDo(StampTourAdminDocs.updateMain());
+        }
+
+        @Test
+        void 업서트_실패_권한없음() throws Exception {
+            var req = Map.of(
+                    "designTemplate", "GRID_Nx3",
+                    "backgroundImgUrl", "bg.jpg",
+                    "buttonLayout", "TWO_SYM",
+                    "buttons", List.of());
+
+            mockMvc.perform(put(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/main",
+                                    축제_ID,
+                                    스탬프_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(req)))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-main-upsert-unauthorized"));
         }
     }
 
@@ -523,7 +579,7 @@ public class StampTourAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 업서트_성공() throws Exception {
-            var req = Map.of("template", "FULL", "method", "SLIDE");
+            var req = new StampTourParticipateGuideReqDto(GuideDesignTemplate.FULL, GuideSlideMethod.SLIDE);
 
             mockMvc.perform(put(
                                     "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/guides",
@@ -556,6 +612,34 @@ public class StampTourAdminControllerTest {
                     .andExpect(jsonPath("$[0].pageId").value(101L))
                     .andDo(StampTourAdminDocs.updateDisplayOrder());
         }
+
+        @Test
+        void 업서트_실패_권한없음() throws Exception {
+            var req = new StampTourParticipateGuideReqDto(GuideDesignTemplate.FULL, GuideSlideMethod.SLIDE);
+
+            mockMvc.perform(put(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/guides",
+                                    축제_ID,
+                                    스탬프_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(req)))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-guide-upsert-unauthorized"));
+        }
+
+        @Test
+        void 순서수정_실패_권한없음() throws Exception {
+            var req = List.of(OrderUpdateRequest.of(101L, 1), OrderUpdateRequest.of(102L, 2));
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/guides",
+                                    축제_ID,
+                                    스탬프_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(req)))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-guide-pages-order-unauthorized"));
+        }
     }
 
     // ---------------- 참여가이드 페이지 ----------------
@@ -565,7 +649,7 @@ public class StampTourAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 생성_성공() throws Exception {
-            var req = new StampTourParticipateGuidePageReqDto(1L, "title", MediaSpec.NONE, null, "sum", "det", "add");
+            var req = new StampTourParticipateGuidePageReqDto("title", MediaSpec.NONE, null, "sum", "det", "add");
 
             mockMvc.perform(post(
                                     "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/guides/pages",
@@ -630,6 +714,53 @@ public class StampTourAdminControllerTest {
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
                     .andDo(StampTourAdminDocs.deleteGuidePage());
+        }
+
+        @Test
+        void 생성_실패_권한없음() throws Exception {
+            var req = new StampTourParticipateGuidePageReqDto("title", MediaSpec.NONE, null, "sum", "det", "add");
+
+            mockMvc.perform(post(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/guides/pages",
+                                    축제_ID,
+                                    스탬프_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(req)))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-guide-page-create-unauthorized"));
+        }
+
+        @Test
+        void 수정_실패_권한없음() throws Exception {
+            var req = Map.of(
+                    "guideId", 1L,
+                    "title", "title2",
+                    "mediaSpec", MediaSpec.NONE.name(),
+                    "mediaUrl", "url",
+                    "summary", "s2",
+                    "details", "d2",
+                    "additional", "a2");
+
+            mockMvc.perform(put(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/guides/pages/{pageId}",
+                                    축제_ID,
+                                    스탬프_ID,
+                                    페이지_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(req)))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-guide-page-update-unauthorized"));
+        }
+
+        @Test
+        void 삭제_실패_권한없음() throws Exception {
+            mockMvc.perform(delete(
+                            "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/guides/pages/{pageId}",
+                            축제_ID,
+                            스탬프_ID,
+                            페이지_ID))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-guide-page-delete-unauthorized"));
         }
     }
 }

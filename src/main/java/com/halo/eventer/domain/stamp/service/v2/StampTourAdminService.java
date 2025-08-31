@@ -151,7 +151,7 @@ public class StampTourAdminService {
     public void updateParticipateGuide(long festivalId, long stampId, StampTourParticipateGuideReqDto request) {
         ensureStamp(festivalId, stampId);
         ParticipateGuide guide = loadParticipateGuideOrThrow(stampId);
-        guide.update(request.getTemplate(), request.getMethod());
+        guide.update(request.getGuideDesignTemplate(), request.getGuideSlideMethod());
     }
 
     @Transactional

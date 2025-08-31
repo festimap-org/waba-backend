@@ -386,7 +386,7 @@ public class StampTourAdminServiceTest {
         given(participateGuideRepository.findFirstByStampId(anyLong())).willReturn(Optional.of(guide));
 
         var 요청 = new StampTourParticipateGuidePageReqDto(
-                0L, 참여방법_페이지1_제목, 참여방법_페이지1_미디어_제공_형식, 참여방법_페이지1_미디어_url, 참여방법_페이지1_요약, 참여방법_페이지1_상세, 참여방법_페이지1_추가);
+                참여방법_페이지1_제목, 참여방법_페이지1_미디어_제공_형식, 참여방법_페이지1_미디어_url, 참여방법_페이지1_요약, 참여방법_페이지1_상세, 참여방법_페이지1_추가);
 
         service.createParticipateGuidePage(축제_id, 스탬프투어1_ID, 요청);
 
@@ -425,8 +425,7 @@ public class StampTourAdminServiceTest {
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuidePageRepository.findById(anyLong())).willReturn(Optional.of(page));
 
-        var 요청 = new StampTourParticipateGuidePageReqDto(
-                0L, "수정제목", 참여방법_페이지3_미디어_제공_형식, "수정URL", "요약수정", "상세수정", "추가수정");
+        var 요청 = new StampTourParticipateGuidePageReqDto("수정제목", 참여방법_페이지3_미디어_제공_형식, "수정URL", "요약수정", "상세수정", "추가수정");
 
         service.updateParticipateGuidePage(축제_id, 스탬프투어1_ID, 300L, 요청);
 
@@ -442,8 +441,7 @@ public class StampTourAdminServiceTest {
         given(stampRepository.findById(anyLong())).willReturn(Optional.of(스탬프));
         given(participateGuidePageRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        var 요청 = new StampTourParticipateGuidePageReqDto(
-                0L, "수정제목", 참여방법_페이지3_미디어_제공_형식, "수정URL", "요약수정", "상세수정", "추가수정");
+        var 요청 = new StampTourParticipateGuidePageReqDto("수정제목", 참여방법_페이지3_미디어_제공_형식, "수정URL", "요약수정", "상세수정", "추가수정");
 
         assertThatThrownBy(() -> service.updateParticipateGuidePage(축제_id, 스탬프투어1_ID, 300L, 요청))
                 .isInstanceOf(ParticipateGuidePageNotFoundException.class);

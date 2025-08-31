@@ -124,6 +124,6 @@ public class ParticipateGuidePageFixture {
 
     public static StampTourParticipateGuidePageReqDto 페이지_수정() {
         return new StampTourParticipateGuidePageReqDto(
-                1L, 참여방법_수정_제목, 참여방법_수정_미디어_제공_형식, 참여방법_수정_미디어_url, 참여방법_수정_요약, 참여방법_수정_상세, 참여방법_수정_추가);
+                참여방법_수정_제목, 참여방법_수정_미디어_제공_형식, 참여방법_수정_미디어_url, 참여방법_수정_요약, 참여방법_수정_상세, 참여방법_수정_추가);
     }
 }

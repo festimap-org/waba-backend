@@ -38,7 +38,7 @@ public class StampTourAdminDocs {
                         .pathParameters(parameterWithName("festivalId").description("축제 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("[].stampId").type(NUMBER).description("ID"),
+                                fieldWithPath("[].stampId").type(NUMBER).description("스탬프 ID"),
                                 fieldWithPath("[].title").type(STRING).description("제목"),
                                 fieldWithPath("[].showStamp").type(BOOLEAN).description("목록 노출 여부"))
                         .build()));
@@ -385,8 +385,10 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("template").type(STRING).description("참여 방법 안내 디자인 템플릿 (FULL, NON_FULL)"),
-                                fieldWithPath("method").type(STRING).description("슬라이드 방식 (SLIDE)"))
+                                fieldWithPath("guideDesignTemplate")
+                                        .type(STRING)
+                                        .description("참여 방법 안내 디자인 템플릿 (FULL, NON_FULL)"),
+                                fieldWithPath("guideSlideMethod").type(STRING).description("슬라이드 방식 (SLIDE)"))
                         .build()));
     }
 
@@ -422,7 +424,6 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("guideId").type(NUMBER).description("가이드 ID"),
                                 fieldWithPath("title").type(STRING).description("제목"),
                                 fieldWithPath("mediaSpec")
                                         .type(STRING)
