@@ -394,7 +394,7 @@ public class StampTourAdminControllerTest {
                                     스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.designTemplate").value("NONE"))
+                    .andExpect(jsonPath("$.landingPageDesignTemplate").value("NONE"))
                     .andDo(StampTourAdminDocs.getLanding());
         }
 
@@ -402,7 +402,7 @@ public class StampTourAdminControllerTest {
         @WithMockUser(roles = "ADMIN")
         void 업서트_성공() throws Exception {
             Map<String, Object> req = new LinkedHashMap<>();
-            req.put("designTemplate", "NONE");
+            req.put("landingPageDesignTemplate", "NONE");
             req.put("backgroundImgUrl", "bg.jpg");
             req.put("iconImgUrl", "icon.jpg");
             req.put("description", "설명");
@@ -485,7 +485,7 @@ public class StampTourAdminControllerTest {
                                     스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.designTemplate").value("GRID_Nx2"))
+                    .andExpect(jsonPath("$.mainPageDesignTemplate").value("GRID_Nx2"))
                     .andDo(StampTourAdminDocs.getMain());
         }
 
@@ -493,7 +493,7 @@ public class StampTourAdminControllerTest {
         @WithMockUser(roles = "ADMIN")
         void 업서트_성공() throws Exception {
             var req = Map.of(
-                    "designTemplate", "GRID_Nx3",
+                    "mainPageDesignTemplate", "GRID_Nx3",
                     "backgroundImgUrl", "bg.jpg",
                     "buttonLayout", "TWO_SYM",
                     "buttons", List.of());

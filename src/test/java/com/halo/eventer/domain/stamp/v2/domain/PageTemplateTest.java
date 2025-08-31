@@ -53,7 +53,7 @@ public class PageTemplateTest {
         메인페이지.updateMainPageTemplate(메인페이지_업데이트);
 
         assertThat(메인페이지.getBackgroundImg()).isEqualTo(메인페이지_업데이트.getBackgroundImgUrl());
-        assertThat(메인페이지.getMainPageDesignTemplate()).isEqualTo(메인페이지_업데이트.getDesignTemplate());
+        assertThat(메인페이지.getMainPageDesignTemplate()).isEqualTo(메인페이지_업데이트.getMainPageDesignTemplate());
         assertThat(메인페이지.getButtons().size()).isEqualTo(2);
     }
 

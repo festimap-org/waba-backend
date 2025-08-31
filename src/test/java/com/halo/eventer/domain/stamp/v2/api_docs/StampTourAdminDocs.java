@@ -184,7 +184,9 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("designTemplate").type(STRING).description("랜딩 페이지 디자인 템플릿 (NONE)"),
+                                fieldWithPath("landingPageDesignTemplate")
+                                        .type(STRING)
+                                        .description("랜딩 페이지 디자인 템플릿 (NONE)"),
                                 fieldWithPath("backgroundImgUrl")
                                         .type(STRING)
                                         .optional()
@@ -234,7 +236,9 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("designTemplate").type(STRING).description("랜딩 페이지 디자인 템플릿 (NONE)"),
+                                fieldWithPath("landingPageDesignTemplate")
+                                        .type(STRING)
+                                        .description("랜딩 페이지 디자인 템플릿 (NONE)"),
                                 fieldWithPath("backgroundImgUrl").type(STRING).description("배경 이미지 URL"),
                                 fieldWithPath("iconImgUrl").type(STRING).description("아이콘 이미지 URL"),
                                 fieldWithPath("description").type(STRING).description("설명"),
@@ -275,7 +279,7 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("designTemplate")
+                                fieldWithPath("mainPageDesignTemplate")
                                         .type(STRING)
                                         .description("메인 페이지 디자인 템플릿(GRID_Nx2, GRID_Nx3)"),
                                 fieldWithPath("backgroundImgUrl")
@@ -315,7 +319,7 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("designTemplate")
+                                fieldWithPath("mainPageDesignTemplate")
                                         .type(STRING)
                                         .description("메인 페이지 디자인 템플릿(GRID_Nx2, GRID_Nx3)"),
                                 fieldWithPath("backgroundImgUrl").type(STRING).description("배경 이미지 URL"),

@@ -237,7 +237,7 @@ public class StampTourAdminServiceTest {
 
         var 결과 = service.getLandingPageSettings(축제_id, 스탬프투어1_ID);
 
-        assertThat(결과.getDesignTemplate()).isEqualTo(LandingPageDesignTemplate.NONE);
+        assertThat(결과.getLandingPageDesignTemplate()).isEqualTo(LandingPageDesignTemplate.NONE);
         then(pageTemplateRepository).should().save(any(PageTemplate.class));
     }
 
@@ -252,7 +252,7 @@ public class StampTourAdminServiceTest {
 
         service.updateLandingPage(축제_id, 스탬프투어1_ID, 요청);
 
-        assertThat(랜딩페이지.getLandingPageDesignTemplate()).isEqualTo(요청.getDesignTemplate());
+        assertThat(랜딩페이지.getLandingPageDesignTemplate()).isEqualTo(요청.getLandingPageDesignTemplate());
         assertThat(랜딩페이지.getBackgroundImg()).isEqualTo(요청.getBackgroundImgUrl());
         assertThat(랜딩페이지.getButtons()).hasSize(2);
     }
@@ -298,7 +298,7 @@ public class StampTourAdminServiceTest {
 
         service.updateMainPageSettings(축제_id, 스탬프투어1_ID, 요청);
 
-        assertThat(메인페이지.getMainPageDesignTemplate()).isEqualTo(요청.getDesignTemplate());
+        assertThat(메인페이지.getMainPageDesignTemplate()).isEqualTo(요청.getMainPageDesignTemplate());
         assertThat(메인페이지.getButtonLayout()).isEqualTo(요청.getButtonLayout());
         assertThat(메인페이지.getButtons()).hasSize(1);
     }

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StampTourMainPageReqDto {
     @NotNull
-    private MainPageDesignTemplate designTemplate;
+    private MainPageDesignTemplate mainPageDesignTemplate;
 
     @NotEmpty
     private String backgroundImgUrl;

@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class StampTourMainPageResDto {
-    private MainPageDesignTemplate designTemplate;
+    private MainPageDesignTemplate mainPageDesignTemplate;
     private String backgroundImgUrl;
     private ButtonLayout buttonLayout;
     private List<ButtonResDto> buttons;

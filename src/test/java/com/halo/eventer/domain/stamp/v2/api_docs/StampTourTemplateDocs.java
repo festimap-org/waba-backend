@@ -52,7 +52,9 @@ public class StampTourTemplateDocs {
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
                                 parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .responseFields(
-                                fieldWithPath("designTemplate").type(STRING).description("랜딩 디자인 템플릿"),
+                                fieldWithPath("landingPageDesignTemplate")
+                                        .type(STRING)
+                                        .description("랜딩 디자인 템플릿"),
                                 fieldWithPath("iconImgUrl").type(STRING).description("아이콘 이미지 URL"),
                                 fieldWithPath("backgroundImgUrl").type(STRING).description("배경 이미지 URL"),
                                 fieldWithPath("description").type(STRING).description("설명"),
@@ -112,7 +114,9 @@ public class StampTourTemplateDocs {
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
                                 parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .responseFields(
-                                fieldWithPath("designTemplate").type(STRING).description("메인 디자인 템플릿"),
+                                fieldWithPath("mainPageDesignTemplate")
+                                        .type(STRING)
+                                        .description("메인 디자인 템플릿"),
                                 fieldWithPath("backgroundImgUrl").type(STRING).description("배경 이미지"),
                                 fieldWithPath("buttonLayout").type(STRING).description("버튼 레이아웃"),
                                 fieldWithPath("buttons").type(ARRAY).description("버튼 목록"),

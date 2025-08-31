@@ -92,7 +92,7 @@ public class StampTourTemplateControllerTest {
 
             mockMvc.perform(get("/api/v2/template/festivals/{festivalId}/stamp-tours/{stampId}/landing", 축제_ID, 스탬프_ID))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.designTemplate").value("NONE"))
+                    .andExpect(jsonPath("$.landingPageDesignTemplate").value("NONE"))
                     .andDo(StampTourTemplateDocs.getLanding());
         }
     }
@@ -144,7 +144,7 @@ public class StampTourTemplateControllerTest {
 
             mockMvc.perform(get("/api/v2/template/festivals/{festivalId}/stamp-tours/{stampId}/main", 축제_ID, 스탬프_ID))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.designTemplate").value("GRID_Nx2"))
+                    .andExpect(jsonPath("$.mainPageDesignTemplate").value("GRID_Nx2"))
                     .andDo(StampTourTemplateDocs.getMain());
         }
     }
