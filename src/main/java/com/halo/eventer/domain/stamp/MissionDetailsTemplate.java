@@ -28,8 +28,8 @@ public class MissionDetailsTemplate {
     @Enumerated(EnumType.STRING)
     private MissionDetailsDesignLayout designLayout;
 
-    private boolean showExtraInfos = true;
-    private boolean showButtons = true;
+    private Boolean showExtraInfos = true;
+    private Boolean showButtons = true;
 
     @Enumerated(EnumType.STRING)
     private MediaSpec mediaSpec = MediaSpec.NONE;

@@ -23,7 +23,7 @@ public class StampUserGetDto {
         return StampUserGetDto.builder()
                 .uuid(stampUser.getUuid())
                 .participantCount(stampUser.getParticipantCount())
-                .finished(stampUser.isFinished())
+                .finished(stampUser.getIsFinished())
                 .userMissionInfoGetDtos(UserMissionInfoGetDto.fromEntities(stampUser.getUserMissions()))
                 .build();
     }

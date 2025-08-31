@@ -26,10 +26,10 @@ public class Mission {
     private String time;
     private String clearedThumbnail;
     private String notClearedThumbnail;
-    private boolean show = true;
-    private boolean showTitle = true;
+    private Boolean show = true;
+    private Boolean showTitle = true;
     private int requiredSuccessCount = 0;
-    private boolean showRequiredSuccessCount = true;
+    private Boolean showRequiredSuccessCount = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stamp_id", nullable = false)

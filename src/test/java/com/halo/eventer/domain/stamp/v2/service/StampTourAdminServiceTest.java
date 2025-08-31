@@ -160,7 +160,7 @@ public class StampTourAdminServiceTest {
         service.updateBasicSettings(축제_id, 스탬프투어1_ID, 요청);
 
         assertThat(스탬프.getTitle()).isEqualTo(바뀐_스탬프투어_제목);
-        assertThat(스탬프.isActive()).isFalse();
+        assertThat(스탬프.getActive()).isFalse();
         assertThat(스탬프.getPrizeReceiptAuthPassword()).isEqualTo(바뀐_스탬프투어_관리자비번);
         assertThat(스탬프.getAuthMethod()).isEqualTo(바뀐_스탬프투어_유저인증방법);
     }
@@ -312,7 +312,6 @@ public class StampTourAdminServiceTest {
 
         var 결과 = service.getParticipateGuide(축제_id, 스탬프투어1_ID);
 
-        assertThat(결과.getParticipateGuideId()).isEqualTo(guide.getId());
         assertThat(결과.getParticipateGuidePages()).hasSize(0);
     }
 
@@ -327,7 +326,6 @@ public class StampTourAdminServiceTest {
         });
         var 결과 = service.getParticipateGuide(축제_id, 스탬프투어1_ID);
         assertThat(결과).isNotNull();
-        assertThat(결과.getParticipateGuideId()).isEqualTo(100L);
         then(participateGuideRepository).should().save(any(ParticipateGuide.class));
     }
 

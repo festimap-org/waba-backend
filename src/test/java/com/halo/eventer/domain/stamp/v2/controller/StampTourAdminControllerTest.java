@@ -536,7 +536,7 @@ public class StampTourAdminControllerTest {
         @WithMockUser(roles = "ADMIN")
         void 조회_성공() throws Exception {
             var pages = List.of(new ParticipateGuidePageSummaryResDto(페이지_ID, "p1", 1));
-            var res = new StampTourParticipateGuideResDto(1L, GuideDesignTemplate.FULL, GuideSlideMethod.SLIDE, pages);
+            var res = new StampTourParticipateGuideResDto(GuideDesignTemplate.FULL, GuideSlideMethod.SLIDE, pages);
             given(service.getParticipateGuide(축제_ID, 스탬프_ID)).willReturn(res);
 
             mockMvc.perform(get(
@@ -545,15 +545,13 @@ public class StampTourAdminControllerTest {
                                     스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.participateGuideId").value(1L))
                     .andDo(StampTourAdminDocs.getGuide());
         }
 
         @Test
         @WithMockUser(roles = "ADMIN")
         void 조회_성공_페이지_없음() throws Exception {
-            var res = new StampTourParticipateGuideResDto(
-                    1L, GuideDesignTemplate.FULL, GuideSlideMethod.SLIDE, List.of());
+            var res = new StampTourParticipateGuideResDto(GuideDesignTemplate.FULL, GuideSlideMethod.SLIDE, List.of());
             given(service.getParticipateGuide(축제_ID, 스탬프_ID)).willReturn(res);
 
             mockMvc.perform(get(
@@ -562,7 +560,6 @@ public class StampTourAdminControllerTest {
                                     스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.participateGuideId").value(1L))
                     .andDo(StampTourAdminDocs.getGuide());
         }
 

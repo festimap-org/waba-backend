@@ -96,7 +96,7 @@ public class StampMissionAdminService {
         Stamp stamp = ensureStamp(festivalId, stampId);
         Mission mission = loadMissionOrThrow(missionId);
         return StampMissionClearImageResDto.from(
-                mission.isShowTitle(), mission.getClearedThumbnail(), mission.getNotClearedThumbnail());
+                mission.getShowTitle(), mission.getClearedThumbnail(), mission.getNotClearedThumbnail());
     }
 
     @Transactional
@@ -114,7 +114,7 @@ public class StampMissionAdminService {
         Mission mission = loadMissionOrThrow(missionId);
         MissionDetailsTemplate template = loadOrCreateMissionDetailsTemplate(mission);
         return MissionDetailsTemplateResDto.from(
-                template, mission.isShowTitle(), mission.isShowRequiredSuccessCount(), mission.getTitle());
+                template, mission.getShowTitle(), mission.getShowRequiredSuccessCount(), mission.getTitle());
     }
 
     @Transactional

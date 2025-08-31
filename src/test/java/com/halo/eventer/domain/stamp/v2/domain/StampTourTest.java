@@ -39,7 +39,7 @@ public class StampTourTest {
     @Test
     void 활성화_전환_성공() {
         스탬프투어1.switchActivation();
-        assertThat(스탬프투어1.isActive()).isFalse();
+        assertThat(스탬프투어1.getActive()).isFalse();
     }
 
     @Test
@@ -50,7 +50,7 @@ public class StampTourTest {
         String 바뀐_관리자_비밀번호 = "pw1234";
         스탬프투어1.changeBasicSettings(비활성화, 바뀐_제목, 바뀐_인증방법, 바뀐_관리자_비밀번호);
         assertThat(스탬프투어1.getTitle()).isEqualTo(바뀐_제목);
-        assertThat(스탬프투어1.isActive()).isEqualTo(비활성화);
+        assertThat(스탬프투어1.getActive()).isEqualTo(비활성화);
         assertThat(스탬프투어1.getAuthMethod()).isEqualTo(바뀐_인증방법);
         assertThat(스탬프투어1.getPrizeReceiptAuthPassword()).isEqualTo(바뀐_관리자_비밀번호);
     }

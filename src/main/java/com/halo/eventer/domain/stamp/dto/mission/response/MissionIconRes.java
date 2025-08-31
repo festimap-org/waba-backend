@@ -17,7 +17,7 @@ public class MissionIconRes {
 
     public static MissionIconRes from(UserMission um) {
         Mission m = um.getMission();
-        String url = um.isComplete() ? m.getClearedThumbnail() : m.getNotClearedThumbnail();
-        return new MissionIconRes(m.getId(), m.getTitle(), um.isComplete(), url);
+        String url = um.getIsComplete() ? m.getClearedThumbnail() : m.getNotClearedThumbnail();
+        return new MissionIconRes(m.getId(), m.getTitle(), um.getIsComplete(), url);
     }
 }

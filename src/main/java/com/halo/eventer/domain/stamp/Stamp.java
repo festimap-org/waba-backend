@@ -23,7 +23,7 @@ public class Stamp {
     @Column(nullable = false)
     private String title;
 
-    private boolean active = true;
+    private Boolean active = true;
 
     @Enumerated(EnumType.STRING)
     private JoinVerificationMethod joinVerificationMethod = JoinVerificationMethod.NONE;
@@ -33,7 +33,7 @@ public class Stamp {
 
     private String prizeReceiptAuthPassword = "";
 
-    private boolean showStamp = true;
+    private Boolean showStamp = true;
 
     @Enumerated(EnumType.STRING)
     private AuthMethod authMethod = AuthMethod.TAG_SCAN;
@@ -75,7 +75,7 @@ public class Stamp {
 
     public void assignAllMissionsTo(StampUser stampUser) {
         List<UserMission> userMissions = missions.stream()
-                .filter(Mission::isShow)
+                .filter(Mission::getShow)
                 .map(m -> UserMission.create(m, stampUser))
                 .toList();
         stampUser.assignUserMissions(userMissions);
@@ -90,7 +90,7 @@ public class Stamp {
     }
 
     public void validateActivation() {
-        if (!this.isActive()) {
+        if (!active) {
             throw new StampClosedException(id);
         }
     }

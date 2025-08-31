@@ -18,7 +18,7 @@ public class UserMission {
     private Long id;
 
     @Column(nullable = false)
-    private boolean isComplete = false;
+    private Boolean isComplete = false;
 
     private int successCount = 0;
 

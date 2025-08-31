@@ -357,7 +357,6 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("participateGuideId").type(NUMBER).description("가이드 ID"),
                                 fieldWithPath("guideDesignTemplate")
                                         .type(STRING)
                                         .description("참여 방법 안내 디자인 템플릿 (FULL, NON_FULL)"),

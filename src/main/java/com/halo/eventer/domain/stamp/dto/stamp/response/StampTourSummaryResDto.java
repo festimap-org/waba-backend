@@ -17,7 +17,7 @@ public class StampTourSummaryResDto {
     private Boolean showStamp;
 
     public static StampTourSummaryResDto from(Stamp stamp) {
-        return new StampTourSummaryResDto(stamp.getId(), stamp.getTitle(), stamp.isActive());
+        return new StampTourSummaryResDto(stamp.getId(), stamp.getTitle(), stamp.getActive());
     }
 
     public static List<StampTourSummaryResDto> fromEntities(List<Stamp> stamps) {

@@ -43,10 +43,10 @@ public class MissionDetailsTemplateResDto {
                 showSuccessCount,
                 template.getMediaSpec(),
                 template.getMediaUrl(),
-                template.isShowExtraInfos(),
+                template.getShowExtraInfos(),
                 template.getInfoLayout(),
                 MissionExtraInfoSummaryResDto.fromEntities(template.getExtraInfo()),
-                template.isShowButtons(),
+                template.getShowButtons(),
                 template.getButtonLayout(),
                 ButtonResDto.fromEntities(template.getButtons()));
     }
