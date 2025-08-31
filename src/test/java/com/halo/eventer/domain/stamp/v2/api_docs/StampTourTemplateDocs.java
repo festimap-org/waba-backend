@@ -21,7 +21,7 @@ public class StampTourTemplateDocs {
                         .summary("스탬프투어 목록 조회(템플릿)")
                         .pathParameters(parameterWithName("festivalId").description("축제 ID (>=1)"))
                         .responseFields(
-                                fieldWithPath("[].stampTourId").type(NUMBER).description("스탬프투어 ID"),
+                                fieldWithPath("[].stampId").type(NUMBER).description("스탬프투어 ID"),
                                 fieldWithPath("[].title").type(STRING).description("제목"),
                                 fieldWithPath("[].showStamp").type(BOOLEAN).description("목록 노출 여부"))
                         .build()));
@@ -35,7 +35,7 @@ public class StampTourTemplateDocs {
                         .summary("회원가입 템플릿 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID (>=1)"))
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .responseFields(fieldWithPath("joinVerificationMethod")
                                 .type(STRING)
                                 .description("참여 인증 방식(enum: NONE, SMS, PASS)"))
@@ -50,7 +50,7 @@ public class StampTourTemplateDocs {
                         .summary("랜딩 페이지 템플릿 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID (>=1)"))
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .responseFields(
                                 fieldWithPath("designTemplate").type(STRING).description("랜딩 디자인 템플릿"),
                                 fieldWithPath("iconImgUrl").type(STRING).description("아이콘 이미지 URL"),
@@ -81,7 +81,7 @@ public class StampTourTemplateDocs {
                         .summary("참여 인증 템플릿 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID (>=1)"))
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .responseFields(
                                 fieldWithPath("method").type(STRING).description("참여 인증 방식(enum: NONE, SMS, PASS)"))
                         .build()));
@@ -95,7 +95,7 @@ public class StampTourTemplateDocs {
                         .summary("스탬프 인증 방식 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID (>=1)"))
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .responseFields(fieldWithPath("authMethod")
                                 .type(STRING)
                                 .description("인증 방식(enum: TAG_SCAN, USER_CODE_PRESENT)"))
@@ -110,10 +110,10 @@ public class StampTourTemplateDocs {
                         .summary("메인 페이지 템플릿 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID (>=1)"))
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .responseFields(
                                 fieldWithPath("designTemplate").type(STRING).description("메인 디자인 템플릿"),
-                                fieldWithPath("backgroundImg").type(STRING).description("배경 이미지"),
+                                fieldWithPath("backgroundImgUrl").type(STRING).description("배경 이미지"),
                                 fieldWithPath("buttonLayout").type(STRING).description("버튼 레이아웃"),
                                 fieldWithPath("buttons").type(ARRAY).description("버튼 목록"),
                                 fieldWithPath("buttons[].sequenceIndex")
@@ -140,7 +140,7 @@ public class StampTourTemplateDocs {
                         .summary("안내사항 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID (>=1)"))
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .responseFields(
                                 fieldWithPath("cautionContent").type(STRING).description("주의사항"),
                                 fieldWithPath("personalInformationContent")
@@ -157,7 +157,7 @@ public class StampTourTemplateDocs {
                         .summary("참여가이드 조회")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampTourId").description("스탬프투어 ID (>=1)"))
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .responseFields(
                                 fieldWithPath("participateGuideId").type(NUMBER).description("가이드 ID"),
                                 fieldWithPath("guideDesignTemplate")

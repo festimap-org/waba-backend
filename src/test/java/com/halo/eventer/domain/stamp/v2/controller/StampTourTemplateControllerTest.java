@@ -60,7 +60,7 @@ public class StampTourTemplateControllerTest {
 
             mockMvc.perform(get("/api/v2/template/festivals/{festivalId}/stamp-tours", 축제_ID))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].stampTourId").value(10L))
+                    .andExpect(jsonPath("$[0].stampId").value(10L))
                     .andDo(StampTourTemplateDocs.listStampTours());
         }
     }
@@ -73,8 +73,7 @@ public class StampTourTemplateControllerTest {
             var res = new StampTourSignUpTemplateResDto(JoinVerificationMethod.SMS);
             given(service.getSignupTemplate(축제_ID, 스탬프_ID)).willReturn(res);
 
-            mockMvc.perform(get(
-                            "/api/v2/template/festivals/{festivalId}/stamp-tours/{stampTourId}/signup", 축제_ID, 스탬프_ID))
+            mockMvc.perform(get("/api/v2/template/festivals/{festivalId}/stamp-tours/{stampId}/signup", 축제_ID, 스탬프_ID))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.joinVerificationMethod").value("SMS"))
                     .andDo(StampTourTemplateDocs.getSignUpTemplate());
@@ -91,8 +90,7 @@ public class StampTourTemplateControllerTest {
                     LandingPageDesignTemplate.NONE, "icon.png", "bg.png", "설명", ButtonLayout.ONE, buttons);
             given(service.getLandingPage(축제_ID, 스탬프_ID)).willReturn(res);
 
-            mockMvc.perform(get(
-                            "/api/v2/template/festivals/{festivalId}/stamp-tours/{stampTourId}/landing", 축제_ID, 스탬프_ID))
+            mockMvc.perform(get("/api/v2/template/festivals/{festivalId}/stamp-tours/{stampId}/landing", 축제_ID, 스탬프_ID))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.designTemplate").value("NONE"))
                     .andDo(StampTourTemplateDocs.getLanding());
@@ -108,7 +106,7 @@ public class StampTourTemplateControllerTest {
             given(service.getStampTourJoinMethod(축제_ID, 스탬프_ID)).willReturn(res);
 
             mockMvc.perform(get(
-                            "/api/v2/template/festivals/{festivalId}/stamp-tours/{stampTourId}/join-template",
+                            "/api/v2/template/festivals/{festivalId}/stamp-tours/{stampId}/join-template",
                             축제_ID,
                             스탬프_ID))
                     .andExpect(status().isOk())
@@ -126,9 +124,7 @@ public class StampTourTemplateControllerTest {
             given(service.getAuthMethod(축제_ID, 스탬프_ID)).willReturn(res);
 
             mockMvc.perform(get(
-                            "/api/v2/template/festivals/{festivalId}/stamp-tours/{stampTourId}/auth-method",
-                            축제_ID,
-                            스탬프_ID))
+                            "/api/v2/template/festivals/{festivalId}/stamp-tours/{stampId}/auth-method", 축제_ID, 스탬프_ID))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.authMethod").value("TAG_SCAN"))
                     .andDo(StampTourTemplateDocs.getAuthMethod());
@@ -143,12 +139,10 @@ public class StampTourTemplateControllerTest {
             var buttons = List.of(
                     new ButtonResDto(0, "QR", "q.png", ButtonAction.QR_CAMERA, null),
                     new ButtonResDto(1, "URL", "u.png", ButtonAction.OPEN_URL, "https://x.y"));
-            var res = new StampTourMainPageResDto(
-                    MainPageDesignTemplate.GRID_Nx2, "bg.png", ButtonLayout.ONE.name(), buttons);
+            var res = new StampTourMainPageResDto(MainPageDesignTemplate.GRID_Nx2, "bg.png", ButtonLayout.ONE, buttons);
             given(service.getMainPage(축제_ID, 스탬프_ID)).willReturn(res);
 
-            mockMvc.perform(get(
-                            "/api/v2/template/festivals/{festivalId}/stamp-tours/{stampTourId}/main", 축제_ID, 스탬프_ID))
+            mockMvc.perform(get("/api/v2/template/festivals/{festivalId}/stamp-tours/{stampId}/main", 축제_ID, 스탬프_ID))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.designTemplate").value("GRID_Nx2"))
                     .andDo(StampTourTemplateDocs.getMain());
@@ -163,8 +157,7 @@ public class StampTourTemplateControllerTest {
             var res = new StampTourNotificationResDto("주의사항", "개인정보 고지");
             given(service.getStampTourNotification(축제_ID, 스탬프_ID)).willReturn(res);
 
-            mockMvc.perform(get(
-                            "/api/v2/template/festivals/{festivalId}/stamp-tours/{stampTourId}/notice", 축제_ID, 스탬프_ID))
+            mockMvc.perform(get("/api/v2/template/festivals/{festivalId}/stamp-tours/{stampId}/notice", 축제_ID, 스탬프_ID))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.cautionContent").value("주의사항"))
                     .andDo(StampTourTemplateDocs.getNotice());
@@ -182,8 +175,7 @@ public class StampTourTemplateControllerTest {
             var res = new StampTourGuideResDto(1L, GuideDesignTemplate.FULL, GuideSlideMethod.SLIDE, pages);
             given(service.getParticipateGuide(축제_ID, 스탬프_ID)).willReturn(res);
 
-            mockMvc.perform(get(
-                            "/api/v2/template/festivals/{festivalId}/stamp-tours/{stampTourId}/guide", 축제_ID, 스탬프_ID))
+            mockMvc.perform(get("/api/v2/template/festivals/{festivalId}/stamp-tours/{stampId}/guide", 축제_ID, 스탬프_ID))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.participateGuideId").value(1L))
                     .andExpect(jsonPath("$.participateGuidePages[0].pageId").value(101L))

@@ -1,5 +1,7 @@
 package com.halo.eventer.domain.stamp.v2.controller;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,7 +108,8 @@ public class StampTourAdminControllerTest {
             mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours", 축제_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].stampTourId").value(10L))
+                    .andExpect(jsonPath("$[0].stampId").value(10L))
+                    .andExpect(jsonPath("$[1].stampId").value(11L))
                     .andDo(StampTourAdminDocs.listStampTours());
         }
 
@@ -133,6 +136,14 @@ public class StampTourAdminControllerTest {
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
                     .andDo(StampTourAdminDocs.deleteStampTour());
+        }
+
+        @Test
+        void 삭제_실패_권한없음() throws Exception {
+            mockMvc.perform(delete("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}", 축제_ID, 스탬프_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-delete-unauthorized"));
         }
     }
 
@@ -240,7 +251,7 @@ public class StampTourAdminControllerTest {
                                     스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.stampTourId").value(스탬프_ID))
+                    .andExpect(jsonPath("$.stampId").value(스탬프_ID))
                     .andDo(StampTourAdminDocs.getBasic());
         }
 
@@ -256,7 +267,7 @@ public class StampTourAdminControllerTest {
         @WithMockUser(roles = "ADMIN")
         void 업서트_성공() throws Exception {
             var body = Map.of(
-                    "isStampActivate", true,
+                    "stampActivate", true,
                     "title", "새제목",
                     "authMethod", "TAG_SCAN",
                     "prizeReceiptAuthPassword", "newPw");
@@ -356,18 +367,7 @@ public class StampTourAdminControllerTest {
         @WithMockUser(roles = "ADMIN")
         void 조회_성공() throws Exception {
             var res = new StampTourLandingPageResDto(
-                    LandingPageDesignTemplate.NONE,
-                    "bg.jpg",
-                    "icon.jpg",
-                    "desc",
-                    ButtonLayout.ONE,
-                    List.of(new ButtonResDto(
-                            0, // sequenceIndex
-                            "바로가기", // content
-                            "icon.png", // iconImgUrl
-                            ButtonAction.OPEN_URL, // action
-                            "https://a.b" // targetUrl
-                            )));
+                    LandingPageDesignTemplate.NONE, "bg.jpg", "icon.jpg", "desc", ButtonLayout.NONE, List.of());
             given(service.getLandingPageSettings(축제_ID, 스탬프_ID)).willReturn(res);
 
             mockMvc.perform(get(
@@ -383,24 +383,40 @@ public class StampTourAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 업서트_성공() throws Exception {
-            var req = Map.of(
-                    "designTemplate", "NONE",
-                    "backgroundImgUrl", "bg.jpg",
-                    "iconImgUrl", "icon.jpg",
-                    "description", "설명",
-                    "buttonLayout", "ONE",
-                    "buttons",
-                            List.of(Map.of(
-                                    "sequenceIndex",
-                                    0,
-                                    "content",
-                                    "바로가기",
-                                    "iconImg",
-                                    "i",
-                                    "action",
-                                    ButtonAction.OPEN_URL.name(),
-                                    "targetUrl",
-                                    "https://a.b")));
+            Map<String, Object> req = new LinkedHashMap<>();
+            req.put("designTemplate", "NONE");
+            req.put("backgroundImgUrl", "bg.jpg");
+            req.put("iconImgUrl", "icon.jpg");
+            req.put("description", "설명");
+            req.put("buttonLayout", "ONE");
+
+            List<Map<String, Object>> buttons = new ArrayList<>();
+
+            Map<String, Object> b1 = new LinkedHashMap<>();
+            b1.put("sequenceIndex", 0);
+            b1.put("content", "바로가기");
+            b1.put("iconImgUrl", "i1.png");
+            b1.put("action", "OPEN_URL"); // enum은 문자열로
+            b1.put("targetUrl", "https://a.b"); // OPEN_URL이면 URL 포함
+            buttons.add(b1);
+
+            Map<String, Object> b2 = new LinkedHashMap<>();
+            b2.put("sequenceIndex", 1);
+            b2.put("content", "QR 스캔");
+            b2.put("iconImgUrl", "i2.png");
+            b2.put("action", "QR_CAMERA");
+            b2.put("targetUrl", null); // 스캔류는 없어도 됨
+            buttons.add(b2);
+
+            Map<String, Object> b3 = new LinkedHashMap<>();
+            b3.put("sequenceIndex", 2);
+            b3.put("content", "새창");
+            b3.put("iconImgUrl", "i3.png");
+            b3.put("action", "OPEN_NEW_PAGE");
+            b3.put("targetUrl", "/info"); // 내부 경로 예시
+            buttons.add(b3);
+
+            req.put("buttons", buttons);
 
             mockMvc.perform(put(
                                     "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/landing",
@@ -421,8 +437,8 @@ public class StampTourAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 조회_성공() throws Exception {
-            var res = new StampTourMainPageResDto(
-                    MainPageDesignTemplate.GRID_Nx2, "bg.jpg", ButtonLayout.ONE.name(), List.of());
+            var res =
+                    new StampTourMainPageResDto(MainPageDesignTemplate.GRID_Nx2, "bg.jpg", ButtonLayout.ONE, List.of());
             given(service.getMainPageSettings(축제_ID, 스탬프_ID)).willReturn(res);
 
             mockMvc.perform(get(
@@ -465,6 +481,23 @@ public class StampTourAdminControllerTest {
         void 조회_성공() throws Exception {
             var pages = List.of(new ParticipateGuidePageSummaryResDto(페이지_ID, "p1", 1));
             var res = new StampTourParticipateGuideResDto(1L, GuideDesignTemplate.FULL, GuideSlideMethod.SLIDE, pages);
+            given(service.getParticipateGuide(축제_ID, 스탬프_ID)).willReturn(res);
+
+            mockMvc.perform(get(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/settings/guides",
+                                    축제_ID,
+                                    스탬프_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.participateGuideId").value(1L))
+                    .andDo(StampTourAdminDocs.getGuide());
+        }
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 조회_성공_페이지_없음() throws Exception {
+            var res = new StampTourParticipateGuideResDto(
+                    1L, GuideDesignTemplate.FULL, GuideSlideMethod.SLIDE, List.of());
             given(service.getParticipateGuide(축제_ID, 스탬프_ID)).willReturn(res);
 
             mockMvc.perform(get(

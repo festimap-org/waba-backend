@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StampTourParticipateGuidePageReqDto {
-    private long guideId;
+    @NotNull
+    private Long guideId;
 
     @NotBlank
     private String title;

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StampTourParticipateGuideResDto {
-    private long participateGuideId;
+    private Long participateGuideId;
     private GuideDesignTemplate guideDesignTemplate;
     private GuideSlideMethod guideSlideMethod;
     private List<ParticipateGuidePageSummaryResDto> participateGuidePages;

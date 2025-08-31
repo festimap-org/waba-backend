@@ -29,10 +29,10 @@ public class StampTourFixture {
     public static AuthMethod 바뀐_스탬프투어_유저인증방법 = AuthMethod.TAG_SCAN;
 
     public static Stamp 스탬프투어1_생성(Festival festival) {
-        return Stamp.createWith(festival, 스탬프투어1_제목);
+        return Stamp.createWith(festival, 스탬프투어1_제목, true);
     }
 
     public static Stamp 스탬프투어2_생성(Festival festival) {
-        return Stamp.createWith(festival, 스탬프투어2_제목);
+        return Stamp.createWith(festival, 스탬프투어2_제목, true);
     }
 }

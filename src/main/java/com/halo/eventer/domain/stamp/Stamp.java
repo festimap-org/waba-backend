@@ -24,7 +24,7 @@ public class Stamp {
     @Column(nullable = false)
     private String title;
 
-    private boolean isActive = true;
+    private boolean active = true;
 
     @Enumerated(EnumType.STRING)
     private JoinVerificationMethod joinVerificationMethod = JoinVerificationMethod.NONE;
@@ -32,7 +32,7 @@ public class Stamp {
     @Column(nullable = false)
     private int finishCount = 0;
 
-    private String prizeReceiptAuthPassword = "0000))))";
+    private String prizeReceiptAuthPassword = "";
 
     private boolean showStamp = true;
 
@@ -43,22 +43,22 @@ public class Stamp {
     @JoinColumn(name = "festival_id")
     private Festival festival;
 
-    @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<StampNotice> stampNotices = new ArrayList<>();
-
     @OneToOne(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private StampMissionBasicSetting basicSetting;
 
-    @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StampNotice> stampNotices = new ArrayList<>();
+
+    @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PageTemplate> templates = new ArrayList<>();
 
-    @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ParticipateGuide> participationGuides = new ArrayList<>();
 
-    @OneToMany(mappedBy = "stamp", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StampUser> stampUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Mission> missions = new ArrayList<>();
 
     @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -83,7 +83,7 @@ public class Stamp {
     }
 
     public void switchActivation() {
-        isActive = !isActive;
+        active = !active;
     }
 
     public void defineFinishCnt(int cnt) {
@@ -108,7 +108,7 @@ public class Stamp {
     public void changeBasicSettings(
             boolean activation, String newTitle, AuthMethod authMethod, String prizeReceiptAuthPassword) {
         this.title = newTitle;
-        this.isActive = activation;
+        this.active = activation;
         this.authMethod = authMethod;
         this.prizeReceiptAuthPassword = prizeReceiptAuthPassword;
     }
@@ -119,25 +119,22 @@ public class Stamp {
         }
     }
 
-    public void changeShowStamp(boolean show) {
-        this.showStamp = show;
-    }
-
     public void updateJoinMethod(JoinVerificationMethod method) {
         this.joinVerificationMethod = method;
     }
 
     public boolean willShowStamp() {
-        return showStamp && isActive;
+        return showStamp && active;
     }
 
     public static Stamp create(Festival festival) {
         return new Stamp(festival);
     }
 
-    public static Stamp createWith(Festival festival, String title) {
+    public static Stamp createWith(Festival festival, String title, boolean show) {
         Stamp stamp = new Stamp(title);
         stamp.registerTo(festival);
+        stamp.showStamp = show;
         return stamp;
     }
 }

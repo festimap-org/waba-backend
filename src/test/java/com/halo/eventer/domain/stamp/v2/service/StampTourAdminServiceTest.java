@@ -131,7 +131,7 @@ public class StampTourAdminServiceTest {
 
         var 결과 = service.getStampTourSettingBasicByFestival(축제_id, 스탬프투어1_ID);
 
-        assertThat(결과.getStampTourId()).isEqualTo(스탬프.getId());
+        assertThat(결과.getStampId()).isEqualTo(스탬프.getId());
         assertThat(결과.getTitle()).isEqualTo(스탬프.getTitle());
     }
 
@@ -283,7 +283,7 @@ public class StampTourAdminServiceTest {
 
         var 결과 = service.getMainPageSettings(축제_id, 스탬프투어1_ID);
 
-        assertThat(결과.getBackgroundImg()).isEqualTo(메인페이지.getBackgroundImg());
+        assertThat(결과.getBackgroundImgUrl()).isEqualTo(메인페이지.getBackgroundImg());
         assertThat(결과.getButtons()).hasSize(2);
     }
 

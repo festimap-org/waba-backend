@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StampTourSummaryResDto {
-    private Long stampTourId;
+    private Long stampId;
     private String title;
-    private boolean showStamp;
+    private Boolean showStamp;
 
     public static StampTourSummaryResDto from(Stamp stamp) {
         return new StampTourSummaryResDto(stamp.getId(), stamp.getTitle(), stamp.isActive());

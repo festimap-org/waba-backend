@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParticipateGuidePageDetailsResDto {
-    private long pageId;
+    private Long pageId;
     private String title;
     private MediaSpec mediaSpec;
     private String mediaUrl;
