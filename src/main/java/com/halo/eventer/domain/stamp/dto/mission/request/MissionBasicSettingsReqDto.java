@@ -18,5 +18,5 @@ public class MissionBasicSettingsReqDto {
     private int missionCount;
 
     @NotNull
-    private MissionDetailsDesignLayout defaultDetailLayout;
+    private MissionDetailsDesignLayout missionDetailsDesignLayout;
 }

@@ -8,8 +8,7 @@ import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.AuthMethod;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.JoinVerificationMethod;
 import com.halo.eventer.domain.stamp.exception.StampClosedException;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
+import com.halo.eventer.domain.stamp.exception.StampNotInFestivalException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -115,7 +114,7 @@ public class Stamp {
 
     public void ensureStampInFestival(long festivalId) {
         if (this.festival == null || !this.festival.getId().equals(festivalId)) {
-            throw new BaseException(ErrorCode.STAMP_NOT_IN_FESTIVAL);
+            throw new StampNotInFestivalException(this.getId(), festivalId);
         }
     }
 

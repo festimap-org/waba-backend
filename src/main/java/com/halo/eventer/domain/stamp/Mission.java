@@ -32,10 +32,10 @@ public class Mission {
     private boolean showRequiredSuccessCount = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stamp_id")
+    @JoinColumn(name = "stamp_id", nullable = false)
     private Stamp stamp;
 
-    @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MissionDetailsTemplate> missionDetailsTemplates = new ArrayList<>();
 
     @Builder
@@ -108,9 +108,10 @@ public class Mission {
                 .build();
     }
 
-    public static Mission from(Stamp stamp, String missionName) {
+    public static Mission from(Stamp stamp, String missionName, Boolean showMission) {
         Mission mission = Mission.builder().title(missionName).build();
         mission.addStamp(stamp);
+        mission.updateMissionShow(showMission);
         return mission;
     }
 }

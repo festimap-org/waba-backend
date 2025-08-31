@@ -19,18 +19,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MissionDetailsTemplateReqDto {
     @NotNull
-    private MissionDetailsDesignLayout layout;
+    private MissionDetailsDesignLayout missionDetailsDesignLayout;
 
     @NotEmpty
     private String missionTitle;
 
-    private boolean showMissionName;
+    private boolean showMissionTitle;
     private boolean showSuccessCount;
     private boolean showExtraInfos;
     private boolean showButtons;
 
     @NotNull
-    private MediaSpec missionMediaSpec;
+    private MediaSpec mediaSpec;
 
     private String mediaUrl;
 

@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.stamp.dto.mission.request;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -10,6 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MissionCreateReqDto {
+    @NotBlank
+    private String title;
+
     @NotNull
-    private String name;
+    private Boolean showMission;
 }

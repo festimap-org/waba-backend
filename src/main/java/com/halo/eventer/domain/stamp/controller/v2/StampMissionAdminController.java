@@ -23,13 +23,20 @@ public class StampMissionAdminController {
             @PathVariable @Min(1) long festivalId,
             @PathVariable @Min(1) long stampId,
             @RequestBody @Valid MissionCreateReqDto request) {
-        stampMissionAdminService.createMission(festivalId, stampId, request.getName());
+        stampMissionAdminService.createMission(festivalId, stampId, request.getTitle(), request.getShowMission());
     }
 
     @GetMapping
-    public List<MissionBriefResDto> getMissionList(
-            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+    public MissionListResDto getMissionList(@PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
         return stampMissionAdminService.getMissions(festivalId, stampId);
+    }
+
+    @DeleteMapping("/{missionId}")
+    public void deleteMission(
+            @PathVariable @Min(1) long festivalId,
+            @PathVariable @Min(1) long stampId,
+            @PathVariable @Min(1) long missionId) {
+        stampMissionAdminService.deleteMission(festivalId, stampId, missionId);
     }
 
     @PatchMapping("/{missionId}/show")

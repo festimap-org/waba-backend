@@ -143,10 +143,10 @@ public class MissionDetailsTemplate {
 
     public static MissionDetailsTemplate from(MissionDetailsTemplateReqDto request) {
         return MissionDetailsTemplate.builder()
-                .layout(request.getLayout())
+                .layout(request.getMissionDetailsDesignLayout())
                 .showExtraInfos(request.isShowExtraInfos())
                 .showButtons(request.isShowButtons())
-                .mediaSpec(request.getMissionMediaSpec())
+                .mediaSpec(request.getMediaSpec())
                 .mediaUrl(request.getMediaUrl())
                 .type(request.getExtraInfoType())
                 .build();
