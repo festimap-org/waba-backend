@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.parking.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,7 @@ public interface ParkingManagementRepository extends JpaRepository<ParkingManage
 
     @Query("SELECT pm FROM ParkingManagement pm LEFT JOIN FETCH pm.parkingZones WHERE pm.id = :id ")
     Optional<ParkingManagement> findByIdWithParkingZone(@Param("id") Long id);
+
+    @Query("SELECT pm FROM ParkingManagement pm WHERE pm.festival.id = :festivalId ")
+    List<ParkingManagement> findByFestivalId(@Param("festivalId") Long festivalId);
 }

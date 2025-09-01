@@ -96,7 +96,7 @@ public final class ParkingNoticeDoc {
                         .tag(TAG)
                         .summary("노출 공지 조회 (USER)")
                         .description("사용자는 노출(visible = true)된 공지 목록만 조회합니다.")
-                        .pathParameters(parameterWithName("id")
+                        .pathParameters(parameterWithName("parkingManagementId")
                                 .description("주차관리 ID")
                                 .attributes(key("validationConstraints").value(List.of(ApiConstraint.JavaxMin2(1)))))
                         .responseSchema(Schema.schema("ParkingNoticeResDto[]"))
