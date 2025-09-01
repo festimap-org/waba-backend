@@ -19,11 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 public class StampMissionAdminService {
 
     private final StampRepository stampRepository;
-    private final StampMissionBasicSettingRepository settingRepository;
     private final StampMissionPrizeRepository prizeRepository;
     private final MissionRepository missionRepository;
     private final MissionDetailsTemplateRepository templateRepository;
-    private final MissionExtraInfoRepository extraInfoRepository;
 
     @Transactional
     public void createMission(long festivalId, long stampId, String missionName, Boolean showMission) {
@@ -35,10 +33,9 @@ public class StampMissionAdminService {
     @Transactional(readOnly = true)
     public MissionListResDto getMissions(long festivalId, long stampId) {
         Stamp stamp = ensureStamp(festivalId, stampId);
-        StampMissionBasicSetting setting = loadSettingOrThrow(stampId);
         List<Mission> missions = loadAllMissions(stampId);
         List<MissionBriefResDto> missionList = MissionBriefResDto.fromEntities(missions);
-        return new MissionListResDto(setting.getMissionCount(), missionList);
+        return new MissionListResDto(stamp.getMissionCount(), missionList);
     }
 
     @Transactional
@@ -58,15 +55,13 @@ public class StampMissionAdminService {
     @Transactional
     public StampMissionBasicSettingsResDto getBasicSettings(long festivalId, long stampId) {
         Stamp stamp = ensureStamp(festivalId, stampId);
-        StampMissionBasicSetting setting = getSettingEnsuring(stampId, stamp);
-        return StampMissionBasicSettingsResDto.from(setting, stamp);
+        return StampMissionBasicSettingsResDto.from(stamp);
     }
 
     @Transactional
     public void updateBasicSettings(long festivalId, long stampId, final MissionBasicSettingsReqDto request) {
         Stamp stamp = ensureStamp(festivalId, stampId);
-        StampMissionBasicSetting setting = loadSettingOrThrow(stampId);
-        setting.updateBasic(request.getMissionCount(), request.getMissionDetailsDesignLayout());
+        stamp.updateBasic(request.getMissionCount(), request.getMissionDetailsDesignLayout());
     }
 
     @Transactional
@@ -171,18 +166,6 @@ public class StampMissionAdminService {
         return prizeRepository
                 .findByIdAndStampId(prizeId, stampId)
                 .orElseThrow(() -> new MissionPrizeNotFoundException(prizeId));
-    }
-
-    private StampMissionBasicSetting loadSettingOrThrow(long stampId) {
-        return settingRepository
-                .findByStampId(stampId)
-                .orElseThrow(() -> new StampMissionBasicSettingException(stampId));
-    }
-
-    private StampMissionBasicSetting getSettingEnsuring(long stampId, Stamp stamp) {
-        return settingRepository
-                .findByStampId(stampId)
-                .orElseGet(() -> settingRepository.save(StampMissionBasicSetting.defaultFor(stamp)));
     }
 
     private Stamp loadStampOrThrow(long id) {

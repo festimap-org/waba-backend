@@ -58,7 +58,7 @@ public class StampMissionAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("limitMissionCount").type(NUMBER).description("최대 미션 개수 제한"),
+                                fieldWithPath("missionCount").type(NUMBER).description("최대 미션 개수 제한"),
                                 fieldWithPath("missionList").type(ARRAY).description("미션 목록(비어있을 수 있음)"),
                                 fieldWithPath("missionList[].missionId")
                                         .type(NUMBER)
