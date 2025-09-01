@@ -46,7 +46,7 @@ public class StampTourUserDocs {
                                 fieldWithPath("name").type(STRING).description("이름"),
                                 fieldWithPath("phone").type(STRING).description("전화번호"))
                         // 응답 바디 필드는 고정 아님: 헤더만 문서화
-                        .responseHeaders(headerWithName("Authorization").description("JWT Access 토큰 (Bearer …)"))
+                        .responseFields(fieldWithPath("token").type(STRING).description("유저 토큰 값"))
                         .build()));
     }
 

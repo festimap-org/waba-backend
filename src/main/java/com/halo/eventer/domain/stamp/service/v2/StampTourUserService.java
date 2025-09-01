@@ -2,19 +2,17 @@ package com.halo.eventer.domain.stamp.service.v2;
 
 import java.util.Comparator;
 import java.util.List;
-import jakarta.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.halo.eventer.domain.member.dto.TokenDto;
 import com.halo.eventer.domain.member.exception.LoginFailedException;
 import com.halo.eventer.domain.stamp.*;
 import com.halo.eventer.domain.stamp.dto.mission.response.MissionBoardResDto;
 import com.halo.eventer.domain.stamp.dto.mission.response.MissionExtraInfoSummaryResDto;
 import com.halo.eventer.domain.stamp.dto.mission.response.MissionTemplateResDto;
 import com.halo.eventer.domain.stamp.dto.stamp.response.ButtonResDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.StampUserGetDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserLoginDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserSignupReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.PrizeClaimQrResDto;
@@ -49,14 +47,11 @@ public class StampTourUserService {
 
     @Transactional
     // TODO : 로그인 방식 수정 필요
-    public StampUserGetDto login(
-            long festivalId, long stampId, StampUserLoginDto request, HttpServletResponse response) {
+    public TokenDto login(long festivalId, long stampId, StampUserLoginDto request) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         StampUser stampUser = loadStampUserWithStampIdAndLoginInfo(stampId, request);
-        // TODO : 스탬프 유저 권한 생성 방법 수정 필요.
         String token = jwtProvider.createToken(stampUser.getUuid(), List.of("STAMP"));
-        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
-        return StampUserGetDto.from(stampUser);
+        return new TokenDto(token);
     }
 
     public MissionBoardResDto getMissionBoard(long festivalId, long stampId, String userUuid) {

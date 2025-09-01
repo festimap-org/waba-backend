@@ -1,15 +1,14 @@
 package com.halo.eventer.domain.stamp.controller.v2;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.halo.eventer.domain.member.dto.TokenDto;
 import com.halo.eventer.domain.stamp.dto.mission.response.MissionBoardResDto;
 import com.halo.eventer.domain.stamp.dto.mission.response.MissionTemplateResDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.StampUserGetDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionQrVerifyReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserLoginDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserSignupReqDto;
@@ -36,12 +35,11 @@ public class StampTourUserController {
     }
 
     @PostMapping("/{stampId}/login")
-    public StampUserGetDto login(
+    public TokenDto login(
             @PathVariable @Min(1) long festivalId,
             @PathVariable @Min(1) long stampId,
-            @RequestBody @Valid StampUserLoginDto request,
-            HttpServletResponse response) {
-        return stampTourUserService.login(festivalId, stampId, request, response);
+            @RequestBody @Valid StampUserLoginDto request) {
+        return stampTourUserService.login(festivalId, stampId, request);
     }
 
     @GetMapping("/{stampId}/missions")
