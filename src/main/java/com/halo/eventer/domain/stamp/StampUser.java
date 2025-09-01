@@ -41,6 +41,8 @@ public class StampUser extends BaseTime {
 
     private String extraText;
 
+    private String receivedPrizeName;
+
     @Column(nullable = true)
     private String schoolNo;
 
