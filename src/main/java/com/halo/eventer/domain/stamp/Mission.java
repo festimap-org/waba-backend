@@ -26,7 +26,7 @@ public class Mission {
     private String time;
     private String clearedThumbnail;
     private String notClearedThumbnail;
-    private Boolean show = true;
+    private Boolean showMission = true;
     private Boolean showTitle = true;
     private int requiredSuccessCount = 0;
     private Boolean showRequiredSuccessCount = true;
@@ -93,7 +93,7 @@ public class Mission {
     }
 
     public void updateMissionShow(boolean show) {
-        this.show = show;
+        this.showMission = show;
     }
 
     public static Mission from(MissionSetReqDto request) {
