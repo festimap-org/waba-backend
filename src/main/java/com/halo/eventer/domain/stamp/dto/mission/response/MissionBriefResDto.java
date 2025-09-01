@@ -22,6 +22,7 @@ public class MissionBriefResDto {
     }
 
     public static MissionBriefResDto from(Mission mission) {
-        return new MissionBriefResDto(mission.getId(), mission.getTitle(), mission.getShow(), mission.getShowTitle());
+        return new MissionBriefResDto(
+                mission.getId(), mission.getTitle(), mission.getShowMission(), mission.getShowTitle());
     }
 }

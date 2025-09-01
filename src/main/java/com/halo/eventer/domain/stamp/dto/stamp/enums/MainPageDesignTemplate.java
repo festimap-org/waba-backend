@@ -6,8 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum MainPageDesignTemplate {
-    GRID_Nx2(0),
-    GRID_Nx3(1),
+    GRID_Nx1,
+    GRID_Nx2,
+    GRID_Nx3,
     ;
-    private final int code;
 }
