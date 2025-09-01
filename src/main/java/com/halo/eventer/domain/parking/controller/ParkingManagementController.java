@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.halo.eventer.domain.image.dto.FileDto;
 import com.halo.eventer.domain.parking.dto.common.DisplayOrderChangeReqDto;
+import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementIdResDto;
 import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementReqDto;
 import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementResDto;
 import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementSubPageResDto;
@@ -73,5 +74,10 @@ public class ParkingManagementController {
             @Min(1) @PathVariable("id") Long id,
             @Valid @RequestBody DisplayOrderChangeReqDto displayOrderChangeReqDto) {
         parkingManagementService.deleteParkingMapImages(id, displayOrderChangeReqDto);
+    }
+
+    @GetMapping("/common/festivals/{festivalId}/parkingManagements")
+    public ParkingManagementIdResDto getParkingManagementsId(@Min(1) @PathVariable("festivalId") Long festivalId) {
+        return parkingManagementService.getParkingManagementId(festivalId);
     }
 }

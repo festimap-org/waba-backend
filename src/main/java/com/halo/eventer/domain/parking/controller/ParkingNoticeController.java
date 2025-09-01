@@ -33,9 +33,10 @@ public class ParkingNoticeController {
         return parkingNoticeService.getParkingNotices(parkingManagementId);
     }
 
-    @GetMapping("/user/parking-notices/{id}")
-    public List<ParkingNoticeResDto> getParkingNotice(@Min(1) @PathVariable("id") Long id) {
-        return parkingNoticeService.getVisibleParkingNotices(id);
+    @GetMapping("/user/parking-managements/{parkingManagementId}/parking-notices")
+    public List<ParkingNoticeResDto> getParkingNotice(
+            @Min(1) @PathVariable("parkingManagementId") Long parkingManagementId) {
+        return parkingNoticeService.getVisibleParkingNotices(parkingManagementId);
     }
 
     @PatchMapping(("/admin/parking-notices/{id}/content"))

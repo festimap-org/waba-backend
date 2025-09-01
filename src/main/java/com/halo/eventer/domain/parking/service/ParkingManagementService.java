@@ -1,5 +1,7 @@
 package com.halo.eventer.domain.parking.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,10 +11,7 @@ import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.image.dto.FileDto;
 import com.halo.eventer.domain.parking.ParkingManagement;
 import com.halo.eventer.domain.parking.dto.common.DisplayOrderChangeReqDto;
-import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementReqDto;
-import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementResDto;
-import com.halo.eventer.domain.parking.dto.parking_management.ParkingManagementSubPageResDto;
-import com.halo.eventer.domain.parking.dto.parking_management.ParkingSubPageReqDto;
+import com.halo.eventer.domain.parking.dto.parking_management.*;
 import com.halo.eventer.domain.parking.enums.ParkingInfoType;
 import com.halo.eventer.domain.parking.exception.ParkingManagementNotFoundException;
 import com.halo.eventer.domain.parking.repository.ParkingManagementRepository;
@@ -126,6 +125,14 @@ public class ParkingManagementService {
                 .findByIdWithImages(id)
                 .orElseThrow(() -> new ParkingManagementNotFoundException(id));
         parkingManagement.removeImages(displayOrderChangeReqDto.getIds());
+    }
+
+    @Transactional(readOnly = true)
+    public ParkingManagementIdResDto getParkingManagementId(Long festivalId) {
+        List<ParkingManagement> parkingManagements = parkingManagementRepository.findByFestivalId(festivalId);
+        return parkingManagements.isEmpty()
+                ? null
+                : new ParkingManagementIdResDto(parkingManagements.get(0).getId());
     }
 
     private ParkingManagement loadParkingManagementOrThrow(Long id) {
