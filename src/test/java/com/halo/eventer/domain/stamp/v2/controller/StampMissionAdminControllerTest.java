@@ -101,7 +101,7 @@ public class StampMissionAdminControllerTest {
             mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions", 축제_ID, 스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.limitMissionCount").value(LIMIT))
+                    .andExpect(jsonPath("$.missionCount").value(LIMIT))
                     .andExpect(jsonPath("$.missionList[0].missionId").value(101L))
                     .andExpect(jsonPath("$.missionList[0].title").value("미션A"))
                     .andDo(StampMissionAdminDocs.listMissions());
@@ -116,7 +116,7 @@ public class StampMissionAdminControllerTest {
             mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions", 축제_ID, 스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.limitMissionCount").value(LIMIT))
+                    .andExpect(jsonPath("$.missionCount").value(LIMIT))
                     .andExpect(jsonPath("$.missionList.length()").value(0))
                     .andDo(StampMissionAdminDocs.listMissions());
         }

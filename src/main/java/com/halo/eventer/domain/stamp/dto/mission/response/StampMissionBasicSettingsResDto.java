@@ -3,7 +3,6 @@ package com.halo.eventer.domain.stamp.dto.mission.response;
 import java.util.List;
 
 import com.halo.eventer.domain.stamp.Stamp;
-import com.halo.eventer.domain.stamp.StampMissionBasicSetting;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.MissionDetailsDesignLayout;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,10 +16,10 @@ public class StampMissionBasicSettingsResDto {
     private MissionDetailsDesignLayout missionDetailsDesignLayout;
     private List<MissionPrizeResDto> prizes;
 
-    public static StampMissionBasicSettingsResDto from(StampMissionBasicSetting setting, Stamp stamp) {
+    public static StampMissionBasicSettingsResDto from(Stamp stamp) {
         return new StampMissionBasicSettingsResDto(
-                setting.getMissionCount(),
-                setting.getDefaultDetailLayout(),
+                stamp.getMissionCount(),
+                stamp.getDefaultDetailLayout(),
                 stamp.getPrizes().stream().map(MissionPrizeResDto::from).toList());
     }
 }
