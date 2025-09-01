@@ -1,5 +1,7 @@
 package com.halo.eventer.domain.stamp.dto.stampUser.response;
 
+import java.time.LocalDateTime;
+
 import com.halo.eventer.domain.stamp.StampUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +15,8 @@ public class StampUserSummaryResDto {
     private String name;
     private String phone;
     private String uuid;
-    private boolean isFinished;
+    private boolean finished;
+    private LocalDateTime createdAt;
 
     public static StampUserSummaryResDto from(StampUser stampUser) {
         return new StampUserSummaryResDto(
@@ -21,6 +24,7 @@ public class StampUserSummaryResDto {
                 stampUser.getName(),
                 stampUser.getPhone(),
                 stampUser.getUuid(),
-                stampUser.getIsFinished());
+                stampUser.getIsFinished(),
+                stampUser.getCreatedAt());
     }
 }

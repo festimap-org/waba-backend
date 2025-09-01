@@ -480,7 +480,6 @@ public class StampTourAdminDocs {
                                 parameterWithName("pageId").description("페이지 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("guideId").type(NUMBER).description("가이드 ID"),
                                 fieldWithPath("title").type(STRING).description("제목"),
                                 fieldWithPath("mediaSpec")
                                         .type(STRING)

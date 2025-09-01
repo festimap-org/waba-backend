@@ -65,6 +65,13 @@ public class StampMissionAdminService {
     }
 
     @Transactional
+    public List<MissionPrizeResDto> getPrizes(long festivalId, long stampId) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        List<StampMissionPrize> prizes = stamp.getPrizes();
+        return MissionPrizeResDto.fromEntities(prizes);
+    }
+
+    @Transactional
     public void addPrize(long festivalId, long stampId, final MissionPrizeCreateReqDto request) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         StampMissionPrize prize =
@@ -83,6 +90,10 @@ public class StampMissionAdminService {
     public void deletePrize(long festivalId, long stampId, long prizeId) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         StampMissionPrize prize = loadStampMissionPrizeOrThrow(prizeId, stampId);
+        Stamp parent = prize.getStamp();
+        if (parent != null) {
+            parent.getPrizes().remove(prize);
+        }
         prizeRepository.delete(prize);
     }
 
@@ -103,7 +114,7 @@ public class StampMissionAdminService {
         mission.updateClearedImage(request.getClearedThumbnail(), request.getNotClearedThumbnail());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public MissionDetailsTemplateResDto getMissionDetailsTemplate(long festivalId, long stampId, long missionId) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         Mission mission = loadMissionOrThrow(missionId);

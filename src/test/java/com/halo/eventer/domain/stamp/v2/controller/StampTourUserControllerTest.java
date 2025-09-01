@@ -1,11 +1,9 @@
 package com.halo.eventer.domain.stamp.v2.controller;
 
 import java.util.List;
-import jakarta.servlet.http.HttpServletResponse;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,6 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.halo.eventer.domain.member.dto.TokenDto;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.controller.v2.StampTourUserController;
 import com.halo.eventer.domain.stamp.dto.mission.response.MissionBoardResDto;
@@ -42,7 +41,6 @@ import com.halo.eventer.global.security.provider.JwtProvider;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doAnswer;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -104,21 +102,12 @@ public class StampTourUserControllerTest {
         @Test
         void 성공() throws Exception {
             var body = new StampUserLoginDto("홍길동", "010-1111-2222");
-
-            // service.login 호출 시 응답 헤더만 세팅해주도록 스텁
-            doAnswer((Answer<Void>) invocation -> {
-                        HttpServletResponse resp = invocation.getArgument(3);
-                        resp.setHeader("Authorization", "Bearer test-token");
-                        return null; // 바디는 문서화하지 않음
-                    })
-                    .when(service)
-                    .login(eq(축제_ID), eq(스탬프투어_ID), any(StampUserLoginDto.class), any(HttpServletResponse.class));
-
+            given(service.login(eq(축제_ID), eq(스탬프투어_ID), any(StampUserLoginDto.class)))
+                    .willReturn(new TokenDto("fake.jwt.token"));
             mockMvc.perform(post("/api/v2/user/festivals/{festivalId}/stamp-tours/{stampId}/login", 축제_ID, 스탬프투어_ID)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isOk())
-                    .andExpect(header().string("Authorization", org.hamcrest.Matchers.startsWith("Bearer ")))
                     .andDo(StampTourUserDocs.login());
         }
 
@@ -160,7 +149,7 @@ public class StampTourUserControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.completedCount").value(2))
+                    .andExpect(jsonPath("$.clearCount").value(2))
                     .andExpect(jsonPath("$.missions[0].missionId").value(101L))
                     .andDo(StampTourUserDocs.missionBoard());
         }

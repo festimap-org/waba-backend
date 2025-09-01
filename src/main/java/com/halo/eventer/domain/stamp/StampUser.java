@@ -92,6 +92,10 @@ public class StampUser extends BaseTime {
         stamp.getStampUsers().add(this);
     }
 
+    public void updateReceivedPrizeName(String receivedPrizeName) {
+        this.receivedPrizeName = receivedPrizeName;
+    }
+
     public void markAsFinished(boolean finished) {
         this.isFinished = finished;
     }

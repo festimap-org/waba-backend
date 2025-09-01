@@ -65,7 +65,6 @@ public class Stamp {
     private List<Mission> missions = new ArrayList<>();
 
     @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("requiredCount ASC")
     private List<StampMissionPrize> prizes = new ArrayList<>();
 
     private Stamp(Festival festival) {
@@ -73,8 +72,9 @@ public class Stamp {
         festival.getStamps().add(this);
     }
 
-    public Stamp(String title) {
+    public Stamp(String title, boolean showStamp) {
         this.title = title;
+        this.showStamp = showStamp;
     }
 
     public void assignAllMissionsTo(StampUser stampUser) {
@@ -136,9 +136,8 @@ public class Stamp {
     }
 
     public static Stamp createWith(Festival festival, String title, boolean show) {
-        Stamp stamp = new Stamp(title);
+        Stamp stamp = new Stamp(title, show);
         stamp.registerTo(festival);
-        stamp.showStamp = show;
         return stamp;
     }
 }
