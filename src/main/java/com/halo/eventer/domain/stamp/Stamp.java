@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.AuthMethod;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.JoinVerificationMethod;
+import com.halo.eventer.domain.stamp.dto.stamp.enums.MissionDetailsDesignLayout;
 import com.halo.eventer.domain.stamp.exception.StampClosedException;
 import com.halo.eventer.domain.stamp.exception.StampNotInFestivalException;
 import lombok.Getter;
@@ -38,12 +39,15 @@ public class Stamp {
     @Enumerated(EnumType.STRING)
     private AuthMethod authMethod = AuthMethod.TAG_SCAN;
 
+    @Column(nullable = false)
+    private int missionCount = 0; // 미션개수
+
+    @Enumerated(EnumType.STRING)
+    private MissionDetailsDesignLayout defaultDetailLayout = MissionDetailsDesignLayout.CARD;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
     private Festival festival;
-
-    @OneToOne(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private StampMissionBasicSetting basicSetting;
 
     @OneToMany(mappedBy = "stamp", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StampNotice> stampNotices = new ArrayList<>();
@@ -100,10 +104,6 @@ public class Stamp {
         festival.getStamps().add(this);
     }
 
-    public void registerMissionBasicSetting(StampMissionBasicSetting setting) {
-        this.basicSetting = setting;
-    }
-
     public void changeBasicSettings(
             boolean activation, String newTitle, AuthMethod authMethod, String prizeReceiptAuthPassword) {
         this.title = newTitle;
@@ -124,6 +124,11 @@ public class Stamp {
 
     public boolean willShowStamp() {
         return showStamp && active;
+    }
+
+    public void updateBasic(int missionCount, MissionDetailsDesignLayout layout) {
+        this.missionCount = missionCount;
+        this.defaultDetailLayout = layout;
     }
 
     public static Stamp create(Festival festival) {

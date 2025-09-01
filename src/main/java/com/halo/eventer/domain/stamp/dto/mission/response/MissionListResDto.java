@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MissionListResDto {
-    private int limitMissionCount;
+    private int missionCount;
     private List<MissionBriefResDto> missionList;
 }
