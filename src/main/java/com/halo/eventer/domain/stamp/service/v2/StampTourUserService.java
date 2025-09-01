@@ -125,7 +125,7 @@ public class StampTourUserService {
 
     private List<UserMission> filterUserMissionOnlyShowing(StampUser user) {
         return user.getUserMissions().stream()
-                .filter(um -> um.getMission() != null && um.getMission().getShow())
+                .filter(um -> um.getMission() != null && um.getMission().getShowMission())
                 .sorted(Comparator.comparing(um -> um.getMission().getId()))
                 .toList();
     }
