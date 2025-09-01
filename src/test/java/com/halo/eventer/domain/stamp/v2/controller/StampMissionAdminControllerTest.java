@@ -165,7 +165,7 @@ public class StampMissionAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 표시여부_수정_성공() throws Exception {
-            var body = Map.of("show", true);
+            var body = Map.of("showMission", true);
 
             mockMvc.perform(patch(
                                     "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/{missionId}/show",
@@ -449,7 +449,7 @@ public class StampMissionAdminControllerTest {
         @WithMockUser(roles = "ADMIN")
         void 미션_완료이미지_수정_성공() throws Exception {
             var body = Map.of(
-                    "showMissionName", true,
+                    "showMissionTitle", true,
                     "clearedThumbnail", "cleared.jpg",
                     "notClearedThumbnail", "not-cleared.jpg");
 
@@ -475,6 +475,35 @@ public class StampMissionAdminControllerTest {
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
                     .andDo(StampMissionAdminDocs.getQrData());
+        }
+    }
+
+    @Nested
+    class 경품_목록 {
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 조회_성공() throws Exception {
+            var list = List.of(new MissionPrizeResDto(1L, 1, "스티커"), new MissionPrizeResDto(2L, 3, "티셔츠"));
+            given(service.getPrizes(축제_ID, 스탬프_ID)).willReturn(list);
+
+            mockMvc.perform(get(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions/prizes",
+                                    축제_ID,
+                                    스탬프_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].id").value(1L))
+                    .andExpect(jsonPath("$[0].requiredCount").value(1))
+                    .andExpect(jsonPath("$[0].prizeDescription").value("스티커"))
+                    .andDo(StampMissionAdminDocs.getPrizeList());
+        }
+
+        @Test
+        void 조회_실패_권한없음() throws Exception {
+            mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/prizes", 축제_ID, 스탬프_ID))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampMissionAdminDocs.error("v2-stamptour-prize-list-unauthorized"));
         }
     }
 }

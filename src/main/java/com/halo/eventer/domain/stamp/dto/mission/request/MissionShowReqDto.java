@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MissionShowReqDto {
     @NotNull
-    private boolean show;
+    private boolean showMission;
 }

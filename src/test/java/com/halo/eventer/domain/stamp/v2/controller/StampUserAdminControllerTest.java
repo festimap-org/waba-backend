@@ -1,7 +1,7 @@
 package com.halo.eventer.domain.stamp.v2.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,8 +18,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.stamp.controller.v2.StampUserAdminController;
+import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.MissionCleared;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
+import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.UserMissionStatusResDto;
@@ -47,6 +49,9 @@ public class StampUserAdminControllerTest {
     private static final long 축제_ID = 1L;
     private static final long 스탬프_ID = 10L;
     private static final long 사용자_ID = 77L;
+
+    private static final long 유저_ID = 999L;
+    private static final long 유저미션_ID = 5001L;
     private static final String 사용자_UUID = "uuid-1234";
     private static final long 잘못된_ID = 0L;
 
@@ -63,8 +68,8 @@ public class StampUserAdminControllerTest {
     JwtProvider jwtProvider;
 
     private PagedResponse<StampUserSummaryResDto> 샘플_목록() {
-        var u1 = new StampUserSummaryResDto(1L, "김수한", "010-1234-5678", "uuid-1", false);
-        var u2 = new StampUserSummaryResDto(2L, "박영희", "010-2222-3333", "uuid-2", true);
+        var u1 = new StampUserSummaryResDto(1L, "김수한", "010-1234-5678", "uuid-1", false, LocalDateTime.now());
+        var u2 = new StampUserSummaryResDto(2L, "박영희", "010-2222-3333", "uuid-2", true, LocalDateTime.now());
         var pageInfo = PageInfo.builder()
                 .pageNumber(1) // 문서화 편의상 1-base
                 .pageSize(10)
@@ -81,8 +86,7 @@ public class StampUserAdminControllerTest {
         List<UserMissionStatusResDto> missions = List.of(
                 new UserMissionStatusResDto(100L, 1001L, "미션1", true),
                 new UserMissionStatusResDto(101L, 1002L, "미션2", false));
-        return new StampUserDetailResDto(
-                사용자_ID, "김수한", "010-1234-5678", 사용자_UUID, false, missions, "this is extra text", 4);
+        return new StampUserDetailResDto("김수한", "010-1234-5678", 사용자_UUID, false, missions, "this is extra text", 4);
     }
 
     @Nested
@@ -122,17 +126,61 @@ public class StampUserAdminControllerTest {
     }
 
     @Nested
-    class 상세_조회 {
+    class 투어완료_및_경품수정 {
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 수정_성공() throws Exception {
+            var req = new MissionCompletionUpdateReq(true, "티셔츠");
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{userId}/tour-finish",
+                                    축제_ID,
+                                    스탬프_ID,
+                                    유저_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(req)))
+                    .andExpect(status().isOk())
+                    .andDo(StampUserAdminDocs.updateTourFinish());
+        }
+
+        @Test
+        void 수정_실패_권한없음() throws Exception {
+            var req = new MissionCompletionUpdateReq(false, null);
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{userId}/tour-finish",
+                                    축제_ID,
+                                    스탬프_ID,
+                                    유저_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(req)))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampUserAdminDocs.error("v2-stampuser-tourfinish-unauthorized"));
+        }
+    }
+
+    private StampUserDetailResDto 샘플상세() {
+        var missions = List.of(
+                new UserMissionStatusResDto(100L, 1001L, "미션1", true),
+                new UserMissionStatusResDto(101L, 1002L, "미션2", false));
+        return new StampUserDetailResDto("홍길동", "010-1234-5678", "uuid-1234", false, missions, "비고", 3);
+    }
+
+    @Nested
+    class 사용자_상세_조회 {
+
         @Test
         @WithMockUser(roles = "ADMIN")
         void 성공() throws Exception {
-            given(service.getUserDetail(축제_ID, 스탬프_ID, 사용자_UUID)).willReturn(샘플_상세());
+            given(service.getUserDetail(축제_ID, 스탬프_ID, 사용자_ID)).willReturn(샘플상세());
 
             mockMvc.perform(get(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{uuid}",
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{userId}",
                                     축제_ID,
                                     스탬프_ID,
-                                    사용자_UUID)
+                                    사용자_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
                     .andDo(StampUserAdminDocs.getUser());
@@ -141,10 +189,10 @@ public class StampUserAdminControllerTest {
         @Test
         void 실패_권한없음() throws Exception {
             mockMvc.perform(get(
-                            "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{uuid}",
+                            "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{userId}",
                             축제_ID,
                             스탬프_ID,
-                            사용자_UUID))
+                            사용자_ID))
                     .andExpect(status().isUnauthorized())
                     .andDo(StampUserAdminDocs.error("v2-stampuser-get-unauthorized"));
         }
@@ -153,10 +201,10 @@ public class StampUserAdminControllerTest {
         @WithMockUser(roles = "ADMIN")
         void 실패_축제ID_검증() throws Exception {
             mockMvc.perform(get(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{uuid}",
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{userId}",
                                     잘못된_ID,
                                     스탬프_ID,
-                                    사용자_UUID)
+                                    사용자_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isBadRequest())
                     .andDo(StampUserAdminDocs.error("v2-stampuser-get-badrequest"));
@@ -164,39 +212,57 @@ public class StampUserAdminControllerTest {
     }
 
     @Nested
-    class 전체미션_완료_토글 {
+    class 유저미션_수정 {
         @Test
         @WithMockUser(roles = "ADMIN")
-        void 성공_complete_true() throws Exception {
-            given(service.setAllMissionsCompletion(축제_ID, 스탬프_ID, 사용자_ID, true)).willReturn(샘플_상세());
-
-            var body = Map.of("complete", true);
+        void 유저미션_완료여부_수정_성공() throws Exception {
+            var req = new MissionClearReqDto(true);
 
             mockMvc.perform(patch(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{userId}/missions/all",
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{userId}/user-mission/{userMissionId}",
                                     축제_ID,
                                     스탬프_ID,
-                                    사용자_ID)
+                                    사용자_ID,
+                                    유저미션_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
+                            .content(objectMapper.writeValueAsString(req)))
                     .andExpect(status().isOk())
-                    .andDo(StampUserAdminDocs.setAllMissionsCompletion());
+                    .andDo(StampUserAdminDocs.updateUserMission());
         }
 
         @Test
-        void 실패_권한없음() throws Exception {
-            var body = Map.of("complete", true);
+        void 유저미션_완료여부_수정_실패_권한없음() throws Exception {
+            var req = new MissionClearReqDto(false);
 
             mockMvc.perform(patch(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{userId}/missions/all",
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{userId}/user-mission/{userMissionId}",
                                     축제_ID,
                                     스탬프_ID,
-                                    사용자_ID)
+                                    사용자_ID,
+                                    유저미션_ID)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(body)))
+                            .content(objectMapper.writeValueAsString(req)))
                     .andExpect(status().isUnauthorized())
-                    .andDo(StampUserAdminDocs.error("v2-stampuser-missions-all-unauthorized"));
+                    .andDo(StampUserAdminDocs.error("v2-stampuser-updatemission-unauthorized"));
+        }
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 유저미션_완료여부_수정_실패_축제ID_검증() throws Exception {
+            var req = new MissionClearReqDto(true);
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{userId}/user-mission/{userMissionId}",
+                                    잘못된_ID,
+                                    스탬프_ID,
+                                    사용자_ID,
+                                    유저미션_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(req)))
+                    .andExpect(status().isBadRequest())
+                    .andDo(StampUserAdminDocs.error("v2-stampuser-updatemission-badrequest"));
         }
     }
 }

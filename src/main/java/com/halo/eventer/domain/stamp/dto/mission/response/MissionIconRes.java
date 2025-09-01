@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class MissionIconRes {
     private long missionId;
     private String title;
-    private boolean complete;
+    private boolean clear;
     private String imageUrl;
 
     public static MissionIconRes from(UserMission um) {

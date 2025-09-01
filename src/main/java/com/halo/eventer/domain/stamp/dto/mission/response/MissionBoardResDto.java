@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MissionBoardResDto {
-    private int completedCount;
+    private int clearCount;
     private int totalCount;
-    private boolean allCleared;
+    private boolean finished;
     private List<MissionIconRes> missions;
 
     public static MissionBoardResDto from(List<UserMission> list) {

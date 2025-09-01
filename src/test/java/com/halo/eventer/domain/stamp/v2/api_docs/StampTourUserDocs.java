@@ -46,7 +46,7 @@ public class StampTourUserDocs {
                                 fieldWithPath("name").type(STRING).description("이름"),
                                 fieldWithPath("phone").type(STRING).description("전화번호"))
                         // 응답 바디 필드는 고정 아님: 헤더만 문서화
-                        .responseHeaders(headerWithName("Authorization").description("JWT Access 토큰 (Bearer …)"))
+                        .responseFields(fieldWithPath("token").type(STRING).description("유저 토큰 값"))
                         .build()));
     }
 
@@ -61,17 +61,15 @@ public class StampTourUserDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("completedCount").type(NUMBER).description("완료한 미션 수"),
+                                fieldWithPath("clearCount").type(NUMBER).description("완료한 미션 수"),
                                 fieldWithPath("totalCount").type(NUMBER).description("전체 미션 수"),
-                                fieldWithPath("allCleared").type(BOOLEAN).description("전체 완료 여부"),
+                                fieldWithPath("finished").type(BOOLEAN).description("전체 완료 여부"),
                                 fieldWithPath("missions").type(ARRAY).description("미션 아이콘 목록"),
                                 fieldWithPath("missions[].missionId")
                                         .type(NUMBER)
                                         .description("미션 ID"),
                                 fieldWithPath("missions[].title").type(STRING).description("미션 제목"),
-                                fieldWithPath("missions[].complete")
-                                        .type(BOOLEAN)
-                                        .description("완료 여부"),
+                                fieldWithPath("missions[].clear").type(BOOLEAN).description("완료 여부"),
                                 fieldWithPath("missions[].imageUrl")
                                         .type(STRING)
                                         .description("표시 썸네일 URL"))
