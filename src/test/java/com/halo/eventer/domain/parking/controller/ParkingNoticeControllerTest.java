@@ -124,7 +124,8 @@ class ParkingNoticeControllerTest {
         List<ParkingNoticeResDto> list = List.of(new ParkingNoticeResDto(1L, "알림", "본문", true));
         when(parkingNoticeService.getVisibleParkingNotices(id)).thenReturn(list);
 
-        mockMvc.perform(get("/api/v2/user/parking-notices/{id}", id).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/v2/user/parking-managements/{parkingManagementId}/parking-notices", id)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].id").value(1))
