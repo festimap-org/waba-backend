@@ -160,7 +160,7 @@ public class StampTourUserControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.completedCount").value(2))
+                    .andExpect(jsonPath("$.clearCount").value(2))
                     .andExpect(jsonPath("$.missions[0].missionId").value(101L))
                     .andDo(StampTourUserDocs.missionBoard());
         }

@@ -13,13 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
+import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.MissionCleared;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
+import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.UserMissionStatusResDto;
 import com.halo.eventer.domain.stamp.exception.StampNotFoundException;
 import com.halo.eventer.domain.stamp.exception.StampUserNotFoundException;
+import com.halo.eventer.domain.stamp.exception.UserMissionNotFoundException;
 import com.halo.eventer.domain.stamp.repository.StampRepository;
 import com.halo.eventer.domain.stamp.repository.StampUserRepository;
 import com.halo.eventer.global.common.page.PageInfo;
@@ -47,9 +50,9 @@ public class StampUserAdminService {
     }
 
     @Transactional(readOnly = true)
-    public StampUserDetailResDto getUserDetail(long festivalId, long stampId, String uuid) {
+    public StampUserDetailResDto getUserDetail(long festivalId, long stampId, long userId) {
         ensureStamp(festivalId, stampId);
-        StampUser stampUser = loadStampUserFromUuidAndStampId(uuid, stampId);
+        StampUser stampUser = loadStampUserFromIdAndStampId(userId, stampId);
         List<UserMissionStatusResDto> missions = stampUser.getUserMissions().stream()
                 .sorted(Comparator.comparing(um -> um.getMission().getId()))
                 .map(um -> new UserMissionStatusResDto(
@@ -57,7 +60,6 @@ public class StampUserAdminService {
                 .toList();
 
         return new StampUserDetailResDto(
-                stampUser.getId(),
                 stampUser.getName(),
                 stampUser.getPhone(),
                 stampUser.getUuid(),
@@ -68,16 +70,31 @@ public class StampUserAdminService {
     }
 
     @Transactional
-    public StampUserDetailResDto setAllMissionsCompletion(
-            long festivalId, long stampId, long userId, boolean complete) {
+    public void updateUserMissionState(
+            long festivalId, long stampId, long userId, long userMissionId, MissionClearReqDto request) {
+        ensureStamp(festivalId, stampId);
+        StampUser stampUser = loadStampUserFromIdAndStampId(userId, stampId);
+        UserMission target = stampUser.getUserMissions().stream()
+                .filter(um -> um.getId().equals(userMissionId))
+                .findFirst()
+                .orElseThrow(() -> new UserMissionNotFoundException(userMissionId));
+
+        // 4) 상태 변경
+        if (request.isClear()) {
+            target.markAsComplete();
+        } else {
+            target.markAsIncomplete();
+        }
+        syncUserFinishedFlag(stampUser);
+    }
+
+    @Transactional
+    public void updateStampUserPrizeAndFinished(
+            long festivalId, long stampId, long userId, MissionCompletionUpdateReq request) {
         ensureStamp(festivalId, stampId);
         StampUser su = loadUserWithMissionsOrThrow(stampId, userId);
-        for (UserMission um : su.getUserMissions()) {
-            if (complete) um.markAsComplete();
-            else um.markAsIncomplete();
-        }
-        syncUserFinishedFlag(su);
-        return toDetailDto(su);
+        su.markAsFinished(request.isFinished());
+        su.updateReceivedPrizeName(request.getPrizeName());
     }
 
     private void ensureStamp(long festivalId, long stampId) {
@@ -89,10 +106,10 @@ public class StampUserAdminService {
         return stampRepository.findById(stampId).orElseThrow(() -> new StampNotFoundException(stampId));
     }
 
-    private StampUser loadStampUserFromUuidAndStampId(String uuid, long stampId) {
+    private StampUser loadStampUserFromIdAndStampId(long userId, long stampId) {
         return stampUserRepository
-                .findByUuidAndStampIdWithMissions(uuid, stampId)
-                .orElseThrow(() -> new StampUserNotFoundException(uuid));
+                .findByIdAndStampIdWithMissions(userId, stampId)
+                .orElseThrow(() -> new StampUserNotFoundException(userId));
     }
 
     private void syncUserFinishedFlag(StampUser su) {
@@ -138,7 +155,6 @@ public class StampUserAdminService {
                 .toList();
 
         return new StampUserDetailResDto(
-                su.getId(),
                 su.getName(),
                 su.getPhone(),
                 su.getUuid(),

@@ -680,7 +680,6 @@ public class StampTourAdminControllerTest {
         @WithMockUser(roles = "ADMIN")
         void 수정_성공() throws Exception {
             var req = Map.of(
-                    "guideId", 1L,
                     "title", "title2",
                     "mediaSpec", MediaSpec.NONE.name(),
                     "mediaUrl", "url",

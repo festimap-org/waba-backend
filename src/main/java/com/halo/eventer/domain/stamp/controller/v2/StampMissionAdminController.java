@@ -45,7 +45,7 @@ public class StampMissionAdminController {
             @PathVariable @Min(1) long stampId,
             @PathVariable @Min(1) long missionId,
             @RequestBody @Valid MissionShowReqDto request) {
-        stampMissionAdminService.toggleMissionShowing(festivalId, stampId, missionId, request.isShow());
+        stampMissionAdminService.toggleMissionShowing(festivalId, stampId, missionId, request.isShowMission());
     }
 
     @GetMapping("/settings")
@@ -60,6 +60,12 @@ public class StampMissionAdminController {
             @PathVariable @Min(1) long stampId,
             @RequestBody @Valid MissionBasicSettingsReqDto request) {
         stampMissionAdminService.updateBasicSettings(festivalId, stampId, request);
+    }
+
+    @GetMapping("/prizes")
+    public List<MissionPrizeResDto> getPrizeList(
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+        return stampMissionAdminService.getPrizes(festivalId, stampId);
     }
 
     @PostMapping("/prizes")

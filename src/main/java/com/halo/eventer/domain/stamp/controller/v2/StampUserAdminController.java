@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 
 import org.springframework.web.bind.annotation.*;
 
+import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.MissionCleared;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
@@ -33,18 +34,30 @@ public class StampUserAdminController {
         return stampUserAdminService.getStampUsers(festivalId, stampId, q, missionCleared, page, size, sortType);
     }
 
-    @GetMapping("/{uuid}")
-    public StampUserDetailResDto getStampUser(
-            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId, @PathVariable String uuid) {
-        return stampUserAdminService.getUserDetail(festivalId, stampId, uuid);
+    @PatchMapping("/{userId}/tour-finish")
+    public void updateStampUser(
+            @PathVariable @Min(1) long festivalId,
+            @PathVariable @Min(1) long stampId,
+            @PathVariable @Min(1) long userId,
+            @RequestBody @Valid MissionCompletionUpdateReq req) {
+        stampUserAdminService.updateStampUserPrizeAndFinished(festivalId, stampId, userId, req);
     }
 
-    @PatchMapping("/{userId}/missions/all")
-    public StampUserDetailResDto setAllMissionsCompletion(
-            @PathVariable long festivalId,
-            @PathVariable long stampId,
-            @PathVariable long userId,
-            @RequestBody @Valid MissionCompletionUpdateReq req) {
-        return stampUserAdminService.setAllMissionsCompletion(festivalId, stampId, userId, req.isComplete());
+    @GetMapping("/{userId}")
+    public StampUserDetailResDto getStampUser(
+            @PathVariable @Min(1) long festivalId,
+            @PathVariable @Min(1) long stampId,
+            @PathVariable @Min(1) long userId) {
+        return stampUserAdminService.getUserDetail(festivalId, stampId, userId);
+    }
+
+    @PatchMapping("/{userId}/user-mission/{userMissionId}")
+    public void updateStampUserMission(
+            @PathVariable @Min(1) long festivalId,
+            @PathVariable @Min(1) long stampId,
+            @PathVariable @Min(1) long userId,
+            @PathVariable @Min(1) long userMissionId,
+            @RequestBody @Valid MissionClearReqDto request) {
+        stampUserAdminService.updateUserMissionState(festivalId, stampId, userId, userMissionId, request);
     }
 }

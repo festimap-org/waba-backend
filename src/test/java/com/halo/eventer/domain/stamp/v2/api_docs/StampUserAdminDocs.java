@@ -48,6 +48,9 @@ public class StampUserAdminDocs {
                                 fieldWithPath("content[].finished")
                                         .type(BOOLEAN)
                                         .description("투어 완료 여부"),
+                                fieldWithPath("content[].createdAt")
+                                        .type(STRING)
+                                        .description("생성 시각 (ISO-8601, 예: 2025-09-01T10:15:30)"),
                                 fieldWithPath("pageInfo").type(OBJECT).description("페이지 정보"),
                                 fieldWithPath("pageInfo.pageNumber")
                                         .type(NUMBER)
@@ -71,14 +74,13 @@ public class StampUserAdminDocs {
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
                                 parameterWithName("stampId").description("스탬프투어 ID (>=1)"),
-                                parameterWithName("uuid").description("사용자 UUID"))
+                                parameterWithName("userId").description("사용자 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .responseFields(
-                                fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
                                 fieldWithPath("name").type(STRING).description("이름"),
                                 fieldWithPath("phone").type(STRING).description("전화번호"),
                                 fieldWithPath("uuid").type(STRING).description("UUID"),
-                                fieldWithPath("tourFinished").type(BOOLEAN).description("투어 완료 여부"),
+                                fieldWithPath("finished").type(BOOLEAN).description("투어 완료 여부"),
                                 fieldWithPath("participantCount").type(NUMBER).description("동반 인원 수"),
                                 fieldWithPath("extraText")
                                         .type(STRING)
@@ -94,27 +96,43 @@ public class StampUserAdminDocs {
                                 fieldWithPath("missions[].missionTitle")
                                         .type(STRING)
                                         .description("미션 제목"),
-                                fieldWithPath("missions[].complete")
-                                        .type(BOOLEAN)
-                                        .description("완료 여부"))
+                                fieldWithPath("missions[].clear").type(BOOLEAN).description("완료 여부"))
                         .build()));
     }
 
-    public static RestDocumentationResultHandler setAllMissionsCompletion() {
+    public static RestDocumentationResultHandler updateTourFinish() {
         return document(
-                "v2-stampuser-missions-all",
+                "v2-stampuser-tour-finish",
                 resource(builder()
-                        .tag(TAG)
-                        .summary("사용자 전체 미션 일괄 완료/미완료 처리")
+                        .tag("스탬프투어 사용자 관리")
+                        .summary("사용자 투어 완료 처리 및 경품 정보 업데이트")
+                        .description("특정 사용자의 투어 완료 상태를 업데이트하고, 경품 정보를 설정합니다.")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
                                 parameterWithName("stampId").description("스탬프투어 ID (>=1)"),
                                 parameterWithName("userId").description("사용자 ID (>=1)"))
-                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("complete").type(BOOLEAN).description("true=전체 완료 처리, false=전체 미완료 처리"))
+                                fieldWithPath("finished").type(BOOLEAN).description("투어 완료 여부"),
+                                fieldWithPath("prizeName")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("선택한 경품 이름 (선택 사항)"))
+                        .build()));
+    }
+
+    public static RestDocumentationResultHandler getStampUser() {
+        return document(
+                "v2-stampuser-get",
+                resource(builder()
+                        .tag("스탬프투어 사용자 관리")
+                        .summary("사용자 상세 조회")
+                        .description("특정 스탬프투어에 참여한 사용자의 정보를 상세히 조회합니다.")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID (>=1)"),
+                                parameterWithName("stampId").description("스탬프 ID (>=1)"),
+                                parameterWithName("userId").description("사용자 ID (>=1)"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access Token"))
                         .responseFields(
-                                fieldWithPath("userId").type(NUMBER).description("사용자 ID"),
                                 fieldWithPath("name").type(STRING).description("이름"),
                                 fieldWithPath("phone").type(STRING).description("전화번호"),
                                 fieldWithPath("uuid").type(STRING).description("UUID"),
@@ -123,7 +141,7 @@ public class StampUserAdminDocs {
                                 fieldWithPath("extraText")
                                         .type(STRING)
                                         .optional()
-                                        .description("추가 입력값(없을 수 있음)"),
+                                        .description("추가 입력값"),
                                 fieldWithPath("missions").type(ARRAY).description("사용자의 미션 현황"),
                                 fieldWithPath("missions[].userMissionId")
                                         .type(NUMBER)
@@ -134,9 +152,23 @@ public class StampUserAdminDocs {
                                 fieldWithPath("missions[].missionTitle")
                                         .type(STRING)
                                         .description("미션 제목"),
-                                fieldWithPath("missions[].complete")
-                                        .type(BOOLEAN)
-                                        .description("완료 여부"))
+                                fieldWithPath("missions[].clear").type(BOOLEAN).description("미션 완료 여부"))
+                        .build()));
+    }
+
+    public static RestDocumentationResultHandler updateUserMission() {
+        return document(
+                "v2-stampuser-user-mission-update",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("특정 사용자-미션 완료 여부 수정")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID (>=1)"),
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"),
+                                parameterWithName("userId").description("사용자 ID (>=1)"),
+                                parameterWithName("userMissionId").description("사용자-미션 ID (>=1)"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .requestFields(fieldWithPath("clear").type(BOOLEAN).description("완료 여부 (true: 완료, false: 미완료)"))
                         .build()));
     }
 

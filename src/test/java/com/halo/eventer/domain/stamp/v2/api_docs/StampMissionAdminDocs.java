@@ -135,7 +135,8 @@ public class StampMissionAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"),
                                 parameterWithName("missionId").description("미션 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
-                        .requestFields(fieldWithPath("show").type(BOOLEAN).description("true=표시, false=숨김"))
+                        .requestFields(
+                                fieldWithPath("showMission").type(BOOLEAN).description("true=표시, false=숨김"))
                         .build()));
     }
 
@@ -350,7 +351,7 @@ public class StampMissionAdminDocs {
                                 parameterWithName("missionId").description("미션 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
                         .requestFields(
-                                fieldWithPath("showMissionName").type(BOOLEAN).description("제목 표시"),
+                                fieldWithPath("showMissionTitle").type(BOOLEAN).description("제목 표시"),
                                 fieldWithPath("clearedThumbnail")
                                         .type(STRING)
                                         .optional()
@@ -375,6 +376,26 @@ public class StampMissionAdminDocs {
                         .responseFields(
                                 fieldWithPath("[].missionId").type(NUMBER).description("미션 ID"),
                                 fieldWithPath("[].title").type(STRING).description("미션 제목"))
+                        .build()));
+    }
+
+    public static RestDocumentationResultHandler getPrizeList() {
+        return document(
+                "v2-stamptour-prize-list",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("경품(미션 보상) 목록 조회")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID"),
+                                parameterWithName("stampId").description("스탬프투어 ID"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .responseFields(
+                                fieldWithPath("[]").type(ARRAY).description("경품 목록(비어있을 수 있음)"),
+                                fieldWithPath("[].id").type(NUMBER).description("경품 ID"),
+                                fieldWithPath("[].requiredCount").type(NUMBER).description("필요 성공 미션 수"),
+                                fieldWithPath("[].prizeDescription")
+                                        .type(STRING)
+                                        .description("설명"))
                         .build()));
     }
 
