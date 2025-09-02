@@ -88,8 +88,7 @@ public class ParkingZoneDoc {
                                         .description("주차장 위도"),
                                 fieldWithPath("[].parkingLots[].longitude")
                                         .type(JsonFieldType.NUMBER)
-                                        .description("주차장 경도")
-                                )
+                                        .description("주차장 경도"))
                         .build()));
     }
 
@@ -142,8 +141,7 @@ public class ParkingZoneDoc {
                                         .description("주차장 위도"),
                                 fieldWithPath("[].parkingLots[].longitude")
                                         .type(JsonFieldType.NUMBER)
-                                        .description("주차장 경도")
-                        )
+                                        .description("주차장 경도"))
                         .build()));
     }
 

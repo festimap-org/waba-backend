@@ -74,8 +74,7 @@ public class ParkingZoneService {
                                         parkingLot.getDisplayAddress(),
                                         parkingLot.getLatitude(),
                                         parkingLot.getLongitude()))
-                                .toList()
-                        ))
+                                .toList()))
                 .toList();
     }
 
