@@ -170,8 +170,8 @@ public class StampTourTemplateControllerTest {
         @Test
         void 참여가이드_조회_성공() throws Exception {
             var pages = List.of(
-                    new StampTourGuidePageResDto(101L, "p1", "m1.png", "s1", "d1", "a1"),
-                    new StampTourGuidePageResDto(102L, "p2", null, "s2", "d2", "a2"));
+                    new StampTourGuidePageResDto(101L, "p1", MediaSpec.ONE_TO_ONE, "m1.png", "s1", "d1", "a1"),
+                    new StampTourGuidePageResDto(102L, "p2", MediaSpec.NONE, null, "s2", "d2", "a2"));
             var res = new StampTourGuideResDto(1L, GuideDesignTemplate.FULL, GuideSlideMethod.SLIDE, pages);
             given(service.getParticipateGuide(축제_ID, 스탬프_ID)).willReturn(res);
 
