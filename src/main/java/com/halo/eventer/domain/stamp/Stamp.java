@@ -34,7 +34,7 @@ public class Stamp {
 
     private String prizeReceiptAuthPassword = "";
 
-    private Boolean showStamp;
+    private Boolean showStamp = true;
 
     @Enumerated(EnumType.STRING)
     private AuthMethod authMethod = AuthMethod.TAG_SCAN;

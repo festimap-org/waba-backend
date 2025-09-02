@@ -214,7 +214,7 @@ public class StampUserServiceTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.isFinished()).isEqualTo(stampUser.getIsFinished());
+        assertThat(result.isFinished()).isEqualTo(stampUser.isFinished());
     }
 
     @Test
@@ -253,7 +253,7 @@ public class StampUserServiceTest {
         stampUserService.updateUserMission("", 1L);
 
         // then
-        assertThat(userMission1.getIsComplete()).isEqualTo(true);
+        assertThat(userMission1.isComplete()).isEqualTo(true);
     }
 
     @Test

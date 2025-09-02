@@ -281,7 +281,7 @@ public class StampTourAdminDocs {
                         .responseFields(
                                 fieldWithPath("mainPageDesignTemplate")
                                         .type(STRING)
-                                        .description("메인 페이지 디자인 템플릿(GRID_Nx2, GRID_Nx3)"),
+                                        .description("메인 페이지 디자인 템플릿(GRID_Nx1, GRID_Nx2, GRID_Nx3)"),
                                 fieldWithPath("backgroundImgUrl")
                                         .type(STRING)
                                         .optional()
@@ -321,7 +321,7 @@ public class StampTourAdminDocs {
                         .requestFields(
                                 fieldWithPath("mainPageDesignTemplate")
                                         .type(STRING)
-                                        .description("메인 페이지 디자인 템플릿(GRID_Nx2, GRID_Nx3)"),
+                                        .description("메인 페이지 디자인 템플릿(GRID_Nx1, GRID_Nx2, GRID_Nx3)"),
                                 fieldWithPath("backgroundImgUrl").type(STRING).description("배경 이미지 URL"),
                                 fieldWithPath("buttonLayout")
                                         .type(STRING)
@@ -505,6 +505,23 @@ public class StampTourAdminDocs {
                                 parameterWithName("stampId").description("스탬프투어 ID"),
                                 parameterWithName("pageId").description("페이지 ID"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .build()));
+    }
+
+    public static RestDocumentationResultHandler getStampActive() {
+        return document(
+                "v2-stamptour-active-get",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("스탬프 활성화 조회")
+                        .description("특정 스탬프투어의 제목 및 활성화 여부를 조회합니다.")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID (>=1)"),
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .responseFields(
+                                fieldWithPath("title").type(STRING).description("스탬프 이름"),
+                                fieldWithPath("active").type(BOOLEAN).description("활성화 여부"))
                         .build()));
     }
 

@@ -27,7 +27,7 @@ public class StampUsersGetDto {
                 stampUser.getUuid(),
                 stampUser.getName(),
                 stampUser.getPhone(),
-                stampUser.getIsFinished(),
+                stampUser.isFinished(),
                 stampUser.getParticipantCount());
     }
 }

@@ -27,6 +27,7 @@ import com.halo.eventer.domain.stamp.repository.StampRepository;
 import com.halo.eventer.domain.stamp.repository.StampUserRepository;
 import com.halo.eventer.global.common.page.PageInfo;
 import com.halo.eventer.global.common.page.PagedResponse;
+import com.halo.eventer.global.utils.EncryptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,6 +38,7 @@ public class StampUserAdminService {
 
     private final StampRepository stampRepository;
     private final StampUserRepository stampUserRepository;
+    private final EncryptService encryptService;
 
     @Transactional(readOnly = true)
     public PagedResponse<StampUserSummaryResDto> getStampUsers(
@@ -56,14 +58,14 @@ public class StampUserAdminService {
         List<UserMissionStatusResDto> missions = stampUser.getUserMissions().stream()
                 .sorted(Comparator.comparing(um -> um.getMission().getId()))
                 .map(um -> new UserMissionStatusResDto(
-                        um.getId(), um.getMission().getId(), um.getMission().getTitle(), um.getIsComplete()))
+                        um.getId(), um.getMission().getId(), um.getMission().getTitle(), um.isComplete()))
                 .toList();
 
         return new StampUserDetailResDto(
-                stampUser.getName(),
-                stampUser.getPhone(),
+                decryptStampUserName(stampUser.getName()),
+                decryptStampUserPhone(stampUser.getPhone()),
                 stampUser.getUuid(),
-                stampUser.getIsFinished(),
+                stampUser.isFinished(),
                 missions,
                 stampUser.getExtraText(),
                 stampUser.getParticipantCount());
@@ -114,7 +116,7 @@ public class StampUserAdminService {
 
     private void syncUserFinishedFlag(StampUser su) {
         long completed =
-                su.getUserMissions().stream().filter(UserMission::getIsComplete).count();
+                su.getUserMissions().stream().filter(UserMission::isComplete).count();
         boolean finished = completed >= su.getStamp().getFinishCount();
         su.markAsFinished(finished);
     }
@@ -132,8 +134,15 @@ public class StampUserAdminService {
     }
 
     private PagedResponse<StampUserSummaryResDto> convertToPagedResponse(Page<StampUser> result) {
-        List<StampUserSummaryResDto> content =
-                result.getContent().stream().map(StampUserSummaryResDto::from).toList();
+        List<StampUserSummaryResDto> content = result.getContent().stream()
+                .map(su -> new StampUserSummaryResDto(
+                        su.getId(),
+                        decryptStampUserName(su.getName()),
+                        decryptStampUserPhone(su.getPhone()),
+                        su.getUuid(),
+                        su.isFinished(),
+                        su.getCreatedAt()))
+                .toList();
         PageInfo pageInfo = PageInfo.builder()
                 .pageNumber(result.getNumber() + 1)
                 .pageSize(result.getSize())
@@ -151,16 +160,24 @@ public class StampUserAdminService {
         List<UserMissionStatusResDto> missions = su.getUserMissions().stream()
                 .sorted(Comparator.comparing(um -> um.getMission().getId()))
                 .map(um -> new UserMissionStatusResDto(
-                        um.getId(), um.getMission().getId(), um.getMission().getTitle(), um.getIsComplete()))
+                        um.getId(), um.getMission().getId(), um.getMission().getTitle(), um.isComplete()))
                 .toList();
 
         return new StampUserDetailResDto(
-                su.getName(),
-                su.getPhone(),
+                decryptStampUserName(su.getName()),
+                decryptStampUserPhone(su.getPhone()),
                 su.getUuid(),
-                su.getIsFinished(),
+                su.isFinished(),
                 missions,
                 su.getExtraText(),
                 su.getParticipantCount());
+    }
+
+    private String decryptStampUserName(String encodedName) {
+        return encryptService.decryptInfo(encodedName);
+    }
+
+    private String decryptStampUserPhone(String encodedPhone) {
+        return encryptService.decryptInfo(encodedPhone);
     }
 }

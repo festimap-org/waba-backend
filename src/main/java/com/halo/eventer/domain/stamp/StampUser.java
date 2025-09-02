@@ -35,7 +35,7 @@ public class StampUser extends BaseTime {
     @Column(nullable = false)
     private String name;
 
-    private Boolean isFinished = false;
+    private boolean finished = false;
 
     private int participantCount = 1;
 
@@ -63,14 +63,14 @@ public class StampUser extends BaseTime {
     public StampUser(String encryptedPhone, String encryptedName, int participantCount) {
         this.phone = encryptedPhone;
         this.name = encryptedName;
-        this.isFinished = false;
+        this.finished = false;
         this.participantCount = participantCount;
     }
 
     public StampUser(String encryptedPhone, String encryptedName, int participantCount, String extraText) {
         this.phone = encryptedPhone;
         this.name = encryptedName;
-        this.isFinished = false;
+        this.finished = false;
         this.participantCount = participantCount;
         this.extraText = extraText;
     }
@@ -97,7 +97,7 @@ public class StampUser extends BaseTime {
     }
 
     public void markAsFinished(boolean finished) {
-        this.isFinished = finished;
+        this.finished = finished;
     }
 
     public void setCustom(Custom custom) {
@@ -109,7 +109,7 @@ public class StampUser extends BaseTime {
     }
 
     public boolean isMissionsAllCompleted() {
-        return userMissions.stream().allMatch(UserMission::getIsComplete);
+        return userMissions.stream().allMatch(UserMission::isComplete);
     }
 
     public void completeUserMission(Long userMissionId) {
@@ -121,10 +121,9 @@ public class StampUser extends BaseTime {
     }
 
     public boolean canFinishTour() {
-        long completed =
-                userMissions.stream().filter(UserMission::getIsComplete).count();
+        long completed = userMissions.stream().filter(UserMission::isComplete).count();
         if (completed >= stamp.getFinishCount()) {
-            isFinished = true;
+            finished = true;
             return true;
         }
         return false;

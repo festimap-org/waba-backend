@@ -41,14 +41,15 @@ public class StampMissionAdminService {
     @Transactional
     public void deleteMission(long festivalId, long stampId, long missionId) {
         Stamp stamp = ensureStamp(festivalId, stampId);
-        Mission mission = loadMissionOrThrow(missionId);
+        Mission mission = loadMissionOrThrow(stampId, missionId);
+        stamp.getMissions().remove(mission);
         missionRepository.delete(mission);
     }
 
     @Transactional
     public void toggleMissionShowing(long festivalId, long stampId, long missionId, boolean show) {
         Stamp stamp = ensureStamp(festivalId, stampId);
-        Mission mission = loadMissionOrThrow(missionId);
+        Mission mission = loadMissionOrThrow(stampId, missionId);
         mission.updateMissionShow(show);
     }
 
@@ -100,7 +101,7 @@ public class StampMissionAdminService {
     @Transactional(readOnly = true)
     public StampMissionClearImageResDto getStampMissionCompleteImage(long festivalId, long stampId, long missionId) {
         Stamp stamp = ensureStamp(festivalId, stampId);
-        Mission mission = loadMissionOrThrow(missionId);
+        Mission mission = loadMissionOrThrow(stampId, missionId);
         return StampMissionClearImageResDto.from(
                 mission.getShowTitle(), mission.getClearedThumbnail(), mission.getNotClearedThumbnail());
     }
@@ -109,7 +110,7 @@ public class StampMissionAdminService {
     public void updateStampMissionCompleteImage(
             long festivalId, long stampId, long missionId, final StampMissionClearImageReqDto request) {
         Stamp stamp = ensureStamp(festivalId, stampId);
-        Mission mission = loadMissionOrThrow(missionId);
+        Mission mission = loadMissionOrThrow(stampId, missionId);
         mission.updateTitleVisible(request.isShowMissionTitle());
         mission.updateClearedImage(request.getClearedThumbnail(), request.getNotClearedThumbnail());
     }
@@ -117,7 +118,7 @@ public class StampMissionAdminService {
     @Transactional
     public MissionDetailsTemplateResDto getMissionDetailsTemplate(long festivalId, long stampId, long missionId) {
         Stamp stamp = ensureStamp(festivalId, stampId);
-        Mission mission = loadMissionOrThrow(missionId);
+        Mission mission = loadMissionOrThrow(stampId, missionId);
         MissionDetailsTemplate template = loadOrCreateMissionDetailsTemplate(mission);
         return MissionDetailsTemplateResDto.from(
                 template, mission.getShowTitle(), mission.getShowRequiredSuccessCount(), mission.getTitle());
@@ -127,7 +128,7 @@ public class StampMissionAdminService {
     public void upsertMissionDetailsTemplate(
             long festivalId, long stampId, long missionId, final MissionDetailsTemplateReqDto request) {
         Stamp stamp = ensureStamp(festivalId, stampId);
-        Mission mission = loadMissionOrThrow(missionId);
+        Mission mission = loadMissionOrThrow(stampId, missionId);
         MissionDetailsTemplate template = loadMissionDetailsTemplate(mission);
         mission.updateTitle(request.getMissionTitle());
         mission.updateTitleVisible(request.isShowMissionTitle());
@@ -169,8 +170,11 @@ public class StampMissionAdminService {
                 .orElseThrow(() -> new MissionDetailsTemplateNotFoundException(mission.getId()));
     }
 
-    private Mission loadMissionOrThrow(long missionId) {
-        return missionRepository.findById(missionId).orElseThrow(() -> new MissionNotFoundException(missionId));
+    private Mission loadMissionOrThrow(long stampId, long missionId) {
+
+        return missionRepository
+                .findByIdAndStampId(missionId, stampId)
+                .orElseThrow(() -> new MissionNotFoundException(missionId));
     }
 
     private StampMissionPrize loadStampMissionPrizeOrThrow(long prizeId, long stampId) {
