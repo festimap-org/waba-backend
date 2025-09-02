@@ -177,6 +177,10 @@ public class StampTourTemplateDocs {
                                 fieldWithPath("participateGuidePages[].title")
                                         .type(STRING)
                                         .description("제목"),
+                                fieldWithPath("participateGuidePages[].mediaSpec")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("미디어 형식"),
                                 fieldWithPath("participateGuidePages[].mediaUrl")
                                         .type(STRING)
                                         .optional()

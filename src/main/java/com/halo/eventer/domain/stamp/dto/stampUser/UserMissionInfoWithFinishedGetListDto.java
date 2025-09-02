@@ -19,7 +19,7 @@ public class UserMissionInfoWithFinishedGetListDto {
 
     public static UserMissionInfoWithFinishedGetListDto from(StampUser stampUser) {
         return UserMissionInfoWithFinishedGetListDto.builder()
-                .finished(stampUser.getIsFinished())
+                .finished(stampUser.isFinished())
                 .userMissionInfoGetDtos(UserMissionInfoGetDto.fromEntities(stampUser.getUserMissions()))
                 .build();
     }

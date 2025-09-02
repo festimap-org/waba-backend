@@ -160,4 +160,9 @@ public class StampTourAdminController {
             @RequestBody @Valid StampTourParticipateGuidePageReqDto request) {
         stampTourAdminService.updateParticipateGuidePage(festivalId, stampId, pageId, request);
     }
+
+    @GetMapping("/{stampId}")
+    public StampActiveResDto getStampActive(@PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+        return stampTourAdminService.getStampActive(festivalId, stampId);
+    }
 }

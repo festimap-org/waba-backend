@@ -18,7 +18,7 @@ public class UserMission {
     private Long id;
 
     @Column(nullable = false)
-    private Boolean isComplete = false;
+    private boolean complete = false;
 
     private int successCount = 0;
 
@@ -31,11 +31,11 @@ public class UserMission {
     private Mission mission;
 
     public void markAsComplete() {
-        this.isComplete = true;
+        this.complete = true;
     }
 
     public void markAsIncomplete() {
-        this.isComplete = false;
+        this.complete = false;
     }
 
     private void setStampUser(StampUser stampUser) {
@@ -48,12 +48,12 @@ public class UserMission {
     }
 
     public void increaseSuccess(long missionId) {
-        if (isComplete) {
+        if (complete) {
             throw new UserMissionAlreadyCleared(missionId);
         }
         if (mission.getRequiredSuccessCount() > successCount) successCount++;
         if (successCount >= mission.getRequiredSuccessCount()) {
-            isComplete = true;
+            complete = true;
         }
     }
 

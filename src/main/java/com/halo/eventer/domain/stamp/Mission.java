@@ -36,6 +36,9 @@ public class Mission {
     private Stamp stamp;
 
     @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserMission> userMissions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MissionDetailsTemplate> missionDetailsTemplates = new ArrayList<>();
 
     @Builder
