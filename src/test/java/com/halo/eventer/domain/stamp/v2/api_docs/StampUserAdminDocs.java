@@ -104,7 +104,7 @@ public class StampUserAdminDocs {
         return document(
                 "v2-stampuser-tour-finish",
                 resource(builder()
-                        .tag("스탬프투어 사용자 관리")
+                        .tag(TAG)
                         .summary("사용자 투어 완료 처리 및 경품 정보 업데이트")
                         .description("특정 사용자의 투어 완료 상태를 업데이트하고, 경품 정보를 설정합니다.")
                         .pathParameters(
@@ -124,7 +124,7 @@ public class StampUserAdminDocs {
         return document(
                 "v2-stampuser-get",
                 resource(builder()
-                        .tag("스탬프투어 사용자 관리")
+                        .tag(TAG)
                         .summary("사용자 상세 조회")
                         .description("특정 스탬프투어에 참여한 사용자의 정보를 상세히 조회합니다.")
                         .pathParameters(
