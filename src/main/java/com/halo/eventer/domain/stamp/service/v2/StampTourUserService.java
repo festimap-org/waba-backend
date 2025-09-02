@@ -93,7 +93,18 @@ public class StampTourUserService {
         StampUser stampUser = loadStampUserOrThrow(stampId, userUuid);
         if (!stampUser.canFinishTour()) throw new StampUserNotClearedMissionsException(userUuid);
         return PrizeClaimQrResDto.from(
-                stampUser.getName(), stampUser.getPhone(), stampUser.getParticipantCount(), stampUser.getExtraText());
+                decryptStampUserName(stampUser.getName()),
+                decryptStampUserPhone(stampUser.getPhone()),
+                stampUser.getParticipantCount(),
+                stampUser.getExtraText());
+    }
+
+    private String decryptStampUserName(String encodedName) {
+        return encryptService.decryptInfo(encodedName);
+    }
+
+    private String decryptStampUserPhone(String encodedPhone) {
+        return encryptService.decryptInfo(encodedPhone);
     }
 
     private StampUser createStampUserFromSignUpDto(Long stampId, StampUserSignupReqDto request) {

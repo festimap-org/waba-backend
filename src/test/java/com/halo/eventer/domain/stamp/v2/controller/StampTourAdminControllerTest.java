@@ -759,4 +759,49 @@ public class StampTourAdminControllerTest {
                     .andDo(StampTourAdminDocs.error("v2-stamptour-guide-page-delete-unauthorized"));
         }
     }
+
+    @Nested
+    class 활성화_조회 {
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 조회_성공() throws Exception {
+            // given
+            var res = new StampActiveResDto("봄축제 스탬프", true);
+            given(service.getStampActive(축제_ID, 스탬프_ID)).willReturn(res);
+
+            // when & then
+            mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}", 축제_ID, 스탬프_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.title").value("봄축제 스탬프"))
+                    .andExpect(jsonPath("$.active").value(true))
+                    .andDo(StampTourAdminDocs.getStampActive());
+        }
+
+        @Test
+        void 조회_실패_권한없음() throws Exception {
+            mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}", 축제_ID, 스탬프_ID))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-active-get-unauthorized"));
+        }
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 조회_실패_축제ID_검증() throws Exception {
+            mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}", 잘못된_ID, 스탬프_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH))
+                    .andExpect(status().isBadRequest())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-active-get-badrequest"));
+        }
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 조회_실패_스탬프ID_검증() throws Exception {
+            mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}", 축제_ID, 잘못된_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH))
+                    .andExpect(status().isBadRequest())
+                    .andDo(StampTourAdminDocs.error("v2-stamptour-active-get-badrequest"));
+        }
+    }
 }

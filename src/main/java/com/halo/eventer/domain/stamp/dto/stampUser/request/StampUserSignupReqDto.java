@@ -18,7 +18,7 @@ public class StampUserSignupReqDto {
     @NotEmpty
     private String phone;
 
-    @Min(1)
+    @Min(0)
     private int participantCount;
 
     @NotEmpty

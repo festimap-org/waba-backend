@@ -24,7 +24,12 @@ public class StampUserSummaryResDto {
                 stampUser.getName(),
                 stampUser.getPhone(),
                 stampUser.getUuid(),
-                stampUser.getIsFinished(),
+                stampUser.isFinished(),
                 stampUser.getCreatedAt());
+    }
+
+    public static StampUserSummaryResDto from(
+            long id, String name, String phone, String uuid, boolean finished, LocalDateTime createdAt) {
+        return new StampUserSummaryResDto(id, name, phone, uuid, finished, createdAt);
     }
 }

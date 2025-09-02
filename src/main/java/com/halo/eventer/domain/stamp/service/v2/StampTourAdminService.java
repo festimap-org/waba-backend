@@ -202,6 +202,12 @@ public class StampTourAdminService {
         return pages.stream().map(ParticipateGuidePageSummaryResDto::from).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public StampActiveResDto getStampActive(long festivalId, long stampId) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        return new StampActiveResDto(stamp.getTitle(), stamp.getActive());
+    }
+
     private PageTemplate createNewLandingTemplate(Stamp stamp) {
         PageTemplate newPageTemplate = PageTemplate.defaultLandingPage(stamp);
         return pageTemplateRepository.save(newPageTemplate);

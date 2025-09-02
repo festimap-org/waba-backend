@@ -22,7 +22,7 @@ public interface StampUserRepository extends JpaRepository<StampUser, Long> {
            select su
            from StampUser su
            where su.stamp.id = :stampId
-             and (:cleared is null or su.isFinished = :cleared)
+             and (:cleared is null or su.finished = :cleared)
            """)
     Page<StampUser> findByStampId(@Param("stampId") Long stampId, @Param("cleared") Boolean cleared, Pageable pageable);
 
@@ -35,7 +35,7 @@ public interface StampUserRepository extends JpaRepository<StampUser, Long> {
               and ( :q is null or :q = ''
                     or lower(su.name) like lower(concat('%', :q, '%'))
                     or su.phone       like concat('%', :q, '%') )
-              and ( :cleared is null or su.isFinished = :cleared )
+              and ( :cleared is null or su.finished = :cleared )
             """,
             countQuery =
                     """
@@ -45,7 +45,7 @@ public interface StampUserRepository extends JpaRepository<StampUser, Long> {
               and ( :q is null or :q = ''
                     or lower(su.name) like lower(concat('%', :q, '%'))
                     or su.phone       like concat('%', :q, '%') )
-              and ( :cleared is null or su.isFinished = :cleared )
+              and ( :cleared is null or su.finished = :cleared )
             """)
     Page<StampUser> searchUsers(
             @Param("stampId") Long stampId, @Param("q") String q, @Param("cleared") Boolean cleared, Pageable pageable);
