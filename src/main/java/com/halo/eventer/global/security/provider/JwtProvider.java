@@ -148,7 +148,6 @@ public class JwtProvider {
         String role = this.getRole(token);
         UserDetails userDetails;
         if (role.equals("STAMP")) {
-            System.out.println("stamp");
             userDetails = customUserDetailService.loadUserByUuid(this.getAccount(token));
         } else {
             userDetails = customUserDetailService.loadUserByUsername(this.getAccount(token));
