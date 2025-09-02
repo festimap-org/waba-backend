@@ -49,7 +49,9 @@ public class ParkingZoneService {
                                         parkingLot.getCongestionLevel().toString(),
                                         parkingLot.getVisible(),
                                         parkingLot.getCopyAddress(),
-                                        parkingLot.getDisplayAddress()))
+                                        parkingLot.getDisplayAddress(),
+                                        parkingLot.getLatitude(),
+                                        parkingLot.getLongitude()))
                                 .toList()))
                 .toList();
     }
@@ -69,8 +71,11 @@ public class ParkingZoneService {
                                         parkingLot.getCongestionLevel().toString(),
                                         parkingLot.getVisible(),
                                         parkingLot.getCopyAddress(),
-                                        parkingLot.getDisplayAddress()))
-                                .toList()))
+                                        parkingLot.getDisplayAddress(),
+                                        parkingLot.getLatitude(),
+                                        parkingLot.getLongitude()))
+                                .toList()
+                        ))
                 .toList();
     }
 

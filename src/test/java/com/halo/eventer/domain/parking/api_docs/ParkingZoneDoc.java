@@ -82,7 +82,14 @@ public class ParkingZoneDoc {
                                         .description("복사용 주소"),
                                 fieldWithPath("[].parkingLots[].displayAddress")
                                         .type(JsonFieldType.STRING)
-                                        .description("노출용 주소"))
+                                        .description("노출용 주소"),
+                                fieldWithPath("[].parkingLots[].latitude")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("주차장 위도"),
+                                fieldWithPath("[].parkingLots[].longitude")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("주차장 경도")
+                                )
                         .build()));
     }
 
@@ -129,7 +136,14 @@ public class ParkingZoneDoc {
                                         .description("복사용 주소"),
                                 fieldWithPath("[].parkingLots[].displayAddress")
                                         .type(JsonFieldType.STRING)
-                                        .description("노출용 주소"))
+                                        .description("노출용 주소"),
+                                fieldWithPath("[].parkingLots[].latitude")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("주차장 위도"),
+                                fieldWithPath("[].parkingLots[].longitude")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("주차장 경도")
+                        )
                         .build()));
     }
 

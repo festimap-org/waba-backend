@@ -74,9 +74,9 @@ public class ParkingZoneControllerTest {
 
         // 응답 DTO fixture
         var lot1 = new com.halo.eventer.domain.parking.dto.parking_lot.ParkingLotSummaryDto(
-                100L, "A구역 1번", "LOW", true, "서울 강남구...", "강남구 ...");
+                100L, "A구역 1번", "LOW", true, "서울 강남구...", "강남구 ...",0,0);
         var lot2 = new com.halo.eventer.domain.parking.dto.parking_lot.ParkingLotSummaryDto(
-                101L, "A구역 2번", "HIGH", true, "서울 강남구...", "강남구 ...");
+                101L, "A구역 2번", "HIGH", true, "서울 강남구...", "강남구 ...",0,0);
 
         zone1 = new ParkingZoneResDto(1L, "A구역", true, List.of(lot1, lot2));
         zone2 = new ParkingZoneResDto(2L, "B구역", false, List.of());
