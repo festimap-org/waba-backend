@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 
@@ -46,11 +47,11 @@ public class JwtProvider {
         Claims claims = Jwts.claims().setSubject(account);
         claims.put("roles", roles);
         Date now = new Date();
-        long expireTimeMs = 12L * 60 * 60 * 1000;
+        long validityMs = Duration.ofDays(1).toMillis();
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() +  expireTimeMs))
+                .setExpiration(new Date(now.getTime() +  validityMs))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
