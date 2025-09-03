@@ -17,6 +17,7 @@ import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.Finished;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
+import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserInfoUpdateReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.UserMissionStatusResDto;
@@ -79,6 +80,17 @@ public class StampUserAdminService {
     }
 
     @Transactional
+    public void updateStampUserInfo(long festivalId, long stampId, long userId, StampUserInfoUpdateReqDto request) {
+        ensureStamp(festivalId, stampId);
+        StampUser stampUser = loadStampUserFromIdAndStampId(userId, stampId);
+        stampUser.updateInfo(
+                encryptService.encryptInfo(request.getName()),
+                encryptService.encryptInfo(request.getPhone()),
+                request.getExtraText(),
+                request.getParticipateCount());
+    }
+
+    @Transactional
     public void updateUserMissionState(
             long festivalId, long stampId, long userId, long userMissionId, MissionClearReqDto request) {
         ensureStamp(festivalId, stampId);
@@ -87,14 +99,11 @@ public class StampUserAdminService {
                 .filter(um -> um.getId().equals(userMissionId))
                 .findFirst()
                 .orElseThrow(() -> new UserMissionNotFoundException(userMissionId));
-
-        // 4) 상태 변경
         if (request.isClear()) {
             target.markAsComplete();
-        } else {
-            target.markAsIncomplete();
+            return;
         }
-        syncUserFinishedFlag(stampUser);
+        target.markAsIncomplete();
     }
 
     @Transactional
@@ -119,13 +128,6 @@ public class StampUserAdminService {
         return stampUserRepository
                 .findByIdAndStampIdWithMissions(userId, stampId)
                 .orElseThrow(() -> new StampUserNotFoundException(userId));
-    }
-
-    private void syncUserFinishedFlag(StampUser su) {
-        long completed =
-                su.getUserMissions().stream().filter(UserMission::isComplete).count();
-        boolean finished = completed >= su.getStamp().getFinishCount();
-        su.markAsFinished(finished);
     }
 
     private StampUser loadUserWithMissionsOrThrow(long stampId, long userId) {

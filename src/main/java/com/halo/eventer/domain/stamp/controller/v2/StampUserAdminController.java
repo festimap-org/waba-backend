@@ -9,6 +9,7 @@ import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.Finished;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
+import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserInfoUpdateReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
 import com.halo.eventer.domain.stamp.service.v2.StampUserAdminService;
@@ -59,5 +60,14 @@ public class StampUserAdminController {
             @PathVariable @Min(1) long userMissionId,
             @RequestBody @Valid MissionClearReqDto request) {
         stampUserAdminService.updateUserMissionState(festivalId, stampId, userId, userMissionId, request);
+    }
+
+    @PatchMapping("/{userId}")
+    public void updateStampUserInfo(
+            @PathVariable @Min(1) long festivalId,
+            @PathVariable @Min(1) long stampId,
+            @PathVariable @Min(1) long userId,
+            @RequestBody @Valid StampUserInfoUpdateReqDto request) {
+        stampUserAdminService.updateStampUserInfo(festivalId, stampId, userId, request);
     }
 }

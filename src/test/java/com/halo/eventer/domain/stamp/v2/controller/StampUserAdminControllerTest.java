@@ -2,6 +2,7 @@ package com.halo.eventer.domain.stamp.v2.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.Finished;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
+import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserInfoUpdateReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.UserMissionStatusResDto;
@@ -264,6 +266,57 @@ public class StampUserAdminControllerTest {
                             .content(objectMapper.writeValueAsString(req)))
                     .andExpect(status().isBadRequest())
                     .andDo(StampUserAdminDocs.error("v2-stampuser-updatemission-badrequest"));
+        }
+    }
+
+    @Nested
+    class 사용자_정보_수정 {
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 성공() throws Exception {
+            var body = new StampUserInfoUpdateReqDto("홍길동", "010-1234-5678", 3, "비고입니다");
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{userId}",
+                                    축제_ID,
+                                    스탬프_ID,
+                                    사용자_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isOk())
+                    .andDo(StampUserAdminDocs.updateUserInfo());
+        }
+
+        @Test
+        void 실패_권한없음() throws Exception {
+            var body = Map.of("name", "홍길동");
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{userId}",
+                                    축제_ID,
+                                    스탬프_ID,
+                                    사용자_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 실패_경로파라미터_검증() throws Exception {
+            var body = Map.of("phone", "010-9999-8888");
+
+            mockMvc.perform(patch(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/{userId}",
+                                    잘못된_ID,
+                                    스탬프_ID,
+                                    사용자_ID) // festivalId = 0 → @Min(1) 위반
+                            .header(HttpHeaders.AUTHORIZATION, AUTH)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isBadRequest());
         }
     }
 }
