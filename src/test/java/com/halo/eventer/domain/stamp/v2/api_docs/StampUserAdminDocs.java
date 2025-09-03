@@ -172,6 +172,32 @@ public class StampUserAdminDocs {
                         .build()));
     }
 
+    public static RestDocumentationResultHandler updateUserInfo() {
+        return document(
+                "v2-stampuser-update-info",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("사용자 정보 수정")
+                        .description("관리자가 특정 사용자에 대해 이름/전화번호/동반 인원 수/추가 텍스트를 수정")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID (>=1)"),
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"),
+                                parameterWithName("userId").description("사용자 ID (>=1)"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰 (ADMIN)"))
+                        .requestFields(
+                                fieldWithPath("name").type(STRING).optional().description("이름(선택, 부분 수정)"),
+                                fieldWithPath("phone").type(STRING).optional().description("전화번호(선택, 부분 수정)"),
+                                fieldWithPath("participateCount")
+                                        .type(NUMBER)
+                                        .optional()
+                                        .description("동반 인원 수(선택, 부분 수정)"),
+                                fieldWithPath("extraText")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("추가 입력값/비고(선택, 부분 수정)"))
+                        .build()));
+    }
+
     // 공통 에러 문서
     public static RestDocumentationResultHandler error(String id) {
         return document(

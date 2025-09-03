@@ -128,4 +128,11 @@ public class StampUser extends BaseTime {
         }
         return false;
     }
+
+    public void updateInfo(String encodedName, String encodedPhone, String extraText, int participantCount) {
+        this.name = encodedName;
+        this.phone = encodedPhone;
+        this.extraText = extraText;
+        this.participantCount = participantCount;
+    }
 }

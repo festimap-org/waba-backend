@@ -17,6 +17,7 @@ import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.Finished;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
+import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserInfoUpdateReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.UserMissionStatusResDto;
@@ -76,6 +77,17 @@ public class StampUserAdminService {
                 missions,
                 stampUser.getExtraText(),
                 stampUser.getParticipantCount());
+    }
+
+    @Transactional
+    public void updateStampUserInfo(long festivalId, long stampId, long userId, StampUserInfoUpdateReqDto request) {
+        ensureStamp(festivalId, stampId);
+        StampUser stampUser = loadStampUserFromIdAndStampId(userId, stampId);
+        stampUser.updateInfo(
+                encryptService.encryptInfo(request.getName()),
+                encryptService.encryptInfo(request.getPhone()),
+                request.getExtraText(),
+                request.getParticipateCount());
     }
 
     @Transactional
