@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class StampUserInfoUpdateReqDto {
     private String name;
     private String phone;
-    private int participateCount;
+    private int participantCount;
     private String extraText;
 }
