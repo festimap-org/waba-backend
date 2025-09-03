@@ -133,15 +133,8 @@ public class Stamp {
         this.showStamp = showStamp;
     }
 
-    public void increaseMissionCount() {
-        missionCount = missionCount + 1;
-    }
-
-    public void decreaseMissionCount() {
-        if (missionCount < 0) {
-            throw new IllegalArgumentException("미션 개수가 0보다 작을 수 없습니다.");
-        }
-        missionCount = missionCount - 1;
+    public void updateMissionCount() {
+        this.missionCount = missions.size();
     }
 
     public static Stamp create(Festival festival) {
