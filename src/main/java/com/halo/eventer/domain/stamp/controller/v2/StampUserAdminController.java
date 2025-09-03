@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.*;
 
 import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.enums.MissionCleared;
+import com.halo.eventer.domain.stamp.dto.stampUser.enums.Finished;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
@@ -26,12 +26,12 @@ public class StampUserAdminController {
     public PagedResponse<StampUserSummaryResDto> getStampUsersFiltered(
             @PathVariable @Min(1) long festivalId,
             @PathVariable @Min(1) long stampId,
-            @RequestParam(defaultValue = "") String q,
-            @RequestParam(defaultValue = "ALL") MissionCleared missionCleared,
+            @RequestParam(defaultValue = "", required = false) String q,
+            @RequestParam(defaultValue = "ALL", required = false) Finished finished,
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "NAME") SortType sortType) {
-        return stampUserAdminService.getStampUsers(festivalId, stampId, q, missionCleared, page, size, sortType);
+            @RequestParam(defaultValue = "NAME", required = false) SortType sortType) {
+        return stampUserAdminService.getStampUsers(festivalId, stampId, q, finished, page, size, sortType);
     }
 
     @PatchMapping("/{userId}/tour-finish")

@@ -28,8 +28,8 @@ public class StampUserAdminDocs {
                                 parameterWithName("q")
                                         .description("검색어(이름/전화번호, 공백이면 전체)")
                                         .optional(),
-                                parameterWithName("missionCleared")
-                                        .description("미션 완료여부 필터 (ALL|TRUE|FALSE)")
+                                parameterWithName("finished")
+                                        .description("투어 완료 여부 필터 (ALL|TRUE|FALSE)")
                                         .optional(),
                                 parameterWithName("page")
                                         .description("페이지(0-base)")
@@ -44,7 +44,6 @@ public class StampUserAdminDocs {
                                 fieldWithPath("content[].name").type(STRING).description("이름"),
                                 fieldWithPath("content[].phone").type(STRING).description("전화번호"),
                                 fieldWithPath("content[].uuid").type(STRING).description("UUID"),
-                                // ⚠️ Jackson이 boolean 필드명을 finished 로 직렬화하는 경우가 많음(필드명이 isFinished일 때)
                                 fieldWithPath("content[].finished")
                                         .type(BOOLEAN)
                                         .description("투어 완료 여부"),

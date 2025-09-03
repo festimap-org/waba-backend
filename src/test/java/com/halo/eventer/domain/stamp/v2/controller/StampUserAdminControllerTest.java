@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.stamp.controller.v2.StampUserAdminController;
 import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.enums.MissionCleared;
+import com.halo.eventer.domain.stamp.dto.stampUser.enums.Finished;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
@@ -94,12 +94,12 @@ public class StampUserAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 성공() throws Exception {
-            given(service.getStampUsers(축제_ID, 스탬프_ID, "김", MissionCleared.ALL, 0, 10, SortType.NAME))
+            given(service.getStampUsers(축제_ID, 스탬프_ID, "김", Finished.ALL, 0, 10, SortType.NAME))
                     .willReturn(샘플_목록());
 
             mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users", 축제_ID, 스탬프_ID)
                             .param("q", "김")
-                            .param("missionCleared", "ALL")
+                            .param("finished", "ALL")
                             .param("page", "0")
                             .param("size", "10")
                             .param("sortType", "NAME")

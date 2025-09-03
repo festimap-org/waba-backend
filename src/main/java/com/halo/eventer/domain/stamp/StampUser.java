@@ -50,7 +50,7 @@ public class StampUser extends BaseTime {
     @JoinColumn(name = "stamp_id")
     private Stamp stamp;
 
-    @OneToMany(mappedBy = "stampUser", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "stampUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Authority> authorities;
 
     @OneToMany(mappedBy = "stampUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
