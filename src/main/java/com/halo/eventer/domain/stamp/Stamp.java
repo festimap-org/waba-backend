@@ -131,6 +131,10 @@ public class Stamp {
         this.defaultDetailLayout = layout;
     }
 
+    public void toggleShowStamp(boolean showStamp) {
+        this.showStamp = showStamp;
+    }
+
     public static Stamp create(Festival festival) {
         return new Stamp(festival);
     }

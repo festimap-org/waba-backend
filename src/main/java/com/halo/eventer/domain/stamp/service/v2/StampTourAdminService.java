@@ -58,6 +58,12 @@ public class StampTourAdminService {
     }
 
     @Transactional
+    public void toggleShowStamp(long festivalId, long stampId, boolean showStamp) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        stamp.toggleShowStamp(showStamp);
+    }
+
+    @Transactional
     public StampTourJoinVerificationResDto getJoinVerification(long festivalId, long stampId) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         return StampTourJoinVerificationResDto.from(stamp.getJoinVerificationMethod());
