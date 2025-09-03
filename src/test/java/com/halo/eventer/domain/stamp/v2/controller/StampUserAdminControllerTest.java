@@ -86,7 +86,8 @@ public class StampUserAdminControllerTest {
         List<UserMissionStatusResDto> missions = List.of(
                 new UserMissionStatusResDto(100L, 1001L, "미션1", true),
                 new UserMissionStatusResDto(101L, 1002L, "미션2", false));
-        return new StampUserDetailResDto("김수한", "010-1234-5678", 사용자_UUID, false, missions, "this is extra text", 4);
+        return new StampUserDetailResDto(
+                "김수한", "010-1234-5678", 사용자_UUID, "티셔츠", false, missions, "this is extra text", 4);
     }
 
     @Nested
@@ -165,7 +166,7 @@ public class StampUserAdminControllerTest {
         var missions = List.of(
                 new UserMissionStatusResDto(100L, 1001L, "미션1", true),
                 new UserMissionStatusResDto(101L, 1002L, "미션2", false));
-        return new StampUserDetailResDto("홍길동", "010-1234-5678", "uuid-1234", false, missions, "비고", 3);
+        return new StampUserDetailResDto("홍길동", "010-1234-5678", "uuid-1234", "티셔츠", false, missions, "비고", 3);
     }
 
     @Nested

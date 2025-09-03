@@ -71,6 +71,7 @@ public class StampUserAdminService {
                 decryptStampUserName(stampUser.getName()),
                 decryptStampUserPhone(stampUser.getPhone()),
                 stampUser.getUuid(),
+                stampUser.getReceivedPrizeName(),
                 stampUser.isFinished(),
                 missions,
                 stampUser.getExtraText(),
