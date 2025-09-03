@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.halo.eventer.domain.stamp.controller.v2.StampTourTemplateController;
+import com.halo.eventer.domain.stamp.dto.mission.response.MissionPrizeResDto;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.*;
 import com.halo.eventer.domain.stamp.dto.stamp.request.StampTourSignUpTemplateResDto;
 import com.halo.eventer.domain.stamp.dto.stamp.response.*;
@@ -180,6 +182,23 @@ public class StampTourTemplateControllerTest {
                     .andExpect(jsonPath("$.participateGuideId").value(1L))
                     .andExpect(jsonPath("$.participateGuidePages[0].pageId").value(101L))
                     .andDo(StampTourTemplateDocs.getGuide());
+        }
+    }
+
+    @Nested
+    class 경품_목록_조회 {
+        private List<MissionPrizeResDto> 샘플_경품목록() {
+            return List.of(new MissionPrizeResDto(1L, 3, "스티커"), new MissionPrizeResDto(2L, 5, "티셔츠"));
+        }
+
+        @Test
+        void 성공() throws Exception {
+            given(service.getPrizes(축제_ID, 스탬프_ID)).willReturn(샘플_경품목록());
+
+            mockMvc.perform(get("/api/v2/template/festivals/{festivalId}/stamp-tours/{stampId}/prizes", 축제_ID, 스탬프_ID)
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andDo(StampTourTemplateDocs.listPrizes());
         }
     }
 }

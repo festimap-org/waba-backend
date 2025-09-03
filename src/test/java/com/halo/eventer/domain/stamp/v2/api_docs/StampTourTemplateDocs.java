@@ -199,4 +199,23 @@ public class StampTourTemplateDocs {
                                         .description("추가"))
                         .build()));
     }
+
+    public static RestDocumentationResultHandler listPrizes() {
+        return document(
+                "v2-template-prize-list",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("미션 경품 목록 조회")
+                        .description("특정 스탬프투어의 경품 목록을 조회합니다.")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID (>=1)"),
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
+                        .responseFields(
+                                fieldWithPath("[].id").type(NUMBER).description("경품 ID"),
+                                fieldWithPath("[].requiredCount").type(NUMBER).description("필요 미션 성공 개수"),
+                                fieldWithPath("[].prizeDescription")
+                                        .type(STRING)
+                                        .description("경품 설명"))
+                        .build()));
+    }
 }

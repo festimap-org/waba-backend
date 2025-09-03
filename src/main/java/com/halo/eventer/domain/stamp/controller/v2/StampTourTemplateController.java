@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.halo.eventer.domain.stamp.dto.mission.response.MissionPrizeResDto;
 import com.halo.eventer.domain.stamp.dto.stamp.request.StampTourSignUpTemplateResDto;
 import com.halo.eventer.domain.stamp.dto.stamp.response.*;
 import com.halo.eventer.domain.stamp.service.v2.StampTourTemplateService;
@@ -67,5 +68,11 @@ public class StampTourTemplateController {
     public StampTourGuideResDto getStampTourParticipationGuide(
             @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
         return templateService.getParticipateGuide(festivalId, stampId);
+    }
+
+    @GetMapping("/{stampId}/prizes")
+    public List<MissionPrizeResDto> getPrizeList(
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+        return templateService.getPrizes(festivalId, stampId);
     }
 }
