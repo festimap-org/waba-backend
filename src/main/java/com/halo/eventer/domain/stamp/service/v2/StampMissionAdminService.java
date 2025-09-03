@@ -28,6 +28,7 @@ public class StampMissionAdminService {
         Stamp stamp = ensureStamp(festivalId, stampId);
         Mission mission = Mission.from(stamp, missionName, showMission);
         missionRepository.save(mission);
+        stamp.increaseMissionCount();
     }
 
     @Transactional(readOnly = true)
@@ -44,6 +45,7 @@ public class StampMissionAdminService {
         Mission mission = loadMissionOrThrow(stampId, missionId);
         stamp.getMissions().remove(mission);
         missionRepository.delete(mission);
+        stamp.decreaseMissionCount();
     }
 
     @Transactional
