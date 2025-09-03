@@ -9,6 +9,7 @@ import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.stamp.*;
+import com.halo.eventer.domain.stamp.dto.mission.response.MissionPrizeResDto;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.PageType;
 import com.halo.eventer.domain.stamp.dto.stamp.request.StampTourSignUpTemplateResDto;
 import com.halo.eventer.domain.stamp.dto.stamp.response.*;
@@ -77,6 +78,13 @@ public class StampTourTemplateService {
         Stamp stamp = ensureStamp(festivalId, stampId);
         ParticipateGuide guide = loadParticipateGuideOrThrow(stampId);
         return StampTourGuideResDto.from(guide);
+    }
+
+    @Transactional
+    public List<MissionPrizeResDto> getPrizes(long festivalId, long stampId) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        List<StampMissionPrize> prizes = stamp.getPrizes();
+        return MissionPrizeResDto.fromEntities(prizes);
     }
 
     private List<Stamp> filterStampsOnlyShowing(Festival festival) {
