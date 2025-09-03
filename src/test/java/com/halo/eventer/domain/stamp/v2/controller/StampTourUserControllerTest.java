@@ -25,6 +25,7 @@ import com.halo.eventer.domain.stamp.dto.mission.response.MissionIconRes;
 import com.halo.eventer.domain.stamp.dto.mission.response.MissionTemplateResDto;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.ButtonAction;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.ButtonLayout;
+import com.halo.eventer.domain.stamp.dto.stamp.enums.MediaSpec;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.MissionDetailsDesignLayout;
 import com.halo.eventer.domain.stamp.dto.stamp.response.ButtonResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionQrVerifyReqDto;
@@ -191,6 +192,7 @@ public class StampTourUserControllerTest {
             var res = new MissionTemplateResDto(
                     미션_ID,
                     "미션 제목",
+                    MediaSpec.ONE_TO_ONE,
                     "https://img",
                     MissionDetailsDesignLayout.CARD,
                     1,

@@ -24,7 +24,6 @@ import static com.halo.eventer.domain.stamp.dto.stamp.enums.PageType.MAIN;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
 public class StampTourTemplateService {
 
     private final FestivalRepository festivalRepository;
@@ -32,8 +31,6 @@ public class StampTourTemplateService {
     private final PageTemplateRepository pageTemplateRepository;
     private final StampNoticeRepository stampNoticeRepository;
     private final ParticipateGuideRepository participateGuideRepository;
-    private final MissionRepository missionRepository;
-    private final MissionDetailsTemplateRepository templateRepository;
 
     @Transactional(readOnly = true)
     public List<StampTourSummaryResDto> getStampTourList(long festivalId) {

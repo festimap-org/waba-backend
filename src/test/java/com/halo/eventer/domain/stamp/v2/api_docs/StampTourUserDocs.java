@@ -94,6 +94,10 @@ public class StampTourUserDocs {
                                         .type(STRING)
                                         .optional()
                                         .description("미션 제목(표시 설정에 따라 미표시일 수 있음)"),
+                                fieldWithPath("mediaSpec")
+                                        .type(STRING)
+                                        .optional()
+                                        .description("미디어 비율(NONE, ONE_TO_ONE, SIXTEEN_TO_NINE, RATIO_NO_CHANGE)"),
                                 fieldWithPath("mediaUrl")
                                         .type(STRING)
                                         .optional()
