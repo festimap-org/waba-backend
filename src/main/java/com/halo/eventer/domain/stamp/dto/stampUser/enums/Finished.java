@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.stamp.dto.stampUser.enums;
 
-public enum MissionCleared {
+public enum Finished {
     ALL,
     TRUE,
     FALSE;
