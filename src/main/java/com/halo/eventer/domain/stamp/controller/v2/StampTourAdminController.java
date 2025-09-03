@@ -49,6 +49,14 @@ public class StampTourAdminController {
         stampTourAdminService.deleteStampTour(festivalId, stampId);
     }
 
+    @PatchMapping("/{stampId}/showStamp")
+    public void toggleStampTourShow(
+            @PathVariable @Min(1) long festivalId,
+            @PathVariable @Min(1) long stampId,
+            @RequestBody @Valid StampTourShowToggleReqDto request) {
+        stampTourAdminService.toggleShowStamp(festivalId, stampId, request.isShowStamp());
+    }
+
     @GetMapping("/{stampId}/settings/basic")
     public StampTourSettingBasicResDto getSettingBasicForStampTour(
             @PathVariable long festivalId, @PathVariable long stampId) {
