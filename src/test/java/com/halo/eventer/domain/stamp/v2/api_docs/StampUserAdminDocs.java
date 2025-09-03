@@ -198,6 +198,22 @@ public class StampUserAdminDocs {
                         .build()));
     }
 
+    public static RestDocumentationResultHandler getUserIdByUuid() {
+        return document(
+                "v2-stampuser-get-id-by-uuid",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("UUID로 사용자 ID 조회")
+                        .description("uuid를 전달하면 해당 사용자의 내부 userId를 반환합니다.")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID (>=1)"),
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰 (ADMIN)"))
+                        .requestFields(fieldWithPath("uuid").type(STRING).description("사용자 UUID"))
+                        .responseFields(fieldWithPath("userId").type(NUMBER).description("사용자 ID"))
+                        .build()));
+    }
+
     // 공통 에러 문서
     public static RestDocumentationResultHandler error(String id) {
         return document(
