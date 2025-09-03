@@ -9,7 +9,6 @@ import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.Finished;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
-import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserIdReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserInfoUpdateReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
@@ -73,11 +72,9 @@ public class StampUserAdminController {
         stampUserAdminService.updateStampUserInfo(festivalId, stampId, userId, request);
     }
 
-    @GetMapping("/id")
+    @GetMapping("/uuid/{uuid}")
     public StampUserUserIdResDto getStampUserUuid(
-            @PathVariable @Min(1) long festivalId,
-            @PathVariable @Min(1) long stampId,
-            @RequestBody @Valid StampUserIdReqDto request) {
-        return stampUserAdminService.getStampUserId(festivalId, stampId, request.getUuid());
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId, @PathVariable String uuid) {
+        return stampUserAdminService.getStampUserId(festivalId, stampId, uuid);
     }
 }

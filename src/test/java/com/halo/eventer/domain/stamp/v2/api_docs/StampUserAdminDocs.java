@@ -207,9 +207,9 @@ public class StampUserAdminDocs {
                         .description("uuid를 전달하면 해당 사용자의 내부 userId를 반환합니다.")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
-                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"),
+                                parameterWithName("uuid").description("스탬프투어 유저 uuid"))
                         .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰 (ADMIN)"))
-                        .requestFields(fieldWithPath("uuid").type(STRING).description("사용자 UUID"))
                         .responseFields(fieldWithPath("userId").type(NUMBER).description("사용자 ID"))
                         .build()));
     }

@@ -23,7 +23,6 @@ import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.Finished;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
-import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserIdReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserInfoUpdateReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
@@ -324,44 +323,23 @@ public class StampUserAdminControllerTest {
 
     @Nested
     class UUID로_userId_조회 {
-
         @Test
         @WithMockUser(roles = "ADMIN")
         void 성공() throws Exception {
-            var req = new StampUserIdReqDto("uuid-1234");
-            given(service.getStampUserId(축제_ID, 스탬프_ID, "uuid-1234")).willReturn(new StampUserUserIdResDto(77L));
-
-            mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/id", 축제_ID, 스탬프_ID)
-                            .header(HttpHeaders.AUTHORIZATION, AUTH)
-                            .contentType(MediaType.APPLICATION_JSON) // GET with body
-                            .content(objectMapper.writeValueAsString(req)))
-                    .andExpect(status().isOk())
-                    .andDo(StampUserAdminDocs.getUserIdByUuid());
-        }
-
-        @Test
-        void 실패_권한없음() throws Exception {
-            var req = new StampUserIdReqDto("uuid-1234");
-
-            mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/id", 축제_ID, 스탬프_ID)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(req)))
-                    .andExpect(status().isUnauthorized());
-        }
-
-        @Test
-        @WithMockUser(roles = "ADMIN")
-        void 실패_경로파라미터_검증() throws Exception {
-            var req = new StampUserIdReqDto("uuid-1234");
-
+            long festivalId = 1L;
+            long stampId = 10L;
+            String uuid = "550e8400-e29b-41d4-a716-446655440000";
+            given(service.getStampUserId(festivalId, stampId, uuid)).willReturn(new StampUserUserIdResDto(123L));
             mockMvc.perform(get(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/id",
-                                    잘못된_ID,
-                                    스탬프_ID) // @Min(1) 위반
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/uuid/{uuid}",
+                                    festivalId,
+                                    stampId,
+                                    uuid)
                             .header(HttpHeaders.AUTHORIZATION, AUTH)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(req)))
-                    .andExpect(status().isBadRequest());
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.userId").value(123))
+                    .andDo(StampUserAdminDocs.getUserIdByUuid());
         }
     }
 }

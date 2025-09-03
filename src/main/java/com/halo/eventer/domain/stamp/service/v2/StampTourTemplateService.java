@@ -35,56 +35,70 @@ public class StampTourTemplateService {
     private final MissionRepository missionRepository;
     private final MissionDetailsTemplateRepository templateRepository;
 
+    @Transactional(readOnly = true)
     public List<StampTourSummaryResDto> getStampTourList(long festivalId) {
         Festival festival = loadFestivalOrThrow(festivalId);
         List<Stamp> stamps = filterStampsOnlyShowing(festival);
         return StampTourSummaryResDto.fromEntities(stamps);
     }
 
+    @Transactional(readOnly = true)
     public StampTourSignUpTemplateResDto getSignupTemplate(long festivalId, long stampTourId) {
         Stamp stamp = ensureStamp(festivalId, stampTourId);
         return StampTourSignUpTemplateResDto.from(stamp.getJoinVerificationMethod());
     }
 
+    @Transactional(readOnly = true)
     public StampTourLandingPageResDto getLandingPage(long festivalId, long stampTourId) {
         Stamp stamp = ensureStamp(festivalId, stampTourId);
         PageTemplate landingPage = loadPageTemplateOrThrow(stampTourId, LANDING);
         return StampTourLandingPageResDto.from(landingPage);
     }
 
+    @Transactional(readOnly = true)
     public StampTourMainPageResDto getMainPage(long festivalId, long stampTourId) {
         Stamp stamp = ensureStamp(festivalId, stampTourId);
         PageTemplate mainPage = loadPageTemplateOrThrow(stampTourId, MAIN);
         return StampTourMainPageResDto.from(mainPage);
     }
 
+    @Transactional(readOnly = true)
     public StampTourJoinTemplateResDto getStampTourJoinMethod(long festivalId, long stampTourId) {
         Stamp stamp = ensureStamp(festivalId, stampTourId);
         return StampTourJoinTemplateResDto.from(stamp.getJoinVerificationMethod());
     }
 
+    @Transactional(readOnly = true)
     public StampTourAuthMethodResDto getAuthMethod(long festivalId, long stampTourId) {
         Stamp stamp = ensureStamp(festivalId, stampTourId);
         return new StampTourAuthMethodResDto(stamp.getAuthMethod());
     }
 
+    @Transactional(readOnly = true)
     public StampTourNotificationResDto getStampTourNotification(long festivalId, long stampId) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         var existing = stampNoticeRepository.findAllByStampIdOrderByIdDesc(stampId);
         return StampTourNotificationResDto.from(existing.get(0));
     }
 
+    @Transactional(readOnly = true)
     public StampTourGuideResDto getParticipateGuide(long festivalId, long stampId) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         ParticipateGuide guide = loadParticipateGuideOrThrow(stampId);
         return StampTourGuideResDto.from(guide);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<MissionPrizeResDto> getPrizes(long festivalId, long stampId) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         List<StampMissionPrize> prizes = stamp.getPrizes();
         return MissionPrizeResDto.fromEntities(prizes);
+    }
+
+    @Transactional(readOnly = true)
+    public StampActiveResDto getStampActive(long festivalId, long stampId) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        return new StampActiveResDto(stamp.getTitle(), stamp.getActive());
     }
 
     private List<Stamp> filterStampsOnlyShowing(Festival festival) {
@@ -115,15 +129,5 @@ public class StampTourTemplateService {
         return participateGuideRepository
                 .findFirstByStampId(stampId)
                 .orElseThrow(() -> new ParticipateGuideNotFoundException(stampId));
-    }
-
-    private Mission loadMissionOrThrow(long missionId) {
-        return missionRepository.findById(missionId).orElseThrow(() -> new MissionNotFoundException(missionId));
-    }
-
-    private MissionDetailsTemplate loadMissionDetailsTemplate(long missionId) {
-        return templateRepository
-                .findByMissionId(missionId)
-                .orElseThrow(() -> new MissionDetailsTemplateNotFoundException(missionId));
     }
 }

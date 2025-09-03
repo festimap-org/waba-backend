@@ -218,4 +218,19 @@ public class StampTourTemplateDocs {
                                         .description("경품 설명"))
                         .build()));
     }
+
+    public static RestDocumentationResultHandler getStampActive() {
+        return document(
+                "v2-template-stamp-active-get",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("스탬프 활성화 상태 조회")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID (>=1)"),
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
+                        .responseFields(
+                                fieldWithPath("title").type(STRING).description("스탬프 투어 제목"),
+                                fieldWithPath("active").type(BOOLEAN).description("활성화 여부"))
+                        .build()));
+    }
 }
