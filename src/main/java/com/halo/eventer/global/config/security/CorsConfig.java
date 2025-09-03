@@ -25,8 +25,8 @@ public class CorsConfig {
             "http://m.localhost:3000",
             "https://firefestivaljeju.com",
             "https://m.firefestivaljeju.com",
-            "https://stamp.jejufestival.festiv.kr",
-            "https://parking.jejufestival.festiv.kr",
+            "https://stamp.jejulhfestival.festiv.kr",
+            "https://parking.jejulhfestival.festiv.kr",
             "https://business.festiv.kr");
 
     @Bean

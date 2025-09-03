@@ -1,6 +1,7 @@
 package com.halo.eventer.global.security.provider;
 
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import jakarta.annotation.PostConstruct;
@@ -47,10 +48,12 @@ public class JwtProvider {
         Claims claims = Jwts.claims().setSubject(account);
         claims.put("roles", roles);
         Date now = new Date();
+        long validityMs = Duration.ofDays(7).toMillis();
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + 3600000)) // 만료기간
+                .setExpiration(new Date(now.getTime() + validityMs)) // 만료기간
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
