@@ -80,7 +80,7 @@ public class StampTourTemplateService {
     }
 
     private List<Stamp> filterStampsOnlyShowing(Festival festival) {
-        return festival.getStamps().stream().filter(Stamp::willShowStamp).toList();
+        return festival.getStamps().stream().filter(Stamp::getShowStamp).toList();
     }
 
     private Festival loadFestivalOrThrow(long id) {
