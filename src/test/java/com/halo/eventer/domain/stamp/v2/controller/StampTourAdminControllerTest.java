@@ -804,7 +804,8 @@ public class StampTourAdminControllerTest {
                     .andDo(StampTourAdminDocs.error("v2-stamptour-active-get-badrequest"));
         }
     }
-   @Nested
+
+    @Nested
     class 스탬프투어_표시변경 {
         @Test
         @WithMockUser(roles = "ADMIN")
