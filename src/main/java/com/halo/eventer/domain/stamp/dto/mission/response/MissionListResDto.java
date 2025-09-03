@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MissionListResDto {
-    private int missionCount;
     private List<MissionBriefResDto> missionList;
 }

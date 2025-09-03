@@ -95,13 +95,12 @@ public class StampMissionAdminControllerTest {
         void 미션_목록_조회_성공() throws Exception {
             var list = List.of(
                     new MissionBriefResDto(101L, "미션A", true, true), new MissionBriefResDto(102L, "미션B", false, false));
-            var res = new MissionListResDto(LIMIT, list);
+            var res = new MissionListResDto(list);
             given(service.getMissions(축제_ID, 스탬프_ID)).willReturn(res);
 
             mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions", 축제_ID, 스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.missionCount").value(LIMIT))
                     .andExpect(jsonPath("$.missionList[0].missionId").value(101L))
                     .andExpect(jsonPath("$.missionList[0].title").value("미션A"))
                     .andDo(StampMissionAdminDocs.listMissions());
@@ -110,13 +109,12 @@ public class StampMissionAdminControllerTest {
         @Test
         @WithMockUser(roles = "ADMIN")
         void 미션_목록_조회_성공_빈목록() throws Exception {
-            var res = new MissionListResDto(LIMIT, List.of());
+            var res = new MissionListResDto(List.of());
             given(service.getMissions(축제_ID, 스탬프_ID)).willReturn(res);
 
             mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/missions", 축제_ID, 스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.missionCount").value(LIMIT))
                     .andExpect(jsonPath("$.missionList.length()").value(0))
                     .andDo(StampMissionAdminDocs.listMissions());
         }

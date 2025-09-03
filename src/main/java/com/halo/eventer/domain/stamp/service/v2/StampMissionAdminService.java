@@ -35,7 +35,7 @@ public class StampMissionAdminService {
         Stamp stamp = ensureStamp(festivalId, stampId);
         List<Mission> missions = loadAllMissions(stampId);
         List<MissionBriefResDto> missionList = MissionBriefResDto.fromEntities(missions);
-        return new MissionListResDto(stamp.getMissionCount(), missionList);
+        return new MissionListResDto(missionList);
     }
 
     @Transactional
