@@ -57,6 +57,22 @@ public class StampTourAdminDocs {
                         .build()));
     }
 
+    public static RestDocumentationResultHandler toggleShowStamp() {
+        return document(
+                "v2-admin-stamptour-toggle-show",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("스탬프투어 노출 토글")
+                        .description("해당 스탬프투어의 사용자 앱 노출 여부를 설정합니다.")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID (>=1)"),
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .requestFields(
+                                fieldWithPath("showStamp").type(BOOLEAN).description("노출 여부 (true=보이기, false=숨기기)"))
+                        .build()));
+    }
+
     public static RestDocumentationResultHandler getUserSettings() {
         return document(
                 "v2-stamptour-user-settings-get",

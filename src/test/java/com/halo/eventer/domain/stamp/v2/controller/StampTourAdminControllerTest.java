@@ -804,4 +804,31 @@ public class StampTourAdminControllerTest {
                     .andDo(StampTourAdminDocs.error("v2-stamptour-active-get-badrequest"));
         }
     }
+
+    @Nested
+    class 스탬프투어_표시변경 {
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void toggleShow_success() throws Exception {
+            var body = Map.of("showStamp", true);
+
+            mockMvc.perform(patch("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/showStamp", 축제_ID, 스탬프_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isOk())
+                    .andDo(StampTourAdminDocs.toggleShowStamp());
+        }
+
+        @Test
+        void toggleShow_unauthorized() throws Exception {
+            var body = Map.of("showStamp", false);
+
+            mockMvc.perform(patch("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/showStamp", 축제_ID, 잘못된_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampTourAdminDocs.error("v2-admin-stamptour-toggle-show-unauthorized"));
+        }
+    }
 }
