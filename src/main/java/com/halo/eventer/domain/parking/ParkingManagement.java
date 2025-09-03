@@ -24,7 +24,7 @@ public class ParkingManagement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "header_name", nullable = false, length = 10)
+    @Column(name = "header_name", nullable = false, length = 30)
     private String headerName;
 
     @Column(name = "parking_info_type", nullable = false)
