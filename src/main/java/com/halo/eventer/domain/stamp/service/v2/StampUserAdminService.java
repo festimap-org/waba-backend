@@ -87,7 +87,7 @@ public class StampUserAdminService {
                 encryptService.encryptInfo(request.getName()),
                 encryptService.encryptInfo(request.getPhone()),
                 request.getExtraText(),
-                request.getParticipateCount());
+                request.getParticipantCount());
     }
 
     @Transactional

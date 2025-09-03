@@ -79,7 +79,7 @@ public class StampUserAdminDocs {
                                 fieldWithPath("name").type(STRING).description("이름"),
                                 fieldWithPath("phone").type(STRING).description("전화번호"),
                                 fieldWithPath("uuid").type(STRING).description("UUID"),
-                                fieldWithPath("receivedPrize").type(STRING).description("수령한 상품 이름"),
+                                fieldWithPath("prizeName").type(STRING).description("수령한 상품 이름"),
                                 fieldWithPath("finished").type(BOOLEAN).description("투어 완료 여부"),
                                 fieldWithPath("participantCount").type(NUMBER).description("동반 인원 수"),
                                 fieldWithPath("extraText")
@@ -187,7 +187,7 @@ public class StampUserAdminDocs {
                         .requestFields(
                                 fieldWithPath("name").type(STRING).optional().description("이름(선택, 부분 수정)"),
                                 fieldWithPath("phone").type(STRING).optional().description("전화번호(선택, 부분 수정)"),
-                                fieldWithPath("participateCount")
+                                fieldWithPath("participantCount")
                                         .type(NUMBER)
                                         .optional()
                                         .description("동반 인원 수(선택, 부분 수정)"),
