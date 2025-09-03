@@ -78,9 +78,8 @@ public class Stamp {
     }
 
     public void assignAllMissionsTo(StampUser stampUser) {
-        List<UserMission> userMissions = missions.stream()
-                .map(m -> UserMission.create(m, stampUser))
-                .toList();
+        List<UserMission> userMissions =
+                missions.stream().map(m -> UserMission.create(m, stampUser)).toList();
         stampUser.assignUserMissions(userMissions);
     }
 
