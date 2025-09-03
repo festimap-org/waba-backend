@@ -5,6 +5,7 @@ import java.util.List;
 import com.halo.eventer.domain.stamp.Mission;
 import com.halo.eventer.domain.stamp.MissionDetailsTemplate;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.ButtonLayout;
+import com.halo.eventer.domain.stamp.dto.stamp.enums.MediaSpec;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.MissionDetailsDesignLayout;
 import com.halo.eventer.domain.stamp.dto.stamp.response.ButtonResDto;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ public class MissionTemplateResDto {
     private Long missionId;
     private String title;
 
+    private MediaSpec mediaSpec;
     private String mediaUrl;
     private MissionDetailsDesignLayout layout;
 
@@ -32,6 +34,7 @@ public class MissionTemplateResDto {
         return new MissionTemplateResDto(
                 mission.getId(),
                 mission.getTitle(),
+                template.getMediaSpec(),
                 template.getMediaUrl(),
                 template.getDesignLayout(),
                 userSuccessCount,

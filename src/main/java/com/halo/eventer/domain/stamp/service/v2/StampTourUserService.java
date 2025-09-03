@@ -54,6 +54,7 @@ public class StampTourUserService {
         return new TokenDto(token);
     }
 
+    @Transactional(readOnly = true)
     public MissionBoardResDto getMissionBoard(long festivalId, long stampId, String userUuid) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         StampUser user = loadStampUserOrThrow(stampId, userUuid);
@@ -61,6 +62,23 @@ public class StampTourUserService {
         return MissionBoardResDto.from(userMissions);
     }
 
+    //    private void syncUserMissions(Stamp stamp, StampUser user) {
+    //        Set<Long> assigned = user.getUserMissions().stream()
+    //                .map(um -> um.getMission().getId())
+    //                .collect(Collectors.toSet());
+    //
+    //        List<UserMission> missing = stamp.getMissions().stream()
+    //                .filter(m -> !assigned.contains(m.getId()))
+    //                .map(m -> UserMission.create(m, user))
+    //                .toList();
+    //
+    //        if (!missing.isEmpty()) {
+    //            user.getUserMissions().addAll(missing);
+    //            // cascade = ALL 이면 user 저장만으로 전파, 아니면 repository.saveAll(missing);
+    //        }
+    //    }
+
+    @Transactional(readOnly = true)
     public MissionTemplateResDto getMissionsTemplate(long festival, long stampId, long missionId, String userUuid) {
         ensureStamp(festival, stampId);
         Mission mission = loadMissionOrThrow(missionId);
@@ -69,6 +87,7 @@ public class StampTourUserService {
         return new MissionTemplateResDto(
                 mission.getId(),
                 mission.getShowTitle() ? mission.getTitle() : null,
+                template.getMediaSpec(),
                 template.getMediaUrl(),
                 template.getDesignLayout(),
                 userMission.getSuccessCount(),
