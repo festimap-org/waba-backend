@@ -26,6 +26,7 @@ import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpda
 import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserInfoUpdateReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserUserIdResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.UserMissionStatusResDto;
 import com.halo.eventer.domain.stamp.service.v2.StampUserAdminService;
 import com.halo.eventer.domain.stamp.v2.api_docs.StampUserAdminDocs;
@@ -317,6 +318,28 @@ public class StampUserAdminControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(body)))
                     .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Nested
+    class UUID로_userId_조회 {
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 성공() throws Exception {
+            long festivalId = 1L;
+            long stampId = 10L;
+            String uuid = "550e8400-e29b-41d4-a716-446655440000";
+            given(service.getStampUserId(festivalId, stampId, uuid)).willReturn(new StampUserUserIdResDto(123L));
+            mockMvc.perform(get(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/uuid/{uuid}",
+                                    festivalId,
+                                    stampId,
+                                    uuid)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH)
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.userId").value(123))
+                    .andDo(StampUserAdminDocs.getUserIdByUuid());
         }
     }
 }

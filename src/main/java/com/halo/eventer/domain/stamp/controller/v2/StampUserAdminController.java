@@ -12,6 +12,7 @@ import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpda
 import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserInfoUpdateReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserUserIdResDto;
 import com.halo.eventer.domain.stamp.service.v2.StampUserAdminService;
 import com.halo.eventer.global.common.page.PagedResponse;
 import lombok.RequiredArgsConstructor;
@@ -69,5 +70,11 @@ public class StampUserAdminController {
             @PathVariable @Min(1) long userId,
             @RequestBody @Valid StampUserInfoUpdateReqDto request) {
         stampUserAdminService.updateStampUserInfo(festivalId, stampId, userId, request);
+    }
+
+    @GetMapping("/uuid/{uuid}")
+    public StampUserUserIdResDto getStampUserUuid(
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId, @PathVariable String uuid) {
+        return stampUserAdminService.getStampUserId(festivalId, stampId, uuid);
     }
 }

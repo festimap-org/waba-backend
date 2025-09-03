@@ -201,4 +201,20 @@ public class StampTourTemplateControllerTest {
                     .andDo(StampTourTemplateDocs.listPrizes());
         }
     }
+
+    @Test
+    void 스탬프활성화_조회_성공() throws Exception {
+        // given
+        long festivalId = 2L;
+        long stampId = 1L;
+        given(service.getStampActive(festivalId, stampId)).willReturn(new StampActiveResDto("가을축제 스탬프", true));
+
+        // when & then
+        mockMvc.perform(get("/api/v2/template/festivals/{festivalId}/stamp-tours/{stampId}", festivalId, stampId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("가을축제 스탬프"))
+                .andExpect(jsonPath("$.active").value(true))
+                .andDo(StampTourTemplateDocs.getStampActive());
+    }
 }

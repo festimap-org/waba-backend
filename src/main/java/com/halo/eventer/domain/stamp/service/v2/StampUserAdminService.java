@@ -20,6 +20,7 @@ import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpda
 import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserInfoUpdateReqDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserUserIdResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.UserMissionStatusResDto;
 import com.halo.eventer.domain.stamp.exception.StampNotFoundException;
 import com.halo.eventer.domain.stamp.exception.StampUserNotFoundException;
@@ -115,6 +116,13 @@ public class StampUserAdminService {
         su.updateReceivedPrizeName(request.getPrizeName());
     }
 
+    @Transactional(readOnly = true)
+    public StampUserUserIdResDto getStampUserId(long festivalId, long stampId, String uuid) {
+        ensureStamp(festivalId, stampId);
+        StampUser stampUser = loadStampUserOrThrow(stampId, uuid);
+        return new StampUserUserIdResDto(stampUser.getId());
+    }
+
     private void ensureStamp(long festivalId, long stampId) {
         Stamp stamp = loadStampOrThrow(stampId);
         stamp.ensureStampInFestival(festivalId);
@@ -122,6 +130,12 @@ public class StampUserAdminService {
 
     private Stamp loadStampOrThrow(long stampId) {
         return stampRepository.findById(stampId).orElseThrow(() -> new StampNotFoundException(stampId));
+    }
+
+    private StampUser loadStampUserOrThrow(long stampId, String userUuid) {
+        return stampUserRepository
+                .findByUuidAndStampIdWithMissions(userUuid, stampId)
+                .orElseThrow(() -> new StampUserNotFoundException(userUuid));
     }
 
     private StampUser loadStampUserFromIdAndStampId(long userId, long stampId) {

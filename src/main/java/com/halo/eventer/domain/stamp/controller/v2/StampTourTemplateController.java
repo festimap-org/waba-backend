@@ -75,4 +75,9 @@ public class StampTourTemplateController {
             @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
         return templateService.getPrizes(festivalId, stampId);
     }
+
+    @GetMapping("/{stampId}")
+    public StampActiveResDto getStampActive(@PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+        return templateService.getStampActive(festivalId, stampId);
+    }
 }

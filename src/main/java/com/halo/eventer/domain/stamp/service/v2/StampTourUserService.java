@@ -91,7 +91,6 @@ public class StampTourUserService {
     public PrizeClaimQrResDto getPrizeReceiveQr(long festivalId, long stampId, String userUuid) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         StampUser stampUser = loadStampUserOrThrow(stampId, userUuid);
-        if (!stampUser.canFinishTour()) throw new StampUserNotClearedMissionsException(userUuid);
         return PrizeClaimQrResDto.from(
                 decryptStampUserName(stampUser.getName()),
                 decryptStampUserPhone(stampUser.getPhone()),
