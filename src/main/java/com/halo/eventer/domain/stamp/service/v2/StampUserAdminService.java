@@ -14,7 +14,7 @@ import com.halo.eventer.domain.stamp.Stamp;
 import com.halo.eventer.domain.stamp.StampUser;
 import com.halo.eventer.domain.stamp.UserMission;
 import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.enums.MissionCleared;
+import com.halo.eventer.domain.stamp.dto.stampUser.enums.Finished;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
@@ -42,13 +42,19 @@ public class StampUserAdminService {
 
     @Transactional(readOnly = true)
     public PagedResponse<StampUserSummaryResDto> getStampUsers(
-            long festivalId, long stampId, String q, MissionCleared cleared, int page, int size, SortType sortType) {
+            long festivalId, long stampId, String q, Finished finished, int page, int size, SortType sortType) {
         ensureStamp(festivalId, stampId);
-        String sortProperty = sortType.getProperty();
-        Boolean clearedFilter = cleared.toBoolean();
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, sortProperty));
+
+        // 이름 정렬 요청이면 DB 정렬을 createdAt(또는 id)로 고정
+        Sort sort = (sortType == SortType.NAME)
+                ? Sort.by(Sort.Direction.ASC, "createdAt")
+                : Sort.by(Sort.Direction.ASC, sortType.getProperty());
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Boolean clearedFilter = finished.toBoolean();
+
         Page<StampUser> result = selectQueryBySearchTerm(stampId, q, clearedFilter, pageable);
-        return convertToPagedResponse(result);
+        return convertToPagedResponse(result, sortType);
     }
 
     @Transactional(readOnly = true)
@@ -128,13 +134,13 @@ public class StampUserAdminService {
     }
 
     private Page<StampUser> selectQueryBySearchTerm(long stampId, String q, Boolean cleared, Pageable pageable) {
-        return (q == null || q.isBlank())
-                ? stampUserRepository.findByStampId(stampId, cleared, pageable)
-                : stampUserRepository.searchUsers(stampId, q.trim(), cleared, pageable);
+        String qParam = (q == null || q.isBlank()) ? null : encryptService.encryptInfo(q.trim());
+        return stampUserRepository.searchUsers(stampId, qParam, cleared, pageable);
     }
 
-    private PagedResponse<StampUserSummaryResDto> convertToPagedResponse(Page<StampUser> result) {
-        List<StampUserSummaryResDto> content = result.getContent().stream()
+    private PagedResponse<StampUserSummaryResDto> convertToPagedResponse(Page<StampUser> result, SortType sortType) {
+        // DTO 리스트 생성 (수정 가능한 리스트로)
+        List<StampUserSummaryResDto> content = new java.util.ArrayList<>(result.getContent().stream()
                 .map(su -> new StampUserSummaryResDto(
                         su.getId(),
                         decryptStampUserName(su.getName()),
@@ -142,7 +148,15 @@ public class StampUserAdminService {
                         su.getUuid(),
                         su.isFinished(),
                         su.getCreatedAt()))
-                .toList();
+                .toList());
+
+        // 이름 정렬이면 한국어 Collator로 페이지 내 정렬
+        if (sortType == SortType.NAME) {
+            java.text.Collator collator = java.text.Collator.getInstance(java.util.Locale.KOREAN);
+            collator.setStrength(java.text.Collator.PRIMARY);
+            content.sort(java.util.Comparator.comparing(StampUserSummaryResDto::getName, collator));
+        }
+
         PageInfo pageInfo = PageInfo.builder()
                 .pageNumber(result.getNumber() + 1)
                 .pageSize(result.getSize())
@@ -154,23 +168,6 @@ public class StampUserAdminService {
                 .content(content)
                 .pageInfo(pageInfo)
                 .build();
-    }
-
-    private StampUserDetailResDto toDetailDto(StampUser su) {
-        List<UserMissionStatusResDto> missions = su.getUserMissions().stream()
-                .sorted(Comparator.comparing(um -> um.getMission().getId()))
-                .map(um -> new UserMissionStatusResDto(
-                        um.getId(), um.getMission().getId(), um.getMission().getTitle(), um.isComplete()))
-                .toList();
-
-        return new StampUserDetailResDto(
-                decryptStampUserName(su.getName()),
-                decryptStampUserPhone(su.getPhone()),
-                su.getUuid(),
-                su.isFinished(),
-                missions,
-                su.getExtraText(),
-                su.getParticipantCount());
     }
 
     private String decryptStampUserName(String encodedName) {
