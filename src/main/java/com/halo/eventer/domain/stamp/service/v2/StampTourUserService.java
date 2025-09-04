@@ -59,7 +59,7 @@ public class StampTourUserService {
         Stamp stamp = ensureStamp(festivalId, stampId);
         StampUser user = loadStampUserOrThrow(stampId, userUuid);
         List<UserMission> userMissions = filterUserMissionOnlyShowing(user);
-        return MissionBoardResDto.from(userMissions);
+        return MissionBoardResDto.from(userMissions, user.isFinished());
     }
 
     //    private void syncUserMissions(Stamp stamp, StampUser user) {
