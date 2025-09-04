@@ -59,7 +59,8 @@ public class SecurityConstants {
         "/api/v2/user/parking-notices/*",
         "/api/v2/user/parking-managements/*/parking-zones",
         "/api/v2/template/**",
-        "/api/v2/user/parking-managements/{parkingManagementId}/parking-notices"
+        "/api/v2/user/parking-managements/{parkingManagementId}/parking-notices",
+        "/api/v2/common/festivals/{festivalId}/parkingManagements"
     };
 
     public static final String[] PUBLIC_POST_URLS = {
