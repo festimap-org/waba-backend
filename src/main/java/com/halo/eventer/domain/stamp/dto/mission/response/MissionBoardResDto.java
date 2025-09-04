@@ -17,13 +17,13 @@ public class MissionBoardResDto {
     private boolean finished;
     private List<MissionIconRes> missions;
 
-    public static MissionBoardResDto from(List<UserMission> list) {
+    public static MissionBoardResDto from(List<UserMission> list, boolean finished) {
         int total = list.size();
         int done = (int) list.stream().filter(UserMission::isComplete).count();
         return new MissionBoardResDto(
                 done,
                 total,
-                done == total,
+                finished,
                 list.stream()
                         .sorted(Comparator.comparing(um -> um.getMission().getId()))
                         .map(MissionIconRes::from)
