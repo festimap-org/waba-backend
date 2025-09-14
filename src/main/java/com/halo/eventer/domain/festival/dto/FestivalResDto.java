@@ -17,6 +17,7 @@ public class FestivalResDto {
 
     private double latitude; // 위도
     private double longitude; // 경도
+    private String extraInfo;
 
     public FestivalResDto(Festival festival) {
         this.id = festival.getId();
@@ -25,5 +26,6 @@ public class FestivalResDto {
         this.colors =new ColorReqDto(festival);
         this.latitude = festival.getLatitude();
         this.longitude = festival.getLongitude();
+        this.extraInfo = festival.getExtraInfo();
     }
 }

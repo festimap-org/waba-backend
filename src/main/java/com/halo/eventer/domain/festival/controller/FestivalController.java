@@ -104,4 +104,9 @@ public class FestivalController {
     public List<FestivalListDto> getFestivalsForUser(@Parameter(hidden = true) @MemberCheck String loginId){
         return festivalService.getFestivalForUser(loginId);
     }
+
+    @PatchMapping("/{festivalId}/extra-info")
+    public void updateExtraInfo(@PathVariable("festivalId") Long festivalId, @RequestBody FestivalExtraInfoReqDto festivalExtraInfoReqDto){
+        festivalService.updateExtraInfo(festivalId,festivalExtraInfoReqDto);
+    }
 }

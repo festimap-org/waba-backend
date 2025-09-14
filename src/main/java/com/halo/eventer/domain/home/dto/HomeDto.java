@@ -27,6 +27,7 @@ public class HomeDto {
     private List<DownWidgetDto> downWidgetDtos;
     private List<MissingPersonPopupDto> missingPersonDtos;
     private List<MiddleBannerHomeResDto> middleBannerDtos;
+    private String extraInfo;
 
     public HomeDto(List<RegisteredBannerGetDto> banner, Festival festival, List<UpWidget> upWidgets, List<MissingPerson> missingPersons) {
         this.upWidgets =upWidgets.stream().map(UpWidgetGetDto::new).collect(Collectors.toList());
@@ -36,5 +37,6 @@ public class HomeDto {
         this.downWidgetDtos = festival.getDownWidgets().stream().map(DownWidgetDto::new).collect(Collectors.toList());
         this.missingPersonDtos = missingPersons.stream().map(MissingPersonPopupDto::new).collect(Collectors.toList());
         this.middleBannerDtos = festival.getMiddleBanners().stream().map(MiddleBannerHomeResDto::new).collect(Collectors.toList());
+        this.extraInfo = festival.getExtraInfo();
     }
 }

@@ -123,7 +123,10 @@ public class SecurityConfig {
                 "https://jejulhfestival.festimap.kr",
                 "https://m.jejulhfestival.festimap.kr",
                 "https://jejulhfestival.kr",
-                "https://m.jejulhfestival.kr"
+                "https://m.jejulhfestival.kr",
+                "https://www.gdsunsa.com",
+                "https://m.gdsunsa.com",
+                "https://ysff.festimap.kr"
                 )
         );
         configuration.setAllowedMethods(Arrays.asList("*"));

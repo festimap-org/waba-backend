@@ -144,4 +144,10 @@ public class FestivalService {
 
         return festivalRepository.findAllById(ids).stream().map(FestivalListDto::new).collect(Collectors.toList());
     }
+
+    @Transactional
+    public void updateExtraInfo(Long festivalId, FestivalExtraInfoReqDto festivalExtraInfoReqDto) {
+        Festival festival = getFestival(festivalId);
+        festival.updateExtraInfo(festivalExtraInfoReqDto.getExtraInfo());
+    }
 }

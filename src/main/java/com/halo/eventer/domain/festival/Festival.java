@@ -69,6 +69,7 @@ public class Festival {
     private double latitude; // 위도
     private double longitude; // 경도
 
+    private String extraInfo;
 
 
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
@@ -176,5 +177,9 @@ public class Festival {
     public void updateLocation(FestivalLocationDto festivalLocationDto) {
         this.longitude = festivalLocationDto.getLongitude();
         this.latitude = festivalLocationDto.getLatitude();
+    }
+
+    public void updateExtraInfo(String extraInfo) {
+        this.extraInfo = extraInfo;
     }
 }
