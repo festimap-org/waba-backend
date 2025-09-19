@@ -126,7 +126,7 @@ public class SecurityConfig {
                 "https://m.jejulhfestival.kr",
                 "https://www.gdsunsa.com",
                 "https://m.gdsunsa.com",
-                "https://ysff.festimap.kr"
+                "https://ysff.co.kr"
                 )
         );
         configuration.setAllowedMethods(Arrays.asList("*"));
