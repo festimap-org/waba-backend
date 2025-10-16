@@ -96,7 +96,7 @@ public class NoticeService {
 
         for(Notice notice : notices){
             for(BannerEditDto b : bannerEditListDto.getBannerEditListDto()) {
-                if (b.getNoticeId() == notice.getId()) {
+                if (b.getNoticeId().equals(notice.getId())) {
                     notice.setRank(b.getRank());
                     break;
                 }
