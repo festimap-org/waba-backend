@@ -25,15 +25,15 @@ public class CorsConfig {
             "http://m.localhost:3000",
             "https://firefestivaljeju.com",
             "https://m.firefestivaljeju.com",
-            "https://stamp.jejulhfestival.festiv.kr",
-            "https://parking.jejulhfestival.festiv.kr",
-            "https://business.festiv.kr");
+            "https://business.festiv.kr",
+            "https://*.stamp.festiv.kr",
+            "https://*.parking.festiv.kr");
 
     @Bean
     public CorsConfigurationSource customCorsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(ALLOWED_ORIGINS);
+        configuration.setAllowedOriginPatterns(ALLOWED_ORIGINS);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "X-Requested-With"));
         configuration.setAllowCredentials(true);
