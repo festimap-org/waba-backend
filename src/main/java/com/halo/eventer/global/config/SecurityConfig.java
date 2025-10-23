@@ -128,7 +128,8 @@ public class SecurityConfig {
                 "https://m.gdsunsa.com",
                 "https://ysff.co.kr",
                 "https://jejulhfestival.stamp.festiv.kr",
-                "https://jejulhfestival.parking.festiv.kr"
+                "https://jejulhfestival.parking.festiv.kr",
+                "https://m.ysff.co.kr"
                 )
         );
         configuration.setAllowedMethods(Arrays.asList("*"));
