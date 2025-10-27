@@ -139,12 +139,15 @@ public class StampUserAdminService {
         ensureStamp(festivalId, stampId);
         final DateTimeFormatter TS_FMT = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
         final DateTimeFormatter CSV_TIME_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        final String filename = "stamp_users_%d_%s.csv".formatted(stampId, LocalDateTime.now().format(TS_FMT));
+        final String filename =
+                "stamp_users_%d_%s.csv".formatted(stampId, LocalDateTime.now().format(TS_FMT));
         final Path filePath = Paths.get(filename);
         try (BufferedWriter writer = Files.newBufferedWriter(
-                filePath, StandardCharsets.UTF_8,
-                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-             Stream<StampUser> stream = stampUserRepository.findByStampId(stampId)) {
+                        filePath,
+                        StandardCharsets.UTF_8,
+                        StandardOpenOption.CREATE,
+                        StandardOpenOption.TRUNCATE_EXISTING);
+                Stream<StampUser> stream = stampUserRepository.findByStampId(stampId)) {
             writer.write("\uFEFF");
             writer.write("UUID,전화번호,이름,참여인원,완료여부,등록일시");
             writer.newLine();
@@ -156,12 +159,13 @@ public class StampUserAdminService {
 
     private void writeRow(BufferedWriter w, StampUser s, DateTimeFormatter timeFmt) {
         try {
-            final String uuid   = nullSafe(s.getUuid());
-            final String phone  = escape(nullSafe(encryptService.decryptInfo(s.getPhone())));
-            final String name   = escape(nullSafe(encryptService.decryptInfo(s.getName())));
-            final String count  = String.valueOf(s.getParticipantCount());
-            final String done   = String.valueOf(s.isFinished());
-            final String cAt    = (s.getCreatedAt() == null) ? "" : s.getCreatedAt().format(timeFmt);
+            final String uuid = nullSafe(s.getUuid());
+            final String phone = escape(nullSafe(encryptService.decryptInfo(s.getPhone())));
+            final String name = escape(nullSafe(encryptService.decryptInfo(s.getName())));
+            final String count = String.valueOf(s.getParticipantCount());
+            final String done = String.valueOf(s.isFinished());
+            final String cAt =
+                    (s.getCreatedAt() == null) ? "" : s.getCreatedAt().format(timeFmt);
             w.write(String.join(",", uuid, phone, name, count, done, cAt));
             w.newLine();
         } catch (IOException e) {
