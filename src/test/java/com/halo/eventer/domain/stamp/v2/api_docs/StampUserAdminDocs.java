@@ -214,6 +214,22 @@ public class StampUserAdminDocs {
                         .build()));
     }
 
+    public static RestDocumentationResultHandler exportCsv() {
+        return document(
+                "v2-stampuser-export",
+                resource(builder()
+                        .tag(TAG)
+                        .summary("사용자 CSV 내보내기")
+                        .description("지정된 축제/스탬프투어의 사용자 목록을 CSV(UTF-8)로 다운로드합니다.")
+                        .pathParameters(
+                                parameterWithName("festivalId").description("축제 ID (>=1)"),
+                                parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰 (ADMIN)"))
+                        // CSV는 JSON 필드가 없으므로 responseFields 생략
+                        .responseHeaders(headerWithName("Content-Type").description("text/csv; charset=UTF-8"))
+                        .build()));
+    }
+
     // 공통 에러 문서
     public static RestDocumentationResultHandler error(String id) {
         return document(

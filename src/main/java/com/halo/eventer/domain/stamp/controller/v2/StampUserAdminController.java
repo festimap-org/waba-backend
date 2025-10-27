@@ -1,8 +1,12 @@
 package com.halo.eventer.domain.stamp.controller.v2;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
@@ -76,5 +80,12 @@ public class StampUserAdminController {
     public StampUserUserIdResDto getStampUserUuid(
             @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId, @PathVariable String uuid) {
         return stampUserAdminService.getStampUserId(festivalId, stampId, uuid);
+    }
+
+    @GetMapping(value = "/export", produces = "text/csv; charset=UTF-8")
+    public Resource exportStampUsers(@PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId)
+            throws IOException {
+        Path file = stampUserAdminService.exportStampUser(festivalId, stampId);
+        return new FileSystemResource(file);
     }
 }
