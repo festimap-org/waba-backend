@@ -1,11 +1,15 @@
 package com.halo.eventer.domain.stamp.v2.controller;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -340,6 +344,54 @@ public class StampUserAdminControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.userId").value(123))
                     .andDo(StampUserAdminDocs.getUserIdByUuid());
+        }
+    }
+
+    @Nested
+    class CSV_내보내기 {
+
+        @TempDir
+        Path tempDir;
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 성공() throws Exception {
+            String csv = "번호,UUID,전화번호,이름,참여인원,완료여부,등록일시\n" + "1,uuid-1,010-1234-5678,홍길동,2,완료,2025-10-01 12:34:56\n";
+            Path csvFile = tempDir.resolve("stamp_users.csv");
+            Files.write(csvFile, csv.getBytes(StandardCharsets.UTF_8));
+
+            given(service.exportStampUser(축제_ID, 스탬프_ID)).willReturn(csvFile);
+
+            // when & then
+            mockMvc.perform(get(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/export",
+                                    축제_ID,
+                                    스탬프_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.valueOf("text/csv; charset=UTF-8")))
+                    .andExpect(content().string(csv))
+                    .andDo(StampUserAdminDocs.exportCsv());
+        }
+
+        @Test
+        void 실패_권한없음() throws Exception {
+            mockMvc.perform(get(
+                            "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/export", 축제_ID, 스탬프_ID))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampUserAdminDocs.error("v2-stampuser-export-unauthorized"));
+        }
+
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void 실패_축제ID_검증() throws Exception {
+            mockMvc.perform(get(
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/export",
+                                    잘못된_ID,
+                                    스탬프_ID) // @Min(1) 위반
+                            .header(HttpHeaders.AUTHORIZATION, AUTH))
+                    .andExpect(status().isBadRequest())
+                    .andDo(StampUserAdminDocs.error("v2-stampuser-export-badrequest"));
         }
     }
 }

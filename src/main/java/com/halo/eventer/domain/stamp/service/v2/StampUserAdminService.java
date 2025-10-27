@@ -1,5 +1,10 @@
 package com.halo.eventer.domain.stamp.service.v2;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 
@@ -121,6 +126,34 @@ public class StampUserAdminService {
         ensureStamp(festivalId, stampId);
         StampUser stampUser = loadStampUserOrThrow(stampId, uuid);
         return new StampUserUserIdResDto(stampUser.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public Path exportStampUser(long festivalId, long stampId) throws IOException {
+        ensureStamp(festivalId, stampId);
+        List<StampUser> stampUsers = stampUserRepository.findByStampId(stampId);
+        StringBuilder csv = new StringBuilder();
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        csv.append("id,UUID,전화번호,이름,참여인원,완료여부,등록일시\n");
+        for (StampUser s : stampUsers) {
+            csv.append(s.getId())
+                    .append(',')
+                    .append(s.getUuid())
+                    .append(',')
+                    .append(encryptService.decryptInfo(s.getPhone()))
+                    .append(',')
+                    .append(encryptService.decryptInfo(s.getName()))
+                    .append(',')
+                    .append(s.getParticipantCount())
+                    .append(',')
+                    .append(s.isFinished())
+                    .append(',')
+                    .append(s.getCreatedAt().format(fmt))
+                    .append('\n');
+        }
+        Path filePath = Paths.get("stamp_users.csv");
+        Files.writeString(filePath, csv.toString());
+        return filePath;
     }
 
     private void ensureStamp(long festivalId, long stampId) {

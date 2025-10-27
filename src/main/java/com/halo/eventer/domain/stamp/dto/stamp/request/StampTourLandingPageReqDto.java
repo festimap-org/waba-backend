@@ -23,7 +23,6 @@ public class StampTourLandingPageReqDto {
     @NotEmpty
     private String iconImgUrl;
 
-    @NotEmpty
     private String description;
 
     @NotNull
