@@ -132,28 +132,37 @@ public class StampUserAdminService {
     public Path exportStampUser(long festivalId, long stampId) throws IOException {
         ensureStamp(festivalId, stampId);
         List<StampUser> stampUsers = stampUserRepository.findByStampId(stampId);
-        StringBuilder csv = new StringBuilder();
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        csv.append("id,UUID,전화번호,이름,참여인원,완료여부,등록일시\n");
+        StringBuilder csv = new StringBuilder("\uFEFF");
+        csv.append("UUID,전화번호,이름,참여인원,완료여부,등록일시\n");
+        generateCsvFromStampUsers(stampUsers, csv, fmt);
+        Path filePath = Paths.get("stamp_users_" + stampId + ".csv");
+        Files.writeString(filePath, csv.toString());
+        return filePath;
+    }
+
+    private void generateCsvFromStampUsers(List<StampUser> stampUsers, StringBuilder csv, DateTimeFormatter fmt) {
         for (StampUser s : stampUsers) {
-            csv.append(s.getId())
+            csv.append(s.getUuid())
                     .append(',')
-                    .append(s.getUuid())
+                    .append(escape(encryptService.decryptInfo(s.getPhone())))
                     .append(',')
-                    .append(encryptService.decryptInfo(s.getPhone()))
-                    .append(',')
-                    .append(encryptService.decryptInfo(s.getName()))
+                    .append(escape(encryptService.decryptInfo(s.getName())))
                     .append(',')
                     .append(s.getParticipantCount())
                     .append(',')
                     .append(s.isFinished())
                     .append(',')
-                    .append(s.getCreatedAt().format(fmt))
+                    .append(s.getCreatedAt() == null ? "" : s.getCreatedAt().format(fmt))
                     .append('\n');
         }
-        Path filePath = Paths.get("stamp_users.csv");
-        Files.writeString(filePath, csv.toString());
-        return filePath;
+    }
+
+    private String escape(String value) {
+        if (value.contains(",") || value.contains("\"")) {
+            return "\"" + value.replace("\"", "\"\"") + "\"";
+        }
+        return value;
     }
 
     private void ensureStamp(long festivalId, long stampId) {
