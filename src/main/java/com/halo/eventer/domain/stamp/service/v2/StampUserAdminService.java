@@ -1,7 +1,18 @@
 package com.halo.eventer.domain.stamp.service.v2;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -121,6 +132,59 @@ public class StampUserAdminService {
         ensureStamp(festivalId, stampId);
         StampUser stampUser = loadStampUserOrThrow(stampId, uuid);
         return new StampUserUserIdResDto(stampUser.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public Path exportStampUser(long festivalId, long stampId) throws IOException {
+        ensureStamp(festivalId, stampId);
+        final DateTimeFormatter TS_FMT = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        final DateTimeFormatter CSV_TIME_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        final String filename =
+                "stamp_users_%d_%s.csv".formatted(stampId, LocalDateTime.now().format(TS_FMT));
+        final Path filePath = Paths.get(filename);
+        try (BufferedWriter writer = Files.newBufferedWriter(
+                        filePath,
+                        StandardCharsets.UTF_8,
+                        StandardOpenOption.CREATE,
+                        StandardOpenOption.TRUNCATE_EXISTING);
+                Stream<StampUser> stream = stampUserRepository.findByStampId(stampId)) {
+            writer.write("\uFEFF");
+            writer.write("UUID,전화번호,이름,참여인원,완료여부,등록일시");
+            writer.newLine();
+            stream.forEach(s -> writeRow(writer, s, CSV_TIME_FMT));
+        }
+
+        return filePath;
+    }
+
+    private void writeRow(BufferedWriter w, StampUser s, DateTimeFormatter timeFmt) {
+        try {
+            final String uuid = nullSafe(s.getUuid());
+            final String phone = escape(nullSafe(encryptService.decryptInfo(s.getPhone())));
+            final String name = escape(nullSafe(encryptService.decryptInfo(s.getName())));
+            final String count = String.valueOf(s.getParticipantCount());
+            final String done = String.valueOf(s.isFinished());
+            final String cAt =
+                    (s.getCreatedAt() == null) ? "" : s.getCreatedAt().format(timeFmt);
+            w.write(String.join(",", uuid, phone, name, count, done, cAt));
+            w.newLine();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private String escape(String value) {
+        if (value == null || value.isEmpty()) return "";
+        boolean needQuote = value.indexOf(',') >= 0
+                || value.indexOf('"') >= 0
+                || value.indexOf('\n') >= 0
+                || value.indexOf('\r') >= 0;
+        String v = value.replace("\"", "\"\"");
+        return needQuote ? "\"" + v + "\"" : v;
+    }
+
+    private String nullSafe(String v) {
+        return (v == null) ? "" : v;
     }
 
     private void ensureStamp(long festivalId, long stampId) {

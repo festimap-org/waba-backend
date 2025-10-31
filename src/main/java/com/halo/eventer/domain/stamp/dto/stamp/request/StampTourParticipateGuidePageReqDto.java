@@ -20,12 +20,9 @@ public class StampTourParticipateGuidePageReqDto {
 
     private String mediaUrl;
 
-    @NotBlank
     private String summary;
 
-    @NotBlank
     private String details;
 
-    @NotBlank
     private String additional;
 }

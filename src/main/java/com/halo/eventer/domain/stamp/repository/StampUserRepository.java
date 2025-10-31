@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.stamp.repository;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,9 @@ public interface StampUserRepository extends JpaRepository<StampUser, Long> {
     boolean existsByStampIdAndPhone(Long stampId, String phone);
 
     Optional<StampUser> findByStampIdAndPhoneAndName(Long stampId, String phone, String name);
+
+    @Query("select su from StampUser su where su.stamp.id = :stampId")
+    Stream<StampUser> findByStampId(Long stampId);
 
     @Query(
             """
