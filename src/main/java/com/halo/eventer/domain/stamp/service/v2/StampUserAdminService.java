@@ -77,7 +77,7 @@ public class StampUserAdminService {
         List<UserMissionStatusResDto> missions = stampUser.getUserMissions().stream()
                 .sorted(Comparator.comparing(um -> um.getMission().getId()))
                 .map(um -> new UserMissionStatusResDto(
-                        um.getId(), um.getMission().getId(), um.getMission().getTitle(), um.isComplete()))
+                        um.getId(), um.getMission().getId(), um.getMission().getTitle(), um.getComplete()))
                 .toList();
 
         return new StampUserDetailResDto(
@@ -85,7 +85,7 @@ public class StampUserAdminService {
                 decryptStampUserPhone(stampUser.getPhone()),
                 stampUser.getUuid(),
                 stampUser.getReceivedPrizeName(),
-                stampUser.isFinished(),
+                stampUser.getFinished(),
                 missions,
                 stampUser.getExtraText(),
                 stampUser.getParticipantCount());
@@ -163,7 +163,7 @@ public class StampUserAdminService {
             final String phone = escape(nullSafe(encryptService.decryptInfo(s.getPhone())));
             final String name = escape(nullSafe(encryptService.decryptInfo(s.getName())));
             final String count = String.valueOf(s.getParticipantCount());
-            final String done = String.valueOf(s.isFinished());
+            final String done = String.valueOf(s.getFinished());
             final String cAt =
                     (s.getCreatedAt() == null) ? "" : s.getCreatedAt().format(timeFmt);
             w.write(String.join(",", uuid, phone, name, count, done, cAt));
@@ -227,7 +227,7 @@ public class StampUserAdminService {
                         decryptStampUserName(su.getName()),
                         decryptStampUserPhone(su.getPhone()),
                         su.getUuid(),
-                        su.isFinished(),
+                        su.getFinished(),
                         su.getCreatedAt()))
                 .toList());
 

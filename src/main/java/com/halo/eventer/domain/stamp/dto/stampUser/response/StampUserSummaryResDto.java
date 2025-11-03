@@ -24,7 +24,7 @@ public class StampUserSummaryResDto {
                 stampUser.getName(),
                 stampUser.getPhone(),
                 stampUser.getUuid(),
-                stampUser.isFinished(),
+                stampUser.getFinished(),
                 stampUser.getCreatedAt());
     }
 

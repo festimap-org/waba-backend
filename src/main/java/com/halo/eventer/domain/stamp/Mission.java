@@ -28,7 +28,7 @@ public class Mission {
     private String notClearedThumbnail;
     private Boolean showMission = true;
     private Boolean showTitle = true;
-    private int requiredSuccessCount = 1;
+    private Integer requiredSuccessCount = 1;
     private Boolean showRequiredSuccessCount = true;
 
     @ManyToOne(fetch = FetchType.LAZY)

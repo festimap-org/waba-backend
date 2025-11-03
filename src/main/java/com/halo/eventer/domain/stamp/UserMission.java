@@ -17,10 +17,9 @@ public class UserMission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private boolean complete = false;
+    private Boolean complete = false;
 
-    private int successCount = 0;
+    private Integer successCount = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stamp_user_id")

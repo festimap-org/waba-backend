@@ -21,7 +21,6 @@ public class Stamp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String title;
 
     private Boolean active = true;
@@ -29,8 +28,7 @@ public class Stamp {
     @Enumerated(EnumType.STRING)
     private JoinVerificationMethod joinVerificationMethod = JoinVerificationMethod.NONE;
 
-    @Column(nullable = false)
-    private int finishCount = 0;
+    private Integer finishCount = 0;
 
     private String prizeReceiptAuthPassword = "";
 
@@ -39,8 +37,7 @@ public class Stamp {
     @Enumerated(EnumType.STRING)
     private AuthMethod authMethod = AuthMethod.TAG_SCAN;
 
-    @Column(nullable = false)
-    private int missionCount = 0; // 미션개수
+    private Integer missionCount = 0; // 미션개수
 
     @Enumerated(EnumType.STRING)
     private MissionDetailsDesignLayout defaultDetailLayout = MissionDetailsDesignLayout.CARD;
