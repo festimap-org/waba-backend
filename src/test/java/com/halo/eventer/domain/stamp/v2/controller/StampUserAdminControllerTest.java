@@ -343,28 +343,36 @@ public class StampUserAdminControllerTest {
     @Nested
     class 전체_사용자_상태_조회 {
 
-        private StampUsersStateResDto 샘플상태() {
-            var u1 = new StampUserSummaryResDto(1L, "김수한", "010-1234-5678", "uuid-1", false, LocalDateTime.now());
-            var u2 = new StampUserSummaryResDto(2L, "박영희", "010-2222-3333", "uuid-2", true, LocalDateTime.now());
-            return StampUsersStateResDto.from(2, 2L, List.of(u1, u2));
-        }
-
         @Test
         @WithMockUser(roles = "ADMIN")
-        void 성공() throws Exception {
-            given(service.getAllStampUsers(축제_ID, 스탬프_ID)).willReturn(샘플상태());
+        void 전체_사용자_목록_성공() throws Exception {
+            var now = LocalDateTime.of(2025, 10, 1, 10, 30, 0);
+            var list = List.of(
+                    new StampUserInfoResDto(1L, "홍길동", "010-1111-2222", "uuid-1", true, 2, now),
+                    new StampUserInfoResDto(2L, "김영희", "010-3333-4444", "uuid-2", false, 1, now.minusDays(1)));
+
+            given(service.getAllStampUsers(축제_ID, 스탬프_ID)).willReturn(list);
 
             mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/all", 축제_ID, 스탬프_ID)
                             .header(HttpHeaders.AUTHORIZATION, AUTH)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.totalParticipants").value(2))
-                    .andExpect(jsonPath("$.totalFinished").value(2))
-                    .andExpect(jsonPath("$.stampUsers").isArray())
-                    .andExpect(jsonPath("$.stampUsers[0].id").value(1))
-                    .andExpect(jsonPath("$.stampUsers[0].name").value("김수한"))
-                    .andExpect(jsonPath("$.stampUsers[0].uuid").value("uuid-1"))
-                    .andDo(StampUserAdminDocs.getAllUsersState());
+                    .andExpect(jsonPath("$[0].id").value(1))
+                    .andExpect(jsonPath("$[0].name").value("홍길동"))
+                    .andExpect(jsonPath("$[0].phone").value("010-1111-2222"))
+                    .andExpect(jsonPath("$[0].uuid").value("uuid-1"))
+                    .andExpect(jsonPath("$[0].finished").value(true))
+                    .andExpect(jsonPath("$[0].participantCount").value(2))
+                    .andExpect(jsonPath("$[0].createdAt").exists())
+                    .andDo(StampUserAdminDocs.listAllUsers()); // REST Docs
+        }
+
+        @Test
+        void 전체_사용자_목록_실패_권한없음() throws Exception {
+            mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/all", 축제_ID, 스탬프_ID)
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(StampUserAdminDocs.error("v2-stampuser-all-unauthorized"));
         }
 
         @Test

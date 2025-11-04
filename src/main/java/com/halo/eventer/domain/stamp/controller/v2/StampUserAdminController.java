@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.stamp.controller.v2;
 
+import java.util.List;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 
@@ -10,10 +11,7 @@ import com.halo.eventer.domain.stamp.dto.stampUser.enums.Finished;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserInfoUpdateReqDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserUserIdResDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUsersStateResDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.response.*;
 import com.halo.eventer.domain.stamp.service.v2.StampUserAdminService;
 import com.halo.eventer.global.common.page.PagedResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +24,7 @@ public class StampUserAdminController {
     private final StampUserAdminService stampUserAdminService;
 
     @GetMapping("/all")
-    public StampUsersStateResDto getAllStampUsers(
+    public List<StampUserInfoResDto> getAllStampUsers(
             @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
         return stampUserAdminService.getAllStampUsers(festivalId, stampId);
     }
