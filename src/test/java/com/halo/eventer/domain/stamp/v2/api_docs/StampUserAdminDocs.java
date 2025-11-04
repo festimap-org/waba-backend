@@ -234,6 +234,9 @@ public class StampUserAdminDocs {
                                 fieldWithPath("[].participantCount")
                                         .type(NUMBER)
                                         .description("동반 인원 수"),
+                                fieldWithPath("[].receivedPrizeName")
+                                        .type(STRING)
+                                        .description("수령 상품 명"),
                                 fieldWithPath("[].createdAt").type(STRING).description("생성 시각 (ISO-8601)"))
                         .build()));
     }
