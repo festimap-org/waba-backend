@@ -35,9 +35,9 @@ public class StampUser extends BaseTime {
     @Column(nullable = false)
     private String name;
 
-    private boolean finished = false;
+    private Boolean finished = false;
 
-    private int participantCount = 1;
+    private Integer participantCount = 1;
 
     private String extraText;
 
@@ -109,7 +109,7 @@ public class StampUser extends BaseTime {
     }
 
     public boolean isMissionsAllCompleted() {
-        return userMissions.stream().allMatch(UserMission::isComplete);
+        return userMissions.stream().allMatch(UserMission::getComplete);
     }
 
     public void completeUserMission(Long userMissionId) {
@@ -121,7 +121,7 @@ public class StampUser extends BaseTime {
     }
 
     public boolean canFinishTour() {
-        long completed = userMissions.stream().filter(UserMission::isComplete).count();
+        long completed = userMissions.stream().filter(UserMission::getComplete).count();
         if (completed >= stamp.getFinishCount()) {
             finished = true;
             return true;
