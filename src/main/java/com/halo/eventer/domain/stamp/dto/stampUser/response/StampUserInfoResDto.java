@@ -18,6 +18,7 @@ public class StampUserInfoResDto {
     private String uuid;
     private Boolean finished;
     private Integer participantCount;
+    private String receivedPrizeName;
     private LocalDateTime createdAt;
 
     public static StampUserInfoResDto from(StampUser stampUser) {
@@ -28,6 +29,7 @@ public class StampUserInfoResDto {
                 stampUser.getUuid(),
                 stampUser.getFinished(),
                 stampUser.getParticipantCount(),
+                stampUser.getReceivedPrizeName(),
                 stampUser.getCreatedAt());
     }
 

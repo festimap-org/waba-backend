@@ -348,8 +348,8 @@ public class StampUserAdminControllerTest {
         void 전체_사용자_목록_성공() throws Exception {
             var now = LocalDateTime.of(2025, 10, 1, 10, 30, 0);
             var list = List.of(
-                    new StampUserInfoResDto(1L, "홍길동", "010-1111-2222", "uuid-1", true, 2, now),
-                    new StampUserInfoResDto(2L, "김영희", "010-3333-4444", "uuid-2", false, 1, now.minusDays(1)));
+                    new StampUserInfoResDto(1L, "홍길동", "010-1111-2222", "uuid-1", true, 2, "티셔츠",now),
+                    new StampUserInfoResDto(2L, "김영희", "010-3333-4444", "uuid-2", false, 1, "티셔츠",now.minusDays(1)));
 
             given(service.getAllStampUsers(축제_ID, 스탬프_ID)).willReturn(list);
 
@@ -363,6 +363,7 @@ public class StampUserAdminControllerTest {
                     .andExpect(jsonPath("$[0].uuid").value("uuid-1"))
                     .andExpect(jsonPath("$[0].finished").value(true))
                     .andExpect(jsonPath("$[0].participantCount").value(2))
+                    .andExpect(jsonPath("$[0].receivedPrizeName").value("티셔츠"))
                     .andExpect(jsonPath("$[0].createdAt").exists())
                     .andDo(StampUserAdminDocs.listAllUsers()); // REST Docs
         }
