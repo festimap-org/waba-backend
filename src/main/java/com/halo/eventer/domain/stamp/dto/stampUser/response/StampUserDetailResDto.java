@@ -13,7 +13,7 @@ public class StampUserDetailResDto {
     private String name;
     private String phone;
     private String uuid;
-    private String prizeName;
+    private String receivedPrizeName;
     private boolean finished;
     private List<UserMissionStatusResDto> missions;
     private String extraText;
