@@ -214,30 +214,27 @@ public class StampUserAdminDocs {
                         .build()));
     }
 
-    public static RestDocumentationResultHandler getAllUsersState() {
+    public static RestDocumentationResultHandler listAllUsers() {
         return document(
                 "v2-stampuser-all",
                 resource(builder()
                         .tag(TAG)
-                        .summary("전체 사용자 상태 조회(총 참여자/완료 수 + 요약 목록)")
+                        .summary("전체 사용자 목록(간단 정보) 조회")
+                        .description("특정 스탬프투어의 모든 사용자 간략 정보를 배열로 반환합니다.")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
                                 parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
-                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰 (ADMIN)"))
                         .responseFields(
-                                fieldWithPath("totalParticipants").type(NUMBER).description("총 참여 인원"),
-                                fieldWithPath("totalFinished").type(NUMBER).description("총 완료 인원"),
-                                fieldWithPath("stampUsers").type(ARRAY).description("사용자 요약 목록"),
-                                fieldWithPath("stampUsers[].id").type(NUMBER).description("사용자 ID"),
-                                fieldWithPath("stampUsers[].name").type(STRING).description("이름"),
-                                fieldWithPath("stampUsers[].phone").type(STRING).description("전화번호"),
-                                fieldWithPath("stampUsers[].uuid").type(STRING).description("UUID"),
-                                fieldWithPath("stampUsers[].finished")
-                                        .type(BOOLEAN)
-                                        .description("투어 완료 여부"),
-                                fieldWithPath("stampUsers[].createdAt")
-                                        .type(STRING)
-                                        .description("생성 시각 (ISO-8601, 예: 2025-09-01T10:15:30)"))
+                                fieldWithPath("[].id").type(NUMBER).description("사용자 ID"),
+                                fieldWithPath("[].name").type(STRING).description("이름(복호화된 값일 수도 있음)"),
+                                fieldWithPath("[].phone").type(STRING).description("전화번호(복호화된 값일 수도 있음)"),
+                                fieldWithPath("[].uuid").type(STRING).description("UUID"),
+                                fieldWithPath("[].finished").type(BOOLEAN).description("투어 완료 여부"),
+                                fieldWithPath("[].participantCount")
+                                        .type(NUMBER)
+                                        .description("동반 인원 수"),
+                                fieldWithPath("[].createdAt").type(STRING).description("생성 시각 (ISO-8601)"))
                         .build()));
     }
 

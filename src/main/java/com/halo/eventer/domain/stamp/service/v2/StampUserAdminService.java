@@ -40,12 +40,10 @@ public class StampUserAdminService {
     private final EncryptService encryptService;
 
     @Transactional(readOnly = true)
-    public StampUsersStateResDto getAllStampUsers(long festivalId, long stampId) {
+    public List<StampUserInfoResDto> getAllStampUsers(long festivalId, long stampId) {
         ensureStamp(festivalId, stampId);
         List<StampUser> stampUsers = stampUserRepository.findAllByStampId(stampId);
-        long totalFinished = stampUsers.stream().filter(StampUser::getFinished).count();
-        List<StampUserSummaryResDto> stampUserSummaries = StampUserSummaryResDto.fromEntities(stampUsers);
-        return StampUsersStateResDto.from(stampUsers.size(), totalFinished, stampUserSummaries);
+        return StampUserInfoResDto.fromEntities(stampUsers);
     }
 
     @Transactional(readOnly = true)
