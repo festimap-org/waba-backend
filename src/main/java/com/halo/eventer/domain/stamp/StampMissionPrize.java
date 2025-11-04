@@ -16,7 +16,7 @@ public class StampMissionPrize {
     private Long id;
 
     @Column(name = "required_count", nullable = false)
-    private int requiredCount;
+    private Integer requiredCount;
 
     @Column(nullable = false, length = 1000)
     private String description;

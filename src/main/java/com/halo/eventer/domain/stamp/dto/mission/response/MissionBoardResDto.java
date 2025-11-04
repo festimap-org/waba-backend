@@ -19,7 +19,7 @@ public class MissionBoardResDto {
 
     public static MissionBoardResDto from(List<UserMission> list, boolean finished) {
         int total = list.size();
-        int done = (int) list.stream().filter(UserMission::isComplete).count();
+        int done = (int) list.stream().filter(UserMission::getComplete).count();
         return new MissionBoardResDto(
                 done,
                 total,

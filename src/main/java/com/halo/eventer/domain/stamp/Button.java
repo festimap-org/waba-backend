@@ -16,7 +16,7 @@ public class Button {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int sequenceIndex;
+    private Integer sequenceIndex;
 
     private String content;
 
