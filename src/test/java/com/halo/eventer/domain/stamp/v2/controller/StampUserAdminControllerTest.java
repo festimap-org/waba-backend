@@ -1,15 +1,11 @@
 package com.halo.eventer.domain.stamp.v2.controller;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,10 +24,7 @@ import com.halo.eventer.domain.stamp.dto.stampUser.enums.Finished;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserInfoUpdateReqDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserUserIdResDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.response.UserMissionStatusResDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.response.*;
 import com.halo.eventer.domain.stamp.service.v2.StampUserAdminService;
 import com.halo.eventer.domain.stamp.v2.api_docs.StampUserAdminDocs;
 import com.halo.eventer.global.common.page.PageInfo;
@@ -348,50 +341,49 @@ public class StampUserAdminControllerTest {
     }
 
     @Nested
-    class CSV_내보내기 {
+    class 전체_사용자_상태_조회 {
 
-        @TempDir
-        Path tempDir;
+        private StampUsersStateResDto 샘플상태() {
+            var u1 = new StampUserSummaryResDto(1L, "김수한", "010-1234-5678", "uuid-1", false, LocalDateTime.now());
+            var u2 = new StampUserSummaryResDto(2L, "박영희", "010-2222-3333", "uuid-2", true, LocalDateTime.now());
+            return StampUsersStateResDto.from(2, 2L, List.of(u1, u2));
+        }
 
         @Test
         @WithMockUser(roles = "ADMIN")
         void 성공() throws Exception {
-            String csv = "번호,UUID,전화번호,이름,참여인원,완료여부,등록일시\n" + "1,uuid-1,010-1234-5678,홍길동,2,완료,2025-10-01 12:34:56\n";
-            Path csvFile = tempDir.resolve("stamp_users.csv");
-            Files.write(csvFile, csv.getBytes(StandardCharsets.UTF_8));
+            given(service.getAllStampUsers(축제_ID, 스탬프_ID)).willReturn(샘플상태());
 
-            given(service.exportStampUser(축제_ID, 스탬프_ID)).willReturn(csvFile);
-
-            // when & then
-            mockMvc.perform(get(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/export",
-                                    축제_ID,
-                                    스탬프_ID)
-                            .header(HttpHeaders.AUTHORIZATION, AUTH))
+            mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/all", 축제_ID, 스탬프_ID)
+                            .header(HttpHeaders.AUTHORIZATION, AUTH)
+                            .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.valueOf("text/csv; charset=UTF-8")))
-                    .andExpect(content().string(csv))
-                    .andDo(StampUserAdminDocs.exportCsv());
+                    .andExpect(jsonPath("$.totalParticipants").value(2))
+                    .andExpect(jsonPath("$.totalFinished").value(2))
+                    .andExpect(jsonPath("$.stampUsers").isArray())
+                    .andExpect(jsonPath("$.stampUsers[0].id").value(1))
+                    .andExpect(jsonPath("$.stampUsers[0].name").value("김수한"))
+                    .andExpect(jsonPath("$.stampUsers[0].uuid").value("uuid-1"))
+                    .andDo(StampUserAdminDocs.getAllUsersState());
         }
 
         @Test
         void 실패_권한없음() throws Exception {
-            mockMvc.perform(get(
-                            "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/export", 축제_ID, 스탬프_ID))
+            mockMvc.perform(get("/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/all", 축제_ID, 스탬프_ID))
                     .andExpect(status().isUnauthorized())
-                    .andDo(StampUserAdminDocs.error("v2-stampuser-export-unauthorized"));
+                    .andDo(StampUserAdminDocs.error("v2-stampuser-all-unauthorized"));
         }
 
         @Test
         @WithMockUser(roles = "ADMIN")
-        void 실패_축제ID_검증() throws Exception {
+        void 실패_경로파라미터_검증() throws Exception {
             mockMvc.perform(get(
-                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/export",
+                                    "/api/v2/admin/festivals/{festivalId}/stamp-tours/{stampId}/users/all",
                                     잘못된_ID,
-                                    스탬프_ID) // @Min(1) 위반
+                                    스탬프_ID) // festivalId = 0 → @Min(1) 위반
                             .header(HttpHeaders.AUTHORIZATION, AUTH))
                     .andExpect(status().isBadRequest())
-                    .andDo(StampUserAdminDocs.error("v2-stampuser-export-badrequest"));
+                    .andDo(StampUserAdminDocs.error("v2-stampuser-all-badrequest"));
         }
     }
 }

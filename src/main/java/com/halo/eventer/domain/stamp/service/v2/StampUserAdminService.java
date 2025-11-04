@@ -1,18 +1,7 @@
 package com.halo.eventer.domain.stamp.service.v2;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,10 +18,7 @@ import com.halo.eventer.domain.stamp.dto.stampUser.enums.Finished;
 import com.halo.eventer.domain.stamp.dto.stampUser.enums.SortType;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.MissionCompletionUpdateReq;
 import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserInfoUpdateReqDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserUserIdResDto;
-import com.halo.eventer.domain.stamp.dto.stampUser.response.UserMissionStatusResDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.response.*;
 import com.halo.eventer.domain.stamp.exception.StampNotFoundException;
 import com.halo.eventer.domain.stamp.exception.StampUserNotFoundException;
 import com.halo.eventer.domain.stamp.exception.UserMissionNotFoundException;
@@ -52,6 +38,15 @@ public class StampUserAdminService {
     private final StampRepository stampRepository;
     private final StampUserRepository stampUserRepository;
     private final EncryptService encryptService;
+
+    @Transactional(readOnly = true)
+    public StampUsersStateResDto getAllStampUsers(long festivalId, long stampId) {
+        ensureStamp(festivalId, stampId);
+        List<StampUser> stampUsers = stampUserRepository.findAllByStampId(stampId);
+        long totalFinished = stampUsers.stream().filter(StampUser::getFinished).count();
+        List<StampUserSummaryResDto> stampUserSummaries = StampUserSummaryResDto.fromEntities(stampUsers);
+        return StampUsersStateResDto.from(stampUsers.size(), totalFinished, stampUserSummaries);
+    }
 
     @Transactional(readOnly = true)
     public PagedResponse<StampUserSummaryResDto> getStampUsers(
@@ -132,59 +127,6 @@ public class StampUserAdminService {
         ensureStamp(festivalId, stampId);
         StampUser stampUser = loadStampUserOrThrow(stampId, uuid);
         return new StampUserUserIdResDto(stampUser.getId());
-    }
-
-    @Transactional(readOnly = true)
-    public Path exportStampUser(long festivalId, long stampId) throws IOException {
-        ensureStamp(festivalId, stampId);
-        final DateTimeFormatter TS_FMT = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-        final DateTimeFormatter CSV_TIME_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        final String filename =
-                "stamp_users_%d_%s.csv".formatted(stampId, LocalDateTime.now().format(TS_FMT));
-        final Path filePath = Paths.get(filename);
-        try (BufferedWriter writer = Files.newBufferedWriter(
-                        filePath,
-                        StandardCharsets.UTF_8,
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.TRUNCATE_EXISTING);
-                Stream<StampUser> stream = stampUserRepository.findByStampId(stampId)) {
-            writer.write("\uFEFF");
-            writer.write("UUID,전화번호,이름,참여인원,완료여부,등록일시");
-            writer.newLine();
-            stream.forEach(s -> writeRow(writer, s, CSV_TIME_FMT));
-        }
-
-        return filePath;
-    }
-
-    private void writeRow(BufferedWriter w, StampUser s, DateTimeFormatter timeFmt) {
-        try {
-            final String uuid = nullSafe(s.getUuid());
-            final String phone = escape(nullSafe(encryptService.decryptInfo(s.getPhone())));
-            final String name = escape(nullSafe(encryptService.decryptInfo(s.getName())));
-            final String count = String.valueOf(s.getParticipantCount());
-            final String done = String.valueOf(s.getFinished());
-            final String cAt =
-                    (s.getCreatedAt() == null) ? "" : s.getCreatedAt().format(timeFmt);
-            w.write(String.join(",", uuid, phone, name, count, done, cAt));
-            w.newLine();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    private String escape(String value) {
-        if (value == null || value.isEmpty()) return "";
-        boolean needQuote = value.indexOf(',') >= 0
-                || value.indexOf('"') >= 0
-                || value.indexOf('\n') >= 0
-                || value.indexOf('\r') >= 0;
-        String v = value.replace("\"", "\"\"");
-        return needQuote ? "\"" + v + "\"" : v;
-    }
-
-    private String nullSafe(String v) {
-        return (v == null) ? "" : v;
     }
 
     private void ensureStamp(long festivalId, long stampId) {

@@ -1,12 +1,8 @@
 package com.halo.eventer.domain.stamp.controller.v2;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import com.halo.eventer.domain.stamp.dto.mission.request.MissionClearReqDto;
@@ -17,6 +13,7 @@ import com.halo.eventer.domain.stamp.dto.stampUser.request.StampUserInfoUpdateRe
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserDetailResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserSummaryResDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUserUserIdResDto;
+import com.halo.eventer.domain.stamp.dto.stampUser.response.StampUsersStateResDto;
 import com.halo.eventer.domain.stamp.service.v2.StampUserAdminService;
 import com.halo.eventer.global.common.page.PagedResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +24,12 @@ import lombok.RequiredArgsConstructor;
 public class StampUserAdminController {
 
     private final StampUserAdminService stampUserAdminService;
+
+    @GetMapping("/all")
+    public StampUsersStateResDto getAllStampUsers(
+            @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
+        return stampUserAdminService.getAllStampUsers(festivalId, stampId);
+    }
 
     @GetMapping
     public PagedResponse<StampUserSummaryResDto> getStampUsersFiltered(
@@ -80,12 +83,5 @@ public class StampUserAdminController {
     public StampUserUserIdResDto getStampUserUuid(
             @PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId, @PathVariable String uuid) {
         return stampUserAdminService.getStampUserId(festivalId, stampId, uuid);
-    }
-
-    @GetMapping(value = "/export", produces = "text/csv; charset=UTF-8")
-    public Resource exportStampUsers(@PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId)
-            throws IOException {
-        Path file = stampUserAdminService.exportStampUser(festivalId, stampId);
-        return new FileSystemResource(file);
     }
 }

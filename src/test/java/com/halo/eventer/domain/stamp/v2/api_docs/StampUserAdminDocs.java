@@ -214,19 +214,30 @@ public class StampUserAdminDocs {
                         .build()));
     }
 
-    public static RestDocumentationResultHandler exportCsv() {
+    public static RestDocumentationResultHandler getAllUsersState() {
         return document(
-                "v2-stampuser-export",
+                "v2-stampuser-all",
                 resource(builder()
                         .tag(TAG)
-                        .summary("사용자 CSV 내보내기")
-                        .description("지정된 축제/스탬프투어의 사용자 목록을 CSV(UTF-8)로 다운로드합니다.")
+                        .summary("전체 사용자 상태 조회(총 참여자/완료 수 + 요약 목록)")
                         .pathParameters(
                                 parameterWithName("festivalId").description("축제 ID (>=1)"),
                                 parameterWithName("stampId").description("스탬프투어 ID (>=1)"))
-                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰 (ADMIN)"))
-                        // CSV는 JSON 필드가 없으므로 responseFields 생략
-                        .responseHeaders(headerWithName("Content-Type").description("text/csv; charset=UTF-8"))
+                        .requestHeaders(headerWithName("Authorization").description("JWT Access 토큰"))
+                        .responseFields(
+                                fieldWithPath("totalParticipants").type(NUMBER).description("총 참여 인원"),
+                                fieldWithPath("totalFinished").type(NUMBER).description("총 완료 인원"),
+                                fieldWithPath("stampUsers").type(ARRAY).description("사용자 요약 목록"),
+                                fieldWithPath("stampUsers[].id").type(NUMBER).description("사용자 ID"),
+                                fieldWithPath("stampUsers[].name").type(STRING).description("이름"),
+                                fieldWithPath("stampUsers[].phone").type(STRING).description("전화번호"),
+                                fieldWithPath("stampUsers[].uuid").type(STRING).description("UUID"),
+                                fieldWithPath("stampUsers[].finished")
+                                        .type(BOOLEAN)
+                                        .description("투어 완료 여부"),
+                                fieldWithPath("stampUsers[].createdAt")
+                                        .type(STRING)
+                                        .description("생성 시각 (ISO-8601, 예: 2025-09-01T10:15:30)"))
                         .build()));
     }
 
