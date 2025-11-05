@@ -43,7 +43,7 @@ public class StampUserAdminService {
     public List<StampUserInfoResDto> getAllStampUsers(long festivalId, long stampId) {
         ensureStamp(festivalId, stampId);
         List<StampUser> stampUsers = stampUserRepository.findAllByStampId(stampId);
-        return StampUserInfoResDto.fromEntities(stampUsers);
+        return decryptStampUserInfo(stampUsers);
     }
 
     @Transactional(readOnly = true)
@@ -152,6 +152,20 @@ public class StampUserAdminService {
         return stampUserRepository
                 .findByIdAndStampIdWithMissions(userId, stampId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+    }
+
+    private List<StampUserInfoResDto> decryptStampUserInfo(List<StampUser> stampUsers) {
+        return stampUsers.stream()
+                .map(stampUser -> new StampUserInfoResDto(
+                        stampUser.getId(),
+                        encryptService.decryptInfo(stampUser.getName()),
+                        encryptService.decryptInfo(stampUser.getPhone()),
+                        stampUser.getUuid(),
+                        stampUser.getFinished(),
+                        stampUser.getParticipantCount(),
+                        stampUser.getReceivedPrizeName(),
+                        stampUser.getCreatedAt()))
+                .toList();
     }
 
     private Page<StampUser> selectQueryBySearchTerm(long stampId, String q, Boolean cleared, Pageable pageable) {
