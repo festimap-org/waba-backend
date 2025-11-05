@@ -158,8 +158,8 @@ public class StampUserAdminService {
         return stampUsers.stream()
                 .map(stampUser -> new StampUserInfoResDto(
                         stampUser.getId(),
-                        encryptService.decryptInfo(stampUser.getName()),
-                        encryptService.decryptInfo(stampUser.getPhone()),
+                        decryptStampUserName(stampUser.getName()),
+                        decryptStampUserPhone(stampUser.getPhone()),
                         stampUser.getUuid(),
                         stampUser.getFinished(),
                         stampUser.getParticipantCount(),
