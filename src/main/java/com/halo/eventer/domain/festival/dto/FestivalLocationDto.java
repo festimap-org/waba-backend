@@ -19,12 +19,14 @@ public class FestivalLocationDto {
     public FestivalLocationDto(double longitude, double latitude) {}
 
     public FestivalLocationDto(Festival festival) {
-        this.sido = festival.getAddress().getSido();
-        this.sigungu = festival.getAddress().getSigungu();
-        this.dongmyun = festival.getAddress().getDongmyun();
-        this.roadName = festival.getAddress().getRoadName();
-        this.roadNumber = festival.getAddress().getRoadNumber();
-        this.buildingName = festival.getAddress().getBuildingName();
+        if (festival.getAddress() != null) {
+            this.sido = festival.getAddress().getSido();
+            this.sigungu = festival.getAddress().getSigungu();
+            this.dongmyun = festival.getAddress().getDongmyun();
+            this.roadName = festival.getAddress().getRoadName();
+            this.roadNumber = festival.getAddress().getRoadNumber();
+            this.buildingName = festival.getAddress().getBuildingName();
+        }
         this.longitude = festival.getLongitude();
         this.latitude = festival.getLatitude();
     }
