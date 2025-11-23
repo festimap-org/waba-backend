@@ -19,7 +19,7 @@ public class FestivalLocationDto {
     public FestivalLocationDto(double longitude, double latitude) {}
 
     public FestivalLocationDto(Festival festival) {
-        if(festival.getAddress() != null) {
+        if (festival.getAddress() != null) {
             this.sido = festival.getAddress().getSido();
             this.sigungu = festival.getAddress().getSigungu();
             this.dongmyun = festival.getAddress().getDongmyun();
