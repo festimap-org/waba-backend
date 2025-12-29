@@ -12,11 +12,13 @@ import com.halo.eventer.domain.stamp.dto.mission.request.MissionSetReqDto;
 import com.halo.eventer.domain.stamp.dto.mission.response.MissionDetailGetResDto;
 import com.halo.eventer.domain.stamp.dto.mission.response.MissionSummaryResDto;
 import com.halo.eventer.domain.stamp.service.MissionService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/stamp/mission")
+@Hidden
 public class MissionController {
 
     private final MissionService missionService;

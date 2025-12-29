@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StampMissionBasicSettingsResDto {
-    private int missionCount;
+    private Integer missionCount;
     private MissionDetailsDesignLayout missionDetailsDesignLayout;
     private List<MissionPrizeResDto> prizes;
 

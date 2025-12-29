@@ -117,7 +117,7 @@ public class StampUserAdminService {
         ensureStamp(festivalId, stampId);
         StampUser su = loadUserWithMissionsOrThrow(stampId, userId);
         su.markAsFinished(request.isFinished());
-        su.updateReceivedPrizeName(request.getPrizeName());
+        su.updateReceivedPrizeName(request.getReceivedPrizeName());
     }
 
     @Transactional(readOnly = true)
