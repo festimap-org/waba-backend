@@ -13,5 +13,5 @@ public class MissionCompletionUpdateReq {
     @NotNull
     private boolean finished;
 
-    private String prizeName;
+    private String receivedPrizeName;
 }

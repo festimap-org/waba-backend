@@ -8,6 +8,7 @@ import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.AuthMethod;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.JoinVerificationMethod;
 import com.halo.eventer.domain.stamp.dto.stamp.enums.MissionDetailsDesignLayout;
+import com.halo.eventer.domain.stamp.dto.stamp.enums.PrizeExchangeImgType;
 import com.halo.eventer.domain.stamp.exception.StampClosedException;
 import com.halo.eventer.domain.stamp.exception.StampNotInFestivalException;
 import lombok.Getter;
@@ -37,7 +38,20 @@ public class Stamp {
     @Enumerated(EnumType.STRING)
     private AuthMethod authMethod = AuthMethod.TAG_SCAN;
 
-    private Integer missionCount = 0; // 미션개수
+    private Integer missionCount = 0;
+
+    private Integer maxParticipantCount = 1;
+
+    @Column(columnDefinition = "TEXT")
+    private String extraInfoTemplate;
+
+    private String mainColor;
+    private String subColor;
+    private String backgroundColor;
+    private String backgroundSubColor;
+
+    private PrizeExchangeImgType prizeExchangeImgType = PrizeExchangeImgType.DEFAULT;
+    private String prizeExchangeCustomImgUrl;
 
     @Enumerated(EnumType.STRING)
     private MissionDetailsDesignLayout defaultDetailLayout = MissionDetailsDesignLayout.CARD;
@@ -100,11 +114,22 @@ public class Stamp {
     }
 
     public void changeBasicSettings(
-            boolean activation, String newTitle, AuthMethod authMethod, String prizeReceiptAuthPassword) {
+            boolean activation,
+            String newTitle,
+            AuthMethod authMethod,
+            String prizeReceiptAuthPassword,
+            String mainColor,
+            String subColor,
+            String backgroundColor,
+            String backgroundSubColor) {
         this.title = newTitle;
         this.active = activation;
         this.authMethod = authMethod;
         this.prizeReceiptAuthPassword = prizeReceiptAuthPassword;
+        this.mainColor = mainColor;
+        this.subColor = subColor;
+        this.backgroundColor = backgroundColor;
+        this.backgroundSubColor = backgroundSubColor;
     }
 
     public void ensureStampInFestival(long festivalId) {
@@ -113,8 +138,11 @@ public class Stamp {
         }
     }
 
-    public void updateJoinMethod(JoinVerificationMethod method) {
+    public void updateJoinCondition(
+            JoinVerificationMethod method, Integer maxParticipantCount, String extraInfoTemplate) {
         this.joinVerificationMethod = method;
+        this.maxParticipantCount = maxParticipantCount;
+        this.extraInfoTemplate = extraInfoTemplate;
     }
 
     public boolean willShowStamp() {
@@ -124,6 +152,15 @@ public class Stamp {
     public void updateBasic(int missionCount, MissionDetailsDesignLayout layout) {
         this.missionCount = missionCount;
         this.defaultDetailLayout = layout;
+    }
+
+    public void updatePrizeTicketImg(PrizeExchangeImgType prizeExchangeImgType, String prizeExchangeCustomImgUrl) {
+        if (prizeExchangeImgType.equals(PrizeExchangeImgType.DEFAULT)) {
+            this.prizeExchangeImgType = prizeExchangeImgType;
+            return;
+        }
+        this.prizeExchangeImgType = prizeExchangeImgType;
+        this.prizeExchangeCustomImgUrl = prizeExchangeCustomImgUrl;
     }
 
     public void toggleShowStamp(boolean showStamp) {

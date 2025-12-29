@@ -40,8 +40,8 @@ public class StampTourAdminController {
     public void updateStampTourVerificationMethod(
             @PathVariable @Min(1) long festivalId,
             @PathVariable @Min(1) long stampId,
-            @RequestBody @Valid StampTourJoinVerificationReqDto request) {
-        stampTourAdminService.updateJoinVerification(festivalId, stampId, request);
+            @Valid @RequestBody StampTourJoinConditionReqDto request) {
+        stampTourAdminService.updateJoinCondition(festivalId, stampId, request);
     }
 
     @DeleteMapping("/{stampId}")

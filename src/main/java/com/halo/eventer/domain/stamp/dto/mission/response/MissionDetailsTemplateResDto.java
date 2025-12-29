@@ -17,8 +17,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MissionDetailsTemplateResDto {
     private MissionDetailsDesignLayout missionDetailsDesignLayout;
-
-    private boolean showMissionTitle;
     private String missionTitle;
 
     private boolean showSuccessCount;
@@ -38,7 +36,6 @@ public class MissionDetailsTemplateResDto {
             MissionDetailsTemplate template, boolean showTitle, boolean showSuccessCount, String missionName) {
         return new MissionDetailsTemplateResDto(
                 template.getDesignLayout(),
-                showTitle,
                 missionName,
                 showSuccessCount,
                 template.getMediaSpec(),

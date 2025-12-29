@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import com.halo.eventer.domain.stamp.dto.stamp.StampUsersGetDto;
 import com.halo.eventer.domain.stamp.dto.stampUser.*;
 import com.halo.eventer.domain.stamp.service.StampUserService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/stamp/user")
+@Hidden
 public class StampUserController {
     private final StampUserService stampUserService;
 
