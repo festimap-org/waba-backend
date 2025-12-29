@@ -9,5 +9,7 @@ public enum MissionDetailsDesignLayout {
     CARD,
     IMAGE_TOP,
     IMAGE_SIDE,
-    TEXT_ONLY;
+    TEXT_ONLY,
+    TEMPLATE_1,
+    TEMPLATE_2;
 }

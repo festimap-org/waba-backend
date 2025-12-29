@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import com.halo.eventer.domain.stamp.dto.mission.response.MissionSummaryResDto;
 import com.halo.eventer.domain.stamp.dto.stamp.*;
 import com.halo.eventer.domain.stamp.service.StampService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/stamp")
+@Hidden
 public class StampController {
 
     private final StampService stampService;

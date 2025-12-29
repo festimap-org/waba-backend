@@ -10,7 +10,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StampTourJoinVerificationReqDto {
+public class StampTourJoinConditionReqDto {
     @NotNull
     private JoinVerificationMethod joinVerificationMethod;
+
+    private Integer maxParticipantCount;
+    private String extraInfoTemplate;
 }

@@ -10,10 +10,7 @@ import lombok.NoArgsConstructor;
 public class StampUserSignupReqDto {
 
     private String name;
-
     private String phone;
-
     private Integer participantCount;
-
     private String extraText;
 }

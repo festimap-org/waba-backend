@@ -21,6 +21,9 @@ public class StampTourBasicUpdateReqDto {
     @NotNull
     private AuthMethod authMethod;
 
-    @NotBlank
     private String prizeReceiptAuthPassword;
+    private String mainColor;
+    private String subColor;
+    private String backgroundColor;
+    private String backgroundSubColor;
 }

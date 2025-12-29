@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.stamp.dto.stamp.enums;
 
 public enum ExtraInfoLayout {
-    LIST
+    LIST,
+    NO_TITLE
 }

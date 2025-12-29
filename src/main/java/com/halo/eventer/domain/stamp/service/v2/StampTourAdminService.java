@@ -70,9 +70,10 @@ public class StampTourAdminService {
     }
 
     @Transactional
-    public void updateJoinVerification(long festivalId, long stampId, StampTourJoinVerificationReqDto request) {
+    public void updateJoinCondition(long festivalId, long stampId, StampTourJoinConditionReqDto request) {
         Stamp stamp = ensureStamp(festivalId, stampId);
-        stamp.updateJoinMethod(request.getJoinVerificationMethod());
+        stamp.updateJoinCondition(
+                request.getJoinVerificationMethod(), request.getMaxParticipantCount(), request.getExtraInfoTemplate());
     }
 
     @Transactional(readOnly = true)
@@ -88,7 +89,11 @@ public class StampTourAdminService {
                 request.getStampActivate(),
                 request.getTitle(),
                 request.getAuthMethod(),
-                request.getPrizeReceiptAuthPassword());
+                request.getPrizeReceiptAuthPassword(),
+                request.getMainColor(),
+                request.getSubColor(),
+                request.getBackgroundColor(),
+                request.getBackgroundSubColor());
     }
 
     @Transactional

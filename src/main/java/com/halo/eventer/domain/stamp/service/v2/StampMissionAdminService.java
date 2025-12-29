@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.halo.eventer.domain.stamp.*;
 import com.halo.eventer.domain.stamp.dto.mission.request.*;
 import com.halo.eventer.domain.stamp.dto.mission.response.*;
+import com.halo.eventer.domain.stamp.dto.stamp.request.PrizeExchangeImgReqDto;
 import com.halo.eventer.domain.stamp.exception.*;
 import com.halo.eventer.domain.stamp.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -49,10 +50,24 @@ public class StampMissionAdminService {
     }
 
     @Transactional
-    public void toggleMissionShowing(long festivalId, long stampId, long missionId, boolean show) {
+    public void showMissionsTrue(long festivalId, long stampId, MissionsAllShowReqDto request) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        List<Mission> missions = loadAllMissions(stampId);
+        missions.forEach(mission -> mission.updateMissionShow(request.getShowMissions()));
+    }
+
+    @Transactional
+    public void toggleMissionShowing(long festivalId, long stampId, long missionId, MissionShowReqDto request) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         Mission mission = loadMissionOrThrow(stampId, missionId);
-        mission.updateMissionShow(show);
+        mission.updateMissionShow(request.isShowMission());
+    }
+
+    @Transactional(readOnly = true)
+    public MissionShowResDto showMission(long festivalId, long stampId, long missionId) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        Mission mission = loadMissionOrThrow(stampId, missionId);
+        return MissionShowResDto.from(mission);
     }
 
     @Transactional
@@ -87,6 +102,12 @@ public class StampMissionAdminService {
         Stamp stamp = ensureStamp(festivalId, stampId);
         StampMissionPrize prize = loadStampMissionPrizeOrThrow(prizeId, stampId);
         prize.update(request.getRequiredCount(), request.getPrizeDescription());
+    }
+
+    @Transactional
+    public void updatePrizeTicketImg(long festivalId, long stampId, final PrizeExchangeImgReqDto request) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        stamp.updatePrizeTicketImg(request.getPrizeExchangeImgType(), request.getCustomExchangeImgUrl());
     }
 
     @Transactional
@@ -133,7 +154,6 @@ public class StampMissionAdminService {
         Mission mission = loadMissionOrThrow(stampId, missionId);
         MissionDetailsTemplate template = loadMissionDetailsTemplate(mission);
         mission.updateTitle(request.getMissionTitle());
-        mission.updateTitleVisible(request.isShowMissionTitle());
         mission.updateRequiredSuccessCountVisible(request.isShowSuccessCount());
         template.update(
                 request.getMissionDetailsDesignLayout(),

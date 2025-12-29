@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.halo.eventer.domain.stamp.dto.mission.request.*;
 import com.halo.eventer.domain.stamp.dto.mission.response.*;
+import com.halo.eventer.domain.stamp.dto.stamp.request.PrizeExchangeImgReqDto;
 import com.halo.eventer.domain.stamp.service.v2.StampMissionAdminService;
 import lombok.RequiredArgsConstructor;
 
@@ -39,13 +40,29 @@ public class StampMissionAdminController {
         stampMissionAdminService.deleteMission(festivalId, stampId, missionId);
     }
 
+    @PatchMapping("/show")
+    public void showMissions(
+            @PathVariable @Min(1) long festivalId,
+            @PathVariable @Min(1) long stampId,
+            @Valid @RequestBody MissionsAllShowReqDto request) {
+        stampMissionAdminService.showMissionsTrue(festivalId, stampId, request);
+    }
+
     @PatchMapping("/{missionId}/show")
     public void toggleMissionShowing(
             @PathVariable @Min(1) long festivalId,
             @PathVariable @Min(1) long stampId,
             @PathVariable @Min(1) long missionId,
             @RequestBody @Valid MissionShowReqDto request) {
-        stampMissionAdminService.toggleMissionShowing(festivalId, stampId, missionId, request.isShowMission());
+        stampMissionAdminService.toggleMissionShowing(festivalId, stampId, missionId, request);
+    }
+
+    @GetMapping("/{missionId}/show")
+    public MissionShowResDto showMission(
+            @PathVariable @Min(1) long festivalId,
+            @PathVariable @Min(1) long stampId,
+            @PathVariable @Min(1) long missionId) {
+        return stampMissionAdminService.showMission(festivalId, stampId, missionId);
     }
 
     @GetMapping("/settings")
@@ -91,6 +108,15 @@ public class StampMissionAdminController {
             @PathVariable @Min(1) long stampId,
             @PathVariable @Min(1) long prizeId) {
         stampMissionAdminService.deletePrize(festivalId, stampId, prizeId);
+    }
+
+    // TODO : 경품 교환권 이미지 변경 시 기본 이미지 설정 여부 및 기본/커스텀 타입 설정
+    @PatchMapping("/prizes/exchange-image")
+    public void updateTicketImage(
+            @PathVariable @Min(1) long festivalId,
+            @PathVariable @Min(1) long stampId,
+            @RequestBody PrizeExchangeImgReqDto request) {
+        stampMissionAdminService.updatePrizeTicketImg(festivalId, stampId, request);
     }
 
     @GetMapping("/{missionId}/details")
