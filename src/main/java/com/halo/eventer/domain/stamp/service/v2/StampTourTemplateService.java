@@ -42,7 +42,7 @@ public class StampTourTemplateService {
     @Transactional(readOnly = true)
     public StampTourSignUpTemplateResDto getSignupTemplate(long festivalId, long stampTourId) {
         Stamp stamp = ensureStamp(festivalId, stampTourId);
-        return StampTourSignUpTemplateResDto.from(stamp.getJoinVerificationMethod());
+        return StampTourSignUpTemplateResDto.from(stamp);
     }
 
     @Transactional(readOnly = true)
@@ -96,6 +96,12 @@ public class StampTourTemplateService {
     public StampActiveResDto getStampActive(long festivalId, long stampId) {
         Stamp stamp = ensureStamp(festivalId, stampId);
         return new StampActiveResDto(stamp.getTitle(), stamp.getActive());
+    }
+
+    @Transactional(readOnly = true)
+    public PrizeExchangeImgResDto getStampTourPrizeExchangeImg(long festivalId, long stampId) {
+        Stamp stamp = ensureStamp(festivalId, stampId);
+        return PrizeExchangeImgResDto.from(stamp);
     }
 
     private List<Stamp> filterStampsOnlyShowing(Festival festival) {

@@ -2,7 +2,6 @@ package com.halo.eventer.domain.stamp.dto.mission.request;
 
 import java.util.List;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import com.halo.eventer.domain.stamp.dto.stamp.enums.ButtonLayout;
@@ -21,10 +20,7 @@ public class MissionDetailsTemplateReqDto {
     @NotNull
     private MissionDetailsDesignLayout missionDetailsDesignLayout;
 
-    @NotEmpty
     private String missionTitle;
-
-    private boolean showMissionTitle;
     private boolean showSuccessCount;
     private boolean showExtraInfos;
     private boolean showButtons;

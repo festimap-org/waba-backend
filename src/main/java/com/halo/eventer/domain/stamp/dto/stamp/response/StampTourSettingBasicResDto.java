@@ -15,6 +15,10 @@ public class StampTourSettingBasicResDto {
     private String title;
     private AuthMethod authMethod;
     private String prizeReceiptAuthPassword;
+    private String mainColor;
+    private String subColor;
+    private String backgroundColor;
+    private String backgroundSubColor;
 
     public static StampTourSettingBasicResDto from(Stamp stamp) {
         return new StampTourSettingBasicResDto(
@@ -22,6 +26,10 @@ public class StampTourSettingBasicResDto {
                 stamp.getActive(),
                 stamp.getTitle(),
                 stamp.getAuthMethod(),
-                stamp.getPrizeReceiptAuthPassword());
+                stamp.getPrizeReceiptAuthPassword(),
+                stamp.getMainColor(),
+                stamp.getSubColor(),
+                stamp.getBackgroundColor(),
+                stamp.getBackgroundSubColor());
     }
 }

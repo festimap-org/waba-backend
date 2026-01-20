@@ -93,4 +93,10 @@ public class StampTourTemplateController {
     public StampActiveResDto getStampActive(@PathVariable @Min(1) long festivalId, @PathVariable @Min(1) long stampId) {
         return templateService.getStampActive(festivalId, stampId);
     }
+
+    @GetMapping("/{stampId}/prizes/exchange-image")
+    public PrizeExchangeImgResDto getStampTourPrizeExchangeImg(
+            @PathVariable long festivalId, @PathVariable @Min(1) long stampId) {
+        return templateService.getStampTourPrizeExchangeImg(festivalId, stampId);
+    }
 }

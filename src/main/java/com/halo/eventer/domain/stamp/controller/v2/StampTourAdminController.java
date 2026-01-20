@@ -47,8 +47,8 @@ public class StampTourAdminController {
     public void updateStampTourVerificationMethod(
             @PathVariable @Min(1) long festivalId,
             @PathVariable @Min(1) long stampId,
-            @RequestBody @Valid StampTourJoinVerificationReqDto request) {
-        stampTourAdminService.updateJoinVerification(festivalId, stampId, request);
+            @Valid @RequestBody StampTourJoinConditionReqDto request) {
+        stampTourAdminService.updateJoinCondition(festivalId, stampId, request);
     }
 
     @Operation(summary = "스탬프 투어 삭제", description = "스탬프 투어를 삭제합니다.")
