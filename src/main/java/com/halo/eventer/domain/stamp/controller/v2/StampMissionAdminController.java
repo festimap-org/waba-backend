@@ -123,7 +123,6 @@ public class StampMissionAdminController {
         stampMissionAdminService.deletePrize(festivalId, stampId, prizeId);
     }
 
-    
     // TODO : 경품 교환권 이미지 변경 시 기본 이미지 설정 여부 및 기본/커스텀 타입 설정
     @PatchMapping("/prizes/exchange-image")
     public void updateTicketImage(
