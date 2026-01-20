@@ -46,7 +46,6 @@ public class StampMissionAdminController {
         stampMissionAdminService.deleteMission(festivalId, stampId, missionId);
     }
 
-    
     @PatchMapping("/show")
     public void showMissions(
             @PathVariable @Min(1) long festivalId,
