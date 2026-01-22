@@ -60,7 +60,12 @@ public class SecurityConstants {
         "/api/v2/user/parking-managements/*/parking-zones",
         "/api/v2/template/**",
         "/api/v2/user/parking-managements/{parkingManagementId}/parking-notices",
-        "/api/v2/common/festivals/{festivalId}/parkingManagements"
+        "/api/v2/common/festivals/{festivalId}/parkingManagements",
+        // OAuth 인증 API
+        "/api/v1/auth/kakao",
+        "/api/v1/auth/kakao/callback",
+        "/api/v1/auth/naver",
+        "/api/v1/auth/naver/callback"
     };
 
     public static final String[] PUBLIC_POST_URLS = {
@@ -74,7 +79,9 @@ public class SecurityConstants {
         "/inquiries",
         "/inquiries/forUser/*",
         "/api/v2/user/*/*/*/*/signup",
-        "/api/v2/user/*/*/*/*/login"
+        "/api/v2/user/*/*/*/*/login",
+        // VISITOR 인증 API
+        "/api/v1/auth/visitor/signup"
     };
 
     public static final String[] PUBLIC_PATCH_URLS = {"/stamp/user/*/*", "/stamp/user/check/v2/*", "/stamp/mission"};

@@ -17,9 +17,21 @@ public class CustomUserDetails implements UserDetails {
         this.member = member;
     }
 
+    public Long getMemberId() {
+        return member.getId();
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
     @Override
     public String getUsername() {
-        return member.getLoginId();
+        // VISITOR의 경우 loginId가 null이므로 phone 또는 id 반환
+        if (member.getLoginId() != null) {
+            return member.getLoginId();
+        }
+        return member.getId().toString();
     }
 
     @Override
@@ -51,6 +63,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return member.isActive();
     }
 }

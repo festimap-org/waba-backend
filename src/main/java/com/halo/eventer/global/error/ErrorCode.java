@@ -40,12 +40,20 @@ public enum ErrorCode {
     // StampUser
     STAMP_USER_ALREADY_EXISTS("SU001", "StampUser Already Exists", 400),
 
+    // Visitor
+    PHONE_ALREADY_REGISTERED("V001", "Phone Already Registered", 400),
+    MEMBER_NOT_ACTIVE("V003", "Member Not Active", 403),
+
     // Stamp
     INVALID_AUTH_METHOD("ST001", "Stamp Authentication Method Invalid", 400),
     STAMP_NOT_IN_FESTIVAL("ST002", "Stamp Not In Festival", 400),
 
     // Infra
     SMS_SEND_FAILED("I001", "SMS Send Failed", 500),
+
+    // OAuth
+    OAUTH_TOKEN_REQUEST_FAILED("O001", "OAuth Token Request Failed", 500),
+    OAUTH_USER_INFO_REQUEST_FAILED("O002", "OAuth User Info Request Failed", 500),
     ;
 
     private final String code;
