@@ -50,10 +50,6 @@ public enum ErrorCode {
 
     // Infra
     SMS_SEND_FAILED("I001", "SMS Send Failed", 500),
-
-    // OAuth
-    OAUTH_TOKEN_REQUEST_FAILED("O001", "OAuth Token Request Failed", 500),
-    OAUTH_USER_INFO_REQUEST_FAILED("O002", "OAuth User Info Request Failed", 500),
     ;
 
     private final String code;
