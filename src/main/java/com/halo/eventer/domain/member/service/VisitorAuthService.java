@@ -50,10 +50,10 @@ public class VisitorAuthService {
     }
 
     /**
-     * 소셜 로그인 처리 (전화번호 없이)
+     * 소셜 로그인 처리 (provider, providerId만)
      */
-    public SocialLoginResult processSocialLogin(SocialProvider provider, String providerId, String email) {
-        return processSocialLogin(provider, providerId, email, null);
+    public SocialLoginResult processSocialLogin(SocialProvider provider, String providerId) {
+        return processSocialLogin(provider, providerId, null, null);
     }
 
     /**
