@@ -9,10 +9,52 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Program {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
+
+    private String thumbnailUrl;
+
+    @Enumerated(EnumType.STRING)
+    private PricingType pricingType;
+
+    private int priceAmount;
+
+    private String durationTime;
+
+    private String availableAge;
+
+    @Enumerated(EnumType.STRING)
+    private PersonLimit personLimit;
+
+    private int maxPersonCount;
+
+    public Program(String name) {
+        this.name = name;
+    }
+
+    public void update(String name, String thumbnailUrl, PricingType pricingType, int priceAmount,
+                       String durationTime, String availableAge, PersonLimit personLimit, int maxPersonCount) {
+        this.name = name;
+        this.thumbnailUrl = thumbnailUrl;
+        this.pricingType = pricingType;
+        this.priceAmount = priceAmount;
+        this.durationTime = durationTime;
+        this.availableAge = availableAge;
+        this.personLimit = personLimit;
+        this.maxPersonCount = maxPersonCount;
+    }
+
+    @Getter
+    public enum PricingType {
+        FREE, PAID
+    }
+
+    public enum PersonLimit {
+        UNLIMITED, LIMITED
+    }
 }
