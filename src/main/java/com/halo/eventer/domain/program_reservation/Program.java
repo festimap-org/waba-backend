@@ -3,8 +3,8 @@ package com.halo.eventer.domain.program_reservation;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.global.common.BaseTime;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,6 +37,10 @@ public class Program extends BaseTime {
 
     @Column(nullable = false)
     private boolean isActive;
+
+    private LocalDateTime activeStartAt;
+
+    private LocalDateTime activeEndAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
