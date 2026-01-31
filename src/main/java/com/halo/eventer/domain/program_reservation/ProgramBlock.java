@@ -3,9 +3,6 @@ package com.halo.eventer.domain.program_reservation;
 import jakarta.persistence.*;
 import lombok.*;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -85,6 +82,21 @@ public class ProgramBlock {
         ProgramBlock b = base(program, sortOrder, BlockType.CAUTION);
         b.cautionContent = content;
         return b;
+    }
+
+    public void updateSummary(String label, String value) {
+        this.summaryLabel = label;
+        this.summaryValue = value;
+    }
+
+    public void updateDescription(String oneLine, String detail, String imageUrl) {
+        this.descriptionOneLine = oneLine;
+        this.descriptionDetail = detail;
+        this.descriptionImageUrl = imageUrl;
+    }
+
+    public void updateCaution(String content) {
+        this.cautionContent = content;
     }
 
     private static ProgramBlock base(Program program, int sortOrder, BlockType type) {

@@ -1,5 +1,7 @@
 package com.halo.eventer.domain.program_reservation;
 
+import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.global.common.BaseTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -9,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Program {
+public class Program extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,8 +35,19 @@ public class Program {
 
     private int maxPersonCount;
 
+    @Column(nullable = false)
+    private boolean isActive;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "festival_id")
+    private Festival festival;
+
     public Program(String name) {
         this.name = name;
+    }
+
+    public void toggleActive() {
+        this.isActive = !this.isActive;
     }
 
     public void update(String name, String thumbnailUrl, PricingType pricingType, int priceAmount,
@@ -48,6 +61,7 @@ public class Program {
         this.personLimit = personLimit;
         this.maxPersonCount = maxPersonCount;
     }
+
 
     @Getter
     public enum PricingType {
