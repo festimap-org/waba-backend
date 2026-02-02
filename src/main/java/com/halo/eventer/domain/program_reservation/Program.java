@@ -50,13 +50,24 @@ public class Program extends BaseTime {
         this.name = name;
     }
 
+    public void assignFestival(Festival festival) {
+        this.festival = festival;
+        this.isActive = false;
+    }
+
     public void toggleActive() {
         this.isActive = !this.isActive;
     }
 
-    public void update(String name, String thumbnailUrl, PricingType pricingType, int priceAmount,
-                       String durationTime, String availableAge, PersonLimit personLimit, int maxPersonCount) {
+    public void updateActiveStartAt(LocalDateTime activeStartAt) { this.activeStartAt = activeStartAt; }
+    public void updateActiveEndAt(LocalDateTime activeEndAt) { this.activeEndAt = activeEndAt; }
+
+    public void updateName(String name) {
         this.name = name;
+    }
+
+    public void update(String thumbnailUrl, PricingType pricingType, int priceAmount,
+                       String durationTime, String availableAge, PersonLimit personLimit, int maxPersonCount) {
         this.thumbnailUrl = thumbnailUrl;
         this.pricingType = pricingType;
         this.priceAmount = priceAmount;

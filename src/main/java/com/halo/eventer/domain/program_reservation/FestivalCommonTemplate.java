@@ -26,7 +26,6 @@ import lombok.*;
 public class FestivalCommonTemplate extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "festival_common_template_id")
     private Long id;
 
     @Column(nullable = false, length = 80)
@@ -39,9 +38,6 @@ public class FestivalCommonTemplate extends BaseTime {
     @Column(name = "sort_order", nullable = false)
     private int sortOrder;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "festival_id", nullable = false)
     private Festival festival;
@@ -52,16 +48,7 @@ public class FestivalCommonTemplate extends BaseTime {
         b.sortOrder = sortOrder;
         b.title = title;
         b.content = content;
-        b.isActive = true;
         return b;
-    }
-
-    public void deactivate() {
-        this.isActive = false;
-    }
-
-    public void activate() {
-        this.isActive = true;
     }
 }
 
