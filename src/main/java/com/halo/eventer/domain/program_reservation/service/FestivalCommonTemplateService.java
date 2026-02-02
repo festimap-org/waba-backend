@@ -46,4 +46,10 @@ public class FestivalCommonTemplateService {
             templateRepository.save(template);
         }
     }
+
+    @Transactional
+    public void delete(Long templateId) {
+        FestivalCommonTemplate template = templateRepository.findById(templateId).orElseThrow(() -> new BaseException("존재하지 않는 템플릿입니다.", ErrorCode.ENTITY_NOT_FOUND));
+        templateRepository.delete(template);
+    }
 }

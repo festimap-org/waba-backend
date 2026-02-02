@@ -88,4 +88,10 @@ public class AdminReservationController {
             @RequestBody @Valid TemplateSaveAllRequest request) {
         templateService.saveAll(festivalId, request);
     }
+
+    @DeleteMapping("/templates/{templateId}")
+    @Operation(summary = "공통 템플릿 삭제")
+    public void deleteTemplate(@PathVariable("templateId") Long templateId) {
+        templateService.delete(templateId);
+    }
 }
