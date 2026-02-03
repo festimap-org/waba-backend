@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import com.halo.eventer.domain.member.Member;
-import com.halo.eventer.domain.member.MemberRole;
 import com.halo.eventer.domain.member.exception.MemberNotFoundException;
 import com.halo.eventer.domain.member.repository.MemberRepository;
 import com.halo.eventer.domain.stamp.exception.StampUserNotFoundException;
@@ -28,10 +27,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 stampUserRepository.findByUuid(uuid).orElseThrow(StampUserNotFoundException::new));
     }
 
-    public UserDetails loadVisitorById(Long memberId) {
-        Member member = memberRepository
-                .findByIdAndRole(memberId, MemberRole.VISITOR)
-                .orElseThrow(MemberNotFoundException::new);
+    public UserDetails loadMemberById(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         return new CustomUserDetails(member);
     }
 }

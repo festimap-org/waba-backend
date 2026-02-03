@@ -2,7 +2,6 @@ package com.halo.eventer.domain.member;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import jakarta.persistence.*;
 
 import com.halo.eventer.domain.stamp.StampUser;
@@ -83,6 +82,16 @@ public class Member extends BaseTime {
     @Column(name = "provider_id")
     private String providerId;
 
+    // 기업 정보 (AGENCY)
+    @Column(name = "company_name", length = 100)
+    private String companyName;
+
+    @Column(name = "company_email", length = 100)
+    private String companyEmail;
+
+    @Column(name = "manager_position", length = 50)
+    private String managerPosition;
+
     @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Authority> authorities = new ArrayList<>();
 
@@ -122,12 +131,22 @@ public class Member extends BaseTime {
         return member;
     }
 
-    public static Member createAgency(String loginId, String password, String phone, String name) {
+    public static Member createAgency(
+            String loginId,
+            String password,
+            String companyEmail,
+            String companyName,
+            String managerName,
+            String managerPosition,
+            String managerPhone) {
         Member member = new Member();
         member.loginId = loginId;
         member.password = password;
-        member.phone = phone;
-        member.name = name;
+        member.companyEmail = companyEmail;
+        member.companyName = companyName;
+        member.name = managerName;
+        member.managerPosition = managerPosition;
+        member.phone = managerPhone;
         member.role = MemberRole.AGENCY;
         member.status = MemberStatus.ACTIVE;
         return member;
@@ -144,7 +163,7 @@ public class Member extends BaseTime {
     }
 
     public List<String> getRoleNames() {
-        return authorities.stream().map(Authority::getRoleName).collect(Collectors.toList());
+        return List.of("ROLE_" + this.role.name());
     }
 
     public boolean isVisitor() {
@@ -184,5 +203,14 @@ public class Member extends BaseTime {
 
     public void addStampUser(StampUser stampUser) {
         this.stampUsers.add(stampUser);
+    }
+
+    public void updateCompanyInfo(
+            String companyEmail, String companyName, String managerName, String managerPosition, String managerPhone) {
+        this.companyEmail = companyEmail;
+        this.companyName = companyName;
+        this.name = managerName;
+        this.managerPosition = managerPosition;
+        this.phone = managerPhone;
     }
 }
