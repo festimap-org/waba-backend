@@ -7,4 +7,3 @@ public enum ReservationSearchField {
     VISITOR_NAME,
     VISITOR_PHONE
 }
-

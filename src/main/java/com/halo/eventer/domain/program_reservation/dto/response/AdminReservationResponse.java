@@ -1,14 +1,14 @@
 package com.halo.eventer.domain.program_reservation.dto.response;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.halo.eventer.domain.program_reservation.ProgramReservation;
 import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Getter
 @AllArgsConstructor
@@ -22,10 +22,13 @@ public class AdminReservationResponse {
     private String visitorPhone;
 
     private LocalDate slotDate;
-    @JsonFormat(pattern = "HH:mm") private LocalTime slotStartTime;
+
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime slotStartTime;
+
     private int durationMinutes;
     private int peopleCount;
-    private int fee;        // 일단 0원으로 통일
+    private int fee; // 일단 0원으로 통일
     private ProgramReservationStatus status;
     private boolean past;
 
@@ -37,7 +40,8 @@ public class AdminReservationResponse {
             visitorPhone = r.getBookerPhone();
         }
 
-        LocalDateTime endDateTime = LocalDateTime.of(r.getSlot().getSlotDate(), r.getSlot().getStartTime());
+        LocalDateTime endDateTime =
+                LocalDateTime.of(r.getSlot().getSlotDate(), r.getSlot().getStartTime());
         boolean past = !endDateTime.isAfter(LocalDateTime.now());
 
         return new AdminReservationResponse(
@@ -53,7 +57,6 @@ public class AdminReservationResponse {
                 r.getPeopleCount(),
                 0,
                 r.getStatus(),
-                past
-        );
+                past);
     }
 }

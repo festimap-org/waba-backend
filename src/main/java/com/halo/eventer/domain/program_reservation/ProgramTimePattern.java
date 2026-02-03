@@ -11,10 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(
-        indexes = {
-            @Index(name = "idx_time_pattern_template_sort", columnList = "template_id, sort_order")
-        })
+@Table(indexes = {@Index(name = "idx_time_pattern_template_sort", columnList = "template_id, sort_order")})
 public class ProgramTimePattern extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

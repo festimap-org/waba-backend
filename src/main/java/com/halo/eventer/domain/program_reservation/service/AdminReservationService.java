@@ -3,9 +3,8 @@ package com.halo.eventer.domain.program_reservation.service;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import com.halo.eventer.domain.program_reservation.dto.response.*;
 import jakarta.persistence.criteria.JoinType;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.halo.eventer.domain.program_reservation.*;
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateCreateRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateUpdateRequest;
+import com.halo.eventer.domain.program_reservation.dto.response.*;
 import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateUpdateResponse.*;
 import com.halo.eventer.domain.program_reservation.repository.*;
 import com.halo.eventer.global.error.ErrorCode;
@@ -35,7 +35,8 @@ public class AdminReservationService {
 
     /** 예약 정보 조회 (예약 관리 대시보드) */
     @Transactional(readOnly = true)
-    public AdminReservationPageResponse getReservations(ReservationSearchField searchField, String keyword, ProgramReservationStatus status, Pageable pageable) {
+    public AdminReservationPageResponse getReservations(
+            ReservationSearchField searchField, String keyword, ProgramReservationStatus status, Pageable pageable) {
         Specification<ProgramReservation> spec = (root, query, cb) -> {
             // count쿼리/중복 방지
             assert query != null;
@@ -105,16 +106,13 @@ public class AdminReservationService {
 
         Page<ProgramReservation> page = reservationRepository.findAll(spec, pageable);
 
-        List<AdminReservationResponse> adminReservations = page.getContent().stream()
-                .map(AdminReservationResponse::from)
-                .collect(Collectors.toList());
+        List<AdminReservationResponse> adminReservations =
+                page.getContent().stream().map(AdminReservationResponse::from).collect(Collectors.toList());
 
         return AdminReservationPageResponse.of(adminReservations, page);
     }
 
     /** 다건 예약 상태 변경 (선택 승인, 선택 거절) */
-
-
     @Transactional(readOnly = true)
     public AdminSlotCalendarResponse getAdminSlotCalendar(Long programId) {
         List<ProgramSlot> slots = slotRepository.findAllByProgramIdOrderBySlotDateAscStartTimeAsc(programId);

@@ -1,10 +1,11 @@
 package com.halo.eventer.domain.program_reservation.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
@@ -21,15 +22,13 @@ public class AdminReservationPageResponse {
                         page.getTotalElements(),
                         page.getTotalPages(),
                         page.isFirst(),
-                        page.isLast()
-                )
-        );
+                        page.isLast()));
     }
 
     @Getter
     @AllArgsConstructor
     public static class PageInfo {
-        private int page;               // 0-based
+        private int page; // 0-based
         private int size;
         private long totalElements;
         private int totalPages;

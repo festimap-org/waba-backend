@@ -11,10 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(
-        indexes = {
-            @Index(name = "idx_reservation_status_created", columnList = "status, created_at DESC")
-        })
+@Table(indexes = {@Index(name = "idx_reservation_status_created", columnList = "status, created_at DESC")})
 public class ProgramReservation extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -89,5 +86,7 @@ public class ProgramReservation extends BaseTime {
         this.cancelledAt = LocalDateTime.now();
     }
 
-    public void changeStatus(ProgramReservationStatus status) { this.status = status; }
+    public void changeStatus(ProgramReservationStatus status) {
+        this.status = status;
+    }
 }

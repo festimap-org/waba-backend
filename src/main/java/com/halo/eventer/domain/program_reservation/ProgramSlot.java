@@ -15,10 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(
-        indexes = {
-            @Index(name = "idx_slot_program_date_time", columnList = "program_id, slot_date, start_time")
-        })
+@Table(indexes = {@Index(name = "idx_slot_program_date_time", columnList = "program_id, slot_date, start_time")})
 public class ProgramSlot extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
