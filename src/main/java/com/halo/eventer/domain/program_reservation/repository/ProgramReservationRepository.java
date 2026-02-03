@@ -30,6 +30,8 @@ public interface ProgramReservationRepository
     """)
     boolean existsAnyByTemplateId(@Param("templateId") Long templateId);
 
+    boolean existsByProgramId(Long programId);
+
     @Override
     @EntityGraph(attributePaths = {"program", "slot"})
     Page<ProgramReservation> findAll(@Nullable Specification<ProgramReservation> spec, Pageable pageable);

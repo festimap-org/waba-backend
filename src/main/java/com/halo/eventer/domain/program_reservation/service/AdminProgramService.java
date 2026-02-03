@@ -21,6 +21,7 @@ import com.halo.eventer.domain.program_reservation.dto.response.ProgramResponse;
 import com.halo.eventer.domain.program_reservation.repository.FestivalCommonTemplateRepository;
 import com.halo.eventer.domain.program_reservation.repository.ProgramBlockRepository;
 import com.halo.eventer.domain.program_reservation.repository.ProgramRepository;
+import com.halo.eventer.domain.program_reservation.repository.ProgramReservationRepository;
 import com.halo.eventer.domain.program_reservation.repository.ProgramTagRepository;
 import com.halo.eventer.domain.program_reservation.repository.TagRepository;
 import com.halo.eventer.global.error.ErrorCode;
@@ -33,6 +34,7 @@ public class AdminProgramService {
     private final ProgramRepository programRepository;
     private final ProgramBlockRepository programBlockRepository;
     private final ProgramTagRepository programTagRepository;
+    private final ProgramReservationRepository programReservationRepository;
     private final TagRepository tagRepository;
     private final FestivalRepository festivalRepository;
     private final FestivalCommonTemplateRepository templateRepository;
@@ -56,6 +58,9 @@ public class AdminProgramService {
     @Transactional
     public void delete(Long programId) {
         Program program = loadProgramOrThrow(programId);
+        if (programReservationRepository.existsByProgramId(programId)) {
+            throw new BaseException("예약이 존재하는 프로그램은 삭제할 수 없습니다.", ErrorCode.ACTIVE_RESERVATION_EXISTS);
+        }
         programTagRepository.deleteAllByProgramId(programId);
         programBlockRepository.deleteAllByProgramId(programId);
         programRepository.delete(program);
