@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.program_reservation;
 
 import jakarta.persistence.*;
+
 import lombok.*;
 
 @Entity
@@ -10,12 +11,10 @@ import lombok.*;
 @Table(
         name = "program_block",
         uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_program_block_program_type_sort",
-                        columnNames = {"program_id", "type", "sort_order"}
-                )
-        }
-)
+            @UniqueConstraint(
+                    name = "uk_program_block_program_type_sort",
+                    columnNames = {"program_id", "type", "sort_order"})
+        })
 public class ProgramBlock {
 
     @Id
@@ -34,9 +33,9 @@ public class ProgramBlock {
     private int sortOrder;
 
     public enum BlockType {
-        SUMMARY,       // 프로그램 요약 안내: (항목명, 요약정보)
-        DESCRIPTION,   // 프로그램 설명: (한줄 설명, 상세 설명, 이미지url)
-        CAUTION        // 프로그램 주의사항: (내용)
+        SUMMARY, // 프로그램 요약 안내: (항목명, 요약정보)
+        DESCRIPTION, // 프로그램 설명: (한줄 설명, 상세 설명, 이미지url)
+        CAUTION // 프로그램 주의사항: (내용)
     }
 
     // SUMMARY: (항목명, 해당 요약 정보)
@@ -69,7 +68,8 @@ public class ProgramBlock {
         return b;
     }
 
-    public static ProgramBlock description(Program program, int sortOrder, String oneLine, String detail, String imageUrl) {
+    public static ProgramBlock description(
+            Program program, int sortOrder, String oneLine, String detail, String imageUrl) {
         ProgramBlock b = base(program, sortOrder, BlockType.DESCRIPTION);
         b.descriptionOneLine = oneLine;
         b.descriptionDetail = detail;
@@ -91,4 +91,3 @@ public class ProgramBlock {
         return b;
     }
 }
-

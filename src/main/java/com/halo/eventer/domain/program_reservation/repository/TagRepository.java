@@ -4,5 +4,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.halo.eventer.domain.program_reservation.Tag;
 
-public interface TagRepository extends JpaRepository<Tag, Long> {
-}
+public interface TagRepository extends JpaRepository<Tag, Long> {}

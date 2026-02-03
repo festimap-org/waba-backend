@@ -4,21 +4,20 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.halo.eventer.domain.program_reservation.dto.response.AdminSlotCalendarResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateListResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.halo.eventer.domain.program_reservation.*;
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateCreateRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateUpdateRequest;
+import com.halo.eventer.domain.program_reservation.dto.response.AdminSlotCalendarResponse;
 import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateDetailResponse;
+import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateListResponse;
 import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateUpdateResponse;
 import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateUpdateResponse.*;
 import com.halo.eventer.domain.program_reservation.repository.*;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
-
 import lombok.RequiredArgsConstructor;
 
 import static com.halo.eventer.domain.program_reservation.ProgramReservationStatus.CONFIRMED;
@@ -52,26 +51,17 @@ public class AdminReservationService {
         Map<Long, Integer> patternCapacityMap = patternIds.isEmpty()
                 ? java.util.Collections.emptyMap()
                 : patternRepository.findAllById(patternIds).stream()
-                .collect(java.util.stream.Collectors.toMap(
-                        ProgramTimePattern::getId,
-                        ProgramTimePattern::getCapacity
-                ));
+                        .collect(java.util.stream.Collectors.toMap(
+                                ProgramTimePattern::getId, ProgramTimePattern::getCapacity));
 
         Map<LocalDate, List<ProgramSlot>> byDate = slots.stream()
                 .collect(java.util.stream.Collectors.groupingBy(
-                        ProgramSlot::getSlotDate,
-                        java.util.LinkedHashMap::new,
-                        java.util.stream.Collectors.toList()
-                ));
+                        ProgramSlot::getSlotDate, java.util.LinkedHashMap::new, java.util.stream.Collectors.toList()));
 
         List<LocalDate> dates = new ArrayList<>(byDate.keySet());
 
         List<AdminSlotCalendarResponse.Day> days = byDate.entrySet().stream()
-                .map(e -> AdminSlotCalendarResponse.Day.from(
-                        e.getKey(),
-                        e.getValue(),
-                        patternCapacityMap
-                ))
+                .map(e -> AdminSlotCalendarResponse.Day.from(e.getKey(), e.getValue(), patternCapacityMap))
                 .toList();
 
         return AdminSlotCalendarResponse.of(rangeStart, rangeEnd, dates, days);
@@ -81,15 +71,20 @@ public class AdminReservationService {
     public List<ScheduleTemplateListResponse> getTemplates(Long programId) {
         List<ProgramScheduleTemplate> templates = templateRepository.findAllByProgramIdOrderByStartDate(programId);
 
-        return templates.stream().map(template -> {
-            List<ProgramTimePattern> patterns = patternRepository.findAllByTemplateIdOrderBySortOrder(template.getId());
-            return ScheduleTemplateListResponse.of(template, patterns);
-        }).toList();
+        return templates.stream()
+                .map(template -> {
+                    List<ProgramTimePattern> patterns =
+                            patternRepository.findAllByTemplateIdOrderBySortOrder(template.getId());
+                    return ScheduleTemplateListResponse.of(template, patterns);
+                })
+                .toList();
     }
 
     @Transactional(readOnly = true)
     public ScheduleTemplateDetailResponse getTemplateDetail(Long templateId) {
-        ProgramScheduleTemplate template = templateRepository.findById(templateId).orElseThrow(() -> new BaseException("존재하지 않는 템플릿입니다.", ErrorCode.ENTITY_NOT_FOUND));
+        ProgramScheduleTemplate template = templateRepository
+                .findById(templateId)
+                .orElseThrow(() -> new BaseException("존재하지 않는 템플릿입니다.", ErrorCode.ENTITY_NOT_FOUND));
 
         List<ProgramTimePattern> patterns = patternRepository.findAllByTemplateIdOrderBySortOrder(template.getId());
         boolean hasReservation = reservationRepository.existsAnyByTemplateId(template.getId());
@@ -99,11 +94,17 @@ public class AdminReservationService {
 
     @Transactional
     public void createTemplate(Long programId, ScheduleTemplateCreateRequest request) {
-        Program program = programRepository.findById(programId).orElseThrow(() -> new BaseException("존재하지 않는 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND));
-        validateSlotTypeFields(request.getSlotType(), request.getDurationMinutes(), request.getPatterns() != null && !request.getPatterns().isEmpty());
+        Program program = programRepository
+                .findById(programId)
+                .orElseThrow(() -> new BaseException("존재하지 않는 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND));
+        validateSlotTypeFields(
+                request.getSlotType(),
+                request.getDurationMinutes(),
+                request.getPatterns() != null && !request.getPatterns().isEmpty());
 
         Integer templateDuration = request.getSlotType() == ProgramSlotType.DATE ? request.getDurationMinutes() : null;
-        ProgramScheduleTemplate template = ProgramScheduleTemplate.of(program, request.getStartDate(), request.getEndDate(), request.getSlotType(), templateDuration);
+        ProgramScheduleTemplate template = ProgramScheduleTemplate.of(
+                program, request.getStartDate(), request.getEndDate(), request.getSlotType(), templateDuration);
         templateRepository.save(template);
 
         if (request.getSlotType() == ProgramSlotType.DATE) {
@@ -115,10 +116,13 @@ public class AdminReservationService {
 
     @Transactional
     public ScheduleTemplateUpdateResponse updateTemplate(Long templateId, ScheduleTemplateUpdateRequest request) {
-        ProgramScheduleTemplate template = templateRepository.findById(templateId).orElseThrow(() -> new BaseException("존재하지 않는 템플릿입니다.", ErrorCode.ENTITY_NOT_FOUND));
+        ProgramScheduleTemplate template = templateRepository
+                .findById(templateId)
+                .orElseThrow(() -> new BaseException("존재하지 않는 템플릿입니다.", ErrorCode.ENTITY_NOT_FOUND));
 
         boolean hasAny = reservationRepository.existsAnyByTemplateId(templateId); // status 무관
-        boolean hasActive = reservationRepository.countByTemplateIdAndStatusIn(templateId, List.of(HOLD, CONFIRMED)) > 0;
+        boolean hasActive =
+                reservationRepository.countByTemplateIdAndStatusIn(templateId, List.of(HOLD, CONFIRMED)) > 0;
         if (!hasAny) {
             return replaceTemplate(template, request);
         }
@@ -131,8 +135,11 @@ public class AdminReservationService {
 
     @Transactional
     public void deleteTemplate(Long templateId) {
-        ProgramScheduleTemplate template = templateRepository.findById(templateId).orElseThrow(() -> new BaseException("존재하지 않는 템플릿입니다.", ErrorCode.ENTITY_NOT_FOUND));
-        if (reservationRepository.existsAnyByTemplateId(templateId)) throw new BaseException("예약 이력이 있는 템플릿은 삭제할 수 없습니다.", ErrorCode.ACTIVE_RESERVATION_EXISTS);
+        ProgramScheduleTemplate template = templateRepository
+                .findById(templateId)
+                .orElseThrow(() -> new BaseException("존재하지 않는 템플릿입니다.", ErrorCode.ENTITY_NOT_FOUND));
+        if (reservationRepository.existsAnyByTemplateId(templateId))
+            throw new BaseException("예약 이력이 있는 템플릿은 삭제할 수 없습니다.", ErrorCode.ACTIVE_RESERVATION_EXISTS);
 
         slotRepository.deleteAllByTemplateId(templateId);
         patternRepository.deleteAllByTemplateId(templateId);
@@ -142,8 +149,12 @@ public class AdminReservationService {
     /**
      * A) 예약 없음 → 전체 교체(replace)
      */
-    private ScheduleTemplateUpdateResponse replaceTemplate(ProgramScheduleTemplate template, ScheduleTemplateUpdateRequest request) {
-        validateSlotTypeFields(request.getSlotType(), request.getDurationMinutes(), request.getPatterns() != null && !request.getPatterns().isEmpty());
+    private ScheduleTemplateUpdateResponse replaceTemplate(
+            ProgramScheduleTemplate template, ScheduleTemplateUpdateRequest request) {
+        validateSlotTypeFields(
+                request.getSlotType(),
+                request.getDurationMinutes(),
+                request.getPatterns() != null && !request.getPatterns().isEmpty());
 
         slotRepository.deleteAllByTemplateId(template.getId());
         slotRepository.flush();
@@ -165,8 +176,10 @@ public class AdminReservationService {
     /**
      * B) 예약 있음 → 제한적 변경
      */
-    private ScheduleTemplateUpdateResponse updateTemplateWithReservation(ProgramScheduleTemplate template, ScheduleTemplateUpdateRequest request) {
-        if (!template.getStartDate().equals(request.getStartDate()) || !template.getEndDate().equals(request.getEndDate())) {
+    private ScheduleTemplateUpdateResponse updateTemplateWithReservation(
+            ProgramScheduleTemplate template, ScheduleTemplateUpdateRequest request) {
+        if (!template.getStartDate().equals(request.getStartDate())
+                || !template.getEndDate().equals(request.getEndDate())) {
             throw new BaseException("예약이 있는 템플릿은 기간을 변경할 수 없습니다.", ErrorCode.INVALID_INPUT_VALUE);
         }
 
@@ -184,7 +197,8 @@ public class AdminReservationService {
     /**
      * B-DATE) 예약 있으면 durationMinutes 변경 불가
      */
-    private ScheduleTemplateUpdateResponse updateDateTemplateWithReservation(ProgramScheduleTemplate template, ScheduleTemplateUpdateRequest request) {
+    private ScheduleTemplateUpdateResponse updateDateTemplateWithReservation(
+            ProgramScheduleTemplate template, ScheduleTemplateUpdateRequest request) {
         if (!Objects.equals(template.getDurationMinutes(), request.getDurationMinutes())) {
             throw new BaseException("예약이 있는 DATE 템플릿은 소요시간을 변경할 수 없습니다.", ErrorCode.INVALID_INPUT_VALUE);
         }
@@ -195,18 +209,24 @@ public class AdminReservationService {
     /**
      * B-TIME) capacity만 부분 변경 허용
      */
-    private ScheduleTemplateUpdateResponse updateTimeTemplateWithReservation(ProgramScheduleTemplate template, ScheduleTemplateUpdateRequest request) {
-        List<ProgramTimePattern> existingPatterns = patternRepository.findAllByTemplateIdOrderBySortOrder(template.getId());
-        Map<Long, ProgramTimePattern> existingMap = existingPatterns.stream()
-                .collect(Collectors.toMap(ProgramTimePattern::getId, p -> p));
+    private ScheduleTemplateUpdateResponse updateTimeTemplateWithReservation(
+            ProgramScheduleTemplate template, ScheduleTemplateUpdateRequest request) {
+        List<ProgramTimePattern> existingPatterns =
+                patternRepository.findAllByTemplateIdOrderBySortOrder(template.getId());
+        Map<Long, ProgramTimePattern> existingMap =
+                existingPatterns.stream().collect(Collectors.toMap(ProgramTimePattern::getId, p -> p));
 
-        List<ScheduleTemplateUpdateRequest.PatternRequest> requestPatterns = request.getPatterns() == null ? List.of() : request.getPatterns();
+        List<ScheduleTemplateUpdateRequest.PatternRequest> requestPatterns =
+                request.getPatterns() == null ? List.of() : request.getPatterns();
 
         if (requestPatterns.size() != existingPatterns.size()) {
             throw new BaseException("예약이 있는 회차는 패턴을 추가/삭제할 수 없습니다.", ErrorCode.INVALID_INPUT_VALUE);
         }
-        Set<Long> reqIds = requestPatterns.stream().map(ScheduleTemplateUpdateRequest.PatternRequest::getPatternId).collect(Collectors.toSet());
-        Set<Long> existIds = existingPatterns.stream().map(ProgramTimePattern::getId).collect(Collectors.toSet());
+        Set<Long> reqIds = requestPatterns.stream()
+                .map(ScheduleTemplateUpdateRequest.PatternRequest::getPatternId)
+                .collect(Collectors.toSet());
+        Set<Long> existIds =
+                existingPatterns.stream().map(ProgramTimePattern::getId).collect(Collectors.toSet());
         if (!reqIds.equals(existIds)) {
             throw new BaseException("예약이 있는 회차는 패턴을 추가/삭제할 수 없습니다.", ErrorCode.INVALID_INPUT_VALUE);
         }
@@ -225,7 +245,8 @@ public class AdminReservationService {
 
             if (fieldChanged) {
                 rejected.add(new RejectedPattern(
-                        existing.getId(), existing.getStartTime(),
+                        existing.getId(),
+                        existing.getStartTime(),
                         "FIELD_CHANGE_NOT_ALLOWED",
                         "예약이 있는 회차는 시간/소요시간/추가/삭제를 변경할 수 없습니다.",
                         null));
@@ -236,12 +257,12 @@ public class AdminReservationService {
                 CapacityUpdateResult result = updateSlotCapacities(existing, pr.getCapacity());
                 if (result.updatedCount > 0) {
                     updated.add(new UpdatedPattern(
-                            existing.getId(), existing.getStartTime(),
-                            pr.getCapacity(), result.updatedCount));
+                            existing.getId(), existing.getStartTime(), pr.getCapacity(), result.updatedCount));
                 }
                 if (!result.failedSlots.isEmpty()) {
                     rejected.add(new RejectedPattern(
-                            existing.getId(), existing.getStartTime(),
+                            existing.getId(),
+                            existing.getStartTime(),
                             "BOOKED_EXCEEDS_NEW_CAPACITY",
                             "예약 인원보다 작은 정원으로는 변경할 수 없습니다.",
                             result.failedSlots));
@@ -272,23 +293,33 @@ public class AdminReservationService {
         return new CapacityUpdateResult(updatedCount, failedSlots);
     }
 
-    private void createTimeSlotsFromCreateRequest(ProgramScheduleTemplate template, ScheduleTemplateCreateRequest request) {
+    private void createTimeSlotsFromCreateRequest(
+            ProgramScheduleTemplate template, ScheduleTemplateCreateRequest request) {
         Program program = template.getProgram();
         List<ScheduleTemplateCreateRequest.PatternRequest> patterns = request.getPatterns();
         for (int i = 0; i < patterns.size(); i++) {
             ScheduleTemplateCreateRequest.PatternRequest pr = patterns.get(i);
-            ProgramTimePattern pattern = ProgramTimePattern.of(template, pr.getStartTime(), pr.getDurationMinutes(), pr.getCapacity(), i);
+            ProgramTimePattern pattern =
+                    ProgramTimePattern.of(template, pr.getStartTime(), pr.getDurationMinutes(), pr.getCapacity(), i);
             patternRepository.save(pattern);
 
-            for (LocalDate date = request.getStartDate(); !date.isAfter(request.getEndDate()); date = date.plusDays(1)) {
+            for (LocalDate date = request.getStartDate();
+                    !date.isAfter(request.getEndDate());
+                    date = date.plusDays(1)) {
                 slotRepository.save(ProgramSlot.ofTime(
-                        program, template, pattern, date,
-                        pr.getStartTime(), pr.getDurationMinutes(), pr.getCapacity()));
+                        program,
+                        template,
+                        pattern,
+                        date,
+                        pr.getStartTime(),
+                        pr.getDurationMinutes(),
+                        pr.getCapacity()));
             }
         }
     }
 
-    private void createDateSlots(ProgramScheduleTemplate template, LocalDate start, LocalDate end, Integer durationMinutes) {
+    private void createDateSlots(
+            ProgramScheduleTemplate template, LocalDate start, LocalDate end, Integer durationMinutes) {
         Program program = template.getProgram();
         for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
             slotRepository.save(ProgramSlot.ofDate(program, template, date, durationMinutes));
@@ -300,14 +331,21 @@ public class AdminReservationService {
         List<ScheduleTemplateUpdateRequest.PatternRequest> patterns = request.getPatterns();
         for (int i = 0; i < patterns.size(); i++) {
             ScheduleTemplateUpdateRequest.PatternRequest pr = patterns.get(i);
-            ProgramTimePattern pattern = ProgramTimePattern.of(
-                    template, pr.getStartTime(), pr.getDurationMinutes(), pr.getCapacity(), i);
+            ProgramTimePattern pattern =
+                    ProgramTimePattern.of(template, pr.getStartTime(), pr.getDurationMinutes(), pr.getCapacity(), i);
             patternRepository.save(pattern);
 
-            for (LocalDate date = request.getStartDate(); !date.isAfter(request.getEndDate()); date = date.plusDays(1)) {
+            for (LocalDate date = request.getStartDate();
+                    !date.isAfter(request.getEndDate());
+                    date = date.plusDays(1)) {
                 slotRepository.save(ProgramSlot.ofTime(
-                        program, template, pattern, date,
-                        pr.getStartTime(), pr.getDurationMinutes(), pr.getCapacity()));
+                        program,
+                        template,
+                        pattern,
+                        date,
+                        pr.getStartTime(),
+                        pr.getDurationMinutes(),
+                        pr.getCapacity()));
             }
         }
     }
@@ -325,9 +363,7 @@ public class AdminReservationService {
     }
 
     private boolean hasActiveReservation(Long templateId) {
-        return reservationRepository.countByTemplateIdAndStatusIn(
-                templateId,
-                List.of(HOLD, CONFIRMED)) > 0;
+        return reservationRepository.countByTemplateIdAndStatusIn(templateId, List.of(HOLD, CONFIRMED)) > 0;
     }
 
     private static class CapacityUpdateResult {

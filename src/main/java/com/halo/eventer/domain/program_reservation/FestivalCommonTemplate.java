@@ -1,14 +1,14 @@
 package com.halo.eventer.domain.program_reservation;
 
+import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.global.common.BaseTime;
-import jakarta.persistence.Entity;
+import lombok.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @Getter
@@ -17,12 +17,10 @@ import lombok.*;
 @Table(
         name = "festival_common_template",
         uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_festival_common_template_festival_sort",
-                        columnNames = {"festival_id", "sort_order"}
-                )
-        }
-)
+            @UniqueConstraint(
+                    name = "uk_festival_common_template_festival_sort",
+                    columnNames = {"festival_id", "sort_order"})
+        })
 public class FestivalCommonTemplate extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,4 +49,3 @@ public class FestivalCommonTemplate extends BaseTime {
         return b;
     }
 }
-

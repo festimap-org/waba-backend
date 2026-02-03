@@ -1,21 +1,22 @@
 package com.halo.eventer.domain.program_reservation.repository;
 
 import java.util.List;
-
 import jakarta.persistence.LockModeType;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.halo.eventer.domain.program_reservation.ProgramSlot;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import com.halo.eventer.domain.program_reservation.ProgramSlot;
 
 public interface ProgramSlotRepository extends JpaRepository<ProgramSlot, Long> {
     void deleteAllByTemplateId(Long templateId);
 
     // FOR UPDATE
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("""
+    @Query(
+            """
         select s
         from ProgramSlot s
         where s.pattern.id = :patternId
@@ -24,5 +25,4 @@ public interface ProgramSlotRepository extends JpaRepository<ProgramSlot, Long> 
     List<ProgramSlot> findAllByPatternIdForUpdate(@Param("patternId") Long patternId);
 
     List<ProgramSlot> findAllByProgramIdOrderBySlotDateAscStartTimeAsc(Long programId);
-
 }

@@ -3,13 +3,6 @@ package com.halo.eventer.domain.program_reservation.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.halo.eventer.domain.program_reservation.dto.request.*;
-import com.halo.eventer.domain.program_reservation.dto.response.ProgramActiveResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ProgramBookingResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ProgramDetailResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ProgramResponse;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +13,18 @@ import com.halo.eventer.domain.program_reservation.Program;
 import com.halo.eventer.domain.program_reservation.ProgramBlock;
 import com.halo.eventer.domain.program_reservation.ProgramTag;
 import com.halo.eventer.domain.program_reservation.Tag;
+import com.halo.eventer.domain.program_reservation.dto.request.*;
+import com.halo.eventer.domain.program_reservation.dto.response.ProgramActiveResponse;
+import com.halo.eventer.domain.program_reservation.dto.response.ProgramBookingResponse;
+import com.halo.eventer.domain.program_reservation.dto.response.ProgramDetailResponse;
+import com.halo.eventer.domain.program_reservation.dto.response.ProgramResponse;
+import com.halo.eventer.domain.program_reservation.repository.FestivalCommonTemplateRepository;
 import com.halo.eventer.domain.program_reservation.repository.ProgramBlockRepository;
 import com.halo.eventer.domain.program_reservation.repository.ProgramRepository;
 import com.halo.eventer.domain.program_reservation.repository.ProgramTagRepository;
 import com.halo.eventer.domain.program_reservation.repository.TagRepository;
-import com.halo.eventer.domain.program_reservation.repository.FestivalCommonTemplateRepository;
-
+import com.halo.eventer.global.error.ErrorCode;
+import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -40,7 +39,9 @@ public class AdminProgramService {
 
     @Transactional
     public void create(Long festivalId, ProgramCreateRequest request) {
-        Festival festival = festivalRepository.findById(festivalId).orElseThrow(() -> new BaseException("존재하지 않는 축제입니다.", ErrorCode.ENTITY_NOT_FOUND));
+        Festival festival = festivalRepository
+                .findById(festivalId)
+                .orElseThrow(() -> new BaseException("존재하지 않는 축제입니다.", ErrorCode.ENTITY_NOT_FOUND));
         Program program = new Program(request.getName());
         program.assignFestival(festival);
         programRepository.save(program);
@@ -62,7 +63,9 @@ public class AdminProgramService {
 
     @Transactional(readOnly = true)
     public List<ProgramResponse> getList(Long festivalId, String name) {
-        Festival festival = festivalRepository.findById(festivalId).orElseThrow(() -> new BaseException("존재하지 않는 축제입니다.", ErrorCode.ENTITY_NOT_FOUND));
+        Festival festival = festivalRepository
+                .findById(festivalId)
+                .orElseThrow(() -> new BaseException("존재하지 않는 축제입니다.", ErrorCode.ENTITY_NOT_FOUND));
 
         List<Program> programs;
         if (name != null && !name.isBlank()) {
@@ -78,7 +81,8 @@ public class AdminProgramService {
         Program program = loadProgramOrThrow(programId);
         List<ProgramTag> tags = programTagRepository.findAllByProgramIdOrderBySortOrder(programId);
         List<ProgramBlock> blocks = programBlockRepository.findAllByProgramIdOrderBySortOrder(programId);
-        List<FestivalCommonTemplate> templates = templateRepository.findAllByFestivalIdOrderBySortOrder(program.getFestival().getId());
+        List<FestivalCommonTemplate> templates = templateRepository.findAllByFestivalIdOrderBySortOrder(
+                program.getFestival().getId());
         return ProgramDetailResponse.from(program, tags, blocks, templates);
     }
 
@@ -93,8 +97,7 @@ public class AdminProgramService {
                 request.getDurationTime(),
                 request.getAvailableAge(),
                 request.getPersonLimit(),
-                request.getMaxPersonCount()
-        );
+                request.getMaxPersonCount());
 
         // 태그 전체 교체
         programTagRepository.deleteAllByProgramId(programId);
@@ -102,7 +105,9 @@ public class AdminProgramService {
         if (request.getTags() != null) {
             List<ProgramUpdateRequest.TagRequest> tags = request.getTags();
             for (int i = 0; i < tags.size(); i++) {
-                Tag tag = tagRepository.findById(tags.get(i).getTagId()).orElseThrow(() -> new BaseException("존재하지 않는 태그입니다.", ErrorCode.ENTITY_NOT_FOUND));
+                Tag tag = tagRepository
+                        .findById(tags.get(i).getTagId())
+                        .orElseThrow(() -> new BaseException("존재하지 않는 태그입니다.", ErrorCode.ENTITY_NOT_FOUND));
                 programTagRepository.save(ProgramTag.of(program, tag, i));
             }
         }
@@ -124,8 +129,12 @@ public class AdminProgramService {
             case SUMMARY:
                 return ProgramBlock.summary(program, sortOrder, req.getSummaryLabel(), req.getSummaryValue());
             case DESCRIPTION:
-                return ProgramBlock.description(program, sortOrder,
-                        req.getDescriptionOneLine(), req.getDescriptionDetail(), req.getDescriptionImageUrl());
+                return ProgramBlock.description(
+                        program,
+                        sortOrder,
+                        req.getDescriptionOneLine(),
+                        req.getDescriptionDetail(),
+                        req.getDescriptionImageUrl());
             case CAUTION:
                 return ProgramBlock.caution(program, sortOrder, req.getCautionContent());
             default:
@@ -159,7 +168,9 @@ public class AdminProgramService {
     }
 
     private Program loadProgramOrThrow(Long programId) {
-        return programRepository.findById(programId).orElseThrow(() -> new BaseException("존재하지 않는 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND));
+        return programRepository
+                .findById(programId)
+                .orElseThrow(() -> new BaseException("존재하지 않는 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND));
     }
 
     private ProgramActiveResponse toActiveResponse(Program program) {
@@ -169,8 +180,7 @@ public class AdminProgramService {
                 program.getActiveStartAt() != null ? program.getActiveStartAt().toLocalDate() : null,
                 program.getActiveStartAt() != null ? program.getActiveStartAt().toLocalTime() : null,
                 program.getActiveEndAt() != null ? program.getActiveEndAt().toLocalDate() : null,
-                program.getActiveEndAt() != null ? program.getActiveEndAt().toLocalTime() : null
-        );
+                program.getActiveEndAt() != null ? program.getActiveEndAt().toLocalTime() : null);
     }
 
     @Transactional
@@ -197,8 +207,11 @@ public class AdminProgramService {
                 program.getId(),
                 program.getBookingOpenAt() != null ? program.getBookingOpenAt().toLocalDate() : null,
                 program.getBookingOpenAt() != null ? program.getBookingOpenAt().toLocalTime() : null,
-                program.getBookingCloseAt() != null ? program.getBookingCloseAt().toLocalDate() : null,
-                program.getBookingCloseAt() != null ? program.getBookingCloseAt().toLocalTime() : null
-        );
+                program.getBookingCloseAt() != null
+                        ? program.getBookingCloseAt().toLocalDate()
+                        : null,
+                program.getBookingCloseAt() != null
+                        ? program.getBookingCloseAt().toLocalTime()
+                        : null);
     }
 }

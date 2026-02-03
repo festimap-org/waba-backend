@@ -1,9 +1,9 @@
 package com.halo.eventer.domain.program_reservation;
 
 import java.time.LocalDateTime;
+import jakarta.persistence.*;
 
 import com.halo.eventer.global.common.BaseTime;
-import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,10 +49,15 @@ public class ProgramReservation extends BaseTime {
     @JoinColumn(name = "slot_id", nullable = false)
     private ProgramSlot slot;
 
-    public static ProgramReservation hold(Program program, ProgramSlot slot, Integer peopleCount,
-                                          String bookerName, String bookerPhone,
-                                          String visitorName, String visitorPhone,
-                                          LocalDateTime holdExpiresAt) {
+    public static ProgramReservation hold(
+            Program program,
+            ProgramSlot slot,
+            Integer peopleCount,
+            String bookerName,
+            String bookerPhone,
+            String visitorName,
+            String visitorPhone,
+            LocalDateTime holdExpiresAt) {
         ProgramReservation r = new ProgramReservation();
         r.program = program;
         r.slot = slot;

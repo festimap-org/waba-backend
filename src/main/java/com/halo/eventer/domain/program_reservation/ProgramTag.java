@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.program_reservation;
 
 import jakarta.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,10 +11,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"program_id", "tag_id"}),
-        @UniqueConstraint(columnNames = {"program_id", "sort_order"})
-})
+@Table(
+        uniqueConstraints = {
+            @UniqueConstraint(columnNames = {"program_id", "tag_id"}),
+            @UniqueConstraint(columnNames = {"program_id", "sort_order"})
+        })
 public class ProgramTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

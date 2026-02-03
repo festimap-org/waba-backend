@@ -3,11 +3,11 @@ package com.halo.eventer.domain.program_reservation.dto.request;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.halo.eventer.domain.program_reservation.ProgramSlotType;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

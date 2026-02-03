@@ -1,13 +1,13 @@
 package com.halo.eventer.domain.program_reservation.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+import jakarta.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
@@ -21,7 +21,8 @@ public class ProgramBookingInfoRequest {
     @Schema(example = "10:00")
     private LocalTime bookingOpenTime;
 
-    @NotNull @Schema(example = "2026-02-28")
+    @NotNull
+    @Schema(example = "2026-02-28")
     private LocalDate bookingCloseDate;
 
     @NotNull

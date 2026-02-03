@@ -26,7 +26,8 @@ public class ScheduleTemplateDetailResponse {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<PatternDetail> patterns;
 
-    public static ScheduleTemplateDetailResponse of(ProgramScheduleTemplate template, List<ProgramTimePattern> patterns, boolean hasReservation) {
+    public static ScheduleTemplateDetailResponse of(
+            ProgramScheduleTemplate template, List<ProgramTimePattern> patterns, boolean hasReservation) {
         ScheduleTemplateDetailResponse r = new ScheduleTemplateDetailResponse();
         r.templateId = template.getId();
         r.slotType = template.getSlotType();

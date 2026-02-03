@@ -1,9 +1,10 @@
 package com.halo.eventer.domain.program_reservation;
 
+import java.time.LocalDateTime;
+import jakarta.persistence.*;
+
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.global.common.BaseTime;
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,18 +64,34 @@ public class Program extends BaseTime {
         this.isActive = !this.isActive;
     }
 
-    public void updateActiveStartAt(LocalDateTime activeStartAt) { this.activeStartAt = activeStartAt; }
-    public void updateActiveEndAt(LocalDateTime activeEndAt) { this.activeEndAt = activeEndAt; }
+    public void updateActiveStartAt(LocalDateTime activeStartAt) {
+        this.activeStartAt = activeStartAt;
+    }
 
-    public void updateBookingOpenAt(LocalDateTime bookingOpenAt) { this.bookingOpenAt = bookingOpenAt; }
-    public void updateBookingCloseAt(LocalDateTime bookingCloseAt) { this.bookingCloseAt = bookingCloseAt; }
+    public void updateActiveEndAt(LocalDateTime activeEndAt) {
+        this.activeEndAt = activeEndAt;
+    }
+
+    public void updateBookingOpenAt(LocalDateTime bookingOpenAt) {
+        this.bookingOpenAt = bookingOpenAt;
+    }
+
+    public void updateBookingCloseAt(LocalDateTime bookingCloseAt) {
+        this.bookingCloseAt = bookingCloseAt;
+    }
 
     public void updateName(String name) {
         this.name = name;
     }
 
-    public void update(String thumbnailUrl, PricingType pricingType, int priceAmount,
-                       String durationTime, String availableAge, PersonLimit personLimit, int maxPersonCount) {
+    public void update(
+            String thumbnailUrl,
+            PricingType pricingType,
+            int priceAmount,
+            String durationTime,
+            String availableAge,
+            PersonLimit personLimit,
+            int maxPersonCount) {
         this.thumbnailUrl = thumbnailUrl;
         this.pricingType = pricingType;
         this.priceAmount = priceAmount;
@@ -84,13 +101,14 @@ public class Program extends BaseTime {
         this.maxPersonCount = maxPersonCount;
     }
 
-
     @Getter
     public enum PricingType {
-        FREE, PAID
+        FREE,
+        PAID
     }
 
     public enum PersonLimit {
-        UNLIMITED, LIMITED
+        UNLIMITED,
+        LIMITED
     }
 }

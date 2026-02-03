@@ -1,22 +1,21 @@
 package com.halo.eventer.domain.program_reservation.controller;
 
-import com.halo.eventer.domain.program_reservation.dto.response.AdminSlotCalendarResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateListResponse;
+import java.util.List;
 import jakarta.validation.Valid;
+
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateCreateRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateUpdateRequest;
+import com.halo.eventer.domain.program_reservation.dto.response.AdminSlotCalendarResponse;
 import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateDetailResponse;
+import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateListResponse;
 import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateUpdateResponse;
 import com.halo.eventer.domain.program_reservation.service.AdminReservationService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/admin/reservations")
@@ -36,8 +35,9 @@ public class AdminReservationController {
     /** GET 기간 카드 목록 조회 */
     @GetMapping("/programs/{programId}/schedule-templates")
     @Operation(summary = "기간 카드 목록 조회", description = "특정 프로그램의 스케줄 템플릿 카드 리스트를 조회합니다.")
-    public List<ScheduleTemplateListResponse> getTemplates(@PathVariable("programId") Long programId) { return adminReservationService.getTemplates(programId); }
-
+    public List<ScheduleTemplateListResponse> getTemplates(@PathVariable("programId") Long programId) {
+        return adminReservationService.getTemplates(programId);
+    }
 
     /** GET 상세 조회 (편집 로딩) */
     @GetMapping("/schedule-templates/{templateId}")
@@ -49,14 +49,16 @@ public class AdminReservationController {
     /** POST 템플릿 생성 (기간 카드 추가) */
     @PostMapping("/programs/{programId}/schedule-templates")
     @Operation(summary = "템플릿 생성", description = "프로그램에 새 기간 카드(스케줄 템플릿)를 추가합니다.")
-    public void createTemplate(@PathVariable("programId") Long programId, @RequestBody @Valid ScheduleTemplateCreateRequest request) {
+    public void createTemplate(
+            @PathVariable("programId") Long programId, @RequestBody @Valid ScheduleTemplateCreateRequest request) {
         adminReservationService.createTemplate(programId, request);
     }
 
     /** PUT 템플릿 저장 및 수정 */
     @PutMapping("/schedule-templates/{templateId}")
     @Operation(summary = "템플릿 저장/수정", description = "모달에서 기간/회차/정원 변경 저장. 예약 존재 시 부분 성공 정책 적용")
-    public ScheduleTemplateUpdateResponse updateTemplate(@PathVariable("templateId") Long templateId, @RequestBody @Valid ScheduleTemplateUpdateRequest request) {
+    public ScheduleTemplateUpdateResponse updateTemplate(
+            @PathVariable("templateId") Long templateId, @RequestBody @Valid ScheduleTemplateUpdateRequest request) {
         return adminReservationService.updateTemplate(templateId, request);
     }
 

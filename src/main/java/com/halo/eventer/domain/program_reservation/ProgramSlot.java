@@ -3,11 +3,11 @@ package com.halo.eventer.domain.program_reservation;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
+import jakarta.persistence.*;
 
 import com.halo.eventer.global.common.BaseTime;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
-import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,8 +51,8 @@ public class ProgramSlot extends BaseTime {
     @JoinColumn(name = "pattern_id")
     private ProgramTimePattern pattern;
 
-    public static ProgramSlot ofDate(Program program, ProgramScheduleTemplate template,
-                                     LocalDate slotDate, Integer durationMinutes) {
+    public static ProgramSlot ofDate(
+            Program program, ProgramScheduleTemplate template, LocalDate slotDate, Integer durationMinutes) {
         ProgramSlot s = new ProgramSlot();
         s.program = program;
         s.template = template;
@@ -63,10 +63,14 @@ public class ProgramSlot extends BaseTime {
         return s;
     }
 
-    public static ProgramSlot ofTime(Program program, ProgramScheduleTemplate template,
-                                     ProgramTimePattern pattern, LocalDate slotDate,
-                                     LocalTime startTime, Integer durationMinutes,
-                                     Integer capacity) {
+    public static ProgramSlot ofTime(
+            Program program,
+            ProgramScheduleTemplate template,
+            ProgramTimePattern pattern,
+            LocalDate slotDate,
+            LocalTime startTime,
+            Integer durationMinutes,
+            Integer capacity) {
         ProgramSlot s = new ProgramSlot();
         s.program = program;
         s.template = template;

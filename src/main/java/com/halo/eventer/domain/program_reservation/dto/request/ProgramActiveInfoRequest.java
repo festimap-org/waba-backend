@@ -2,17 +2,18 @@ package com.halo.eventer.domain.program_reservation.dto.request;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
 import jakarta.validation.constraints.NotNull;
-import io.swagger.v3.oas.annotations.media.Schema;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 public class ProgramActiveInfoRequest {
-    @NotNull @Schema(example = "2026-02-01")
+    @NotNull
+    @Schema(example = "2026-02-01")
     private LocalDate activeStartDate;
 
     @NotNull
@@ -20,7 +21,8 @@ public class ProgramActiveInfoRequest {
     @Schema(example = "10:00")
     private LocalTime activeStartTime;
 
-    @NotNull @Schema(example = "2026-02-28")
+    @NotNull
+    @Schema(example = "2026-02-28")
     private LocalDate activeEndDate;
 
     @NotNull

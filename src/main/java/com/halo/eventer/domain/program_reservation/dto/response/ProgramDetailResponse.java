@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.halo.eventer.domain.program_reservation.FestivalCommonTemplate;
 import com.halo.eventer.domain.program_reservation.Program;
 import com.halo.eventer.domain.program_reservation.ProgramBlock;
 import com.halo.eventer.domain.program_reservation.ProgramTag;
-import com.halo.eventer.domain.program_reservation.FestivalCommonTemplate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,8 +30,11 @@ public class ProgramDetailResponse {
     private List<BlockResponse> blocks;
     private List<TemplateResponse> templates;
 
-    public static ProgramDetailResponse from(Program program, List<ProgramTag> programTags,
-                                             List<ProgramBlock> blocks, List<FestivalCommonTemplate> templates) {
+    public static ProgramDetailResponse from(
+            Program program,
+            List<ProgramTag> programTags,
+            List<ProgramBlock> blocks,
+            List<FestivalCommonTemplate> templates) {
         ProgramDetailResponse dto = new ProgramDetailResponse();
         dto.id = program.getId();
         dto.name = program.getName();

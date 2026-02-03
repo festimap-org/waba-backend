@@ -1,9 +1,9 @@
 package com.halo.eventer.domain.program_reservation;
 
 import java.time.LocalTime;
+import jakarta.persistence.*;
 
 import com.halo.eventer.global.common.BaseTime;
-import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,8 +32,12 @@ public class ProgramTimePattern extends BaseTime {
     @JoinColumn(name = "template_id", nullable = false)
     private ProgramScheduleTemplate template;
 
-    public static ProgramTimePattern of(ProgramScheduleTemplate template, LocalTime startTime,
-                                        Integer durationMinutes, Integer capacity, Integer sortOrder) {
+    public static ProgramTimePattern of(
+            ProgramScheduleTemplate template,
+            LocalTime startTime,
+            Integer durationMinutes,
+            Integer capacity,
+            Integer sortOrder) {
         ProgramTimePattern p = new ProgramTimePattern();
         p.template = template;
         p.startTime = startTime;

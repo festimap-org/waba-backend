@@ -23,9 +23,8 @@ public class ScheduleTemplateUpdateResponse {
         return new ScheduleTemplateUpdateResponse(templateId, "SUCCESS", null, null);
     }
 
-    public static ScheduleTemplateUpdateResponse partial(Long templateId,
-                                                          List<UpdatedPattern> updated,
-                                                          List<RejectedPattern> rejected) {
+    public static ScheduleTemplateUpdateResponse partial(
+            Long templateId, List<UpdatedPattern> updated, List<RejectedPattern> rejected) {
         String result = (rejected == null || rejected.isEmpty()) ? "SUCCESS" : "PARTIAL_SUCCESS";
         return new ScheduleTemplateUpdateResponse(templateId, result, updated, rejected);
     }
@@ -34,8 +33,10 @@ public class ScheduleTemplateUpdateResponse {
     @AllArgsConstructor
     public static class UpdatedPattern {
         private Long patternId;
+
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
         private LocalTime startTime;
+
         private Integer appliedCapacity;
         private Integer updatedSlotCount;
     }
@@ -45,8 +46,10 @@ public class ScheduleTemplateUpdateResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RejectedPattern {
         private Long patternId;
+
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
         private LocalTime startTime;
+
         private String reason;
         private String message;
         private List<FailedSlot> failedSlots;

@@ -1,15 +1,15 @@
 package com.halo.eventer.domain.program_reservation.dto.response;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.halo.eventer.domain.program_reservation.ProgramSlot;
 import com.halo.eventer.domain.program_reservation.ProgramSlotType;
 import lombok.Getter;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
 
 @Getter
 public class AdminSlotCalendarResponse {
@@ -74,12 +74,11 @@ public class AdminSlotCalendarResponse {
 
             if (dto.slotType == ProgramSlotType.TIME) {
                 Long patternId = s.getPattern().getId();
-                dto.capacity = patternCapacityMap.get(patternId);   // 없으면 null
+                dto.capacity = patternCapacityMap.get(patternId); // 없으면 null
             } else {
-                dto.capacity = null;     // DATE: 무제한 → UI에서 안 보여주게
+                dto.capacity = null; // DATE: 무제한 → UI에서 안 보여주게
             }
             return dto;
         }
     }
 }
-

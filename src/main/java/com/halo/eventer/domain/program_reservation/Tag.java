@@ -1,7 +1,8 @@
 package com.halo.eventer.domain.program_reservation;
 
-import com.halo.eventer.global.common.BaseTime;
 import jakarta.persistence.*;
+
+import com.halo.eventer.global.common.BaseTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
