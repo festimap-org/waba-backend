@@ -42,6 +42,10 @@ public class Program extends BaseTime {
 
     private LocalDateTime activeEndAt;
 
+    private LocalDateTime bookingOpenAt;
+
+    private LocalDateTime bookingCloseAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
     private Festival festival;
@@ -61,6 +65,9 @@ public class Program extends BaseTime {
 
     public void updateActiveStartAt(LocalDateTime activeStartAt) { this.activeStartAt = activeStartAt; }
     public void updateActiveEndAt(LocalDateTime activeEndAt) { this.activeEndAt = activeEndAt; }
+
+    public void updateBookingOpenAt(LocalDateTime bookingOpenAt) { this.bookingOpenAt = bookingOpenAt; }
+    public void updateBookingCloseAt(LocalDateTime bookingCloseAt) { this.bookingCloseAt = bookingCloseAt; }
 
     public void updateName(String name) {
         this.name = name;

@@ -3,6 +3,10 @@ package com.halo.eventer.domain.program_reservation.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.halo.eventer.domain.program_reservation.dto.request.*;
+import com.halo.eventer.domain.program_reservation.dto.response.ProgramActiveResponse;
+import com.halo.eventer.domain.program_reservation.dto.response.ProgramDetailResponse;
+import com.halo.eventer.domain.program_reservation.dto.response.ProgramResponse;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import org.springframework.stereotype.Service;
@@ -15,7 +19,6 @@ import com.halo.eventer.domain.program_reservation.Program;
 import com.halo.eventer.domain.program_reservation.ProgramBlock;
 import com.halo.eventer.domain.program_reservation.ProgramTag;
 import com.halo.eventer.domain.program_reservation.Tag;
-import com.halo.eventer.domain.program_reservation.dto.*;
 import com.halo.eventer.domain.program_reservation.repository.ProgramBlockRepository;
 import com.halo.eventer.domain.program_reservation.repository.ProgramRepository;
 import com.halo.eventer.domain.program_reservation.repository.ProgramTagRepository;
@@ -26,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ProgramService {
+public class AdminProgramService {
     private final ProgramRepository programRepository;
     private final ProgramBlockRepository programBlockRepository;
     private final ProgramTagRepository programTagRepository;
@@ -167,5 +170,18 @@ public class ProgramService {
                 program.getActiveEndAt() != null ? program.getActiveEndAt().toLocalDate() : null,
                 program.getActiveEndAt() != null ? program.getActiveEndAt().toLocalTime() : null
         );
+    }
+
+    @Transactional
+    public void updateBookingInfo(Long programId, ProgramBookingInfoRequest request) {
+        Program program = loadProgramOrThrow(programId);
+
+        var open = java.time.LocalDateTime.of(request.getBookingOpenDate(), request.getBookingOpenTime());
+        var close = java.time.LocalDateTime.of(request.getBookingCloseDate(), request.getBookingCloseTime());
+        if (close.isBefore(open)) {
+            throw new BaseException("마감 시각은 오픈 시각 이후여야 합니다.", ErrorCode.INVALID_INPUT_VALUE);
+        }
+        program.updateBookingOpenAt(open);
+        program.updateBookingCloseAt(close);
     }
 }

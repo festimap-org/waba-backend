@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.program_reservation.dto;
+package com.halo.eventer.domain.program_reservation.dto.response;
 
 import com.halo.eventer.domain.program_reservation.FestivalCommonTemplate;
 import lombok.Getter;

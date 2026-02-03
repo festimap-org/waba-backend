@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.program_reservation.dto;
+package com.halo.eventer.domain.program_reservation.dto.request;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

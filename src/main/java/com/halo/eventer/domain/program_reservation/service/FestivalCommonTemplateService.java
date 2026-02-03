@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.program_reservation.FestivalCommonTemplate;
-import com.halo.eventer.domain.program_reservation.dto.TemplateSaveAllRequest;
-import com.halo.eventer.domain.program_reservation.dto.TemplateResponse;
+import com.halo.eventer.domain.program_reservation.dto.request.TemplateSaveAllRequest;
+import com.halo.eventer.domain.program_reservation.dto.response.TemplateResponse;
 import com.halo.eventer.domain.program_reservation.repository.FestivalCommonTemplateRepository;
 
 import lombok.RequiredArgsConstructor;

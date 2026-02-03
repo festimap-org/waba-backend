@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.program_reservation.dto;
+package com.halo.eventer.domain.program_reservation.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
