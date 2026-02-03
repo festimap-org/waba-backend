@@ -88,4 +88,6 @@ public class ProgramReservation extends BaseTime {
         this.status = ProgramReservationStatus.CANCELED;
         this.cancelledAt = LocalDateTime.now();
     }
+
+    public void changeStatus(ProgramReservationStatus status) { this.status = status; }
 }

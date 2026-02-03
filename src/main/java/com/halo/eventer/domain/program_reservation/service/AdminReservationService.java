@@ -4,16 +4,17 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.halo.eventer.domain.program_reservation.dto.response.*;
+import jakarta.persistence.criteria.JoinType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.halo.eventer.domain.program_reservation.*;
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateCreateRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateUpdateRequest;
-import com.halo.eventer.domain.program_reservation.dto.response.AdminSlotCalendarResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateDetailResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateListResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateUpdateResponse;
 import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateUpdateResponse.*;
 import com.halo.eventer.domain.program_reservation.repository.*;
 import com.halo.eventer.global.error.ErrorCode;
@@ -31,6 +32,88 @@ public class AdminReservationService {
     private final ProgramTimePatternRepository patternRepository;
     private final ProgramSlotRepository slotRepository;
     private final ProgramReservationRepository reservationRepository;
+
+    /** 예약 정보 조회 (예약 관리 대시보드) */
+    @Transactional(readOnly = true)
+    public AdminReservationPageResponse getReservations(ReservationSearchField searchField, String keyword, ProgramReservationStatus status, Pageable pageable) {
+        Specification<ProgramReservation> spec = (root, query, cb) -> {
+            // count쿼리/중복 방지
+            assert query != null;
+            query.distinct(true);
+
+            var predicate = cb.conjunction();
+
+            // 1) 상태 필터
+            if (status != null) {
+                predicate = cb.and(predicate, cb.equal(root.get("status"), status));
+            }
+
+            // 2) 검색어 필터
+            if (keyword != null && !keyword.isBlank()) {
+                String kw = keyword.trim();
+
+                // searchField가 없으면 "프로그램명 + 신청자명 + 신청자전화 + 방문자명 + 방문자전화" 통합검색으로 처리
+                if (searchField == null) {
+                    var programJoin = root.join("program", JoinType.LEFT);
+
+                    String like = "%" + kw.toLowerCase() + "%";
+                    var p1 = cb.like(cb.lower(programJoin.get("name")), like);
+                    var p2 = cb.like(cb.lower(root.get("bookerName")), like);
+                    var p3 = cb.like(cb.lower(root.get("bookerPhone")), like);
+                    var p4 = cb.like(cb.lower(root.get("visitorName")), like);
+                    var p5 = cb.like(cb.lower(root.get("visitorPhone")), like);
+
+                    predicate = cb.and(predicate, cb.or(p1, p2, p3, p4, p5));
+                } else {
+                    // 지정 필드 검색
+                    switch (searchField) {
+                        case PROGRAM_NAME -> {
+                            var programJoin = root.join("program", JoinType.INNER);
+                            String like = "%" + kw.toLowerCase() + "%";
+                            predicate = cb.and(predicate, cb.like(cb.lower(programJoin.get("name")), like));
+                        }
+                        case BOOKER_NAME -> {
+                            String like = "%" + kw.toLowerCase() + "%";
+                            predicate = cb.and(predicate, cb.like(cb.lower(root.get("bookerName")), like));
+                        }
+                        case VISITOR_NAME -> {
+                            String like = "%" + kw.toLowerCase() + "%";
+                            predicate = cb.and(predicate, cb.like(cb.lower(root.get("visitorName")), like));
+                        }
+                        case BOOKER_PHONE -> {
+                            String normalized = kw.replace("-", "");
+                            String like1 = "%" + kw.toLowerCase() + "%";
+                            String like2 = "%" + normalized.toLowerCase() + "%";
+                            var p1 = cb.like(cb.lower(root.get("bookerPhone")), like1);
+                            var p2 = cb.like(cb.lower(root.get("bookerPhone")), like2);
+                            predicate = cb.and(predicate, cb.or(p1, p2));
+                        }
+                        case VISITOR_PHONE -> {
+                            String normalized = kw.replace("-", "");
+                            String like1 = "%" + kw.toLowerCase() + "%";
+                            String like2 = "%" + normalized.toLowerCase() + "%";
+                            var p1 = cb.like(cb.lower(root.get("visitorPhone")), like1);
+                            var p2 = cb.like(cb.lower(root.get("visitorPhone")), like2);
+                            predicate = cb.and(predicate, cb.or(p1, p2));
+                        }
+                    }
+                }
+            }
+
+            return predicate;
+        };
+
+        Page<ProgramReservation> page = reservationRepository.findAll(spec, pageable);
+
+        List<AdminReservationResponse> adminReservations = page.getContent().stream()
+                .map(AdminReservationResponse::from)
+                .collect(Collectors.toList());
+
+        return AdminReservationPageResponse.of(adminReservations, page);
+    }
+
+    /** 다건 예약 상태 변경 (선택 승인, 선택 거절) */
+
 
     @Transactional(readOnly = true)
     public AdminSlotCalendarResponse getAdminSlotCalendar(Long programId) {

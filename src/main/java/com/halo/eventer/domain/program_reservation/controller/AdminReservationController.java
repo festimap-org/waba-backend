@@ -1,17 +1,22 @@
 package com.halo.eventer.domain.program_reservation.controller;
 
 import java.util.List;
+
+import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.ReservationSearchField;
+import com.halo.eventer.domain.program_reservation.dto.response.*;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateCreateRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateUpdateRequest;
-import com.halo.eventer.domain.program_reservation.dto.response.AdminSlotCalendarResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateDetailResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateListResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateUpdateResponse;
 import com.halo.eventer.domain.program_reservation.service.AdminReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,8 +30,22 @@ import lombok.RequiredArgsConstructor;
 public class AdminReservationController {
     private final AdminReservationService adminReservationService;
 
+    /** GET 전체 예약 리스트 (8개씩 페이징처리) */
+    @GetMapping()
+    @Operation(summary = "예약 목록 조회 (대시보드)", description =
+                "예약 관리 대시보드용 예약 목록을 조회합니다. " +
+                "상태: HOLD, EXPIRED(만료), APPROVED(승인), CANCELLED(취소)")
+    public AdminReservationPageResponse getReservations(
+            @Parameter(description = "검색 대상 (선택)") @RequestParam(required = false) ReservationSearchField searchField,
+            @Parameter(description = "검색어 (선택)") @RequestParam(required = false) String keyword,
+            @Parameter(description = "예약 상태 필터 (선택)") @RequestParam(required = false) ProgramReservationStatus status,
+            @ParameterObject @PageableDefault(size = 8, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return adminReservationService.getReservations(searchField, keyword, status, pageable);
+    }
+
     /** GET 예약 회차 캘린더 조회*/
-    @GetMapping("/admin/programs/{programId}/slots/calendar")
+    @GetMapping("/programs/{programId}/slots/calendar")
     @Operation(summary = "예약 회차 캘린더 조회(관리자)", description = "관리자 예약 회차 관리 화면에서 사용하는 날짜별 슬롯 목록을 조회합니다.")
     public AdminSlotCalendarResponse getAdminSlotCalendar(@PathVariable Long programId) {
         return adminReservationService.getAdminSlotCalendar(programId);

@@ -4,5 +4,7 @@ public enum ProgramReservationStatus {
     HOLD,
     CONFIRMED,
     EXPIRED,
-    CANCELED
+    CANCELED,
+    REJECTED,
+    APPROVED
 }
