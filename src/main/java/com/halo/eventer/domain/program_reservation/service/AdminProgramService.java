@@ -3,6 +3,7 @@ package com.halo.eventer.domain.program_reservation.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.halo.eventer.domain.program_reservation.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,11 +19,6 @@ import com.halo.eventer.domain.program_reservation.dto.response.ProgramActiveRes
 import com.halo.eventer.domain.program_reservation.dto.response.ProgramBookingResponse;
 import com.halo.eventer.domain.program_reservation.dto.response.ProgramDetailResponse;
 import com.halo.eventer.domain.program_reservation.dto.response.ProgramResponse;
-import com.halo.eventer.domain.program_reservation.repository.FestivalCommonTemplateRepository;
-import com.halo.eventer.domain.program_reservation.repository.ProgramBlockRepository;
-import com.halo.eventer.domain.program_reservation.repository.ProgramRepository;
-import com.halo.eventer.domain.program_reservation.repository.ProgramTagRepository;
-import com.halo.eventer.domain.program_reservation.repository.TagRepository;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +29,7 @@ public class AdminProgramService {
     private final ProgramRepository programRepository;
     private final ProgramBlockRepository programBlockRepository;
     private final ProgramTagRepository programTagRepository;
+    private final ProgramReservationRepository programReservationRepository;
     private final TagRepository tagRepository;
     private final FestivalRepository festivalRepository;
     private final FestivalCommonTemplateRepository templateRepository;
@@ -56,6 +53,9 @@ public class AdminProgramService {
     @Transactional
     public void delete(Long programId) {
         Program program = loadProgramOrThrow(programId);
+        if (programReservationRepository.existsByProgramId(programId)) {
+            throw new BaseException("예약이 존재하는 프로그램은 삭제할 수 없습니다.", ErrorCode.ACTIVE_RESERVATION_EXISTS);
+        }
         programTagRepository.deleteAllByProgramId(programId);
         programBlockRepository.deleteAllByProgramId(programId);
         programRepository.delete(program);
