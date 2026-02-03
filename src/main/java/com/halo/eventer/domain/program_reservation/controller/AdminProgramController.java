@@ -3,10 +3,7 @@ package com.halo.eventer.domain.program_reservation.controller;
 import java.util.List;
 
 import com.halo.eventer.domain.program_reservation.dto.request.*;
-import com.halo.eventer.domain.program_reservation.dto.response.ProgramActiveResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ProgramDetailResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ProgramListResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.TemplateResponse;
+import com.halo.eventer.domain.program_reservation.dto.response.*;
 import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -104,4 +101,9 @@ public class AdminProgramController {
     public void updateBookingInfo(@PathVariable("programId") Long programId, @RequestBody @Valid ProgramBookingInfoRequest request) {
         adminProgramService.updateBookingInfo(programId, request);
     }
+
+    @GetMapping("/{programId}/booking")
+    @Operation(summary = "예약 오픈/마감 조회")
+    public ProgramBookingResponse getBookingInfo(@PathVariable("programId") Long programId) { return adminProgramService.getBookingInfo(programId); }
+
 }

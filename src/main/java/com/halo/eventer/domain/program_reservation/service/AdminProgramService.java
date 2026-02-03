@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.halo.eventer.domain.program_reservation.dto.request.*;
 import com.halo.eventer.domain.program_reservation.dto.response.ProgramActiveResponse;
+import com.halo.eventer.domain.program_reservation.dto.response.ProgramBookingResponse;
 import com.halo.eventer.domain.program_reservation.dto.response.ProgramDetailResponse;
 import com.halo.eventer.domain.program_reservation.dto.response.ProgramResponse;
 import com.halo.eventer.global.error.ErrorCode;
@@ -183,5 +184,21 @@ public class AdminProgramService {
         }
         program.updateBookingOpenAt(open);
         program.updateBookingCloseAt(close);
+    }
+
+    @Transactional(readOnly = true)
+    public ProgramBookingResponse getBookingInfo(Long programId) {
+        Program program = loadProgramOrThrow(programId);
+        return toBookingResponse(program);
+    }
+
+    private ProgramBookingResponse toBookingResponse(Program program) {
+        return ProgramBookingResponse.of(
+                program.getId(),
+                program.getBookingOpenAt() != null ? program.getBookingOpenAt().toLocalDate() : null,
+                program.getBookingOpenAt() != null ? program.getBookingOpenAt().toLocalTime() : null,
+                program.getBookingCloseAt() != null ? program.getBookingCloseAt().toLocalDate() : null,
+                program.getBookingCloseAt() != null ? program.getBookingCloseAt().toLocalTime() : null
+        );
     }
 }

@@ -23,6 +23,9 @@ public enum ErrorCode {
     VALIDATION_FAILED("C013", "Validation Failed", 400),
     MAX_COUNT_EXCEEDED("C014", "Exceeded maximum count (limit: 20)", 400),
 
+    // Program Reservation
+    ACTIVE_RESERVATION_EXISTS("PR001", "Active reservation exists", 409),
+
     // Festival
     SUB_ADDRESS_ALREADY_EXISTS("F001", "subAddress Already Exists", 400),
 
