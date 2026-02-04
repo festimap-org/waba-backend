@@ -3,6 +3,7 @@ package com.halo.eventer.domain.program_reservation;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
+import com.halo.eventer.domain.member.Member;
 import com.halo.eventer.global.common.BaseTime;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -50,9 +51,14 @@ public class ProgramReservation extends BaseTime {
     @JoinColumn(name = "slot_id", nullable = false)
     private ProgramSlot slot;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
     public static ProgramReservation hold(
             Program program,
             ProgramSlot slot,
+            Member member,
             Integer peopleCount,
             String bookerName,
             String bookerPhone,
@@ -62,6 +68,7 @@ public class ProgramReservation extends BaseTime {
         ProgramReservation r = new ProgramReservation();
         r.program = program;
         r.slot = slot;
+        r.member = member;
         r.peopleCount = peopleCount;
         r.status = ProgramReservationStatus.HOLD;
         r.holdExpiresAt = holdExpiresAt;
