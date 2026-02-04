@@ -30,7 +30,7 @@ public class MemberService {
             throw new LoginFailedException();
         }
 
-        return new TokenDto(jwtProvider.createToken(member.getId().toString(), member.getRoleNames()));
+        return new TokenDto(jwtProvider.createToken(member.getLoginId(), member.getRoleNames()));
     }
 
     @Transactional

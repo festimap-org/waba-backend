@@ -155,9 +155,12 @@ public class JwtProvider {
         if (role.equals("STAMP")) {
             // STAMP 레거시: uuid로 조회 (하위 호환)
             userDetails = customUserDetailService.loadUserByUuid(account);
-        } else {
-            // VISITOR, SUPER_ADMIN, AGENCY 모두 memberId로 통합
+        } else if (role.equals("ROLE_VISITOR")) {
+            // VISITOR: memberId로 조회
             userDetails = customUserDetailService.loadMemberById(Long.parseLong(account));
+        } else {
+            // SUPER_ADMIN, AGENCY: loginId로 조회
+            userDetails = customUserDetailService.loadUserByUsername(account);
         }
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
