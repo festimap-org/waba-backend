@@ -23,8 +23,13 @@ public enum ErrorCode {
     VALIDATION_FAILED("C013", "Validation Failed", 400),
     MAX_COUNT_EXCEEDED("C014", "Exceeded maximum count (limit: 20)", 400),
 
+    // Program Reservation
+    ACTIVE_RESERVATION_EXISTS("PR001", "Active reservation exists", 409),
+
     // Festival
     SUB_ADDRESS_ALREADY_EXISTS("F001", "subAddress Already Exists", 400),
+    FESTIVAL_NOT_FOUND("F002", "Festival not found", 404),
+    FESTIVAL_ACCESS_DENIED("F003", "You do not have access to this festival", 403),
 
     // DownWidget Error
     PERMIT_THREE_ELEMENT("DW001", "Only Permit Three Element", 400),
@@ -36,9 +41,15 @@ public enum ErrorCode {
     LOGIN_FAILED("A001", "Login Failed", 401),
     UN_AUTHENTICATED("A002", "Unauthenticated", 401),
     UN_AUTHORIZED("A003", "Unauthorized", 403),
+    LOGIN_ID_ALREADY_EXISTS("A004", "Login ID already exists", 409),
+    COMPANY_EMAIL_ALREADY_EXISTS("A005", "Company email already exists", 409),
 
     // StampUser
     STAMP_USER_ALREADY_EXISTS("SU001", "StampUser Already Exists", 400),
+
+    // Visitor
+    PHONE_ALREADY_REGISTERED("V001", "Phone Already Registered", 400),
+    MEMBER_NOT_ACTIVE("V003", "Member Not Active", 403),
 
     // Stamp
     INVALID_AUTH_METHOD("ST001", "Stamp Authentication Method Invalid", 400),
@@ -46,6 +57,14 @@ public enum ErrorCode {
 
     // Infra
     SMS_SEND_FAILED("I001", "SMS Send Failed", 500),
+
+    // FieldOps
+    FIELD_OPS_SESSION_NOT_FOUND("FO001", "FieldOps session not found", 404),
+    FIELD_OPS_SESSION_EXPIRED("FO002", "FieldOps session expired", 401),
+    FIELD_OPS_PASSWORD_INVALID("FO003", "Invalid password", 401),
+    FESTIVAL_NOT_ACTIVE("FO004", "Festival is not active", 403),
+    CATEGORY_NOT_FOUND("FO005", "Category not found", 404),
+    FIELD_OPS_SESSION_ALREADY_EXISTS("FO006", "FieldOps session already exists for this category", 409),
     ;
 
     private final String code;
