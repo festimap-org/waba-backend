@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 @Table(
         indexes = {
             @Index(name = "idx_reservation_status_created", columnList = "status, created_at DESC"),
-                @Index(name = "idx_reservation_status_hold_expires", columnList = "status, hold_expires_at"),
-                @Index(name = "uk_reservation_member_idempotency", columnList = "member_id, idempotency_key", unique = true),
+            @Index(name = "idx_reservation_status_hold_expires", columnList = "status, hold_expires_at"),
             @Index(
                     name = "uk_reservation_member_idempotency",
                     columnList = "member_id, idempotency_key",
-                    unique = true)
+                    unique = true),
+            @Index(name = "uk_reservation_member_idempotency", columnList = "member_id, idempotency_key", unique = true)
         })
 public class ProgramReservation extends BaseTime {
     @Id
@@ -109,7 +109,9 @@ public class ProgramReservation extends BaseTime {
         this.status = status;
     }
 
-    public void setIdempotencyKey(String idempotencyKey) { this.idempotencyKey = idempotencyKey; }
+    public void setIdempotencyKey(String idempotencyKey) {
+        this.idempotencyKey = idempotencyKey;
+    }
 
     public void setBookerInfo(String bookerName, String bookerPhone) {
         this.bookerName = bookerName;

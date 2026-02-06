@@ -1,14 +1,14 @@
 package com.halo.eventer.domain.program_reservation.dto.response;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.halo.eventer.domain.program_reservation.FestivalCommonTemplate;
 import com.halo.eventer.domain.program_reservation.ProgramBlock;
 import com.halo.eventer.domain.program_reservation.ProgramReservation;
 import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 public class ReservationCheckoutResponse {
@@ -20,7 +20,8 @@ public class ReservationCheckoutResponse {
 
     private Display display;
 
-    public static ReservationCheckoutResponse from(ProgramReservation reservation, List<ProgramBlock> programBlocks, List<FestivalCommonTemplate> templates) {
+    public static ReservationCheckoutResponse from(
+            ProgramReservation reservation, List<ProgramBlock> programBlocks, List<FestivalCommonTemplate> templates) {
         ReservationCheckoutResponse r = new ReservationCheckoutResponse();
         r.reservationId = reservation.getId();
         r.status = reservation.getStatus();
@@ -70,5 +71,4 @@ public class ReservationCheckoutResponse {
             }
         }
     }
-
 }

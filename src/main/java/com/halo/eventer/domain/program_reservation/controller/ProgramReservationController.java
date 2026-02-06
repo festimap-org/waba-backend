@@ -1,9 +1,6 @@
 package com.halo.eventer.domain.program_reservation.controller;
 
 import java.time.LocalDate;
-
-import com.halo.eventer.domain.program_reservation.dto.request.ReservationConfirmRequest;
-import com.halo.eventer.domain.program_reservation.dto.response.*;
 import jakarta.validation.Valid;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,7 +8,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import com.halo.eventer.domain.program_reservation.dto.request.ReservationConfirmRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ReservationHoldRequest;
+import com.halo.eventer.domain.program_reservation.dto.response.*;
 import com.halo.eventer.domain.program_reservation.service.ProgramReservationService;
 import com.halo.eventer.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,12 +51,13 @@ public class ProgramReservationController {
     public ReservationHoldResponse holdReservation(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Parameter(
-                    name = "Idempotency-Key",
-                    in = ParameterIn.HEADER,
-                    required = true,
-                    description = "같은 예약 의도의 재시도에 재사용되는 키. 새로운 시도 시 새 UUID, 재시도 시 동일 키 사용",
-                    example = "550e8400-e29b-41d4-a716-446655440000")
-            @RequestHeader("Idempotency-Key") String idempotencyKey,
+                            name = "Idempotency-Key",
+                            in = ParameterIn.HEADER,
+                            required = true,
+                            description = "같은 예약 의도의 재시도에 재사용되는 키. 새로운 시도 시 새 UUID, 재시도 시 동일 키 사용",
+                            example = "550e8400-e29b-41d4-a716-446655440000")
+                    @RequestHeader("Idempotency-Key")
+                    String idempotencyKey,
             @RequestBody @Valid ReservationHoldRequest request) {
         return programReservationService.holdReservation(userDetails.getMemberId(), idempotencyKey, request);
     }
@@ -68,21 +68,25 @@ public class ProgramReservationController {
             description = "체크아웃 화면 렌더링에 필요한 CAUTION/TEMPLATE를 조회합니다. "
                     + "HOLD가 만료된 경우 서버가 즉시 EXPIRED 처리 및 재고 복구를 수행할 수 있으며, "
                     + "만료 상태에서는 RESERVATION_EXPIRED 에러를 반환합니다. "
-                    + "동일 reservationId 재시도 시 결과는 일관되게 반환됩니다."
-    )
-    public ReservationCheckoutResponse renderReservationInfo(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("reservationId") Long reservationId) {
+                    + "동일 reservationId 재시도 시 결과는 일관되게 반환됩니다.")
+    public ReservationCheckoutResponse renderReservationInfo(
+            @AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("reservationId") Long reservationId) {
         return programReservationService.getCheckout(userDetails.getMemberId(), reservationId);
     }
 
     @PostMapping("/reservations/{reservationId}/confirm")
     @Operation(summary = "프로그램 예약 확정", description = "예약 확정하기 버튼")
-    public ReservationConfirmResponse confirmReservation(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("reservationId") Long reservationId, @RequestBody ReservationConfirmRequest request) {
+    public ReservationConfirmResponse confirmReservation(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable("reservationId") Long reservationId,
+            @RequestBody ReservationConfirmRequest request) {
         return programReservationService.confirmReservation(userDetails.getMemberId(), reservationId, request);
     }
 
     @GetMapping("/reservations/{reservationId}")
     @Operation(summary = "단건 예약 조회")
-    public ReservationResponse getReservationDetail(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("reservationId") Long reservationId) {
+    public ReservationResponse getReservationDetail(
+            @AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("reservationId") Long reservationId) {
         return programReservationService.getReservationDetail(userDetails.getMemberId(), reservationId);
     }
 
@@ -94,8 +98,8 @@ public class ProgramReservationController {
 
     @PostMapping("/reservations/{reservationId}/cancel")
     @Operation(summary = "프로그램 예약 취소")
-    public ReservationCancelResponse cancel(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Long reservationId) {
+    public ReservationCancelResponse cancel(
+            @AuthenticationPrincipal CustomUserDetails user, @PathVariable Long reservationId) {
         return programReservationService.cancelReservation(user.getMemberId(), reservationId);
     }
-
 }

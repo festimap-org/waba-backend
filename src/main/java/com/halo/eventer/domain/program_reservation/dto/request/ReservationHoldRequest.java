@@ -9,7 +9,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ReservationHoldRequest {
-    @NotNull private Long programId;
-    @NotNull private Long slotId;
-    @NotNull @Min(1) private Integer headcount;
+    @NotNull
+    private Long programId;
+
+    @NotNull
+    private Long slotId;
+
+    @NotNull
+    @Min(1)
+    private Integer headcount;
 }

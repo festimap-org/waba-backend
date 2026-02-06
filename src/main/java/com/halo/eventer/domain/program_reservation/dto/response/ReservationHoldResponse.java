@@ -25,7 +25,11 @@ public class ReservationHoldResponse {
     private Integer holdMinutes;
     private Summary summary;
 
-    public static ReservationHoldResponse from(ProgramReservation reservation, Integer holdMinutes, List<ProgramBlock> cautionBlocks, List<FestivalCommonTemplate> templates) {
+    public static ReservationHoldResponse from(
+            ProgramReservation reservation,
+            Integer holdMinutes,
+            List<ProgramBlock> cautionBlocks,
+            List<FestivalCommonTemplate> templates) {
         ReservationHoldResponse r = new ReservationHoldResponse();
         r.reservationId = reservation.getId();
         r.status = reservation.getStatus();
@@ -64,7 +68,15 @@ public class ReservationHoldResponse {
 
         private int priceAmount;
 
-        public static Summary of(Long programId, Long slotId, String name, LocalDate date, LocalTime startTime, String durationTime, int headcount, int priceAmount) {
+        public static Summary of(
+                Long programId,
+                Long slotId,
+                String name,
+                LocalDate date,
+                LocalTime startTime,
+                String durationTime,
+                int headcount,
+                int priceAmount) {
             Summary s = new Summary();
             s.programId = programId;
             s.slotId = slotId;

@@ -51,7 +51,6 @@ public class AdminReservationResponse {
             past = !endDateTime.isAfter(LocalDateTime.now());
         }
 
-
         return new AdminReservationResponse(
                 r.getId(),
                 r.getProgram().getName(),

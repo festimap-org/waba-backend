@@ -1,21 +1,22 @@
 package com.halo.eventer.domain.program_reservation.service;
 
-import com.halo.eventer.domain.program_reservation.ProgramReservation;
-import com.halo.eventer.domain.program_reservation.ProgramSlot;
-import com.halo.eventer.domain.program_reservation.repository.ProgramReservationRepository;
-import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
-import com.halo.eventer.domain.program_reservation.repository.ProgramSlotRepository;
-import com.halo.eventer.global.error.ErrorCode;
-import com.halo.eventer.global.error.exception.BaseException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.halo.eventer.domain.program_reservation.ProgramReservation;
+import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.ProgramSlot;
+import com.halo.eventer.domain.program_reservation.repository.ProgramReservationRepository;
+import com.halo.eventer.domain.program_reservation.repository.ProgramSlotRepository;
+import com.halo.eventer.global.error.ErrorCode;
+import com.halo.eventer.global.error.exception.BaseException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -55,7 +56,8 @@ public class ReservationExpireService {
      */
     @Transactional
     public boolean expireOneIfNeeded(Long reservationId, LocalDateTime now) {
-        ProgramReservation r = reservationRepository.findByIdForUpdate(reservationId).orElse(null);
+        ProgramReservation r =
+                reservationRepository.findByIdForUpdate(reservationId).orElse(null);
         if (r == null) return false;
 
         if (r.getStatus() != ProgramReservationStatus.HOLD) return false;
@@ -65,14 +67,19 @@ public class ReservationExpireService {
 
         r.expire(); // status=EXPIRED (엔티티 메서드)
 
-        ProgramSlot slot = programSlotRepository.findByIdAndProgramIdForUpdate(r.getSlot().getId(), r.getProgram().getId()).orElseThrow(() -> new BaseException("존재하지 않는 슬롯입니다.", ErrorCode.ENTITY_NOT_FOUND));
+        ProgramSlot slot = programSlotRepository
+                .findByIdAndProgramIdForUpdate(
+                        r.getSlot().getId(), r.getProgram().getId())
+                .orElseThrow(() -> new BaseException("존재하지 않는 슬롯입니다.", ErrorCode.ENTITY_NOT_FOUND));
         slot.increaseCapacity(r.getHeadcount());
         return true;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public boolean expireIfNeededForCheckout(Long memberId, Long reservationId, LocalDateTime now) {
-        ProgramReservation r = reservationRepository.findCheckoutByIdAndMemberIdForUpdate(reservationId, memberId).orElseThrow(() -> new BaseException("예약을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
+        ProgramReservation r = reservationRepository
+                .findCheckoutByIdAndMemberIdForUpdate(reservationId, memberId)
+                .orElseThrow(() -> new BaseException("예약을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
 
         if (!r.isHold()) return false;
 
@@ -80,7 +87,10 @@ public class ReservationExpireService {
         if (expiresAt == null || !expiresAt.isBefore(now)) return false;
 
         r.expire();
-        ProgramSlot slot = programSlotRepository.findByIdAndProgramIdForUpdate(r.getSlot().getId(), r.getProgram().getId()).orElseThrow(() -> new BaseException("존재하지 않는 슬롯입니다.", ErrorCode.ENTITY_NOT_FOUND));
+        ProgramSlot slot = programSlotRepository
+                .findByIdAndProgramIdForUpdate(
+                        r.getSlot().getId(), r.getProgram().getId())
+                .orElseThrow(() -> new BaseException("존재하지 않는 슬롯입니다.", ErrorCode.ENTITY_NOT_FOUND));
         slot.increaseCapacity(r.getHeadcount());
         return true;
     }

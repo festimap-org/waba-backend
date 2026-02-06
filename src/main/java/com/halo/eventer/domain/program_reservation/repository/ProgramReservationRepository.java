@@ -2,8 +2,9 @@ package com.halo.eventer.domain.program_reservation.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+import java.util.Optional;
 import jakarta.persistence.LockModeType;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -13,11 +14,12 @@ import org.springframework.data.repository.query.Param;
 import com.halo.eventer.domain.program_reservation.ProgramReservation;
 import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
 import io.micrometer.common.lang.Nullable;
-import java.util.Optional;
 
-public interface ProgramReservationRepository extends JpaRepository<ProgramReservation, Long>, JpaSpecificationExecutor<ProgramReservation> {
+public interface ProgramReservationRepository
+        extends JpaRepository<ProgramReservation, Long>, JpaSpecificationExecutor<ProgramReservation> {
     @Query("SELECT COUNT(r) FROM ProgramReservation r WHERE r.slot.template.id = :templateId AND r.status IN :statuses")
-    long countByTemplateIdAndStatusIn(@Param("templateId") Long templateId, @Param("statuses") List<ProgramReservationStatus> statuses);
+    long countByTemplateIdAndStatusIn(
+            @Param("templateId") Long templateId, @Param("statuses") List<ProgramReservationStatus> statuses);
 
     @Query(
             """
@@ -40,7 +42,8 @@ public interface ProgramReservationRepository extends JpaRepository<ProgramReser
     @EntityGraph(attributePaths = {"program", "slot"})
     Optional<ProgramReservation> findWithProgramByMemberIdAndIdempotencyKey(Long memberId, String idempotencyKey);
 
-    @Query("""
+    @Query(
+            """
                 select r
                 from ProgramReservation r
                 join fetch r.program p
@@ -49,19 +52,23 @@ public interface ProgramReservationRepository extends JpaRepository<ProgramReser
                 where r.id = :reservationId
                 and r.member.id = :memberId
             """)
-    Optional<ProgramReservation> findByIdAndMemberId(@Param("reservationId") Long reservationId, @Param("memberId") Long memberId);
+    Optional<ProgramReservation> findByIdAndMemberId(
+            @Param("reservationId") Long reservationId, @Param("memberId") Long memberId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("""
+    @Query(
+            """
         select r from ProgramReservation r
         join fetch r.slot s
         join fetch r.program p
         where r.id = :reservationId
           and r.member.id = :memberId
     """)
-    Optional<ProgramReservation> findByIdAndMemberIdForUpdate(@Param("reservationId") Long reservationId, @Param("memberId") Long memberId);
+    Optional<ProgramReservation> findByIdAndMemberIdForUpdate(
+            @Param("reservationId") Long reservationId, @Param("memberId") Long memberId);
 
-    @Query("""
+    @Query(
+            """
         select r.id
         from ProgramReservation r
         where r.status = com.halo.eventer.domain.program_reservation.ProgramReservationStatus.HOLD
@@ -70,8 +77,8 @@ public interface ProgramReservationRepository extends JpaRepository<ProgramReser
     """)
     List<Long> findExpiredHoldIds(@Param("now") LocalDateTime now, Pageable pageable);
 
-
-    @Query("""
+    @Query(
+            """
                 select coalesce(sum(r.peopleCount), 0)
                 from ProgramReservation r
                 where r.member.id = :memberId
@@ -86,10 +93,12 @@ public interface ProgramReservationRepository extends JpaRepository<ProgramReser
                      )
                   )
             """)
-    int sumActiveHeadcountByMemberAndProgram(@Param("memberId") Long memberId, @Param("programId") Long programId, @Param("now") LocalDateTime now);
+    int sumActiveHeadcountByMemberAndProgram(
+            @Param("memberId") Long memberId, @Param("programId") Long programId, @Param("now") LocalDateTime now);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("""
+    @Query(
+            """
                 select r
                 from ProgramReservation r
                 join fetch r.slot s
@@ -98,7 +107,8 @@ public interface ProgramReservationRepository extends JpaRepository<ProgramReser
     Optional<ProgramReservation> findByIdForUpdate(@Param("id") Long id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("""
+    @Query(
+            """
         select r from ProgramReservation r
         join fetch r.slot s
         join fetch r.program p
@@ -108,6 +118,6 @@ public interface ProgramReservationRepository extends JpaRepository<ProgramReser
     """)
     Optional<ProgramReservation> findCheckoutByIdAndMemberIdForUpdate(Long reservationId, Long memberId);
 
-    List<ProgramReservation> findAllByMemberIdAndStatusOrderByConfirmedAtDescIdDesc(Long memberId, ProgramReservationStatus status);
-
+    List<ProgramReservation> findAllByMemberIdAndStatusOrderByConfirmedAtDescIdDesc(
+            Long memberId, ProgramReservationStatus status);
 }

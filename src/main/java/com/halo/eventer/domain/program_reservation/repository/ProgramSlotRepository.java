@@ -31,11 +31,12 @@ public interface ProgramSlotRepository extends JpaRepository<ProgramSlot, Long> 
     List<ProgramSlot> findAllByProgramIdOrderBySlotDateAscStartTimeAsc(Long programId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("""
+    @Query(
+            """
         select s from ProgramSlot s
         join fetch s.program p
         where s.id = :slotId and p.id = :programId
     """)
-    Optional<ProgramSlot> findByIdAndProgramIdForUpdate(@Param("slotId") Long slotId, @Param("programId") Long programId);
-
+    Optional<ProgramSlot> findByIdAndProgramIdForUpdate(
+            @Param("slotId") Long slotId, @Param("programId") Long programId);
 }

@@ -7,12 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import com.halo.eventer.domain.program_reservation.dto.request.ReservationConfirmRequest;
-import com.halo.eventer.domain.program_reservation.dto.response.*;
-import com.halo.eventer.domain.program_reservation.repository.*;
 import jakarta.persistence.EntityManager;
-import lombok.Getter;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +17,13 @@ import com.halo.eventer.domain.member.Member;
 import com.halo.eventer.domain.member.MemberRole;
 import com.halo.eventer.domain.member.repository.MemberRepository;
 import com.halo.eventer.domain.program_reservation.*;
+import com.halo.eventer.domain.program_reservation.dto.request.ReservationConfirmRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ReservationHoldRequest;
+import com.halo.eventer.domain.program_reservation.dto.response.*;
+import com.halo.eventer.domain.program_reservation.repository.*;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import static com.halo.eventer.global.error.ErrorCode.MEMBER_NOT_FOUND;
@@ -80,7 +80,8 @@ public class ProgramReservationService {
     }
 
     @Transactional
-    public ReservationHoldResponse holdReservation(Long memberId, String idempotencyKey, ReservationHoldRequest request) {
+    public ReservationHoldResponse holdReservation(
+            Long memberId, String idempotencyKey, ReservationHoldRequest request) {
         if (idempotencyKey == null || idempotencyKey.isBlank()) {
             throw new BaseException("Idempotency-Key 헤더가 필요합니다.", ErrorCode.INVALID_INPUT_VALUE);
         }
@@ -92,14 +93,15 @@ public class ProgramReservationService {
 
         try {
             // 멱등 처리
-            reservationRepository.findWithProgramByMemberIdAndIdempotencyKey(memberId, idempotencyKey)
+            reservationRepository
+                    .findWithProgramByMemberIdAndIdempotencyKey(memberId, idempotencyKey)
                     .ifPresent(existing -> {
-                        boolean sameIntent =
-                                existing.getProgram().getId().equals(request.getProgramId())
-                                        && existing.getSlot().getId().equals(request.getSlotId())
-                                        && existing.getHeadcount() == request.getHeadcount();
+                        boolean sameIntent = existing.getProgram().getId().equals(request.getProgramId())
+                                && existing.getSlot().getId().equals(request.getSlotId())
+                                && existing.getHeadcount() == request.getHeadcount();
                         if (!sameIntent) {
-                            throw new BaseException("Idempotency-Key가 다른 예약 시도에 재사용되었습니다.", ErrorCode.IDEMPOTENCY_KEY_REUSED);
+                            throw new BaseException(
+                                    "Idempotency-Key가 다른 예약 시도에 재사용되었습니다.", ErrorCode.IDEMPOTENCY_KEY_REUSED);
                         }
                         throw new AlreadyProcessedReservation(existing);
                     });
@@ -110,14 +112,17 @@ public class ProgramReservationService {
             validateHeadcount(request.getHeadcount(), program.getMaxPersonCount());
             validateAccumulatedHeadcount(memberId, program, request.getHeadcount());
 
-            ProgramSlot slot = slotRepository.findByIdAndProgramIdForUpdate(request.getSlotId(), program.getId()).orElseThrow(() -> new BaseException("존재하지 않는 슬롯입니다.", ErrorCode.ENTITY_NOT_FOUND));
+            ProgramSlot slot = slotRepository
+                    .findByIdAndProgramIdForUpdate(request.getSlotId(), program.getId())
+                    .orElseThrow(() -> new BaseException("존재하지 않는 슬롯입니다.", ErrorCode.ENTITY_NOT_FOUND));
 
             slot.decreaseCapacity(request.getHeadcount());
 
             int holdMinutes = program.getHoldMinutes() != null ? program.getHoldMinutes() : DEFAULT_HOLD_MINUTES;
             LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(holdMinutes);
 
-            ProgramReservation reservation = ProgramReservation.hold(program, slot, member, request.getHeadcount(), expiresAt);
+            ProgramReservation reservation =
+                    ProgramReservation.hold(program, slot, member, request.getHeadcount(), expiresAt);
             reservation.setIdempotencyKey(idempotencyKey);
 
             try {
@@ -142,30 +147,37 @@ public class ProgramReservationService {
     @Transactional(readOnly = true)
     public ReservationCheckoutResponse getCheckout(Long memberId, Long reservationId) {
         // 먼저 만료 처리 커밋
-        boolean expiredNow = reservationExpireService.expireIfNeededForCheckout(
-                memberId, reservationId, LocalDateTime.now()
-        );
+        boolean expiredNow =
+                reservationExpireService.expireIfNeededForCheckout(memberId, reservationId, LocalDateTime.now());
 
         // checkout 렌더링용 조회
-        ProgramReservation r = reservationRepository.findByIdAndMemberId(reservationId, memberId).orElseThrow(() -> new BaseException("예약을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
+        ProgramReservation r = reservationRepository
+                .findByIdAndMemberId(reservationId, memberId)
+                .orElseThrow(() -> new BaseException("예약을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
 
-        if (expiredNow || r.isExpired()) throw new BaseException("예약이 만료되었습니다. 다시 예약해 주세요.", ErrorCode.RESERVATION_EXPIRED);
+        if (expiredNow || r.isExpired())
+            throw new BaseException("예약이 만료되었습니다. 다시 예약해 주세요.", ErrorCode.RESERVATION_EXPIRED);
 
         Program program = r.getProgram();
-        List<ProgramBlock> cautionBlocks = programBlockRepository.findAllByProgramIdAndTypeOrderBySortOrder(program.getId(), ProgramBlock.BlockType.CAUTION);
-        List<FestivalCommonTemplate> templates = templateRepository.findAllByFestivalIdOrderBySortOrder(program.getFestival().getId());
+        List<ProgramBlock> cautionBlocks = programBlockRepository.findAllByProgramIdAndTypeOrderBySortOrder(
+                program.getId(), ProgramBlock.BlockType.CAUTION);
+        List<FestivalCommonTemplate> templates = templateRepository.findAllByFestivalIdOrderBySortOrder(
+                program.getFestival().getId());
 
         return ReservationCheckoutResponse.from(r, cautionBlocks, templates);
     }
 
-
     @Transactional
-    public ReservationConfirmResponse confirmReservation(Long memberId, Long reservationId, ReservationConfirmRequest request) {
+    public ReservationConfirmResponse confirmReservation(
+            Long memberId, Long reservationId, ReservationConfirmRequest request) {
         // 0) 만료 처리 먼저 커밋(필요 시) - checkout과 동일 전략
-        boolean expiredNow = reservationExpireService.expireIfNeededForCheckout(memberId, reservationId, LocalDateTime.now());
+        boolean expiredNow =
+                reservationExpireService.expireIfNeededForCheckout(memberId, reservationId, LocalDateTime.now());
 
         // 1) 예약 + 슬롯을 비관락으로 가져오기 (동시 confirm/expire 방지)
-        ProgramReservation r = reservationRepository.findByIdAndMemberIdForUpdate(reservationId, memberId).orElseThrow(() -> new BaseException("예약을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
+        ProgramReservation r = reservationRepository
+                .findByIdAndMemberIdForUpdate(reservationId, memberId)
+                .orElseThrow(() -> new BaseException("예약을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
 
         // 2) 이미 확정이면 멱등 처리 (같은 결과 반환)
         if (r.getStatus() == ProgramReservationStatus.CONFIRMED || r.getStatus() == ProgramReservationStatus.APPROVED) {
@@ -194,8 +206,11 @@ public class ProgramReservationService {
     }
 
     public ReservationResponse getReservationDetail(Long memberId, Long reservationId) {
-        ProgramReservation reservation = reservationRepository.findByIdAndMemberId(reservationId, memberId).orElseThrow(() -> new BaseException("예약을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
-        List<ProgramTag> tags = programTagRepository.findAllByProgramIdOrderBySortOrder(reservation.getProgram().getId());
+        ProgramReservation reservation = reservationRepository
+                .findByIdAndMemberId(reservationId, memberId)
+                .orElseThrow(() -> new BaseException("예약을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
+        List<ProgramTag> tags = programTagRepository.findAllByProgramIdOrderBySortOrder(
+                reservation.getProgram().getId());
         return ReservationResponse.from(reservation, tags);
     }
 
@@ -203,13 +218,12 @@ public class ProgramReservationService {
     public ReservationListResponse getReservations(Long memberId) {
         List<ProgramReservation> reservations =
                 reservationRepository.findAllByMemberIdAndStatusOrderByConfirmedAtDescIdDesc(
-                        memberId, ProgramReservationStatus.CONFIRMED
-                );
+                        memberId, ProgramReservationStatus.CONFIRMED);
 
         List<ReservationResponse> responses = reservations.stream()
                 .map(r -> {
-                    List<ProgramTag> tags =
-                            programTagRepository.findAllByProgramIdOrderBySortOrder(r.getProgram().getId());
+                    List<ProgramTag> tags = programTagRepository.findAllByProgramIdOrderBySortOrder(
+                            r.getProgram().getId());
                     return ReservationResponse.from(r, tags);
                 })
                 .toList();
@@ -219,7 +233,8 @@ public class ProgramReservationService {
 
     @Transactional
     public ReservationCancelResponse cancelReservation(Long memberId, Long reservationId) {
-        ProgramReservation r = reservationRepository.findByIdAndMemberIdForUpdate(reservationId, memberId)
+        ProgramReservation r = reservationRepository
+                .findByIdAndMemberIdForUpdate(reservationId, memberId)
                 .orElseThrow(() -> new BaseException("예약을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
 
         // 멱등: 이미 취소면 같은 결과 반환
@@ -244,7 +259,9 @@ public class ProgramReservationService {
         r.cancel();
 
         // slot도 FOR UPDATE로 잡고 복구 (정합성)
-        ProgramSlot slot = slotRepository.findByIdAndProgramIdForUpdate(r.getSlot().getId(), r.getProgram().getId())
+        ProgramSlot slot = slotRepository
+                .findByIdAndProgramIdForUpdate(
+                        r.getSlot().getId(), r.getProgram().getId())
                 .orElseThrow(() -> new BaseException("존재하지 않는 슬롯입니다.", ErrorCode.ENTITY_NOT_FOUND));
 
         slot.increaseCapacity(r.getHeadcount());
@@ -265,7 +282,6 @@ public class ProgramReservationService {
         return LocalDateTime.of(slot.getSlotDate(), startTime);
     }
 
-
     private void validateHeadcount(int headcount, int maxPersonCount) {
         if (maxPersonCount > 0 && headcount > maxPersonCount) {
             throw new BaseException("최대 예약 인원(" + maxPersonCount + "명)을 초과할 수 없습니다.", ErrorCode.INVALID_INPUT_VALUE);
@@ -280,7 +296,9 @@ public class ProgramReservationService {
     }
 
     private Program getProgram(Long programId) {
-        return programRepository.findById(programId).orElseThrow(() -> new BaseException("존재하지 않는 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND));
+        return programRepository
+                .findById(programId)
+                .orElseThrow(() -> new BaseException("존재하지 않는 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND));
     }
 
     private Member getMember(Long memberId) {
@@ -292,7 +310,8 @@ public class ProgramReservationService {
 
     @Transactional
     public ProgramSlot getForUpdate(Long slotId) {
-        return slotRepository.findByIdForUpdate(slotId)
+        return slotRepository
+                .findByIdForUpdate(slotId)
                 .orElseThrow(() -> new BaseException("존재하지 않는 슬롯입니다.", ErrorCode.ENTITY_NOT_FOUND));
     }
 
@@ -305,7 +324,8 @@ public class ProgramReservationService {
         int max = program.getMaxPersonCount();
         if (max <= 0) return; // 무제한이면 스킵
 
-        int used = reservationRepository.sumActiveHeadcountByMemberAndProgram(memberId, program.getId(), LocalDateTime.now());
+        int used = reservationRepository.sumActiveHeadcountByMemberAndProgram(
+                memberId, program.getId(), LocalDateTime.now());
         if (used + newHeadcount > max) {
             throw new BaseException(
                     "이미 예약(또는 홀드)한 인원 " + used + "명으로 인해 최대 예약 인원(" + max + "명)을 초과할 수 없습니다.",
@@ -315,11 +335,10 @@ public class ProgramReservationService {
 
     private ReservationHoldResponse buildHoldResponse(ProgramReservation reservation) {
         Program program = reservation.getProgram();
-        List<ProgramBlock> cautionBlocks =
-                programBlockRepository.findAllByProgramIdAndTypeOrderBySortOrder(
-                        program.getId(), ProgramBlock.BlockType.CAUTION);
-        List<FestivalCommonTemplate> templates =
-                templateRepository.findAllByFestivalIdOrderBySortOrder(program.getFestival().getId());
+        List<ProgramBlock> cautionBlocks = programBlockRepository.findAllByProgramIdAndTypeOrderBySortOrder(
+                program.getId(), ProgramBlock.BlockType.CAUTION);
+        List<FestivalCommonTemplate> templates = templateRepository.findAllByFestivalIdOrderBySortOrder(
+                program.getFestival().getId());
 
         int holdMinutes = program.getHoldMinutes() != null ? program.getHoldMinutes() : DEFAULT_HOLD_MINUTES;
         return ReservationHoldResponse.from(reservation, holdMinutes, cautionBlocks, templates);
@@ -333,6 +352,5 @@ public class ProgramReservationService {
             super("이미 처리된 예약입니다.", ErrorCode.CONFLICT);
             this.reservation = reservation;
         }
-
     }
 }

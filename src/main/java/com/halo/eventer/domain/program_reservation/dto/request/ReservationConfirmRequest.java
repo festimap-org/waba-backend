@@ -1,6 +1,5 @@
 package com.halo.eventer.domain.program_reservation.dto.request;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

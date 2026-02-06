@@ -25,7 +25,8 @@ public class AdminProgramController {
 
     @PostMapping()
     @Operation(summary = "프로그램 생성", description = "프로그램 생성시 기본으로 미노출 설정됨")
-    public ProgramCreateResponse create(@RequestParam("festivalId") Long festivalId, @RequestBody @Valid ProgramCreateRequest request) {
+    public ProgramCreateResponse create(
+            @RequestParam("festivalId") Long festivalId, @RequestBody @Valid ProgramCreateRequest request) {
         return adminProgramService.create(festivalId, request);
     }
 

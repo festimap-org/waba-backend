@@ -1,10 +1,10 @@
 package com.halo.eventer.domain.program_reservation.service;
 
-import com.halo.eventer.domain.program_reservation.service.ReservationExpireService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
