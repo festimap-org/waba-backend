@@ -47,6 +47,8 @@ public class Program extends BaseTime {
 
     private LocalDateTime bookingCloseAt;
 
+    private Integer holdMinutes;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
     private Festival festival;
@@ -99,6 +101,7 @@ public class Program extends BaseTime {
         this.availableAge = availableAge;
         this.personLimit = personLimit;
         this.maxPersonCount = maxPersonCount;
+        this.holdMinutes = 10;
     }
 
     @Getter

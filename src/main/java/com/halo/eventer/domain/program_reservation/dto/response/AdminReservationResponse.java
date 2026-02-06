@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.halo.eventer.domain.program_reservation.ProgramReservation;
 import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.ProgramSlotType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -40,9 +41,15 @@ public class AdminReservationResponse {
             visitorPhone = r.getBookerPhone();
         }
 
-        LocalDateTime endDateTime =
-                LocalDateTime.of(r.getSlot().getSlotDate(), r.getSlot().getStartTime());
-        boolean past = !endDateTime.isAfter(LocalDateTime.now());
+        boolean past;
+        if (r.getSlot().getTemplate().getSlotType() == ProgramSlotType.DATE) {
+            LocalDate today = LocalDate.now();
+            past = r.getSlot().getSlotDate().isBefore(today);
+        } else {
+            LocalDateTime endDateTime =
+                    LocalDateTime.of(r.getSlot().getSlotDate(), r.getSlot().getStartTime());
+            past = !endDateTime.isAfter(LocalDateTime.now());
+        }
 
         return new AdminReservationResponse(
                 r.getId(),
