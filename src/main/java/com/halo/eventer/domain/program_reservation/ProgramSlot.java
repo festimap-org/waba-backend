@@ -102,6 +102,28 @@ public class ProgramSlot extends BaseTime {
         return changed;
     }
 
+    public void decreaseCapacity(int headcount) {
+        if (this.capacityRemaining == null) {
+            return;
+        }
+        if (this.capacityRemaining < headcount) {
+            throw new BaseException("잔여 수량이 부족합니다.", ErrorCode.CAPACITY_NOT_ENOUGH);
+        }
+        this.capacityRemaining -= headcount;
+    }
+
+    public void increaseCapacity(int headcount) {
+        if (this.capacityRemaining == null) {
+            return;
+        }
+        if (this.capacity == null) {
+            this.capacityRemaining += headcount;
+            return;
+        }
+        int restored = this.capacityRemaining + headcount;
+        this.capacityRemaining = Math.min(restored, this.capacity);
+    }
+
     public int getBooked() {
         if (this.capacity == null || this.capacityRemaining == null) {
             return 0;

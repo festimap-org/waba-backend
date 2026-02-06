@@ -31,6 +31,14 @@ public class AuthorizationConfig {
                 // STAMP 레거시
                 .requestMatchers("/api/v2/user/**")
                 .hasRole("STAMP")
+                // Visitor 프로그램 예약
+                .requestMatchers("/programs/**")
+                .hasAnyRole("VISITOR", "SUPER_ADMIN")
+                // 프로그램 예약 (관리자)
+                .requestMatchers("/admin/programs/**")
+                .hasAnyRole("SUPER_ADMIN", "AGENCY")
+                .requestMatchers("/admin/reservations/**")
+                .hasAnyRole("SUPER_ADMIN", "AGENCY")
                 // VISITOR 전용 API
                 .requestMatchers("/api/v*/visitor/**")
                 .hasRole("VISITOR")
