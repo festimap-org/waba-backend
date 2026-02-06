@@ -12,7 +12,16 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(indexes = {@Index(name = "idx_reservation_status_created", columnList = "status, created_at DESC")})
+@Table(
+        indexes = {
+            @Index(name = "idx_reservation_status_created", columnList = "status, created_at DESC"),
+                @Index(name = "idx_reservation_status_hold_expires", columnList = "status, hold_expires_at"),
+                @Index(name = "uk_reservation_member_idempotency", columnList = "member_id, idempotency_key", unique = true),
+            @Index(
+                    name = "uk_reservation_member_idempotency",
+                    columnList = "member_id, idempotency_key",
+                    unique = true)
+        })
 public class ProgramReservation extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +36,10 @@ public class ProgramReservation extends BaseTime {
 
     private LocalDateTime holdExpiresAt;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String bookerName;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String bookerPhone;
 
     @Column(length = 50)
@@ -38,6 +47,9 @@ public class ProgramReservation extends BaseTime {
 
     @Column(length = 20)
     private String visitorPhone;
+
+    @Column(length = 64)
+    private String idempotencyKey;
 
     private LocalDateTime confirmedAt;
 
@@ -55,16 +67,20 @@ public class ProgramReservation extends BaseTime {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    public boolean isHold() {
+        return this.status == ProgramReservationStatus.HOLD;
+    }
+
+    public boolean isExpired() {
+        return this.status == ProgramReservationStatus.EXPIRED;
+    }
+
+    public int getHeadcount() {
+        return this.peopleCount;
+    }
+
     public static ProgramReservation hold(
-            Program program,
-            ProgramSlot slot,
-            Member member,
-            Integer peopleCount,
-            String bookerName,
-            String bookerPhone,
-            String visitorName,
-            String visitorPhone,
-            LocalDateTime holdExpiresAt) {
+            Program program, ProgramSlot slot, Member member, Integer peopleCount, LocalDateTime holdExpiresAt) {
         ProgramReservation r = new ProgramReservation();
         r.program = program;
         r.slot = slot;
@@ -72,10 +88,6 @@ public class ProgramReservation extends BaseTime {
         r.peopleCount = peopleCount;
         r.status = ProgramReservationStatus.HOLD;
         r.holdExpiresAt = holdExpiresAt;
-        r.bookerName = bookerName;
-        r.bookerPhone = bookerPhone;
-        r.visitorName = visitorName;
-        r.visitorPhone = visitorPhone;
         return r;
     }
 
@@ -95,5 +107,17 @@ public class ProgramReservation extends BaseTime {
 
     public void changeStatus(ProgramReservationStatus status) {
         this.status = status;
+    }
+
+    public void setIdempotencyKey(String idempotencyKey) { this.idempotencyKey = idempotencyKey; }
+
+    public void setBookerInfo(String bookerName, String bookerPhone) {
+        this.bookerName = bookerName;
+        this.bookerPhone = bookerPhone;
+    }
+
+    public void setVisitorInfo(String visitorName, String visitorPhone) {
+        this.visitorName = visitorName;
+        this.visitorPhone = visitorPhone;
     }
 }

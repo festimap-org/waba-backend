@@ -25,6 +25,10 @@ public enum ErrorCode {
 
     // Program Reservation
     ACTIVE_RESERVATION_EXISTS("PR001", "Active reservation exists", 409),
+    CAPACITY_NOT_ENOUGH("PR002", "Capacity not enough", 409),
+    RESERVATION_EXPIRED("PR003", "Reservation expired", 401),
+    TOO_MANY_REQUESTS("PR004", "Too many request", 429),
+    IDEMPOTENCY_KEY_REUSED("PR005", "Idempotency key reused", 409),
 
     // Festival
     SUB_ADDRESS_ALREADY_EXISTS("F001", "subAddress Already Exists", 400),
@@ -50,6 +54,7 @@ public enum ErrorCode {
     // Visitor
     PHONE_ALREADY_REGISTERED("V001", "Phone Already Registered", 400),
     MEMBER_NOT_ACTIVE("V003", "Member Not Active", 403),
+    MEMBER_NOT_FOUND("V004", "Member Not found", 404),
 
     // Stamp
     INVALID_AUTH_METHOD("ST001", "Stamp Authentication Method Invalid", 400),
