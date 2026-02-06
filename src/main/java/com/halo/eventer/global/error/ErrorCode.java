@@ -29,6 +29,7 @@ public enum ErrorCode {
     RESERVATION_EXPIRED("PR003", "Reservation expired", 401),
     TOO_MANY_REQUESTS("PR004", "Too many request", 429),
     IDEMPOTENCY_KEY_REUSED("PR005", "Idempotency key reused", 409),
+    CANCEL_NOT_ALLOWED("PR006", "cancel not allowed", 400),
 
     // Festival
     SUB_ADDRESS_ALREADY_EXISTS("F001", "subAddress Already Exists", 400),

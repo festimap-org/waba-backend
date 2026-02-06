@@ -108,4 +108,6 @@ public interface ProgramReservationRepository extends JpaRepository<ProgramReser
     """)
     Optional<ProgramReservation> findCheckoutByIdAndMemberIdForUpdate(Long reservationId, Long memberId);
 
+    List<ProgramReservation> findAllByMemberIdAndStatusOrderByConfirmedAtDescIdDesc(Long memberId, ProgramReservationStatus status);
+
 }

@@ -2,6 +2,7 @@ package com.halo.eventer.domain.program_reservation.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ public class ProgramReservationService {
     private final ProgramReservationRepository reservationRepository;
     private final ProgramBlockRepository programBlockRepository;
     private final FestivalCommonTemplateRepository templateRepository;
+    private final ProgramTagRepository programTagRepository;
     private final MemberRepository memberRepository;
     private final MySqlDbLockRepository dbLockRepository;
     private final EntityManager entityManager;
@@ -190,6 +192,79 @@ public class ProgramReservationService {
 
         return new ReservationConfirmResponse(r.getId());
     }
+
+    public ReservationResponse getReservationDetail(Long memberId, Long reservationId) {
+        ProgramReservation reservation = reservationRepository.findByIdAndMemberId(reservationId, memberId).orElseThrow(() -> new BaseException("예약을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
+        List<ProgramTag> tags = programTagRepository.findAllByProgramIdOrderBySortOrder(reservation.getProgram().getId());
+        return ReservationResponse.from(reservation, tags);
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationListResponse getReservations(Long memberId) {
+        List<ProgramReservation> reservations =
+                reservationRepository.findAllByMemberIdAndStatusOrderByConfirmedAtDescIdDesc(
+                        memberId, ProgramReservationStatus.CONFIRMED
+                );
+
+        List<ReservationResponse> responses = reservations.stream()
+                .map(r -> {
+                    List<ProgramTag> tags =
+                            programTagRepository.findAllByProgramIdOrderBySortOrder(r.getProgram().getId());
+                    return ReservationResponse.from(r, tags);
+                })
+                .toList();
+
+        return ReservationListResponse.of(responses);
+    }
+
+    @Transactional
+    public ReservationCancelResponse cancelReservation(Long memberId, Long reservationId) {
+        ProgramReservation r = reservationRepository.findByIdAndMemberIdForUpdate(reservationId, memberId)
+                .orElseThrow(() -> new BaseException("예약을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
+
+        // 멱등: 이미 취소면 같은 결과 반환
+        if (r.getStatus() == ProgramReservationStatus.CANCELED) {
+            return new ReservationCancelResponse(r.getId());
+        }
+
+        // 취소 가능 상태 제한: CONFIRMED만
+        if (r.getStatus() != ProgramReservationStatus.CONFIRMED) {
+            throw new BaseException("취소할 수 없는 예약 상태입니다.", ErrorCode.INVALID_INPUT_VALUE);
+        }
+
+        // 취소 정책(전날 18:00 컷오프)
+        LocalDateTime slotStartAt = resolveSlotStartAt(r.getSlot());
+        LocalDateTime cutoffAt = slotStartAt.toLocalDate().minusDays(1).atTime(18, 0);
+        LocalDateTime now = LocalDateTime.now();
+
+        if (now.isAfter(cutoffAt)) { // cutoffAt 이후면 취소 불가 (cutoffAt까지 허용)
+            throw new BaseException("취소 가능 시간이 지났습니다.", ErrorCode.CANCEL_NOT_ALLOWED);
+        }
+
+        r.cancel();
+
+        // slot도 FOR UPDATE로 잡고 복구 (정합성)
+        ProgramSlot slot = slotRepository.findByIdAndProgramIdForUpdate(r.getSlot().getId(), r.getProgram().getId())
+                .orElseThrow(() -> new BaseException("존재하지 않는 슬롯입니다.", ErrorCode.ENTITY_NOT_FOUND));
+
+        slot.increaseCapacity(r.getHeadcount());
+
+        return new ReservationCancelResponse(r.getId());
+    }
+
+    private LocalDateTime resolveSlotStartAt(ProgramSlot slot) {
+        if (slot.getTemplate().getSlotType() == ProgramSlotType.DATE) {
+            // 날짜형: 시작 시각이 없으니 해당 날짜 00:00으로 간주
+            return slot.getSlotDate().atStartOfDay();
+        }
+        // 시간형: slotDate + startTime
+        LocalTime startTime = slot.getStartTime();
+        if (startTime == null) {
+            throw new BaseException("슬롯 시작 시간이 없습니다.", ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return LocalDateTime.of(slot.getSlotDate(), startTime);
+    }
+
 
     private void validateHeadcount(int headcount, int maxPersonCount) {
         if (maxPersonCount > 0 && headcount > maxPersonCount) {

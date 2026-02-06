@@ -80,9 +80,22 @@ public class ProgramReservationController {
         return programReservationService.confirmReservation(userDetails.getMemberId(), reservationId, request);
     }
 
-    // 단건 예약 조회
+    @GetMapping("/reservations/{reservationId}")
+    @Operation(summary = "단건 예약 조회")
+    public ReservationResponse getReservationDetail(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("reservationId") Long reservationId) {
+        return programReservationService.getReservationDetail(userDetails.getMemberId(), reservationId);
+    }
 
-    // 내 예약 전체 조회
+    @GetMapping("/reservations")
+    @Operation(summary = "다건 예약 조회")
+    public ReservationListResponse getReservations(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return programReservationService.getReservations(userDetails.getMemberId());
+    }
 
-    // 예약 취소
+    @PostMapping("/reservations/{reservationId}/cancel")
+    @Operation(summary = "프로그램 예약 취소")
+    public ReservationCancelResponse cancel(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Long reservationId) {
+        return programReservationService.cancelReservation(user.getMemberId(), reservationId);
+    }
+
 }
