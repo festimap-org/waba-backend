@@ -3,6 +3,7 @@ package com.halo.eventer.domain.program_reservation.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.halo.eventer.domain.program_reservation.dto.response.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +15,6 @@ import com.halo.eventer.domain.program_reservation.ProgramBlock;
 import com.halo.eventer.domain.program_reservation.ProgramTag;
 import com.halo.eventer.domain.program_reservation.Tag;
 import com.halo.eventer.domain.program_reservation.dto.request.*;
-import com.halo.eventer.domain.program_reservation.dto.response.ProgramActiveResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ProgramBookingResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ProgramDetailResponse;
-import com.halo.eventer.domain.program_reservation.dto.response.ProgramResponse;
 import com.halo.eventer.domain.program_reservation.repository.*;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -35,13 +32,15 @@ public class AdminProgramService {
     private final FestivalCommonTemplateRepository templateRepository;
 
     @Transactional
-    public void create(Long festivalId, ProgramCreateRequest request) {
+    public ProgramCreateResponse create(Long festivalId, ProgramCreateRequest request) {
         Festival festival = festivalRepository
                 .findById(festivalId)
                 .orElseThrow(() -> new BaseException("존재하지 않는 축제입니다.", ErrorCode.ENTITY_NOT_FOUND));
         Program program = new Program(request.getName());
         program.assignFestival(festival);
         programRepository.save(program);
+
+        return new ProgramCreateResponse(program.getId());
     }
 
     @Transactional
