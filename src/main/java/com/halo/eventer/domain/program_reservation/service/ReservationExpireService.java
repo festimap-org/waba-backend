@@ -66,7 +66,8 @@ public class ReservationExpireService {
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public boolean expireOneInNewTransaction(Long reservationId, LocalDateTime now) {
-        ProgramReservation r = reservationRepository.findByIdForUpdate(reservationId).orElse(null);
+        ProgramReservation r =
+                reservationRepository.findByIdForUpdate(reservationId).orElse(null);
         if (r == null) return false;
         if (r.getStatus() != ProgramReservationStatus.HOLD) return false;
 
@@ -76,7 +77,8 @@ public class ReservationExpireService {
         r.expire();
 
         ProgramSlot slot = programSlotRepository
-                .findByIdAndProgramIdForUpdate(r.getSlot().getId(), r.getProgram().getId())
+                .findByIdAndProgramIdForUpdate(
+                        r.getSlot().getId(), r.getProgram().getId())
                 .orElseThrow(() -> new BaseException("존재하지 않는 슬롯입니다.", ErrorCode.ENTITY_NOT_FOUND));
         slot.increaseCapacity(r.getHeadcount());
         return true;

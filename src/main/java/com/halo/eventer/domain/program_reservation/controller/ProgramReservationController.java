@@ -29,7 +29,8 @@ public class ProgramReservationController {
 
     @GetMapping
     @Operation(summary = "프로그램 리스트 조회", description = "사용자에게 노출 가능한 프로그램 목록을 조회합니다.")
-    public AvailableProgramListResponse getPrograms(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam("festivalId") Long festivalId) {
+    public AvailableProgramListResponse getPrograms(
+            @AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam("festivalId") Long festivalId) {
         return programReservationService.getVisiblePrograms(userDetails.getMemberId(), festivalId);
     }
 
@@ -42,7 +43,8 @@ public class ProgramReservationController {
 
     @GetMapping("/{programId}/dates")
     @Operation(summary = "날짜 목록 조회 (모달 1단계)", description = "프로그램의 예약 가능 날짜 목록을 조회합니다.")
-    public ReservationDateListResponse getReservationDates(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long programId) {
+    public ReservationDateListResponse getReservationDates(
+            @AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long programId) {
         return programReservationService.getReservationDates(userDetails.getMemberId(), programId);
     }
 

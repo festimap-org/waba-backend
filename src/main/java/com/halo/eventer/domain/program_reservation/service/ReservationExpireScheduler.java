@@ -41,7 +41,9 @@ public class ReservationExpireScheduler {
         }
 
         if (iteration == MAX_ITERATIONS) {
-            log.warn("[ReservationExpireScheduler] reached max iterations ({}), may have more expired holds", MAX_ITERATIONS);
+            log.warn(
+                    "[ReservationExpireScheduler] reached max iterations ({}), may have more expired holds",
+                    MAX_ITERATIONS);
         }
     }
 }

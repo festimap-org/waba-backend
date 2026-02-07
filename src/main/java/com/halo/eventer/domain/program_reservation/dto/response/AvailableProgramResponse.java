@@ -1,11 +1,11 @@
 package com.halo.eventer.domain.program_reservation.dto.response;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.halo.eventer.domain.program_reservation.Program;
 import com.halo.eventer.domain.program_reservation.ProgramTag;
 import lombok.Getter;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class AvailableProgramResponse {
@@ -29,7 +29,9 @@ public class AvailableProgramResponse {
         response.durationTime = p.getDurationTime();
         response.availableAge = p.getAvailableAge();
         response.maxPersonCount = p.getMaxPersonCount();
-        response.tags = programTags.stream().map(ProgramDetailResponse.TagResponse::from).collect(Collectors.toList());
+        response.tags = programTags.stream()
+                .map(ProgramDetailResponse.TagResponse::from)
+                .collect(Collectors.toList());
         response.dates = dates;
         return response;
     }

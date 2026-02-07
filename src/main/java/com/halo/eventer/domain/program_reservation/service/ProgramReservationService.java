@@ -53,7 +53,8 @@ public class ProgramReservationService {
         List<AvailableProgramResponse> responses = programs.stream()
                 .map(program -> {
                     List<ProgramTag> tags = programTagRepository.findAllByProgramIdOrderBySortOrder(program.getId());
-                    List<ProgramSlot> slots = slotRepository.findAllByProgramIdOrderBySlotDateAscStartTimeAsc(program.getId());
+                    List<ProgramSlot> slots =
+                            slotRepository.findAllByProgramIdOrderBySlotDateAscStartTimeAsc(program.getId());
 
                     Map<LocalDate, List<ProgramSlot>> slotsByDate = slots.stream()
                             .collect(Collectors.groupingBy(
@@ -61,8 +62,7 @@ public class ProgramReservationService {
 
                     List<ReservationDateListResponse.DateItem> dateItems = slotsByDate.entrySet().stream()
                             .map(entry -> {
-                                boolean isReservable =
-                                        entry.getValue().stream().anyMatch(this::isSlotReservable);
+                                boolean isReservable = entry.getValue().stream().anyMatch(this::isSlotReservable);
                                 return ReservationDateListResponse.DateItem.of(entry.getKey(), isReservable);
                             })
                             .toList();
@@ -82,7 +82,8 @@ public class ProgramReservationService {
         List<ProgramTag> tags = programTagRepository.findAllByProgramIdOrderBySortOrder(programId);
         List<ProgramSlot> slots = slotRepository.findAllByProgramIdOrderBySlotDateAscStartTimeAsc(programId);
         List<ProgramBlock> blocks = programBlockRepository.findAllByProgramIdOrderBySortOrder(programId);
-        List<FestivalCommonTemplate> templates = templateRepository.findAllByFestivalIdOrderBySortOrder(program.getFestival().getId());
+        List<FestivalCommonTemplate> templates = templateRepository.findAllByFestivalIdOrderBySortOrder(
+                program.getFestival().getId());
 
         Map<LocalDate, List<ProgramSlot>> slotsByDate = slots.stream()
                 .collect(Collectors.groupingBy(ProgramSlot::getSlotDate, LinkedHashMap::new, Collectors.toList()));
@@ -133,7 +134,8 @@ public class ProgramReservationService {
     }
 
     @Transactional
-    public ReservationHoldResponse holdReservation(Long memberId, String idempotencyKey, ReservationHoldRequest request) {
+    public ReservationHoldResponse holdReservation(
+            Long memberId, String idempotencyKey, ReservationHoldRequest request) {
         if (idempotencyKey == null || idempotencyKey.isBlank()) {
             throw new BaseException("Idempotency-Key 헤더가 필요합니다.", ErrorCode.INVALID_INPUT_VALUE);
         }

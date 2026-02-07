@@ -15,7 +15,8 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
 
     List<Program> findAllByFestivalIdAndNameContaining(Long festivalId, String name);
 
-    @Query("""
+    @Query(
+            """
             select p
             from Program p
             where p.festival.id = :festivalId

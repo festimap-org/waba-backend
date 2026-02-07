@@ -27,7 +27,12 @@ public class UserProgramDetailResponse {
     private List<CautionResponse> cautions;
     private List<TemplateResponse> templates;
 
-    public static UserProgramDetailResponse from(Program program, List<ProgramTag> programTags, List<ReservationDateListResponse.DateItem> dates, List<ProgramBlock> blocks, List<FestivalCommonTemplate> templates) {
+    public static UserProgramDetailResponse from(
+            Program program,
+            List<ProgramTag> programTags,
+            List<ReservationDateListResponse.DateItem> dates,
+            List<ProgramBlock> blocks,
+            List<FestivalCommonTemplate> templates) {
         UserProgramDetailResponse response = new UserProgramDetailResponse();
         response.id = program.getId();
         response.name = program.getName();
@@ -36,8 +41,9 @@ public class UserProgramDetailResponse {
         response.durationTime = program.getDurationTime();
         response.availableAge = program.getAvailableAge();
         response.maxPersonCount = program.getMaxPersonCount();
-        response.tags =
-                programTags.stream().map(ProgramDetailResponse.TagResponse::from).collect(Collectors.toList());
+        response.tags = programTags.stream()
+                .map(ProgramDetailResponse.TagResponse::from)
+                .collect(Collectors.toList());
         response.dates = dates;
         response.summaries = blocks.stream()
                 .filter(b -> b.getType() == ProgramBlock.BlockType.SUMMARY)
