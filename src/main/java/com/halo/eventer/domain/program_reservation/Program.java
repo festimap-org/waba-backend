@@ -49,6 +49,8 @@ public class Program extends BaseTime {
 
     private Integer holdMinutes;
 
+    private Integer holdMinutes;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
     private Festival festival;
