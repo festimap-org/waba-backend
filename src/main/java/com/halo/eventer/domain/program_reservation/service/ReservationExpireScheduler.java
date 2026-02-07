@@ -11,22 +11,39 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ReservationExpireScheduler {
     private static final int BATCH_SIZE = 50;
+    private static final int MAX_ITERATIONS = 20; // 최대 1000건 처리
 
     private final ReservationExpireService reservationExpireService;
 
     /**
-     * 만료된 HOLD 예약을 정리(EXPIRED)하고 슬롯 capacity를 복구
+     * 만료된 HOLD 예약을 정리(EXPIRED)하고 슬롯 capacity를 복구.
+     * 밀린 작업이 있으면 남은 것이 없을 때까지 반복 처리.
      */
-    @Scheduled(cron = "0 */30 * * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 */5 * * * *", zone = "Asia/Seoul")
     public void expireHolds() {
-        try {
-            int processed = reservationExpireService.expireExpiredHoldsBatch(BATCH_SIZE);
-            if (processed > 0) {
-                log.info("[ReservationExpireScheduler] expired holds processed={}", processed);
+        int totalProcessed = 0;
+        int iteration = 0;
+        int processed;
+
+        do {
+            try {
+                processed = reservationExpireService.expireExpiredHoldsBatch(BATCH_SIZE);
+                totalProcessed += processed;
+                iteration++;
+            } catch (Exception e) {
+                log.error("[ReservationExpireScheduler] expireHolds failed at iteration={}", iteration, e);
+                break;
             }
-        } catch (Exception e) {
-            // 스케줄러 전체가 죽지 않도록 방어
-            log.error("[ReservationExpireScheduler] expireHolds failed", e);
+        } while (processed == BATCH_SIZE && iteration < MAX_ITERATIONS);
+
+        if (totalProcessed > 0) {
+            log.info("[ReservationExpireScheduler] expired holds total={}, iterations={}", totalProcessed, iteration);
+        }
+
+        if (iteration == MAX_ITERATIONS) {
+            log.warn(
+                    "[ReservationExpireScheduler] reached max iterations ({}), may have more expired holds",
+                    MAX_ITERATIONS);
         }
     }
 }

@@ -45,8 +45,62 @@ public class ProgramReservationService {
     private final ReservationExpireService reservationExpireService;
 
     @Transactional(readOnly = true)
+    public AvailableProgramListResponse getVisiblePrograms(Long memberId, Long festivalId) {
+        getMember(memberId); // 사용자 권한 검증 (visitor/super-admin)
+
+        List<Program> programs = programRepository.findAllVisibleForUser(festivalId, LocalDateTime.now());
+
+        List<AvailableProgramResponse> responses = programs.stream()
+                .map(program -> {
+                    List<ProgramTag> tags = programTagRepository.findAllByProgramIdOrderBySortOrder(program.getId());
+                    List<ProgramSlot> slots =
+                            slotRepository.findAllByProgramIdOrderBySlotDateAscStartTimeAsc(program.getId());
+
+                    Map<LocalDate, List<ProgramSlot>> slotsByDate = slots.stream()
+                            .collect(Collectors.groupingBy(
+                                    ProgramSlot::getSlotDate, LinkedHashMap::new, Collectors.toList()));
+
+                    List<ReservationDateListResponse.DateItem> dateItems = slotsByDate.entrySet().stream()
+                            .map(entry -> {
+                                boolean isReservable = entry.getValue().stream().anyMatch(this::isSlotReservable);
+                                return ReservationDateListResponse.DateItem.of(entry.getKey(), isReservable);
+                            })
+                            .toList();
+
+                    return AvailableProgramResponse.from(program, tags, dateItems);
+                })
+                .toList();
+
+        return AvailableProgramListResponse.of(responses);
+    }
+
+    @Transactional(readOnly = true)
+    public UserProgramDetailResponse getVisibleProgram(Long memberId, Long programId) {
+        getMember(memberId);
+        Program program = getVisibleProgram(programId);
+
+        List<ProgramTag> tags = programTagRepository.findAllByProgramIdOrderBySortOrder(programId);
+        List<ProgramSlot> slots = slotRepository.findAllByProgramIdOrderBySlotDateAscStartTimeAsc(programId);
+        List<ProgramBlock> blocks = programBlockRepository.findAllByProgramIdOrderBySortOrder(programId);
+        List<FestivalCommonTemplate> templates = templateRepository.findAllByFestivalIdOrderBySortOrder(
+                program.getFestival().getId());
+
+        Map<LocalDate, List<ProgramSlot>> slotsByDate = slots.stream()
+                .collect(Collectors.groupingBy(ProgramSlot::getSlotDate, LinkedHashMap::new, Collectors.toList()));
+
+        List<ReservationDateListResponse.DateItem> dateItems = slotsByDate.entrySet().stream()
+                .map(entry -> {
+                    boolean isReservable = entry.getValue().stream().anyMatch(this::isSlotReservable);
+                    return ReservationDateListResponse.DateItem.of(entry.getKey(), isReservable);
+                })
+                .toList();
+
+        return UserProgramDetailResponse.from(program, tags, dateItems, blocks, templates);
+    }
+
+    @Transactional(readOnly = true)
     public ReservationDateListResponse getReservationDates(Long memberId, Long programId) {
-        Member member = getMember(memberId);
+        getMember(memberId);
         Program program = getProgram(programId);
         List<ProgramSlot> allSlots = slotRepository.findAllByProgramIdOrderBySlotDateAscStartTimeAsc(programId);
 
@@ -66,7 +120,7 @@ public class ProgramReservationService {
 
     @Transactional(readOnly = true)
     public ReservationSlotListResponse getReservationSlots(Long memberId, Long programId, LocalDate date) {
-        Member member = getMember(memberId);
+        getMember(memberId);
         Program program = getProgram(programId);
 
         List<ProgramSlot> allSlots = slotRepository.findAllByProgramIdOrderBySlotDateAscStartTimeAsc(programId);
@@ -299,6 +353,29 @@ public class ProgramReservationService {
         return programRepository
                 .findById(programId)
                 .orElseThrow(() -> new BaseException("존재하지 않는 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND));
+    }
+
+    private Program getVisibleProgram(Long programId) {
+        Program program = getProgram(programId);
+        LocalDateTime now = LocalDateTime.now();
+
+        if (!program.isActive()) {
+            throw new BaseException("현재 노출되지 않는 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND);
+        }
+        if (program.getActiveStartAt() != null && program.getActiveStartAt().isAfter(now)) {
+            throw new BaseException("아직 노출되지 않는 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND);
+        }
+        if (program.getActiveEndAt() != null && program.getActiveEndAt().isBefore(now)) {
+            throw new BaseException("노출이 종료된 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND);
+        }
+        if (program.getBookingOpenAt() != null && program.getBookingOpenAt().isAfter(now)) {
+            throw new BaseException("아직 예약이 시작되지 않은 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND);
+        }
+        if (program.getBookingCloseAt() != null && program.getBookingCloseAt().isBefore(now)) {
+            throw new BaseException("예약이 마감된 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND);
+        }
+
+        return program;
     }
 
     private Member getMember(Long memberId) {

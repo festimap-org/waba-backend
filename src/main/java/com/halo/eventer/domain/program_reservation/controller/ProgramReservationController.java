@@ -27,6 +27,20 @@ import lombok.RequiredArgsConstructor;
 public class ProgramReservationController {
     private final ProgramReservationService programReservationService;
 
+    @GetMapping
+    @Operation(summary = "프로그램 리스트 조회", description = "사용자에게 노출 가능한 프로그램 목록을 조회합니다.")
+    public AvailableProgramListResponse getPrograms(
+            @AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam("festivalId") Long festivalId) {
+        return programReservationService.getVisiblePrograms(userDetails.getMemberId(), festivalId);
+    }
+
+    @GetMapping("/{programId}")
+    @Operation(summary = "프로그램 단건 조회", description = "특정 프로그램의 상세 정보를 조회합니다.")
+    public UserProgramDetailResponse getProgram(
+            @AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long programId) {
+        return programReservationService.getVisibleProgram(userDetails.getMemberId(), programId);
+    }
+
     @GetMapping("/{programId}/dates")
     @Operation(summary = "날짜 목록 조회 (모달 1단계)", description = "프로그램의 예약 가능 날짜 목록을 조회합니다.")
     public ReservationDateListResponse getReservationDates(

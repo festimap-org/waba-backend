@@ -3,6 +3,7 @@ package com.halo.eventer.domain.program_reservation.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -15,34 +16,43 @@ import com.halo.eventer.domain.program_reservation.repository.ProgramReservation
 import com.halo.eventer.domain.program_reservation.repository.ProgramSlotRepository;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class ReservationExpireService {
 
     private final ProgramReservationRepository reservationRepository;
     private final ProgramSlotRepository programSlotRepository;
+    private final ReservationExpireService self;
+
+    public ReservationExpireService(
+            ProgramReservationRepository reservationRepository,
+            ProgramSlotRepository programSlotRepository,
+            @Lazy ReservationExpireService self) {
+        this.reservationRepository = reservationRepository;
+        this.programSlotRepository = programSlotRepository;
+        this.self = self;
+    }
 
     /**
-     * 만료된 HOLD 예약을 최대 batchSize개 처리
+     * 만료된 HOLD 예약을 최대 batchSize개 처리.
+     * 각 건은 별도 트랜잭션에서 처리되어 한 건 실패가 다른 건에 영향을 주지 않음.
      */
-    @Transactional
     public int expireExpiredHoldsBatch(int batchSize) {
         LocalDateTime now = LocalDateTime.now();
 
-        // 만료된 HOLD id를 최대 batchSize개 가져옴
         List<Long> ids = reservationRepository.findExpiredHoldIds(now, PageRequest.of(0, batchSize));
-        int processed = 0;
+        if (ids.size() == batchSize) {
+            log.info("[ReservationExpireService] batch full ({}), may have more expired holds", batchSize);
+        }
 
+        int processed = 0;
         for (Long id : ids) {
             try {
-                boolean ok = expireOneIfNeeded(id, now);
+                boolean ok = self.expireOneInNewTransaction(id, now);
                 if (ok) processed++;
             } catch (Exception e) {
-                // 한 건 실패해도 다음 건 처리 계속
                 log.warn("[ReservationExpireService] expireOne failed. reservationId={}", id, e);
             }
         }
@@ -50,22 +60,21 @@ public class ReservationExpireService {
     }
 
     /**
-     * 단건 만료 처리
+     * 단건 만료 처리 (별도 트랜잭션)
      * - 비관락으로 예약 row를 잡고
      * - HOLD && expiresAt < now면 EXPIRED 처리 + capacity 복구
      */
-    @Transactional
-    public boolean expireOneIfNeeded(Long reservationId, LocalDateTime now) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public boolean expireOneInNewTransaction(Long reservationId, LocalDateTime now) {
         ProgramReservation r =
                 reservationRepository.findByIdForUpdate(reservationId).orElse(null);
         if (r == null) return false;
-
         if (r.getStatus() != ProgramReservationStatus.HOLD) return false;
 
         LocalDateTime expiresAt = r.getHoldExpiresAt();
         if (expiresAt == null || !expiresAt.isBefore(now)) return false;
 
-        r.expire(); // status=EXPIRED (엔티티 메서드)
+        r.expire();
 
         ProgramSlot slot = programSlotRepository
                 .findByIdAndProgramIdForUpdate(

@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.halo.eventer.domain.program_reservation.ProgramSlot;
 import lombok.Getter;
 
@@ -36,14 +37,16 @@ public class ReservationSlotListResponse {
         private LocalTime startTime;
 
         private int remaining;
-        private boolean isReservable;
+
+        @JsonProperty("isReservable")
+        private boolean reservable;
 
         public static SlotItem from(ProgramSlot slot) {
             SlotItem s = new SlotItem();
             s.slotId = slot.getId();
             s.startTime = slot.getStartTime();
             s.remaining = slot.getCapacityRemaining() != null ? slot.getCapacityRemaining() : 0;
-            s.isReservable = s.remaining > 0;
+            s.reservable = s.remaining > 0;
             return s;
         }
     }

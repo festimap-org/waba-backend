@@ -59,13 +59,11 @@ public class ProgramDetailResponse {
     public static class TagResponse {
         private Long tagId;
         private String tagName;
-        private int sortOrder;
 
         public static TagResponse from(ProgramTag programTag) {
             TagResponse dto = new TagResponse();
             dto.tagId = programTag.getTag().getId();
             dto.tagName = programTag.getTag().getName();
-            dto.sortOrder = programTag.getSortOrder();
             return dto;
         }
     }

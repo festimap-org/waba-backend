@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 @Table(
         indexes = {
             @Index(name = "idx_reservation_status_created", columnList = "status, created_at DESC"),
-            @Index(name = "idx_reservation_status_hold_expires", columnList = "status, hold_expires_at"),
-            @Index(
+            @Index(name = "idx_reservation_status_hold_expires", columnList = "status, hold_expires_at")
+        },
+        uniqueConstraints = {
+            @UniqueConstraint(
                     name = "uk_reservation_member_idempotency",
-                    columnList = "member_id, idempotency_key",
-                    unique = true),
-            @Index(name = "uk_reservation_member_idempotency", columnList = "member_id, idempotency_key", unique = true)
+                    columnNames = {"member_id", "idempotency_key"})
         })
 public class ProgramReservation extends BaseTime {
     @Id
