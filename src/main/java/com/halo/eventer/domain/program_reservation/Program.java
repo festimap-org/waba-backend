@@ -39,13 +39,13 @@ public class Program extends BaseTime {
     @Column(nullable = false)
     private boolean isActive;
 
-    private LocalDateTime activeStartAt;
+    private LocalDateTime activeStartAt;        // 프로그램 노출 시작일
 
-    private LocalDateTime activeEndAt;
+    private LocalDateTime activeEndAt;          // 프로그램 미노출 시작일
 
-    private LocalDateTime bookingOpenAt;
+    private LocalDateTime bookingOpenAt;        // 프로그램 예약 시작일
 
-    private LocalDateTime bookingCloseAt;
+    private LocalDateTime bookingCloseAt;       // 프로그램 예약 마감일
 
     private Integer holdMinutes;
 
