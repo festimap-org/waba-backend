@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
@@ -33,12 +34,13 @@ public class ReservationDateListResponse {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         private LocalDate date;
 
-        private boolean isReservable;
+        @JsonProperty("isReservable")
+        private boolean reservable;
 
         public static DateItem of(LocalDate date, boolean isReservable) {
             DateItem d = new DateItem();
             d.date = date;
-            d.isReservable = isReservable;
+            d.reservable = isReservable;
             return d;
         }
     }
