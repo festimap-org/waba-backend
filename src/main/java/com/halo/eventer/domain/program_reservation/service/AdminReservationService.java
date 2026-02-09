@@ -23,8 +23,6 @@ import lombok.RequiredArgsConstructor;
 
 import static com.halo.eventer.domain.program_reservation.ProgramReservationStatus.*;
 
-
-
 @Service
 @RequiredArgsConstructor
 public class AdminReservationService {
@@ -143,7 +141,8 @@ public class AdminReservationService {
             // slot도 FOR UPDATE로 잡고 복구 (정합성)
             ProgramSlot slot = slotRepository
                     .findByIdAndProgramIdForUpdate(
-                            reservation.getSlot().getId(), reservation.getProgram().getId())
+                            reservation.getSlot().getId(),
+                            reservation.getProgram().getId())
                     .orElseThrow(() -> new BaseException("슬롯을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
 
             slot.increaseCapacity(reservation.getHeadcount());

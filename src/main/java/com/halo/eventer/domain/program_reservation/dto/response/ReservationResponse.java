@@ -34,8 +34,8 @@ public class ReservationResponse {
             LocalDate today = LocalDate.now();
             past = reservation.getSlot().getSlotDate().isBefore(today);
         } else {
-            LocalDateTime endDateTime =
-                    LocalDateTime.of(reservation.getSlot().getSlotDate(), reservation.getSlot().getStartTime());
+            LocalDateTime endDateTime = LocalDateTime.of(
+                    reservation.getSlot().getSlotDate(), reservation.getSlot().getStartTime());
             past = !endDateTime.isAfter(LocalDateTime.now());
         }
 
