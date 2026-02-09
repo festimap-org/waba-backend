@@ -10,24 +10,19 @@ public class SocialLoginResult {
     private final String token;
     private final SocialProvider provider;
     private final String providerId;
-    private final String email;
-    private final String phone;
 
-    private SocialLoginResult(
-            boolean isMember, String token, SocialProvider provider, String providerId, String email, String phone) {
+    private SocialLoginResult(boolean isMember, String token, SocialProvider provider, String providerId) {
         this.isMember = isMember;
         this.token = token;
         this.provider = provider;
         this.providerId = providerId;
-        this.email = email;
-        this.phone = phone;
     }
 
     public static SocialLoginResult loggedIn(String token) {
-        return new SocialLoginResult(true, token, null, null, null, null);
+        return new SocialLoginResult(true, token, null, null);
     }
 
-    public static SocialLoginResult needSignup(SocialProvider provider, String providerId, String email, String phone) {
-        return new SocialLoginResult(false, null, provider, providerId, email, phone);
+    public static SocialLoginResult needSignup(SocialProvider provider, String providerId) {
+        return new SocialLoginResult(false, null, provider, providerId);
     }
 }

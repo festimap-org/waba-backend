@@ -64,6 +64,18 @@ public enum ErrorCode {
     // Infra
     SMS_SEND_FAILED("I001", "SMS Send Failed", 500),
 
+    // SMS Verification
+    SMS_CODE_EXPIRED("S001", "SMS verification code expired", 400),
+    SMS_CODE_INVALID("S002", "SMS verification code invalid", 400),
+    SMS_MAX_ATTEMPT_EXCEEDED("S003", "SMS verification max attempt exceeded", 429),
+    PHONE_NOT_VERIFIED("S004", "Phone number not verified", 400),
+
+    // Social Login
+    INVALID_SOCIAL_TOKEN("SO001", "Invalid social access token", 401),
+    INVALID_SOCIAL_PROVIDER("SO002", "Invalid social provider", 400),
+    SOCIAL_LOGIN_FAILED("SO003", "Social login failed", 500),
+    SIGNUP_REQUIRED("SO004", "Signup required", 200),
+
     // FieldOps
     FIELD_OPS_SESSION_NOT_FOUND("FO001", "FieldOps session not found", 404),
     FIELD_OPS_SESSION_EXPIRED("FO002", "FieldOps session expired", 401),
