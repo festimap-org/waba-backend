@@ -17,6 +17,7 @@ import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,10 @@ public class ReservationExcelExportService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<Resource> export(Condition condition) {
-        String filename = buildFilename(condition);
+        List<String> names = reservationExcelRepository.findFestivalNameBySlotDateBetween(
+                condition.from, condition.to, PageRequest.of(0, 1));
+        String festivalName = names.isEmpty() ? "행사" : names.get(0);
+        String filename = buildFilename(condition, festivalName);
         String encodedFilename =
                 URLEncoder.encode(filename, StandardCharsets.UTF_8).replace("+", "%20");
 
@@ -125,12 +129,12 @@ public class ReservationExcelExportService {
         return s == null ? "" : s;
     }
 
-    private String buildFilename(Condition c) {
+    private String buildFilename(Condition c, String festivalName) {
         if (c.from != null && c.to != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String fromStr = c.from.format(formatter);
             String toStr = c.to.format(formatter);
-            return "프로그램_예약_정보(" + fromStr + "-" + toStr + ").xlsx";
+            return "[" + festivalName + "]예약리스트_" + fromStr + "_to_" + toStr + ".xlsx";
         }
         return "프로그램_예약_정보.xlsx";
     }
