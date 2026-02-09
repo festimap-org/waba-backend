@@ -13,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.halo.eventer.domain.alimtalk.service.AlimtalkService;
 import com.halo.eventer.domain.member.Member;
 import com.halo.eventer.domain.member.MemberRole;
 import com.halo.eventer.domain.member.repository.MemberRepository;
@@ -43,6 +44,7 @@ public class ProgramReservationService {
     private final MySqlDbLockRepository dbLockRepository;
     private final EntityManager entityManager;
     private final ReservationExpireService reservationExpireService;
+    private final AlimtalkService alimtalkService;
 
     @Transactional(readOnly = true)
     public AvailableProgramListResponse getVisiblePrograms(Long memberId, Long festivalId) {
@@ -253,8 +255,8 @@ public class ProgramReservationService {
         // 6) 확정 처리
         r.confirm();
 
-        // 7) todo: 알림톡은 afterCommit으로
-        // registerAfterCommitSend(r.getId());
+        // 7) 알림톡 전송 (트랜잭션 커밋 후 비동기 전송)
+        alimtalkService.enqueueReservationConfirm(memberId, r.getId());
 
         return new ReservationConfirmResponse(r.getId());
     }
@@ -319,6 +321,9 @@ public class ProgramReservationService {
                 .orElseThrow(() -> new BaseException("존재하지 않는 슬롯입니다.", ErrorCode.ENTITY_NOT_FOUND));
 
         slot.increaseCapacity(r.getHeadcount());
+
+        // 알림톡 전송 (트랜잭션 커밋 후 비동기 전송)
+        alimtalkService.enqueueReservationCanceled(memberId, r.getId());
 
         return new ReservationCancelResponse(r.getId());
     }
