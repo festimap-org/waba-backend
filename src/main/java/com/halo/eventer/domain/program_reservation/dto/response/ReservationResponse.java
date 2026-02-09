@@ -1,11 +1,14 @@
 package com.halo.eventer.domain.program_reservation.dto.response;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.halo.eventer.domain.program_reservation.ProgramReservation;
+import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.ProgramSlotType;
 import com.halo.eventer.domain.program_reservation.ProgramTag;
 import lombok.Getter;
 
@@ -22,7 +25,20 @@ public class ReservationResponse {
     private int headCount;
     private int priceAmount;
 
+    private ProgramReservationStatus status;
+    private boolean past;
+
     public static ReservationResponse from(ProgramReservation reservation, List<ProgramTag> programTags) {
+        boolean past;
+        if (reservation.getSlot().getTemplate().getSlotType() == ProgramSlotType.DATE) {
+            LocalDate today = LocalDate.now();
+            past = reservation.getSlot().getSlotDate().isBefore(today);
+        } else {
+            LocalDateTime endDateTime =
+                    LocalDateTime.of(reservation.getSlot().getSlotDate(), reservation.getSlot().getStartTime());
+            past = !endDateTime.isAfter(LocalDateTime.now());
+        }
+
         ReservationResponse response = new ReservationResponse();
         response.id = reservation.getId();
         response.name = reservation.getProgram().getName();
@@ -33,6 +49,8 @@ public class ReservationResponse {
         response.durationTime = reservation.getProgram().getDurationTime();
         response.headCount = reservation.getPeopleCount();
         response.priceAmount = reservation.getProgram().getPriceAmount() * reservation.getPeopleCount();
+        response.status = reservation.getStatus();
+        response.past = past;
         return response;
     }
 }

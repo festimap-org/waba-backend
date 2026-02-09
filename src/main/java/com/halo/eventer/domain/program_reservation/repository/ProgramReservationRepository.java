@@ -115,6 +115,6 @@ public interface ProgramReservationRepository
     """)
     Optional<ProgramReservation> findCheckoutByIdAndMemberIdForUpdate(Long reservationId, Long memberId);
 
-    List<ProgramReservation> findAllByMemberIdAndStatusOrderByConfirmedAtDescIdDesc(
-            Long memberId, ProgramReservationStatus status);
+    List<ProgramReservation> findAllByMemberIdAndStatusInOrderByConfirmedAtDescIdDesc(
+            Long memberId, List<ProgramReservationStatus> statuses);
 }
