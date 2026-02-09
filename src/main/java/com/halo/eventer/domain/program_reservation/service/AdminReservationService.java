@@ -21,8 +21,7 @@ import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 
-import static com.halo.eventer.domain.program_reservation.ProgramReservationStatus.CONFIRMED;
-import static com.halo.eventer.domain.program_reservation.ProgramReservationStatus.HOLD;
+import static com.halo.eventer.domain.program_reservation.ProgramReservationStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -44,8 +43,12 @@ public class AdminReservationService {
 
             var predicate = cb.conjunction();
 
-            // 1) 상태 필터
-            if (status != null) {
+            // HOLD, EXPIRED 상태는 항상 제외
+            predicate = cb.and(predicate, cb.notEqual(root.get("status"), HOLD));
+            predicate = cb.and(predicate, cb.notEqual(root.get("status"), EXPIRED));
+
+            // 상태 필터 (HOLD, EXPIRED 제외된 상태에서 추가 필터)
+            if (status != null && status != HOLD && status != EXPIRED) {
                 predicate = cb.and(predicate, cb.equal(root.get("status"), status));
             }
 
@@ -110,6 +113,43 @@ public class AdminReservationService {
                 page.getContent().stream().map(AdminReservationResponse::from).collect(Collectors.toList());
 
         return AdminReservationPageResponse.of(adminReservations, page);
+    }
+
+    /** 관리자 선택 예약 취소 */
+    @Transactional
+    public AdminCancelResponse cancelReservations(List<Long> reservationIds) {
+        List<Long> canceledIds = new ArrayList<>();
+
+        for (Long id : reservationIds) {
+            ProgramReservation reservation = reservationRepository
+                    .findByIdForUpdate(id)
+                    .orElseThrow(() -> new BaseException("예약을 찾을 수 없습니다. id=" + id, ErrorCode.ENTITY_NOT_FOUND));
+
+            // 멱등: 이미 취소면 같은 결과 반환
+            if (reservation.getStatus() == CANCELED) {
+                canceledIds.add(id);
+                continue;
+            }
+
+            // 취소 가능 상태 제한: CONFIRMED만
+            if (reservation.getStatus() != CONFIRMED) {
+                throw new BaseException("취소할 수 없는 예약 상태입니다. id=" + id, ErrorCode.INVALID_INPUT_VALUE);
+            }
+
+            reservation.cancel();
+
+            // slot도 FOR UPDATE로 잡고 복구 (정합성)
+            ProgramSlot slot = slotRepository
+                    .findByIdAndProgramIdForUpdate(
+                            reservation.getSlot().getId(),
+                            reservation.getProgram().getId())
+                    .orElseThrow(() -> new BaseException("슬롯을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
+
+            slot.increaseCapacity(reservation.getHeadcount());
+            canceledIds.add(id);
+        }
+
+        return new AdminCancelResponse(canceledIds);
     }
 
     /** 다건 예약 상태 변경 (선택 승인, 선택 거절) */

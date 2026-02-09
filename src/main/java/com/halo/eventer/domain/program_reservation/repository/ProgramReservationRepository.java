@@ -87,10 +87,7 @@ public interface ProgramReservationRepository
                         (r.status = com.halo.eventer.domain.program_reservation.ProgramReservationStatus.HOLD
                          and r.holdExpiresAt is not null
                          and r.holdExpiresAt >= :now)
-                     or r.status in (
-                         com.halo.eventer.domain.program_reservation.ProgramReservationStatus.CONFIRMED,
-                         com.halo.eventer.domain.program_reservation.ProgramReservationStatus.APPROVED
-                     )
+                     or r.status = com.halo.eventer.domain.program_reservation.ProgramReservationStatus.CONFIRMED
                   )
             """)
     int sumActiveHeadcountByMemberAndProgram(
@@ -118,6 +115,6 @@ public interface ProgramReservationRepository
     """)
     Optional<ProgramReservation> findCheckoutByIdAndMemberIdForUpdate(Long reservationId, Long memberId);
 
-    List<ProgramReservation> findAllByMemberIdAndStatusOrderByConfirmedAtDescIdDesc(
-            Long memberId, ProgramReservationStatus status);
+    List<ProgramReservation> findAllByMemberIdAndStatusInOrderByConfirmedAtDescIdDesc(
+            Long memberId, List<ProgramReservationStatus> statuses);
 }
