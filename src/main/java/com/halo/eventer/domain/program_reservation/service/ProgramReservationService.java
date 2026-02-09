@@ -234,7 +234,7 @@ public class ProgramReservationService {
                 .orElseThrow(() -> new BaseException("예약을 찾을 수 없습니다.", ErrorCode.ENTITY_NOT_FOUND));
 
         // 2) 이미 확정이면 멱등 처리 (같은 결과 반환)
-        if (r.getStatus() == ProgramReservationStatus.CONFIRMED || r.getStatus() == ProgramReservationStatus.APPROVED) {
+        if (r.getStatus() == ProgramReservationStatus.CONFIRMED) {
             return new ReservationConfirmResponse(r.getId());
         }
 
@@ -394,8 +394,8 @@ public class ProgramReservationService {
 
     /**
      * 같은 프로그램에서 사용자가 이미 홀드/예약한 인원까지 합산해 최대 인원을 넘지 않도록 검증.
-     * - 포함: HOLD(아직 만료되지 않은 것), CONFIRMED, APPROVED
-     * - 제외: EXPIRED, CANCELED, REJECTED, 만료된 HOLD
+     * - 포함: HOLD(아직 만료되지 않은 것), CONFIRMED
+     * - 제외: EXPIRED, CANCELED, 만료된 HOLD
      */
     private void validateAccumulatedHeadcount(Long memberId, Program program, int newHeadcount) {
         int max = program.getMaxPersonCount();
