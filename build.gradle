@@ -100,6 +100,10 @@ dependencies {
 
     //prometheus-micrometer
     implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    // excel
+    implementation 'org.apache.poi:poi-ooxml:5.2.2'
+    implementation 'org.apache.poi:poi:5.2.2'
 }
 
 tasks.named('test') {

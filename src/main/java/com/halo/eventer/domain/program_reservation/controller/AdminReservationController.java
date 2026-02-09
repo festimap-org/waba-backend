@@ -1,12 +1,16 @@
 package com.halo.eventer.domain.program_reservation.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import jakarta.validation.Valid;
 
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +20,7 @@ import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateC
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateUpdateRequest;
 import com.halo.eventer.domain.program_reservation.dto.response.*;
 import com.halo.eventer.domain.program_reservation.service.AdminReservationService;
+import com.halo.eventer.domain.program_reservation.service.ReservationExcelExportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "관리자 - 프로그램 예약 관리", description = "예약 회차 관리 API")
 public class AdminReservationController {
     private final AdminReservationService adminReservationService;
+    private final ReservationExcelExportService reservationExcelExportService;
 
     /** GET 전체 예약 리스트 (8개씩 페이징처리) */
     @GetMapping()
@@ -85,5 +91,14 @@ public class AdminReservationController {
     @Operation(summary = "템플릿 삭제", description = "예약 이력이 있으면 409, 없으면 템플릿/패턴/슬롯을 일괄 삭제")
     public void deleteTemplate(@PathVariable("templateId") Long templateId) {
         adminReservationService.deleteTemplate(templateId);
+    }
+
+    /** 엑셀 다운 */
+    @GetMapping(value = "/excel", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    @Operation(summary = "지정 범위 내 예약 내역 엑셀 다운로드")
+    public ResponseEntity<Resource> download(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        return reservationExcelExportService.export(new ReservationExcelExportService.Condition(from, to));
     }
 }

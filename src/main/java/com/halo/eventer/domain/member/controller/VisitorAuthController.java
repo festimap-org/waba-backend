@@ -1,10 +1,12 @@
 package com.halo.eventer.domain.member.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.halo.eventer.domain.member.dto.SocialLoginRequest;
 import com.halo.eventer.domain.member.dto.SocialLoginResult;
+import com.halo.eventer.domain.member.dto.SocialTokenLoginRequest;
 import com.halo.eventer.domain.member.dto.TokenDto;
 import com.halo.eventer.domain.member.dto.VisitorSignupRequest;
 import com.halo.eventer.domain.member.service.VisitorAuthService;
@@ -20,13 +22,10 @@ public class VisitorAuthController {
 
     private final VisitorAuthService visitorAuthService;
 
-    @PostMapping("/login")
-    @Operation(
-            summary = "소셜 로그인",
-            description = "프론트에서 받은 provider/providerId로 로그인. 기존 회원이면 토큰 발급, 신규면 isMember=false 응답")
-    public ResponseEntity<SocialLoginResult> login(@RequestBody SocialLoginRequest request) {
-        SocialLoginResult result =
-                visitorAuthService.processSocialLogin(request.getProvider(), request.getProviderId());
+    @PostMapping("/social-login")
+    @Operation(summary = "소셜 로그인", description = "프론트에서 받은 소셜 accessToken으로 로그인. 기존 회원이면 JWT 발급, 신규면 isMember=false 응답")
+    public ResponseEntity<SocialLoginResult> socialLogin(@Valid @RequestBody SocialTokenLoginRequest request) {
+        SocialLoginResult result = visitorAuthService.socialLogin(request.getProvider(), request.getAccessToken());
         return ResponseEntity.ok(result);
     }
 

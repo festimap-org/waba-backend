@@ -76,8 +76,11 @@ public class SecurityConstants {
         "/api/v2/user/*/*/*/*/signup",
         "/api/v2/user/*/*/*/*/login",
         // VISITOR 인증 API
-        "/api/v1/auth/login",
+        "/api/v1/auth/social-login",
         "/api/v1/auth/signup",
+        // SMS 인증 API
+        "/api/v1/auth/sms/send",
+        "/api/v1/auth/sms/verify",
         // 관리자(AGENCY) 인증 API
         "/api/v1/admin/auth/login",
         "/api/v1/admin/auth/signup"
