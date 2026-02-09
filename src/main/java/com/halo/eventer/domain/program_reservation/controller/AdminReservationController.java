@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
 import com.halo.eventer.domain.program_reservation.ReservationSearchField;
+import com.halo.eventer.domain.program_reservation.dto.request.AdminCancelRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateCreateRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateUpdateRequest;
 import com.halo.eventer.domain.program_reservation.dto.response.*;
@@ -47,6 +48,13 @@ public class AdminReservationController {
             @ParameterObject @PageableDefault(size = 8, sort = "createdAt", direction = Sort.Direction.DESC)
                     Pageable pageable) {
         return adminReservationService.getReservations(searchField, keyword, status, pageable);
+    }
+
+    /** POST 선택 예약 취소 */
+    @PostMapping("/cancel")
+    @Operation(summary = "선택 예약 취소", description = "관리자가 선택한 예약들을 일괄 취소합니다.")
+    public AdminCancelResponse cancelReservations(@RequestBody @Valid AdminCancelRequest request) {
+        return adminReservationService.cancelReservations(request.getReservationIds());
     }
 
     /** GET 예약 회차 캘린더 조회*/
