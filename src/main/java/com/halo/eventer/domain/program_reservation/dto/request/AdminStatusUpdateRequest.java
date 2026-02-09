@@ -13,7 +13,7 @@ public class AdminStatusUpdateRequest {
     @NotEmpty
     private List<Long> reservationIds;
 
-    @Schema(type = "string", example = "REJECTED")
+    @Schema(type = "string", example = "CANCELED")
     @NotNull
     private ProgramReservationStatus status;
 }

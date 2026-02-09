@@ -39,7 +39,7 @@ public class AdminReservationController {
     @GetMapping()
     @Operation(
             summary = "예약 목록 조회 (대시보드)",
-            description = "예약 관리 대시보드용 예약 목록을 조회합니다. " + "상태: HOLD, EXPIRED(만료), APPROVED(승인), CANCELLED(취소)")
+            description = "예약 관리 대시보드용 예약 목록을 조회합니다. " + "상태: CONFIRMED(확정), CANCELED(취소)")
     public AdminReservationPageResponse getReservations(
             @Parameter(description = "검색 대상 (선택)") @RequestParam(required = false) ReservationSearchField searchField,
             @Parameter(description = "검색어 (선택)") @RequestParam(required = false) String keyword,

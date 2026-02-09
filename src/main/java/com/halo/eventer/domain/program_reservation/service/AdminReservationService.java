@@ -21,8 +21,9 @@ import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 
-import static com.halo.eventer.domain.program_reservation.ProgramReservationStatus.CONFIRMED;
-import static com.halo.eventer.domain.program_reservation.ProgramReservationStatus.HOLD;
+import static com.halo.eventer.domain.program_reservation.ProgramReservationStatus.*;
+
+
 
 @Service
 @RequiredArgsConstructor
@@ -44,8 +45,12 @@ public class AdminReservationService {
 
             var predicate = cb.conjunction();
 
-            // 1) 상태 필터
-            if (status != null) {
+            // HOLD, EXPIRED 상태는 항상 제외
+            predicate = cb.and(predicate, cb.notEqual(root.get("status"), HOLD));
+            predicate = cb.and(predicate, cb.notEqual(root.get("status"), EXPIRED));
+
+            // 상태 필터 (HOLD, EXPIRED 제외된 상태에서 추가 필터)
+            if (status != null && status != HOLD && status != EXPIRED) {
                 predicate = cb.and(predicate, cb.equal(root.get("status"), status));
             }
 
