@@ -16,7 +16,10 @@ import com.halo.eventer.domain.member.dto.TokenDto;
 import com.halo.eventer.domain.member.dto.VisitorSignupRequest;
 import com.halo.eventer.domain.member.exception.MemberNotActiveException;
 import com.halo.eventer.domain.member.exception.PhoneAlreadyRegisteredException;
+import com.halo.eventer.domain.member.oauth.SocialOAuthService;
+import com.halo.eventer.domain.member.oauth.SocialUserInfo;
 import com.halo.eventer.domain.member.repository.MemberRepository;
+import com.halo.eventer.domain.sms.service.SmsVerificationService;
 import com.halo.eventer.global.security.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
 
@@ -27,15 +30,20 @@ public class VisitorAuthService {
 
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
+    private final SmsVerificationService smsVerificationService;
+    private final SocialOAuthService socialOAuthService;
 
     /**
-     * 소셜 로그인 처리
+     * 소셜 로그인 (accessToken 검증 방식)
+     * - 프론트에서 받은 accessToken으로 소셜 API 호출하여 사용자 정보 조회
      * - 기존 회원: JWT 발급
      * - 신규: 회원가입 필요 응답
      */
-    public SocialLoginResult processSocialLogin(
-            SocialProvider provider, String providerId, String email, String phone) {
-        Optional<Member> existingMember = memberRepository.findByProviderAndProviderId(provider, providerId);
+    public SocialLoginResult socialLogin(SocialProvider provider, String accessToken) {
+        SocialUserInfo userInfo = socialOAuthService.getUserInfo(provider, accessToken);
+
+        Optional<Member> existingMember =
+                memberRepository.findByProviderAndProviderId(userInfo.getProvider(), userInfo.getProviderId());
 
         if (existingMember.isPresent()) {
             Member member = existingMember.get();
@@ -46,14 +54,7 @@ public class VisitorAuthService {
             return SocialLoginResult.loggedIn(token);
         }
 
-        return SocialLoginResult.needSignup(provider, providerId, email, phone);
-    }
-
-    /**
-     * 소셜 로그인 처리 (provider, providerId만)
-     */
-    public SocialLoginResult processSocialLogin(SocialProvider provider, String providerId) {
-        return processSocialLogin(provider, providerId, null, null);
+        return SocialLoginResult.needSignup(userInfo.getProvider(), userInfo.getProviderId());
     }
 
     /**
@@ -62,6 +63,8 @@ public class VisitorAuthService {
      */
     @Transactional
     public TokenDto completeSignup(VisitorSignupRequest request) {
+        smsVerificationService.validateVerified(request.getPhone());
+
         if (memberRepository.existsByPhoneAndRole(request.getPhone(), MemberRole.VISITOR)) {
             throw new PhoneAlreadyRegisteredException();
         }
@@ -87,6 +90,7 @@ public class VisitorAuthService {
                 request.getTransportationType());
 
         memberRepository.save(member);
+        smsVerificationService.consumeVerification(request.getPhone());
 
         return new TokenDto(jwtProvider.createToken(member.getId().toString(), getRoleNames(member)));
     }
