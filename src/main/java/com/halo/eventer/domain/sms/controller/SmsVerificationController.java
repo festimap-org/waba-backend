@@ -28,9 +28,9 @@ public class SmsVerificationController {
     }
 
     @PostMapping("/verify")
-    @Operation(summary = "인증번호 확인", description = "발송된 인증번호를 검증합니다. 5회 오류 시 재발송 필요.")
+    @Operation(summary = "인증번호 확인", description = "발송된 인증번호를 검증합니다. 5회 오류 시 재발송 필요. role 지정 시 해당 역할의 전화번호 중복 검사도 수행.")
     public ResponseEntity<Void> verifyCode(@Valid @RequestBody SmsVerifyCodeRequest request) {
-        smsVerificationService.verifyCode(request.getPhone(), request.getCode());
+        smsVerificationService.verifyCode(request.getPhone(), request.getCode(), request.getRole());
         return ResponseEntity.ok().build();
     }
 }
