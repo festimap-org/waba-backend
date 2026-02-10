@@ -27,7 +27,8 @@ public class AdminReservationResponse {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime slotStartTime;
 
-    private LocalDate confirmedAt;
+    @JsonFormat(pattern = "yy.MM.dd HH:mm")
+    private LocalDateTime confirmedAt;
 
     private int durationMinutes;
     private int peopleCount;
@@ -62,7 +63,7 @@ public class AdminReservationResponse {
                 visitorPhone,
                 r.getSlot().getSlotDate(),
                 r.getSlot().getStartTime(),
-                r.getConfirmedAt() != null ? r.getConfirmedAt().toLocalDate() : null,
+                r.getConfirmedAt() != null ? r.getConfirmedAt() : null,
                 r.getSlot().getDurationMinutes(),
                 r.getPeopleCount(),
                 0,
