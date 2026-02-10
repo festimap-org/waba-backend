@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.member.dto;
 
-import com.halo.eventer.domain.member.AgeGroup;
+import java.time.LocalDate;
+
 import com.halo.eventer.domain.member.Gender;
 import com.halo.eventer.domain.member.ResidenceType;
 import com.halo.eventer.domain.member.TransportationType;
@@ -16,7 +17,7 @@ public class MemberSurveyRequest {
     private String residenceDistrict;
     private VisitType visitType;
     private Gender gender;
-    private AgeGroup ageGroup;
+    private LocalDate birthDate;
     private TransportationType transportationType;
 
     public MemberSurveyRequest(
@@ -25,14 +26,14 @@ public class MemberSurveyRequest {
             String residenceDistrict,
             VisitType visitType,
             Gender gender,
-            AgeGroup ageGroup,
+            LocalDate birthDate,
             TransportationType transportationType) {
         this.residenceType = residenceType;
         this.residenceRegion = residenceRegion;
         this.residenceDistrict = residenceDistrict;
         this.visitType = visitType;
         this.gender = gender;
-        this.ageGroup = ageGroup;
+        this.birthDate = birthDate;
         this.transportationType = transportationType;
     }
 }
