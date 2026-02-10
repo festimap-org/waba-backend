@@ -5,6 +5,8 @@ import java.security.SecureRandom;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.halo.eventer.domain.member.MemberRole;
+import com.halo.eventer.domain.member.repository.MemberRepository;
 import com.halo.eventer.domain.sms.SmsVerification;
 import com.halo.eventer.domain.sms.repository.SmsVerificationRepository;
 import com.halo.eventer.global.error.ErrorCode;
@@ -22,6 +24,7 @@ public class SmsVerificationService {
     private static final String VERIFICATION_MESSAGE_TEMPLATE = "[Festimap] 인증번호 [%s]를 입력해주세요.";
 
     private final SmsVerificationRepository smsVerificationRepository;
+    private final MemberRepository memberRepository;
     private final SmsClient smsClient;
     private final SecureRandom secureRandom = new SecureRandom();
 
@@ -41,6 +44,11 @@ public class SmsVerificationService {
 
     @Transactional
     public void verifyCode(String phone, String code) {
+        verifyCode(phone, code, null);
+    }
+
+    @Transactional
+    public void verifyCode(String phone, String code, MemberRole role) {
         SmsVerification verification = smsVerificationRepository
                 .findByPhone(phone)
                 .orElseThrow(() -> new BaseException(ErrorCode.SMS_CODE_EXPIRED));
@@ -57,6 +65,10 @@ public class SmsVerificationService {
 
         if (!verification.matches(code)) {
             throw new BaseException(ErrorCode.SMS_CODE_INVALID);
+        }
+
+        if (role != null && memberRepository.existsByPhoneAndRole(phone, role)) {
+            throw new BaseException(ErrorCode.PHONE_ALREADY_REGISTERED);
         }
 
         verification.markVerified();
