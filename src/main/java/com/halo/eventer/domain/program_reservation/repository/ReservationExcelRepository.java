@@ -2,8 +2,10 @@ package com.halo.eventer.domain.program_reservation.repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.stream.Stream;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
@@ -34,6 +36,18 @@ public interface ReservationExcelRepository extends Repository<ProgramReservatio
             ORDER BY s.slotDate, s.startTime, r.createdAt
             """)
     Stream<ReservationExcelRowView> streamBySlotDateBetween(@Param("from") LocalDate from, @Param("to") LocalDate to);
+
+    @Query(
+            """
+            SELECT f.name
+            FROM ProgramReservation r
+            JOIN r.program p
+            JOIN p.festival f
+            JOIN r.slot s
+            WHERE s.slotDate BETWEEN :from AND :to
+            """)
+    List<String> findFestivalNameBySlotDateBetween(
+            @Param("from") LocalDate from, @Param("to") LocalDate to, Pageable pageable);
 
     interface ReservationExcelRowView {
         String getBookerName();
