@@ -29,7 +29,8 @@ public class CorsConfig {
             "https://*.stamp.festiv.kr",
             "https://*.parking.festiv.kr",
             "https://*.program.festiv.kr",
-            "https://*.mypage.festiv.kr");
+            "https://*.mypage.festiv.kr",
+            "https://mypage.festiv.kr");
 
     @Bean
     public CorsConfigurationSource customCorsConfigurationSource() {
