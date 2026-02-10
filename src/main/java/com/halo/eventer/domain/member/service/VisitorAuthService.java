@@ -74,9 +74,8 @@ public class VisitorAuthService {
                 request.getName(),
                 request.getProvider(),
                 request.getProviderId(),
-                request.isMarketingSms(),
-                request.isMarketingEmail(),
-                request.isMarketingPush());
+                request.isTermsAgreed(),
+                request.isMarketingAgreed());
         member.addAuthority(Authority.builder().roleName("ROLE_VISITOR").build());
 
         // 설문 정보 설정
@@ -86,7 +85,7 @@ public class VisitorAuthService {
                 request.getResidenceDistrict(),
                 request.getVisitType(),
                 request.getGender(),
-                request.getAgeGroup(),
+                request.getBirthDate(),
                 request.getTransportationType());
 
         memberRepository.save(member);

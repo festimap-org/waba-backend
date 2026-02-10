@@ -27,6 +27,8 @@ public class AdminReservationResponse {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime slotStartTime;
 
+    private LocalDate confirmedAt;
+
     private int durationMinutes;
     private int peopleCount;
     private int fee; // 일단 0원으로 통일
@@ -60,6 +62,7 @@ public class AdminReservationResponse {
                 visitorPhone,
                 r.getSlot().getSlotDate(),
                 r.getSlot().getStartTime(),
+                r.getConfirmedAt() != null ? r.getConfirmedAt().toLocalDate() : null,
                 r.getSlot().getDurationMinutes(),
                 r.getPeopleCount(),
                 0,
