@@ -213,4 +213,18 @@ public class AdminProgramService {
                         ? program.getBookingCloseAt().toLocalTime()
                         : null);
     }
+
+    @Transactional(readOnly = true)
+    public TagResponse getTagInfo(Long tagId) {
+        Tag tag = tagRepository
+                .findById(tagId)
+                .orElseThrow(() -> new BaseException("존재하지 않는 태그입니다.", ErrorCode.ENTITY_NOT_FOUND));
+        return TagResponse.from(tag);
+    }
+
+    @Transactional(readOnly = true)
+    public TagNameListResponse getAllTagNames() {
+        List<Tag> tags = tagRepository.findAll();
+        return TagNameListResponse.from(tags);
+    }
 }

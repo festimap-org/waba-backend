@@ -115,4 +115,16 @@ public class AdminProgramController {
     public ProgramBookingResponse getBookingInfo(@PathVariable("programId") Long programId) {
         return adminProgramService.getBookingInfo(programId);
     }
+
+    @GetMapping("/tags/{tagId}")
+    @Operation(summary = "태그 상세 조회", description = "태그 ID로 태그 정보를 조회합니다.")
+    public TagResponse getTagInfo(@PathVariable("tagId") Long tagId) {
+        return adminProgramService.getTagInfo(tagId);
+    }
+
+    @GetMapping("/tags")
+    @Operation(summary = "태그 목록 조회", description = "드롭다운용 태그 id, name 목록을 조회합니다.")
+    public TagNameListResponse getTagNames() {
+        return adminProgramService.getAllTagNames();
+    }
 }
