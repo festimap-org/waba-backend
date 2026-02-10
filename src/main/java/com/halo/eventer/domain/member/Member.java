@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.member;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.*;
@@ -38,14 +39,11 @@ public class Member extends BaseTime {
     @Column(nullable = false)
     private MemberStatus status = MemberStatus.ACTIVE;
 
-    @Column(name = "marketing_sms")
-    private Boolean marketingSms = false;
+    @Column(name = "terms_agreed", nullable = false)
+    private Boolean termsAgreed = false;
 
-    @Column(name = "marketing_email")
-    private Boolean marketingEmail = false;
-
-    @Column(name = "marketing_push")
-    private Boolean marketingPush = false;
+    @Column(name = "marketing_agreed")
+    private Boolean marketingAgreed = false;
 
     // 설문 정보 (회원가입 시 선택)
     @Enumerated(EnumType.STRING)
@@ -66,9 +64,8 @@ public class Member extends BaseTime {
     @Column(name = "gender", length = 10)
     private Gender gender;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "age_group", length = 20)
-    private AgeGroup ageGroup;
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "transportation_type", length = 20)
@@ -121,13 +118,11 @@ public class Member extends BaseTime {
             String name,
             SocialProvider provider,
             String providerId,
-            boolean marketingSms,
-            boolean marketingEmail,
-            boolean marketingPush) {
+            boolean termsAgreed,
+            boolean marketingAgreed) {
         Member member = createVisitor(phone, name, provider, providerId);
-        member.marketingSms = marketingSms;
-        member.marketingEmail = marketingEmail;
-        member.marketingPush = marketingPush;
+        member.termsAgreed = termsAgreed;
+        member.marketingAgreed = marketingAgreed;
         return member;
     }
 
@@ -178,10 +173,8 @@ public class Member extends BaseTime {
         this.status = status;
     }
 
-    public void updateMarketingConsent(boolean marketingSms, boolean marketingEmail, boolean marketingPush) {
-        this.marketingSms = marketingSms;
-        this.marketingEmail = marketingEmail;
-        this.marketingPush = marketingPush;
+    public void updateMarketingConsent(boolean marketingAgreed) {
+        this.marketingAgreed = marketingAgreed;
     }
 
     public void updateSurveyInfo(
@@ -190,14 +183,14 @@ public class Member extends BaseTime {
             String residenceDistrict,
             VisitType visitType,
             Gender gender,
-            AgeGroup ageGroup,
+            LocalDate birthDate,
             TransportationType transportationType) {
         this.residenceType = residenceType;
         this.residenceRegion = residenceRegion;
         this.residenceDistrict = residenceDistrict;
         this.visitType = visitType;
         this.gender = gender;
-        this.ageGroup = ageGroup;
+        this.birthDate = birthDate;
         this.transportationType = transportationType;
     }
 

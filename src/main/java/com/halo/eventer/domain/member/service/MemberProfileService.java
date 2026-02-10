@@ -27,7 +27,7 @@ public class MemberProfileService {
                 .findByIdAndRole(memberId, MemberRole.VISITOR)
                 .orElseThrow(MemberNotFoundException::new);
 
-        member.updateMarketingConsent(request.isMarketingSms(), request.isMarketingEmail(), request.isMarketingPush());
+        member.updateMarketingConsent(request.isMarketingAgreed());
     }
 
     /**
@@ -45,7 +45,7 @@ public class MemberProfileService {
                 request.getResidenceDistrict(),
                 request.getVisitType(),
                 request.getGender(),
-                request.getAgeGroup(),
+                request.getBirthDate(),
                 request.getTransportationType());
     }
 }

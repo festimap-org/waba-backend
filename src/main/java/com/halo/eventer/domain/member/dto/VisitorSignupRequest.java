@@ -1,5 +1,7 @@
 package com.halo.eventer.domain.member.dto;
 
+import java.time.LocalDate;
+
 import com.halo.eventer.domain.member.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,16 +12,16 @@ public class VisitorSignupRequest {
     // 필수 - 소셜 로그인 정보
     private SocialProvider provider;
     private String providerId;
-    private String email;
 
     // 필수 - 기본 정보
     private String phone;
     private String name;
 
+    // 필수 - 약관 동의
+    private Boolean termsAgreed;
+
     // 선택 - 마케팅 동의
-    private Boolean marketingSms;
-    private Boolean marketingEmail;
-    private Boolean marketingPush;
+    private Boolean marketingAgreed;
 
     // 선택 - 설문 정보
     private ResidenceType residenceType;
@@ -27,18 +29,14 @@ public class VisitorSignupRequest {
     private String residenceDistrict;
     private VisitType visitType;
     private Gender gender;
-    private AgeGroup ageGroup;
+    private LocalDate birthDate;
     private TransportationType transportationType;
 
-    public boolean isMarketingSms() {
-        return Boolean.TRUE.equals(marketingSms);
+    public boolean isTermsAgreed() {
+        return Boolean.TRUE.equals(termsAgreed);
     }
 
-    public boolean isMarketingEmail() {
-        return Boolean.TRUE.equals(marketingEmail);
-    }
-
-    public boolean isMarketingPush() {
-        return Boolean.TRUE.equals(marketingPush);
+    public boolean isMarketingAgreed() {
+        return Boolean.TRUE.equals(marketingAgreed);
     }
 }
