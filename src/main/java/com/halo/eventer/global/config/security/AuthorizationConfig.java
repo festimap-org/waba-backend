@@ -12,6 +12,8 @@ public class AuthorizationConfig {
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.GET, SecurityConstants.PUBLIC_GET_URLS)
                 .permitAll()
+                .requestMatchers(HttpMethod.GET, SecurityConstants.PUBLIC_GET_URLS)
+                .permitAll()
                 .requestMatchers(HttpMethod.POST, SecurityConstants.PUBLIC_POST_URLS)
                 .permitAll()
                 .requestMatchers(HttpMethod.PATCH, SecurityConstants.PUBLIC_PATCH_URLS)
