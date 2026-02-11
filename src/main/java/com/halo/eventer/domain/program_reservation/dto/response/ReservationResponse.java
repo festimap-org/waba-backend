@@ -15,6 +15,7 @@ import lombok.Getter;
 @Getter
 public class ReservationResponse {
     private Long id;
+    private Long programId;
     private String name;
     private List<ProgramDetailResponse.TagResponse> tags;
 
@@ -41,6 +42,7 @@ public class ReservationResponse {
 
         ReservationResponse response = new ReservationResponse();
         response.id = reservation.getId();
+        response.programId = reservation.getProgram().getId();
         response.name = reservation.getProgram().getName();
         response.tags = programTags.stream()
                 .map(ProgramDetailResponse.TagResponse::from)

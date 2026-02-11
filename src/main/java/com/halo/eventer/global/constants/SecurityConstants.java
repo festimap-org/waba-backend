@@ -4,7 +4,14 @@ public class SecurityConstants {
 
     // 공개 API 경로
     public static final String[] SWAGGER_URLS = {
-        "/", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/docs/**"
+        "/swagger-ui/**",
+        "/swagger-ui.html",
+        "/swagger-ui",
+        "/swagger-resources",
+        "/swagger-resources/**",
+        "/v3/api-docs",
+        "/v3/api-docs/**",
+        "/docs/**"
     };
 
     public static final String[] PUBLIC_GET_URLS = {
