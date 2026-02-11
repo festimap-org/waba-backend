@@ -227,4 +227,13 @@ public class AdminProgramService {
         List<Tag> tags = tagRepository.findAll();
         return TagNameListResponse.from(tags);
     }
+
+    @Transactional
+    public void saveThumbnail(Long festivalId, ProgramThumbnailRequest request) {
+        Festival festival = festivalRepository
+                .findById(festivalId)
+                .orElseThrow(() -> new BaseException("존재하지 않는 축제입니다.", ErrorCode.ENTITY_NOT_FOUND));
+
+        festival.setProgramThumbnail(request.getThumbnail());
+    }
 }
