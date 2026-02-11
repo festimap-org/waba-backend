@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.program_reservation.dto.response;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,8 @@ public class AvailableProgramResponse {
     private Long id;
     private String name;
     private String thumbnailUrl;
+    private LocalDateTime bookingOpenAt;
+    private LocalDateTime bookingCloseAt;
     private int price;
     private String durationTime;
     private String availableAge;
@@ -25,6 +28,8 @@ public class AvailableProgramResponse {
         response.id = p.getId();
         response.name = p.getName();
         response.thumbnailUrl = p.getThumbnailUrl();
+        response.bookingOpenAt = p.getBookingOpenAt();
+        response.bookingCloseAt = p.getBookingCloseAt();
         response.price = p.getPriceAmount();
         response.durationTime = p.getDurationTime();
         response.availableAge = p.getAvailableAge();
