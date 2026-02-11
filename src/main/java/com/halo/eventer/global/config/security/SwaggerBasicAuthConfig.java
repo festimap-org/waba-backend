@@ -13,8 +13,8 @@ public class SwaggerBasicAuthConfig {
 
     @Bean
     public InMemoryUserDetailsManager swaggerUserDetailsManager(
-            @Value("${SWAGGER_USERNAME}") String username,
-            @Value("${SWAGGER_PASSWORD}") String password,
+            @Value("${SWAGGER_USERNAME:swagger}") String username,
+            @Value("${SWAGGER_PASSWORD:swagger123}") String password,
             PasswordEncoder passwordEncoder) {
 
         UserDetails swaggerUser = User.withUsername(username)
