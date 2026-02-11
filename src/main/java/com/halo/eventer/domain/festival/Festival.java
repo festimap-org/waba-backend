@@ -50,6 +50,8 @@ public class Festival {
     private double latitude; // 위도
     private double longitude; // 경도
 
+    private String programThumbnail; // 행사 대표 썸네일
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private FestivalStatus status = FestivalStatus.DRAFT;
@@ -171,5 +173,9 @@ public class Festival {
 
     public boolean isOwnedBy(Long memberId) {
         return this.owner != null && this.owner.getId().equals(memberId);
+    }
+
+    public void setProgramThumbnail(String thumbnail) {
+        this.programThumbnail = thumbnail;
     }
 }
