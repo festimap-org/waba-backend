@@ -8,9 +8,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class AvailableProgramListResponse {
+    private String thumbnail;
     private List<AvailableProgramResponse> responses;
 
-    public static AvailableProgramListResponse of(List<AvailableProgramResponse> responses) {
-        return new AvailableProgramListResponse(responses);
+    public static AvailableProgramListResponse of(String thumbnail, List<AvailableProgramResponse> responses) {
+        return new AvailableProgramListResponse(thumbnail, responses);
     }
 }
