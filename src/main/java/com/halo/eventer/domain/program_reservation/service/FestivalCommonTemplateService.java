@@ -10,6 +10,7 @@ import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.program_reservation.FestivalCommonTemplate;
 import com.halo.eventer.domain.program_reservation.dto.request.TemplateSaveAllRequest;
+import com.halo.eventer.domain.program_reservation.dto.response.TemplateManagementResponse;
 import com.halo.eventer.domain.program_reservation.dto.response.TemplateResponse;
 import com.halo.eventer.domain.program_reservation.repository.FestivalCommonTemplateRepository;
 import com.halo.eventer.global.error.ErrorCode;
@@ -23,13 +24,14 @@ public class FestivalCommonTemplateService {
     private final FestivalRepository festivalRepository;
 
     @Transactional(readOnly = true)
-    public List<TemplateResponse> getList(Long festivalId) {
+    public TemplateManagementResponse getList(Long festivalId) {
         Festival festival = festivalRepository
                 .findById(festivalId)
                 .orElseThrow(() -> new BaseException("존재하지 않는 축제입니다.", ErrorCode.ENTITY_NOT_FOUND));
-        return templateRepository.findAllByFestivalIdOrderBySortOrder(festivalId).stream()
+        List<TemplateResponse> templates = templateRepository.findAllByFestivalIdOrderBySortOrder(festivalId).stream()
                 .map(TemplateResponse::from)
                 .collect(Collectors.toList());
+        return TemplateManagementResponse.of(festival.getProgramThumbnail(), templates);
     }
 
     @Transactional

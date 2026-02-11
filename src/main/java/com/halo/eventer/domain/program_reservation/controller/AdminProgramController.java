@@ -1,6 +1,5 @@
 package com.halo.eventer.domain.program_reservation.controller;
 
-import java.util.List;
 import jakarta.validation.Valid;
 
 import org.springframework.validation.annotation.Validated;
@@ -85,8 +84,8 @@ public class AdminProgramController {
     }
 
     @GetMapping("/templates")
-    @Operation(summary = "공통 템플릿 목록 조회", description = "축제에 등록된 공통 템플릿을 sortOrder 순으로 조회합니다.")
-    public List<TemplateResponse> getTemplates(@RequestParam("festivalId") Long festivalId) {
+    @Operation(summary = "공통 템플릿 목록 조회 + 대표 썸네일", description = "축제에 등록된 공통 템플릿을 sortOrder 순으로 조회합니다.")
+    public TemplateManagementResponse getTemplates(@RequestParam("festivalId") Long festivalId) {
         return templateService.getList(festivalId);
     }
 
@@ -101,6 +100,13 @@ public class AdminProgramController {
     @Operation(summary = "공통 템플릿 삭제")
     public void deleteTemplate(@PathVariable("templateId") Long templateId) {
         templateService.delete(templateId);
+    }
+
+    @PostMapping("/{festivalId}/thumbnail")
+    @Operation(summary = "행사 대표 썸네일 저장")
+    public void saveProgramThumbnail(
+            @PathVariable("festivalId") Long festivalId, @RequestBody ProgramThumbnailRequest request) {
+        adminProgramService.saveThumbnail(festivalId, request);
     }
 
     @PostMapping("/{programId}/booking")
