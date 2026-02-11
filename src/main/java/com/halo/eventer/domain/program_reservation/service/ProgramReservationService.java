@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.halo.eventer.domain.alimtalk.service.AlimtalkService;
+import com.halo.eventer.domain.festival.Festival;
+import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.member.Member;
 import com.halo.eventer.domain.member.MemberRole;
 import com.halo.eventer.domain.member.repository.MemberRepository;
@@ -42,6 +44,7 @@ public class ProgramReservationService {
     private final ProgramTagRepository programTagRepository;
     private final MemberRepository memberRepository;
     private final MySqlDbLockRepository dbLockRepository;
+    private final FestivalRepository festivalRepository;
     private final EntityManager entityManager;
     private final ReservationExpireService reservationExpireService;
     private final AlimtalkService alimtalkService;
@@ -49,6 +52,9 @@ public class ProgramReservationService {
     @Transactional(readOnly = true)
     public AvailableProgramListResponse getVisiblePrograms(Long memberId, Long festivalId) {
         getMember(memberId); // 사용자 권한 검증 (visitor/super-admin)
+        Festival festival = festivalRepository
+                .findById(festivalId)
+                .orElseThrow(() -> new BaseException("존재하지 않는 축제입니다.", ErrorCode.ENTITY_NOT_FOUND));
 
         List<Program> programs = programRepository.findAllVisibleForUser(festivalId, LocalDateTime.now());
 
@@ -73,7 +79,7 @@ public class ProgramReservationService {
                 })
                 .toList();
 
-        return AvailableProgramListResponse.of(responses);
+        return AvailableProgramListResponse.of(festival.getProgramThumbnail(), responses);
     }
 
     @Transactional(readOnly = true)
