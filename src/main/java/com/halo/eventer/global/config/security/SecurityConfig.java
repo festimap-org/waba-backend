@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationEn
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.halo.eventer.global.constants.SecurityConstants;
-
 import com.halo.eventer.global.security.exception.CustomAccessDeniedHandler;
 import com.halo.eventer.global.security.exception.CustomAuthenticationEntryPoint;
 
@@ -49,8 +48,8 @@ public class SecurityConfig {
 
     @Bean
     @Order(0)
-    public SecurityFilterChain swaggerFilterChain(HttpSecurity http, InMemoryUserDetailsManager swaggerUserDetailsManager)
-            throws Exception {
+    public SecurityFilterChain swaggerFilterChain(
+            HttpSecurity http, InMemoryUserDetailsManager swaggerUserDetailsManager) throws Exception {
         BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
         entryPoint.setRealmName("swagger");
         entryPoint.afterPropertiesSet();
