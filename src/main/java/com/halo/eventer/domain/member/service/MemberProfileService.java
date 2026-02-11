@@ -57,7 +57,6 @@ public class MemberProfileService {
                 request.getResidenceDistrict(),
                 request.getVisitType(),
                 request.getGender(),
-                request.getBirthDate(),
-                request.getTransportationType());
+                request.getBirthDate());
     }
 }

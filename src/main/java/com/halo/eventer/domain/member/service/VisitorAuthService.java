@@ -86,8 +86,7 @@ public class VisitorAuthService {
                 request.getResidenceDistrict(),
                 request.getVisitType(),
                 request.getGender(),
-                request.getBirthDate(),
-                request.getTransportationType());
+                request.getBirthDate());
 
         memberRepository.save(member);
         smsVerificationService.consumeVerification(request.getPhone());
