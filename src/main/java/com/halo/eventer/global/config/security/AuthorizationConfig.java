@@ -10,9 +10,7 @@ import com.halo.eventer.global.constants.SecurityConstants;
 public class AuthorizationConfig {
 
     public void configure(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth.requestMatchers(SecurityConstants.SWAGGER_URLS)
-                .permitAll()
-                .requestMatchers(HttpMethod.GET, SecurityConstants.PUBLIC_GET_URLS)
+        http.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.GET, SecurityConstants.PUBLIC_GET_URLS)
                 .permitAll()
                 .requestMatchers(HttpMethod.POST, SecurityConstants.PUBLIC_POST_URLS)
                 .permitAll()
