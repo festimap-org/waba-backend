@@ -61,7 +61,9 @@ public class SecurityTestBeans {
 
     @Bean
     public InMemoryUserDetailsManager swaggerUserDetailsManager(PasswordEncoder passwordEncoder) {
-        return new InMemoryUserDetailsManager(
-                User.withUsername("festimap").password(passwordEncoder.encode("festimap123")).roles("SWAGGER").build());
+        return new InMemoryUserDetailsManager(User.withUsername("festimap")
+                .password(passwordEncoder.encode("festimap123"))
+                .roles("SWAGGER")
+                .build());
     }
 }
