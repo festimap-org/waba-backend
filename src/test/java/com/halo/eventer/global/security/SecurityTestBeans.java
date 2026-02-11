@@ -4,10 +4,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
@@ -52,18 +48,5 @@ public class SecurityTestBeans {
     @Bean
     public FieldOpsFilterConfig fieldOpsFilterConfig(FieldOpsAuthService fieldOpsAuthService) {
         return new FieldOpsFilterConfig(fieldOpsAuthService);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public InMemoryUserDetailsManager swaggerUserDetailsManager(PasswordEncoder passwordEncoder) {
-        return new InMemoryUserDetailsManager(User.withUsername("festimap")
-                .password(passwordEncoder.encode("festimap123"))
-                .roles("SWAGGER")
-                .build());
     }
 }
