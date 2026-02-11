@@ -40,6 +40,9 @@ public class AuthorizationConfig {
                 // VISITOR 전용 API
                 .requestMatchers("/api/v*/visitor/**")
                 .hasRole("VISITOR")
+                // VISITOR 프로필 API
+                .requestMatchers("/api/v*/member/profile/**")
+                .hasRole("VISITOR")
                 // 백오피스: SUPER_ADMIN, AGENCY 모두 접근 가능
                 .requestMatchers("/api/v*/backoffice/**")
                 .hasAnyRole("SUPER_ADMIN", "AGENCY")
