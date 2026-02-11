@@ -25,13 +25,12 @@ public class VisitorSignupRequest {
     private Boolean marketingAgreed;
 
     // 선택 - 설문 정보
-    private ResidenceType residenceType;
+    private String residenceType;
     private String residenceRegion;
     private String residenceDistrict;
-    private VisitType visitType;
+    private String visitType;
     private Gender gender;
     private LocalDate birthDate;
-    private TransportationType transportationType;
 
     public boolean isTermsAgreed() {
         return Boolean.TRUE.equals(termsAgreed);

@@ -49,9 +49,8 @@ public class Member extends BaseTime {
     private Boolean marketingAgreed = false;
 
     // 설문 정보 (회원가입 시 선택)
-    @Enumerated(EnumType.STRING)
-    @Column(name = "residence_type", length = 20)
-    private ResidenceType residenceType;
+    @Column(name = "residence_type", length = 30)
+    private String residenceType;
 
     @Column(name = "residence_region", length = 50)
     private String residenceRegion;
@@ -59,9 +58,8 @@ public class Member extends BaseTime {
     @Column(name = "residence_district", length = 50)
     private String residenceDistrict;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "visit_type", length = 20)
-    private VisitType visitType;
+    @Column(name = "visit_type", length = 30)
+    private String visitType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", length = 10)
@@ -69,10 +67,6 @@ public class Member extends BaseTime {
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "transportation_type", length = 20)
-    private TransportationType transportationType;
 
     // 소셜 로그인 정보
     @Enumerated(EnumType.STRING)
@@ -183,20 +177,18 @@ public class Member extends BaseTime {
     }
 
     public void updateSurveyInfo(
-            ResidenceType residenceType,
+            String residenceType,
             String residenceRegion,
             String residenceDistrict,
-            VisitType visitType,
+            String visitType,
             Gender gender,
-            LocalDate birthDate,
-            TransportationType transportationType) {
+            LocalDate birthDate) {
         this.residenceType = residenceType;
         this.residenceRegion = residenceRegion;
         this.residenceDistrict = residenceDistrict;
         this.visitType = visitType;
         this.gender = gender;
         this.birthDate = birthDate;
-        this.transportationType = transportationType;
     }
 
     public void addStampUser(StampUser stampUser) {
