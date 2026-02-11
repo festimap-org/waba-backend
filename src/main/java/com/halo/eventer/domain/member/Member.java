@@ -42,6 +42,9 @@ public class Member extends BaseTime {
     @Column(name = "terms_agreed", nullable = false)
     private Boolean termsAgreed = false;
 
+    @Column(name = "privacy_agreed", nullable = false)
+    private Boolean privacyAgreed = false;
+
     @Column(name = "marketing_agreed")
     private Boolean marketingAgreed = false;
 
@@ -119,9 +122,11 @@ public class Member extends BaseTime {
             SocialProvider provider,
             String providerId,
             boolean termsAgreed,
+            boolean privacyAgreed,
             boolean marketingAgreed) {
         Member member = createVisitor(phone, name, provider, providerId);
         member.termsAgreed = termsAgreed;
+        member.privacyAgreed = privacyAgreed;
         member.marketingAgreed = marketingAgreed;
         return member;
     }

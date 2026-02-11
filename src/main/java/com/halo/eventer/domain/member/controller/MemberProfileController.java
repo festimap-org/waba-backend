@@ -5,6 +5,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.halo.eventer.domain.member.dto.MarketingConsentRequest;
+import com.halo.eventer.domain.member.dto.MemberInfoResponse;
 import com.halo.eventer.domain.member.dto.MemberSurveyRequest;
 import com.halo.eventer.domain.member.service.MemberProfileService;
 import com.halo.eventer.global.security.CustomUserDetails;
@@ -19,6 +20,13 @@ import lombok.RequiredArgsConstructor;
 public class MemberProfileController {
 
     private final MemberProfileService memberProfileService;
+
+    @GetMapping("/me")
+    @Operation(summary = "내 정보 조회", description = "로그인한 회원의 이름과 전화번호를 조회합니다")
+    public ResponseEntity<MemberInfoResponse> getMyInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        MemberInfoResponse response = memberProfileService.getMyInfo(userDetails.getMemberId());
+        return ResponseEntity.ok(response);
+    }
 
     @PatchMapping("/marketing-consent")
     @Operation(summary = "마케팅 동의 설정 변경", description = "마케팅 동의 설정(SMS/이메일/푸시)을 변경합니다")
