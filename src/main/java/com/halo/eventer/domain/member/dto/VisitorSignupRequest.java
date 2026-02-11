@@ -19,6 +19,7 @@ public class VisitorSignupRequest {
 
     // 필수 - 약관 동의
     private Boolean termsAgreed;
+    private Boolean privacyAgreed;
 
     // 선택 - 마케팅 동의
     private Boolean marketingAgreed;
@@ -34,6 +35,10 @@ public class VisitorSignupRequest {
 
     public boolean isTermsAgreed() {
         return Boolean.TRUE.equals(termsAgreed);
+    }
+
+    public boolean isPrivacyAgreed() {
+        return Boolean.TRUE.equals(privacyAgreed);
     }
 
     public boolean isMarketingAgreed() {

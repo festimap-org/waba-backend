@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.halo.eventer.domain.member.Member;
 import com.halo.eventer.domain.member.MemberRole;
 import com.halo.eventer.domain.member.dto.MarketingConsentRequest;
+import com.halo.eventer.domain.member.dto.MemberInfoResponse;
 import com.halo.eventer.domain.member.dto.MemberSurveyRequest;
 import com.halo.eventer.domain.member.exception.MemberNotFoundException;
 import com.halo.eventer.domain.member.repository.MemberRepository;
@@ -17,6 +18,17 @@ import lombok.RequiredArgsConstructor;
 public class MemberProfileService {
 
     private final MemberRepository memberRepository;
+
+    /**
+     * 내 정보 조회
+     */
+    public MemberInfoResponse getMyInfo(Long memberId) {
+        Member member = memberRepository
+                .findByIdAndRole(memberId, MemberRole.VISITOR)
+                .orElseThrow(MemberNotFoundException::new);
+
+        return MemberInfoResponse.from(member);
+    }
 
     /**
      * 마케팅 동의 설정 변경

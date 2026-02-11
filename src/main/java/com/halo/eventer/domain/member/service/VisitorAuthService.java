@@ -75,6 +75,7 @@ public class VisitorAuthService {
                 request.getProvider(),
                 request.getProviderId(),
                 request.isTermsAgreed(),
+                request.isPrivacyAgreed(),
                 request.isMarketingAgreed());
         member.addAuthority(Authority.builder().roleName("ROLE_VISITOR").build());
 
