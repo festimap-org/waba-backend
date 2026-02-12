@@ -383,13 +383,6 @@ public class ProgramReservationService {
         if (program.getActiveEndAt() != null && program.getActiveEndAt().isBefore(now)) {
             throw new BaseException("노출이 종료된 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND);
         }
-        if (program.getBookingOpenAt() != null && program.getBookingOpenAt().isAfter(now)) {
-            throw new BaseException("아직 예약이 시작되지 않은 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND);
-        }
-        if (program.getBookingCloseAt() != null && program.getBookingCloseAt().isBefore(now)) {
-            throw new BaseException("예약이 마감된 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND);
-        }
-
         return program;
     }
 
