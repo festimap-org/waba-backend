@@ -281,10 +281,12 @@ public class ProgramReservationService {
     }
 
     @Transactional(readOnly = true)
-    public ReservationListResponse getReservations(Long memberId) {
+    public ReservationListResponse getReservations(Long memberId, Long festivalId) {
         List<ProgramReservation> reservations =
-                reservationRepository.findAllByMemberIdAndStatusInOrderByConfirmedAtDescIdDesc(
-                        memberId, List.of(ProgramReservationStatus.CONFIRMED, ProgramReservationStatus.CANCELED));
+                reservationRepository.findAllByMemberIdAndProgramFestivalIdAndStatusInOrderByConfirmedAtDescIdDesc(
+                        memberId,
+                        festivalId,
+                        List.of(ProgramReservationStatus.CONFIRMED, ProgramReservationStatus.CANCELED));
 
         List<ReservationResponse> responses = reservations.stream()
                 .map(r -> {
