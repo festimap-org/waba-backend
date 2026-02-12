@@ -51,7 +51,9 @@ public class ProgramReservationService {
 
     @Transactional(readOnly = true)
     public AvailableProgramListResponse getVisiblePrograms(Long memberId, Long festivalId) {
-        getMember(memberId); // 사용자 권한 검증 (visitor/super-admin)
+        if (memberId != null) {
+            getMember(memberId);
+        }
         Festival festival = festivalRepository
                 .findById(festivalId)
                 .orElseThrow(() -> new BaseException("존재하지 않는 축제입니다.", ErrorCode.ENTITY_NOT_FOUND));
@@ -84,7 +86,9 @@ public class ProgramReservationService {
 
     @Transactional(readOnly = true)
     public UserProgramDetailResponse getVisibleProgram(Long memberId, Long programId) {
-        getMember(memberId);
+        if (memberId != null) {
+            getMember(memberId);
+        }
         Program program = getVisibleProgram(programId);
 
         List<ProgramTag> tags = programTagRepository.findAllByProgramIdOrderBySortOrder(programId);
