@@ -23,8 +23,6 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
               and p.isActive = true
               and (p.activeStartAt is null or p.activeStartAt <= :now)
               and (p.activeEndAt is null or p.activeEndAt >= :now)
-              and (p.bookingOpenAt is null or p.bookingOpenAt <= :now)
-              and (p.bookingCloseAt is null or p.bookingCloseAt >= :now)
             order by p.name asc
             """)
     List<Program> findAllVisibleForUser(@Param("festivalId") Long festivalId, @Param("now") LocalDateTime now);

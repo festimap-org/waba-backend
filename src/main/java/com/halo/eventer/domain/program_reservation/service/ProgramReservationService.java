@@ -51,7 +51,9 @@ public class ProgramReservationService {
 
     @Transactional(readOnly = true)
     public AvailableProgramListResponse getVisiblePrograms(Long memberId, Long festivalId) {
-        getMember(memberId); // 사용자 권한 검증 (visitor/super-admin)
+        if (memberId != null) {
+            getMember(memberId);
+        }
         Festival festival = festivalRepository
                 .findById(festivalId)
                 .orElseThrow(() -> new BaseException("존재하지 않는 축제입니다.", ErrorCode.ENTITY_NOT_FOUND));
@@ -84,7 +86,9 @@ public class ProgramReservationService {
 
     @Transactional(readOnly = true)
     public UserProgramDetailResponse getVisibleProgram(Long memberId, Long programId) {
-        getMember(memberId);
+        if (memberId != null) {
+            getMember(memberId);
+        }
         Program program = getVisibleProgram(programId);
 
         List<ProgramTag> tags = programTagRepository.findAllByProgramIdOrderBySortOrder(programId);
@@ -379,13 +383,6 @@ public class ProgramReservationService {
         if (program.getActiveEndAt() != null && program.getActiveEndAt().isBefore(now)) {
             throw new BaseException("노출이 종료된 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND);
         }
-        if (program.getBookingOpenAt() != null && program.getBookingOpenAt().isAfter(now)) {
-            throw new BaseException("아직 예약이 시작되지 않은 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND);
-        }
-        if (program.getBookingCloseAt() != null && program.getBookingCloseAt().isBefore(now)) {
-            throw new BaseException("예약이 마감된 프로그램입니다.", ErrorCode.ENTITY_NOT_FOUND);
-        }
-
         return program;
     }
 
