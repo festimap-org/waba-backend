@@ -106,10 +106,11 @@ public class ProgramReservationController {
         return programReservationService.getReservationDetail(userDetails.getMemberId(), reservationId);
     }
 
-    @GetMapping("/reservations")
+    @GetMapping("/{festivalId}/reservations")
     @Operation(summary = "다건 예약 조회")
-    public ReservationListResponse getReservations(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return programReservationService.getReservations(userDetails.getMemberId());
+    public ReservationListResponse getReservations(
+            @AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("festivalId") Long festivalId) {
+        return programReservationService.getReservations(userDetails.getMemberId(), festivalId);
     }
 
     @PostMapping("/reservations/{reservationId}/cancel")
