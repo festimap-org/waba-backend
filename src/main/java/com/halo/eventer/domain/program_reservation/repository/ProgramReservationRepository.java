@@ -117,4 +117,8 @@ public interface ProgramReservationRepository
 
     List<ProgramReservation> findAllByMemberIdAndStatusInOrderByConfirmedAtDescIdDesc(
             Long memberId, List<ProgramReservationStatus> statuses);
+
+    @EntityGraph(attributePaths = {"program", "program.festival", "slot"})
+    List<ProgramReservation> findAllByMemberIdAndProgramFestivalIdAndStatusInOrderByConfirmedAtDescIdDesc(
+            Long memberId, Long festivalId, List<ProgramReservationStatus> statuses);
 }
