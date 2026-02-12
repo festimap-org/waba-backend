@@ -35,13 +35,21 @@ public class AdminReservationService {
     /** 예약 정보 조회 (예약 관리 대시보드) */
     @Transactional(readOnly = true)
     public AdminReservationPageResponse getReservations(
-            ReservationSearchField searchField, String keyword, ProgramReservationStatus status, Pageable pageable) {
+            Long festivalId,
+            ReservationSearchField searchField,
+            String keyword,
+            ProgramReservationStatus status,
+            Pageable pageable) {
         Specification<ProgramReservation> spec = (root, query, cb) -> {
             // count쿼리/중복 방지
             assert query != null;
             query.distinct(true);
 
+            var programJoin = root.join("program", JoinType.INNER);
             var predicate = cb.conjunction();
+
+            // 축제 필터
+            predicate = cb.and(predicate, cb.equal(programJoin.get("festival").get("id"), festivalId));
 
             // HOLD, EXPIRED 상태는 항상 제외
             predicate = cb.and(predicate, cb.notEqual(root.get("status"), HOLD));
@@ -58,8 +66,6 @@ public class AdminReservationService {
 
                 // searchField가 없으면 "프로그램명 + 신청자명 + 신청자전화 + 방문자명 + 방문자전화" 통합검색으로 처리
                 if (searchField == null) {
-                    var programJoin = root.join("program", JoinType.LEFT);
-
                     String like = "%" + kw.toLowerCase() + "%";
                     var p1 = cb.like(cb.lower(programJoin.get("name")), like);
                     var p2 = cb.like(cb.lower(root.get("bookerName")), like);
@@ -72,7 +78,6 @@ public class AdminReservationService {
                     // 지정 필드 검색
                     switch (searchField) {
                         case PROGRAM_NAME -> {
-                            var programJoin = root.join("program", JoinType.INNER);
                             String like = "%" + kw.toLowerCase() + "%";
                             predicate = cb.and(predicate, cb.like(cb.lower(programJoin.get("name")), like));
                         }
