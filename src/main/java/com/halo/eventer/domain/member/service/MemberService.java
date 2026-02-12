@@ -66,4 +66,8 @@ public class MemberService {
             throw new CompanyEmailAlreadyExistsException();
         }
     }
+
+    public boolean existsByLoginId(String loginId) {
+        return memberRepository.existsByLoginId(loginId);
+    }
 }
