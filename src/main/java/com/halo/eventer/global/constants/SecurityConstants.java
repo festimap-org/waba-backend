@@ -62,7 +62,9 @@ public class SecurityConstants {
         "/api/v2/user/parking-managements/{parkingManagementId}/parking-notices",
         "/api/v2/common/festivals/{festivalId}/parkingManagements",
         "/programs",
-        "/programs/*"
+        "/programs/*",
+        // 관리자(AGENCY) 아이디 중복 검사
+        "/api/v1/admin/auth/check-login-id"
     };
 
     public static final String[] PUBLIC_POST_URLS = {
