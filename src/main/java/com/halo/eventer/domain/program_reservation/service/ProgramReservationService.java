@@ -112,7 +112,9 @@ public class ProgramReservationService {
 
     @Transactional(readOnly = true)
     public ReservationDateListResponse getReservationDates(Long memberId, Long programId) {
-        getMember(memberId);
+        if (memberId != null) {
+            getMember(memberId);
+        }
         Program program = getProgram(programId);
         List<ProgramSlot> allSlots = slotRepository.findAllByProgramIdOrderBySlotDateAscStartTimeAsc(programId);
 
@@ -132,7 +134,9 @@ public class ProgramReservationService {
 
     @Transactional(readOnly = true)
     public ReservationSlotListResponse getReservationSlots(Long memberId, Long programId, LocalDate date) {
-        getMember(memberId);
+        if (memberId != null) {
+            getMember(memberId);
+        }
         Program program = getProgram(programId);
 
         List<ProgramSlot> allSlots = slotRepository.findAllByProgramIdOrderBySlotDateAscStartTimeAsc(programId);

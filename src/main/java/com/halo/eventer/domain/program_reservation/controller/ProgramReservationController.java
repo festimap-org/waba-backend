@@ -47,7 +47,8 @@ public class ProgramReservationController {
     @Operation(summary = "날짜 목록 조회 (모달 1단계)", description = "프로그램의 예약 가능 날짜 목록을 조회합니다.")
     public ReservationDateListResponse getReservationDates(
             @AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long programId) {
-        return programReservationService.getReservationDates(userDetails.getMemberId(), programId);
+        Long memberId = userDetails != null ? userDetails.getMemberId() : null;
+        return programReservationService.getReservationDates(memberId, programId);
     }
 
     @GetMapping("/{programId}/reservation-slots")
@@ -56,7 +57,8 @@ public class ProgramReservationController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long programId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return programReservationService.getReservationSlots(userDetails.getMemberId(), programId, date);
+        Long memberId = userDetails != null ? userDetails.getMemberId() : null;
+        return programReservationService.getReservationSlots(memberId, programId, date);
     }
 
     @PostMapping("/reservations/holds")
