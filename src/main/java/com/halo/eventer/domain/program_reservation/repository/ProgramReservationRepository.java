@@ -71,7 +71,7 @@ public interface ProgramReservationRepository
             """
         select r.id
         from ProgramReservation r
-        where r.status = com.halo.eventer.domain.program_reservation.ProgramReservationStatus.HOLD
+        where r.status = com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus.HOLD
           and r.holdExpiresAt < :now
         order by r.holdExpiresAt asc
     """)
@@ -84,10 +84,10 @@ public interface ProgramReservationRepository
                 where r.member.id = :memberId
                   and r.program.id = :programId
                   and (
-                        (r.status = com.halo.eventer.domain.program_reservation.ProgramReservationStatus.HOLD
+                        (r.status = com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus.HOLD
                          and r.holdExpiresAt is not null
                          and r.holdExpiresAt >= :now)
-                     or r.status = com.halo.eventer.domain.program_reservation.ProgramReservationStatus.CONFIRMED
+                     or r.status = com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus.CONFIRMED
                   )
             """)
     int sumActiveHeadcountByMemberAndProgram(
