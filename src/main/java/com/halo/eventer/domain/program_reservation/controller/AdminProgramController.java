@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.halo.eventer.domain.program_reservation.dto.request.*;
 import com.halo.eventer.domain.program_reservation.dto.response.*;
+import com.halo.eventer.domain.program_reservation.service.AdditionalFieldService;
 import com.halo.eventer.domain.program_reservation.service.AdminProgramService;
 import com.halo.eventer.domain.program_reservation.service.FestivalCommonTemplateService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class AdminProgramController {
     private final AdminProgramService adminProgramService;
     private final FestivalCommonTemplateService templateService;
+    private final AdditionalFieldService additionalFieldService;
 
     @PostMapping()
     @Operation(summary = "프로그램 생성", description = "프로그램 생성시 기본으로 미노출 설정됨")
@@ -132,5 +134,18 @@ public class AdminProgramController {
     @Operation(summary = "태그 목록 조회", description = "드롭다운용 태그 id, name 목록을 조회합니다.")
     public TagNameListResponse getTagNames() {
         return adminProgramService.getAllTagNames();
+    }
+
+    @GetMapping("/{programId}/additional-fields")
+    @Operation(summary = "추가 정보 항목 조회", description = "프로그램에 설정된 추가 정보 수집 항목을 조회합니다.")
+    public AdditionalFieldListResponse getAdditionalFields(@PathVariable("programId") Long programId) {
+        return additionalFieldService.getFields(programId);
+    }
+
+    @PutMapping("/{programId}/additional-fields")
+    @Operation(summary = "추가 정보 항목 전체 저장", description = "추가 정보 수집 항목을 전체 교체(upsert) 방식으로 저장합니다.")
+    public void saveAdditionalFields(
+            @PathVariable("programId") Long programId, @RequestBody @Valid AdditionalFieldSaveRequest request) {
+        additionalFieldService.saveFields(programId, request);
     }
 }

@@ -14,7 +14,9 @@ import lombok.NoArgsConstructor;
 @Table(
         name = "program_reservation_additional_answer",
         uniqueConstraints = {
-            @UniqueConstraint(name = "uk_answer_reservation_field", columnNames = {"reservation_id", "field_id"})
+            @UniqueConstraint(
+                    name = "uk_answer_reservation_field",
+                    columnNames = {"reservation_id", "field_id"})
         })
 public class ProgramReservationAdditionalAnswer extends BaseTime {
 

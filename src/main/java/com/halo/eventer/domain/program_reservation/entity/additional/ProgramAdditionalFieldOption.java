@@ -45,6 +45,10 @@ public class ProgramAdditionalFieldOption {
         return o;
     }
 
+    public void changeSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
     public void deactivate() {
         this.isActive = false;
     }
