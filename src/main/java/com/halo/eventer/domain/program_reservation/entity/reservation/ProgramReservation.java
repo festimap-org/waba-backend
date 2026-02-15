@@ -1,9 +1,11 @@
-package com.halo.eventer.domain.program_reservation;
+package com.halo.eventer.domain.program_reservation.entity.reservation;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 import com.halo.eventer.domain.member.Member;
+import com.halo.eventer.domain.program_reservation.Program;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlot;
 import com.halo.eventer.global.common.BaseTime;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
-import com.halo.eventer.domain.program_reservation.FestivalCommonTemplate;
 import com.halo.eventer.domain.program_reservation.dto.request.TemplateSaveAllRequest;
 import com.halo.eventer.domain.program_reservation.dto.response.TemplateManagementResponse;
 import com.halo.eventer.domain.program_reservation.dto.response.TemplateResponse;
+import com.halo.eventer.domain.program_reservation.entity.content.FestivalCommonTemplate;
 import com.halo.eventer.domain.program_reservation.repository.FestivalCommonTemplateRepository;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;

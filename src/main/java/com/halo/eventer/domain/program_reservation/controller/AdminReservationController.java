@@ -14,12 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
-import com.halo.eventer.domain.program_reservation.ReservationSearchField;
 import com.halo.eventer.domain.program_reservation.dto.request.AdminCancelRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateCreateRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateUpdateRequest;
 import com.halo.eventer.domain.program_reservation.dto.response.*;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ReservationSearchField;
 import com.halo.eventer.domain.program_reservation.service.AdminReservationService;
 import com.halo.eventer.domain.program_reservation.service.ReservationExcelExportService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -2,7 +2,7 @@ package com.halo.eventer.domain.program_reservation.dto.response;
 
 import java.util.List;
 
-import com.halo.eventer.domain.program_reservation.Tag;
+import com.halo.eventer.domain.program_reservation.entity.content.Tag;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

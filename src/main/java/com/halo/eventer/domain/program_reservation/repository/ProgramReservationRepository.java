@@ -11,8 +11,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 
-import com.halo.eventer.domain.program_reservation.ProgramReservation;
-import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservation;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
 import io.micrometer.common.lang.Nullable;
 
 public interface ProgramReservationRepository

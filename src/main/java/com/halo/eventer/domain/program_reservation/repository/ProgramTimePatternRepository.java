@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.halo.eventer.domain.program_reservation.ProgramTimePattern;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramTimePattern;
 
 public interface ProgramTimePatternRepository extends JpaRepository<ProgramTimePattern, Long> {
 

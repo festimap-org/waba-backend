@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.halo.eventer.domain.program_reservation.ProgramScheduleTemplate;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramScheduleTemplate;
 
 public interface ProgramScheduleTemplateRepository extends JpaRepository<ProgramScheduleTemplate, Long> {
 

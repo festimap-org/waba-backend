@@ -6,9 +6,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.halo.eventer.domain.program_reservation.ProgramScheduleTemplate;
-import com.halo.eventer.domain.program_reservation.ProgramSlotType;
-import com.halo.eventer.domain.program_reservation.ProgramTimePattern;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramScheduleTemplate;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlotType;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramTimePattern;
 import lombok.Getter;
 
 @Getter

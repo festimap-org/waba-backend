@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.halo.eventer.domain.program_reservation.FestivalCommonTemplate;
 import com.halo.eventer.domain.program_reservation.Program;
-import com.halo.eventer.domain.program_reservation.ProgramBlock;
-import com.halo.eventer.domain.program_reservation.ProgramTag;
+import com.halo.eventer.domain.program_reservation.entity.content.FestivalCommonTemplate;
+import com.halo.eventer.domain.program_reservation.entity.content.ProgramBlock;
+import com.halo.eventer.domain.program_reservation.entity.content.ProgramTag;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

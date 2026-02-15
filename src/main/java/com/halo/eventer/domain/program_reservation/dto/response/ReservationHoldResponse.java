@@ -6,12 +6,12 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.halo.eventer.domain.program_reservation.FestivalCommonTemplate;
 import com.halo.eventer.domain.program_reservation.Program;
-import com.halo.eventer.domain.program_reservation.ProgramBlock;
-import com.halo.eventer.domain.program_reservation.ProgramReservation;
-import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
-import com.halo.eventer.domain.program_reservation.ProgramSlot;
+import com.halo.eventer.domain.program_reservation.entity.content.FestivalCommonTemplate;
+import com.halo.eventer.domain.program_reservation.entity.content.ProgramBlock;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservation;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlot;
 import lombok.Getter;
 
 @Getter

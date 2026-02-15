@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.halo.eventer.domain.program_reservation.ProgramReservation;
-import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
-import com.halo.eventer.domain.program_reservation.ProgramSlotType;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservation;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlotType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
