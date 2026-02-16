@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import com.halo.eventer.domain.program_reservation.dto.request.ReservationConfirmRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ReservationHoldRequest;
 import com.halo.eventer.domain.program_reservation.dto.response.*;
+import com.halo.eventer.domain.program_reservation.service.AdditionalFieldService;
 import com.halo.eventer.domain.program_reservation.service.ProgramReservationService;
 import com.halo.eventer.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "사용자 - 프로그램 예약 관리", description = "프로그램 예약 API")
 public class ProgramReservationController {
     private final ProgramReservationService programReservationService;
+    private final AdditionalFieldService additionalFieldService;
 
     @GetMapping
     @Operation(summary = "프로그램 리스트 조회", description = "사용자에게 노출 가능한 프로그램 목록을 조회합니다.")
@@ -57,6 +59,12 @@ public class ProgramReservationController {
             @PathVariable Long programId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return programReservationService.getReservationSlots(userDetails.getMemberId(), programId, date);
+    }
+
+    @GetMapping("/{programId}/additional-fields")
+    @Operation(summary = "추가 정보 항목 조회", description = "프로그램의 활성화된 추가 정보 항목을 조회합니다.")
+    public UserAdditionalFieldListResponse getAdditionalFields(@PathVariable Long programId) {
+        return additionalFieldService.getActiveFields(programId);
     }
 
     @PostMapping("/reservations/holds")

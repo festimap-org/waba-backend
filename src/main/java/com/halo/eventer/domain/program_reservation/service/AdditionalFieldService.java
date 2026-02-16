@@ -3,19 +3,21 @@ package com.halo.eventer.domain.program_reservation.service;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import jakarta.persistence.EntityManager;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.halo.eventer.domain.program_reservation.Program;
+import com.halo.eventer.domain.program_reservation.dto.request.AdditionalAnswerRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.AdditionalFieldSaveRequest;
 import com.halo.eventer.domain.program_reservation.dto.response.AdditionalFieldListResponse;
+import com.halo.eventer.domain.program_reservation.dto.response.UserAdditionalFieldListResponse;
 import com.halo.eventer.domain.program_reservation.entity.additional.AdditionalFieldType;
 import com.halo.eventer.domain.program_reservation.entity.additional.ProgramAdditionalField;
 import com.halo.eventer.domain.program_reservation.entity.additional.ProgramAdditionalFieldOption;
+import com.halo.eventer.domain.program_reservation.entity.additional.ProgramReservationAdditionalAnswer;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservation;
 import com.halo.eventer.domain.program_reservation.repository.ProgramAdditionalFieldOptionRepository;
 import com.halo.eventer.domain.program_reservation.repository.ProgramAdditionalFieldRepository;
 import com.halo.eventer.domain.program_reservation.repository.ProgramRepository;
@@ -23,6 +25,7 @@ import com.halo.eventer.domain.program_reservation.repository.ProgramReservation
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -71,7 +74,8 @@ public class AdditionalFieldService {
 
         // 3) request fields를 index 순서대로 upsert
         Set<Long> requestFieldIds = new HashSet<>();
-        List<AdditionalFieldSaveRequest.FieldRequest> fieldRequests = request.getFields() != null ? request.getFields() : List.of();
+        List<AdditionalFieldSaveRequest.FieldRequest> fieldRequests =
+                request.getFields() != null ? request.getFields() : List.of();
 
         for (int i = 0; i < fieldRequests.size(); i++) {
             AdditionalFieldSaveRequest.FieldRequest fr = fieldRequests.get(i);
@@ -106,7 +110,102 @@ public class AdditionalFieldService {
         }
     }
 
-    private void saveOptions(ProgramAdditionalField field, List<AdditionalFieldSaveRequest.OptionRequest> optionRequests) {
+    @Transactional(readOnly = true)
+    public UserAdditionalFieldListResponse getActiveFields(Long programId) {
+        loadProgramOrThrow(programId);
+
+        List<ProgramAdditionalField> fields =
+                fieldRepository.findAllByProgramIdAndIsActiveTrueOrderBySortOrder(programId);
+        List<Long> fieldIds = fields.stream().map(ProgramAdditionalField::getId).collect(Collectors.toList());
+
+        Map<Long, List<ProgramAdditionalFieldOption>> optionsMap = fieldIds.isEmpty()
+                ? Collections.emptyMap()
+                : optionRepository.findAllByFieldIdInAndIsActiveTrueOrderBySortOrder(fieldIds).stream()
+                        .collect(Collectors.groupingBy(o -> o.getField().getId()));
+
+        return UserAdditionalFieldListResponse.of(fields, optionsMap);
+    }
+
+    @Transactional
+    public void saveAnswers(ProgramReservation reservation, List<AdditionalAnswerRequest> answers) {
+        if (answers == null || answers.isEmpty()) {
+            return;
+        }
+
+        Long programId = reservation.getProgram().getId();
+
+        // active fields/options 조회
+        List<ProgramAdditionalField> activeFields =
+                fieldRepository.findAllByProgramIdAndIsActiveTrueOrderBySortOrder(programId);
+        Map<Long, ProgramAdditionalField> fieldMap =
+                activeFields.stream().collect(Collectors.toMap(ProgramAdditionalField::getId, Function.identity()));
+
+        List<Long> fieldIds =
+                activeFields.stream().map(ProgramAdditionalField::getId).collect(Collectors.toList());
+        Map<Long, List<ProgramAdditionalFieldOption>> activeOptionsMap = fieldIds.isEmpty()
+                ? Collections.emptyMap()
+                : optionRepository.findAllByFieldIdInAndIsActiveTrueOrderBySortOrder(fieldIds).stream()
+                        .collect(Collectors.groupingBy(o -> o.getField().getId()));
+
+        for (AdditionalAnswerRequest answer : answers) {
+            ProgramAdditionalField field = fieldMap.get(answer.getFieldId());
+            if (field == null) {
+                throw new BaseException(
+                        "유효하지 않은 추가 정보 항목입니다: fieldId=" + answer.getFieldId(), ErrorCode.INVALID_INPUT_VALUE);
+            }
+
+            ProgramReservationAdditionalAnswer entity;
+
+            if (field.getType() == AdditionalFieldType.TEXT) {
+                if (answer.getOptionId() != null) {
+                    throw new BaseException(
+                            "TEXT 타입 필드에는 optionId를 지정할 수 없습니다: fieldId=" + field.getId(),
+                            ErrorCode.INVALID_INPUT_VALUE);
+                }
+                if (answer.getValueText() == null || answer.getValueText().isBlank()) {
+                    throw new BaseException(
+                            "TEXT 타입 필드의 값이 비어 있습니다: fieldId=" + field.getId(), ErrorCode.INVALID_INPUT_VALUE);
+                }
+                entity = ProgramReservationAdditionalAnswer.ofText(reservation, field, answer.getValueText());
+            } else {
+                // SELECT
+                if (answer.getOptionId() == null) {
+                    throw new BaseException(
+                            "SELECT 타입 필드에는 optionId가 필요합니다: fieldId=" + field.getId(), ErrorCode.INVALID_INPUT_VALUE);
+                }
+
+                List<ProgramAdditionalFieldOption> fieldOptions =
+                        activeOptionsMap.getOrDefault(field.getId(), List.of());
+                ProgramAdditionalFieldOption selectedOption = fieldOptions.stream()
+                        .filter(o -> o.getId().equals(answer.getOptionId()))
+                        .findFirst()
+                        .orElseThrow(() -> new BaseException(
+                                "유효하지 않은 옵션입니다: optionId=" + answer.getOptionId(), ErrorCode.INVALID_INPUT_VALUE));
+
+                if (selectedOption.isFreeText()) {
+                    if (answer.getValueText() == null || answer.getValueText().isBlank()) {
+                        throw new BaseException(
+                                "자유 입력 옵션의 값이 비어 있습니다: optionId=" + selectedOption.getId(),
+                                ErrorCode.INVALID_INPUT_VALUE);
+                    }
+                } else {
+                    if (answer.getValueText() != null) {
+                        throw new BaseException(
+                                "자유 입력이 아닌 옵션에는 valueText를 지정할 수 없습니다: optionId=" + selectedOption.getId(),
+                                ErrorCode.INVALID_INPUT_VALUE);
+                    }
+                }
+
+                entity = ProgramReservationAdditionalAnswer.ofSelect(
+                        reservation, field, selectedOption, answer.getValueText());
+            }
+
+            answerRepository.save(entity);
+        }
+    }
+
+    private void saveOptions(
+            ProgramAdditionalField field, List<AdditionalFieldSaveRequest.OptionRequest> optionRequests) {
         if (field.getId() == null) {
             throw new BaseException("추가 정보 항목 저장이 완료되지 않았습니다.", ErrorCode.INVALID_INPUT_VALUE);
         }

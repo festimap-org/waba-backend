@@ -1,5 +1,7 @@
 package com.halo.eventer.domain.program_reservation.dto.request;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,4 +12,5 @@ public class ReservationConfirmRequest {
     private String bookerPhone;
     private String visitorName;
     private String visitorPhone;
+    private List<AdditionalAnswerRequest> additionalAnswers;
 }

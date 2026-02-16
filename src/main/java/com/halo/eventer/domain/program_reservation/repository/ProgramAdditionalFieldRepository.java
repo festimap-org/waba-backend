@@ -18,4 +18,5 @@ public interface ProgramAdditionalFieldRepository extends JpaRepository<ProgramA
     @Query("select min(f.sortOrder) from ProgramAdditionalField f where f.program.id = :programId")
     Optional<Integer> findMinSortOrderByProgramId(@Param("programId") Long programId);
 
+    List<ProgramAdditionalField> findAllByProgramIdAndIsActiveTrueOrderBySortOrder(Long programId);
 }

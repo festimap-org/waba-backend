@@ -20,4 +20,5 @@ public interface ProgramAdditionalFieldOptionRepository extends JpaRepository<Pr
     @Query("select min(o.sortOrder) from ProgramAdditionalFieldOption o where o.field.id = :fieldId")
     Optional<Integer> findMinSortOrderByFieldId(@Param("fieldId") Long fieldId);
 
+    List<ProgramAdditionalFieldOption> findAllByFieldIdInAndIsActiveTrueOrderBySortOrder(List<Long> fieldIds);
 }
