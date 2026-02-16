@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.halo.eventer.domain.program_reservation.ProgramReservation;
-import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
-import com.halo.eventer.domain.program_reservation.ProgramSlot;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservation;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlot;
 import com.halo.eventer.domain.program_reservation.repository.ProgramReservationRepository;
 import com.halo.eventer.domain.program_reservation.repository.ProgramSlotRepository;
 import com.halo.eventer.global.error.ErrorCode;

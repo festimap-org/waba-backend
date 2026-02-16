@@ -3,7 +3,7 @@ package com.halo.eventer.domain.program_reservation.dto.request;
 import java.util.List;
 
 import com.halo.eventer.domain.program_reservation.Program;
-import com.halo.eventer.domain.program_reservation.ProgramBlock;
+import com.halo.eventer.domain.program_reservation.entity.content.ProgramBlock;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

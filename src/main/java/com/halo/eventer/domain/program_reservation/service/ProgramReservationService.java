@@ -23,6 +23,13 @@ import com.halo.eventer.domain.program_reservation.*;
 import com.halo.eventer.domain.program_reservation.dto.request.ReservationConfirmRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ReservationHoldRequest;
 import com.halo.eventer.domain.program_reservation.dto.response.*;
+import com.halo.eventer.domain.program_reservation.entity.content.FestivalCommonTemplate;
+import com.halo.eventer.domain.program_reservation.entity.content.ProgramBlock;
+import com.halo.eventer.domain.program_reservation.entity.content.ProgramTag;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservation;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlot;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlotType;
 import com.halo.eventer.domain.program_reservation.repository.*;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -48,6 +55,7 @@ public class ProgramReservationService {
     private final EntityManager entityManager;
     private final ReservationExpireService reservationExpireService;
     private final AlimtalkService alimtalkService;
+    private final AdditionalFieldService additionalFieldService;
 
     @Transactional(readOnly = true)
     public AvailableProgramListResponse getVisiblePrograms(Long memberId, Long festivalId) {
@@ -240,7 +248,6 @@ public class ProgramReservationService {
     @Transactional
     public ReservationConfirmResponse confirmReservation(
             Long memberId, Long reservationId, ReservationConfirmRequest request) {
-        // 0) 만료 처리 먼저 커밋(필요 시) - checkout과 동일 전략
         boolean expiredNow =
                 reservationExpireService.expireIfNeededForCheckout(memberId, reservationId, LocalDateTime.now());
 
@@ -265,6 +272,9 @@ public class ProgramReservationService {
         }
         r.setBookerInfo(request.getBookerName(), request.getBookerPhone());
         r.setVisitorInfo(request.getVisitorName(), request.getVisitorPhone());
+
+        // 5) 추가 정보 저장
+        additionalFieldService.saveAnswers(r, request.getAdditionalAnswers());
 
         // 6) 확정 처리
         r.confirm();

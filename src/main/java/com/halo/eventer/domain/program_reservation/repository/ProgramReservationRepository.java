@@ -11,8 +11,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 
-import com.halo.eventer.domain.program_reservation.ProgramReservation;
-import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservation;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
 import io.micrometer.common.lang.Nullable;
 
 public interface ProgramReservationRepository
@@ -71,7 +71,7 @@ public interface ProgramReservationRepository
             """
         select r.id
         from ProgramReservation r
-        where r.status = com.halo.eventer.domain.program_reservation.ProgramReservationStatus.HOLD
+        where r.status = com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus.HOLD
           and r.holdExpiresAt < :now
         order by r.holdExpiresAt asc
     """)
@@ -84,10 +84,10 @@ public interface ProgramReservationRepository
                 where r.member.id = :memberId
                   and r.program.id = :programId
                   and (
-                        (r.status = com.halo.eventer.domain.program_reservation.ProgramReservationStatus.HOLD
+                        (r.status = com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus.HOLD
                          and r.holdExpiresAt is not null
                          and r.holdExpiresAt >= :now)
-                     or r.status = com.halo.eventer.domain.program_reservation.ProgramReservationStatus.CONFIRMED
+                     or r.status = com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus.CONFIRMED
                   )
             """)
     int sumActiveHeadcountByMemberAndProgram(

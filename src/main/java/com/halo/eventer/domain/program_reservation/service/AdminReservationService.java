@@ -16,12 +16,19 @@ import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateC
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateUpdateRequest;
 import com.halo.eventer.domain.program_reservation.dto.response.*;
 import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateUpdateResponse.*;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservation;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ReservationSearchField;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramScheduleTemplate;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlot;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlotType;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramTimePattern;
 import com.halo.eventer.domain.program_reservation.repository.*;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 
-import static com.halo.eventer.domain.program_reservation.ProgramReservationStatus.*;
+import static com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus.*;
 
 @Service
 @RequiredArgsConstructor

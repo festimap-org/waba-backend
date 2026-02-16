@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.program_reservation;
+package com.halo.eventer.domain.program_reservation.entity.reservation;
 
 public enum ReservationSearchField {
     PROGRAM_NAME,

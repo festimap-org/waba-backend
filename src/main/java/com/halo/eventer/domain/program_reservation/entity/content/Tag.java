@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.program_reservation;
+package com.halo.eventer.domain.program_reservation.entity.content;
 
 import jakarta.persistence.*;
 

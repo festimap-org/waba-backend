@@ -1,7 +1,8 @@
-package com.halo.eventer.domain.program_reservation;
+package com.halo.eventer.domain.program_reservation.entity.content;
 
 import jakarta.persistence.*;
 
+import com.halo.eventer.domain.program_reservation.Program;
 import lombok.*;
 
 @Entity
