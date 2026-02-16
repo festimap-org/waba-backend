@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.halo.eventer.domain.program_reservation.ProgramSlot;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlot;
 import lombok.Getter;
 
 @Getter

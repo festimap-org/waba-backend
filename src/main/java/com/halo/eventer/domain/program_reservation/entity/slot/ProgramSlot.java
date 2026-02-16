@@ -1,10 +1,11 @@
-package com.halo.eventer.domain.program_reservation;
+package com.halo.eventer.domain.program_reservation.entity.slot;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 import jakarta.persistence.*;
 
+import com.halo.eventer.domain.program_reservation.Program;
 import com.halo.eventer.global.common.BaseTime;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;

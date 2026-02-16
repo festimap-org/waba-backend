@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.halo.eventer.domain.program_reservation.ProgramSlot;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlot;
 
 public interface ProgramSlotRepository extends JpaRepository<ProgramSlot, Long> {
     void deleteAllByTemplateId(Long templateId);

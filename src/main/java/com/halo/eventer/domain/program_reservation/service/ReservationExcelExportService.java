@@ -24,7 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
 import com.halo.eventer.domain.program_reservation.repository.ReservationExcelRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

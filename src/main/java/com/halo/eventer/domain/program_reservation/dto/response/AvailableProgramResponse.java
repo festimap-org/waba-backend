@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.halo.eventer.domain.program_reservation.Program;
-import com.halo.eventer.domain.program_reservation.ProgramTag;
+import com.halo.eventer.domain.program_reservation.entity.content.ProgramTag;
 import lombok.Getter;
 
 @Getter

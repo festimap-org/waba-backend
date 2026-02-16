@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.halo.eventer.domain.program_reservation.ProgramSlotType;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlotType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

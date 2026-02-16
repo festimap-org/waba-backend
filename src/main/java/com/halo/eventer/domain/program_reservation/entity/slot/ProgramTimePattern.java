@@ -1,4 +1,4 @@
-package com.halo.eventer.domain.program_reservation;
+package com.halo.eventer.domain.program_reservation.entity.slot;
 
 import java.time.LocalTime;
 import jakarta.persistence.*;

@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.halo.eventer.domain.program_reservation.ProgramReservation;
-import com.halo.eventer.domain.program_reservation.ProgramReservationStatus;
-import com.halo.eventer.domain.program_reservation.ProgramSlotType;
-import com.halo.eventer.domain.program_reservation.ProgramTag;
+import com.halo.eventer.domain.program_reservation.entity.content.ProgramTag;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservation;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlotType;
 import lombok.Getter;
 
 @Getter

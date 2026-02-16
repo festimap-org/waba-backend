@@ -7,8 +7,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.halo.eventer.domain.program_reservation.ProgramSlot;
-import com.halo.eventer.domain.program_reservation.ProgramSlotType;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlot;
+import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlotType;
 import lombok.Getter;
 
 @Getter
