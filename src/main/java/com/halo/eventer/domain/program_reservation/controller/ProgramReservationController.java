@@ -69,12 +69,6 @@ public class ProgramReservationController {
         return additionalFieldService.getActiveFields(programId);
     }
 
-    @GetMapping("/{programId}/additional-fields")
-    @Operation(summary = "추가 정보 항목 조회", description = "프로그램의 활성화된 추가 정보 항목을 조회합니다.")
-    public UserAdditionalFieldListResponse getAdditionalFields(@PathVariable Long programId) {
-        return additionalFieldService.getActiveFields(programId);
-    }
-
     @PostMapping("/reservations/holds")
     @Operation(
             summary = "예약 HOLD (모달 3단계)",
