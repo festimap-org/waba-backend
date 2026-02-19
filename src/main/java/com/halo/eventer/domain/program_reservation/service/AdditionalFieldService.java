@@ -97,13 +97,11 @@ public class AdditionalFieldService {
             saveOptions(field, fr.getOptions() != null ? fr.getOptions() : List.of());
         }
 
-        // 4) request에 없는 existing field 처리 (sort_order는 활성 항목 뒤로 이어붙임)
-        int deactivatedSortOrder = fieldRequests.size();
+        // 4) request에 없는 existing field 처리
         for (ProgramAdditionalField existing : existingFields) {
             if (!requestFieldIds.contains(existing.getId())) {
                 if (answerRepository.existsByFieldId(existing.getId())) {
                     existing.deactivate();
-                    existing.changeSortOrder(deactivatedSortOrder++);
                 } else {
                     optionRepository.deleteAllByFieldId(existing.getId());
                     fieldRepository.delete(existing);
@@ -227,11 +225,9 @@ public class AdditionalFieldService {
 
         // C) TEXT 타입: options 최종 0개
         if (field.getType() == AdditionalFieldType.TEXT) {
-            int deactivatedSort = 0;
             for (ProgramAdditionalFieldOption opt : existingOptions) {
                 if (answerRepository.existsByOptionId(opt.getId())) {
                     opt.deactivate();
-                    opt.changeSortOrder(deactivatedSort++);
                 } else {
                     optionRepository.delete(opt);
                 }
@@ -273,13 +269,11 @@ public class AdditionalFieldService {
             }
         }
 
-        // request에 없는 existing option 처리 (sort_order는 활성 옵션 뒤로 이어붙임)
-        int deactivatedSort = optionRequests.size();
+        // request에 없는 existing option 처리
         for (ProgramAdditionalFieldOption existing : existingOptions) {
             if (!requestOptionIds.contains(existing.getId())) {
                 if (answerRepository.existsByOptionId(existing.getId())) {
                     existing.deactivate();
-                    existing.changeSortOrder(deactivatedSort++);
                 } else {
                     optionRepository.delete(existing);
                 }

@@ -3,15 +3,16 @@ package com.halo.eventer.domain.program_reservation.dto.response;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservation;
 import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
 import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlotType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class AdminReservationResponse {
     private Long id;
     private String programName;
@@ -34,11 +35,6 @@ public class AdminReservationResponse {
     private int fee; // 일단 0원으로 통일
     private ProgramReservationStatus status;
     private boolean past;
-    private List<AdditionalAnswerResponse> additionalAnswers;
-
-    public void setAdditionalAnswers(List<AdditionalAnswerResponse> additionalAnswers) {
-        this.additionalAnswers = additionalAnswers;
-    }
 
     public static AdminReservationResponse from(ProgramReservation r) {
         String visitorName = r.getVisitorName();
@@ -58,22 +54,20 @@ public class AdminReservationResponse {
             past = !endDateTime.isAfter(LocalDateTime.now());
         }
 
-        AdminReservationResponse dto = new AdminReservationResponse();
-        dto.id = r.getId();
-        dto.programName = r.getProgram().getName();
-        dto.bookerName = r.getBookerName();
-        dto.bookerPhone = r.getBookerPhone();
-        dto.visitorName = visitorName;
-        dto.visitorPhone = visitorPhone;
-        dto.slotDate = r.getSlot().getSlotDate();
-        dto.slotStartTime = r.getSlot().getStartTime();
-        dto.confirmedAt = r.getConfirmedAt();
-        dto.durationMinutes = r.getSlot().getDurationMinutes();
-        dto.peopleCount = r.getPeopleCount();
-        dto.fee = 0;
-        dto.status = r.getStatus();
-        dto.past = past;
-        dto.additionalAnswers = List.of();
-        return dto;
+        return new AdminReservationResponse(
+                r.getId(),
+                r.getProgram().getName(),
+                r.getBookerName(),
+                r.getBookerPhone(),
+                visitorName,
+                visitorPhone,
+                r.getSlot().getSlotDate(),
+                r.getSlot().getStartTime(),
+                r.getConfirmedAt() != null ? r.getConfirmedAt() : null,
+                r.getSlot().getDurationMinutes(),
+                r.getPeopleCount(),
+                0,
+                r.getStatus(),
+                past);
     }
 }
