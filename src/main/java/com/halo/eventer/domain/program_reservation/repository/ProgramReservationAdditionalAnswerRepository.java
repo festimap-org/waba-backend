@@ -14,4 +14,6 @@ public interface ProgramReservationAdditionalAnswerRepository
     boolean existsByOptionId(Long optionId);
 
     List<ProgramReservationAdditionalAnswer> findAllByReservationIdIn(List<Long> reservationIds);
+
+    void deleteAllByReservationIdIn(List<Long> reservationIds);
 }
