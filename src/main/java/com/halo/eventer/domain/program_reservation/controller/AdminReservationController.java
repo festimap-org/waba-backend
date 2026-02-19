@@ -18,6 +18,7 @@ import com.halo.eventer.domain.program_reservation.dto.request.AdminCancelReques
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateCreateRequest;
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateUpdateRequest;
 import com.halo.eventer.domain.program_reservation.dto.response.*;
+import com.halo.eventer.domain.program_reservation.dto.response.AdminAdditionalFieldSummaryResponse;
 import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
 import com.halo.eventer.domain.program_reservation.entity.reservation.ReservationSearchField;
 import com.halo.eventer.domain.program_reservation.service.AdminReservationService;
@@ -49,6 +50,14 @@ public class AdminReservationController {
             @ParameterObject @PageableDefault(size = 8, sort = "createdAt", direction = Sort.Direction.DESC)
                     Pageable pageable) {
         return adminReservationService.getReservations(festivalId, searchField, keyword, status, pageable);
+    }
+
+    /** GET 축제 내 추가 정보 항목 요약 */
+    @GetMapping("/additional-fields")
+    @Operation(summary = "축제 내 추가 정보 항목 요약 조회", description = "축제에 속한 모든 프로그램의 활성 추가 정보 항목(컬럼 헤더)을 조회합니다.")
+    public AdminAdditionalFieldSummaryResponse getAdditionalFieldSummary(
+            @Parameter(description = "축제 ID") @RequestParam Long festivalId) {
+        return adminReservationService.getAdditionalFieldSummary(festivalId);
     }
 
     /** POST 선택 예약 취소 */
