@@ -16,6 +16,8 @@ import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateC
 import com.halo.eventer.domain.program_reservation.dto.request.ScheduleTemplateUpdateRequest;
 import com.halo.eventer.domain.program_reservation.dto.response.*;
 import com.halo.eventer.domain.program_reservation.dto.response.ScheduleTemplateUpdateResponse.*;
+import com.halo.eventer.domain.program_reservation.entity.additional.ProgramAdditionalField;
+import com.halo.eventer.domain.program_reservation.entity.additional.ProgramReservationAdditionalAnswer;
 import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservation;
 import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
 import com.halo.eventer.domain.program_reservation.entity.reservation.ReservationSearchField;
@@ -38,6 +40,8 @@ public class AdminReservationService {
     private final ProgramTimePatternRepository patternRepository;
     private final ProgramSlotRepository slotRepository;
     private final ProgramReservationRepository reservationRepository;
+    private final ProgramAdditionalFieldRepository additionalFieldRepository;
+    private final ProgramReservationAdditionalAnswerRepository additionalAnswerRepository;
 
     /** 예약 정보 조회 (예약 관리 대시보드) */
     @Transactional(readOnly = true)
@@ -124,7 +128,29 @@ public class AdminReservationService {
         List<AdminReservationResponse> adminReservations =
                 page.getContent().stream().map(AdminReservationResponse::from).collect(Collectors.toList());
 
+        // 추가 정보 답변 매핑
+        List<Long> reservationIds =
+                page.getContent().stream().map(ProgramReservation::getId).collect(Collectors.toList());
+        if (!reservationIds.isEmpty()) {
+            List<ProgramReservationAdditionalAnswer> answers =
+                    additionalAnswerRepository.findAllByReservationIdIn(reservationIds);
+
+            Map<Long, List<AdditionalAnswerResponse>> answerMap = answers.stream()
+                    .collect(Collectors.groupingBy(
+                            a -> a.getReservation().getId(),
+                            Collectors.mapping(AdditionalAnswerResponse::from, Collectors.toList())));
+
+            adminReservations.forEach(r -> r.setAdditionalAnswers(answerMap.getOrDefault(r.getId(), List.of())));
+        }
+
         return AdminReservationPageResponse.of(adminReservations, page);
+    }
+
+    /** 축제 내 전체 프로그램의 추가 정보 항목 요약 조회 */
+    @Transactional(readOnly = true)
+    public AdminAdditionalFieldSummaryResponse getAdditionalFieldSummary(Long festivalId) {
+        List<ProgramAdditionalField> fields = additionalFieldRepository.findAllByFestivalId(festivalId);
+        return AdminAdditionalFieldSummaryResponse.from(fields);
     }
 
     /** 관리자 선택 예약 취소 */
