@@ -64,7 +64,10 @@ public class SecurityConstants {
         "/programs",
         "/programs/*",
         // 관리자(AGENCY) 아이디 중복 검사
-        "/api/v1/admin/auth/check-login-id"
+        "/api/v1/admin/auth/check-login-id",
+        "/programs/*",
+        "/programs/*/dates",
+        "/programs/*/reservation-slots"
     };
 
     public static final String[] PUBLIC_POST_URLS = {
