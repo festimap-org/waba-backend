@@ -15,6 +15,8 @@ import com.halo.eventer.domain.program_reservation.entity.content.FestivalCommon
 import com.halo.eventer.domain.program_reservation.entity.content.ProgramBlock;
 import com.halo.eventer.domain.program_reservation.entity.content.ProgramTag;
 import com.halo.eventer.domain.program_reservation.entity.content.Tag;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservation;
+import com.halo.eventer.domain.program_reservation.entity.reservation.ProgramReservationStatus;
 import com.halo.eventer.domain.program_reservation.repository.*;
 import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
@@ -29,6 +31,7 @@ public class AdminProgramService {
     private final ProgramReservationRepository programReservationRepository;
     private final TagRepository tagRepository;
     private final FestivalRepository festivalRepository;
+    private final ProgramReservationAdditionalAnswerRepository additionalAnswerRepository;
     private final FestivalCommonTemplateRepository templateRepository;
 
     @Transactional
@@ -52,9 +55,10 @@ public class AdminProgramService {
     @Transactional
     public void delete(Long programId) {
         Program program = loadProgramOrThrow(programId);
-        if (programReservationRepository.existsByProgramId(programId)) {
+        if (programReservationRepository.existsByProgramIdAndStatusNot(programId, ProgramReservationStatus.EXPIRED)) {
             throw new BaseException("예약이 존재하는 프로그램은 삭제할 수 없습니다.", ErrorCode.ACTIVE_RESERVATION_EXISTS);
         }
+        deleteExpiredReservations(programId);
         programTagRepository.deleteAllByProgramId(programId);
         programBlockRepository.deleteAllByProgramId(programId);
         programRepository.delete(program);
@@ -164,6 +168,18 @@ public class AdminProgramService {
     public ProgramActiveResponse getActiveInfo(Long programId) {
         Program program = loadProgramOrThrow(programId);
         return toActiveResponse(program);
+    }
+
+    private void deleteExpiredReservations(Long programId) {
+        List<ProgramReservation> expiredReservations =
+                programReservationRepository.findAllByProgramIdAndStatus(programId, ProgramReservationStatus.EXPIRED);
+        if (expiredReservations.isEmpty()) {
+            return;
+        }
+        List<Long> reservationIds =
+                expiredReservations.stream().map(ProgramReservation::getId).collect(Collectors.toList());
+        additionalAnswerRepository.deleteAllByReservationIdIn(reservationIds);
+        programReservationRepository.deleteAll(expiredReservations);
     }
 
     private Program loadProgramOrThrow(Long programId) {

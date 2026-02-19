@@ -32,6 +32,10 @@ public interface ProgramReservationRepository
 
     boolean existsByProgramId(Long programId);
 
+    boolean existsByProgramIdAndStatusNot(Long programId, ProgramReservationStatus status);
+
+    List<ProgramReservation> findAllByProgramIdAndStatus(Long programId, ProgramReservationStatus status);
+
     @Override
     @EntityGraph(attributePaths = {"program", "slot"})
     Page<ProgramReservation> findAll(@Nullable Specification<ProgramReservation> spec, Pageable pageable);
