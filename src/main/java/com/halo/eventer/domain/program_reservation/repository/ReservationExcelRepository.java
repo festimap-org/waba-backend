@@ -31,23 +31,26 @@ public interface ReservationExcelRepository extends Repository<ProgramReservatio
                 r.status           AS status
             FROM ProgramReservation r
             JOIN r.program p
+            JOIN p.festival f
             JOIN r.slot s
-            WHERE s.slotDate BETWEEN :from AND :to
+            WHERE f.id = :festivalId
+              AND s.slotDate BETWEEN :from AND :to
+              AND r.status IN :statuses
             ORDER BY s.slotDate, s.startTime, r.createdAt
             """)
-    Stream<ReservationExcelRowView> streamBySlotDateBetween(@Param("from") LocalDate from, @Param("to") LocalDate to);
+    Stream<ReservationExcelRowView> streamByFestivalAndSlotDateBetween(
+            @Param("festivalId") Long festivalId,
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
+            @Param("statuses") List<ProgramReservationStatus> statuses);
 
     @Query(
             """
             SELECT f.name
-            FROM ProgramReservation r
-            JOIN r.program p
-            JOIN p.festival f
-            JOIN r.slot s
-            WHERE s.slotDate BETWEEN :from AND :to
+            FROM Festival f
+            WHERE f.id = :festivalId
             """)
-    List<String> findFestivalNameBySlotDateBetween(
-            @Param("from") LocalDate from, @Param("to") LocalDate to, Pageable pageable);
+    List<String> findFestivalNameById(@Param("festivalId") Long festivalId, Pageable pageable);
 
     interface ReservationExcelRowView {
         String getBookerName();

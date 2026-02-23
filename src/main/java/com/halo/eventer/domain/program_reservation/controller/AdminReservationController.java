@@ -115,8 +115,9 @@ public class AdminReservationController {
     @GetMapping(value = "/excel", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     @Operation(summary = "지정 범위 내 예약 내역 엑셀 다운로드")
     public ResponseEntity<Resource> download(
+            @Parameter(description = "축제 ID") @RequestParam Long festivalId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        return reservationExcelExportService.export(new ReservationExcelExportService.Condition(from, to));
+        return reservationExcelExportService.export(new ReservationExcelExportService.Condition(festivalId, from, to));
     }
 }
