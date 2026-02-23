@@ -40,10 +40,13 @@ public class ReservationExcelExportService {
 
     private static final int[] COLUMN_WIDTHS = {14, 20, 14, 20, 18, 16, 10, 10, 10, 14, 14};
 
+    private static final List<ProgramReservationStatus> EXPORT_STATUSES =
+            List.of(ProgramReservationStatus.CONFIRMED, ProgramReservationStatus.CANCELED);
+
     @Transactional(readOnly = true)
     public ResponseEntity<Resource> export(Condition condition) {
-        List<String> names = reservationExcelRepository.findFestivalNameBySlotDateBetween(
-                condition.from, condition.to, PageRequest.of(0, 1));
+        List<String> names =
+                reservationExcelRepository.findFestivalNameById(condition.festivalId, PageRequest.of(0, 1));
         String festivalName = names.isEmpty() ? "행사" : names.get(0);
         String filename = buildFilename(condition, festivalName);
         String encodedFilename =
@@ -63,7 +66,8 @@ public class ReservationExcelExportService {
 
             AtomicInteger rowNum = new AtomicInteger(1);
             try (Stream<ReservationExcelRepository.ReservationExcelRowView> stream =
-                    reservationExcelRepository.streamBySlotDateBetween(condition.from, condition.to)) {
+                    reservationExcelRepository.streamByFestivalAndSlotDateBetween(
+                            condition.festivalId, condition.from, condition.to, EXPORT_STATUSES)) {
                 stream.forEach(view -> {
                     Row row = sheet.createRow(rowNum.getAndIncrement());
                     List<Object> cells = toCells(view);
@@ -200,10 +204,12 @@ public class ReservationExcelExportService {
     // ===== Inner types =====
 
     public static class Condition {
+        private final Long festivalId;
         private final LocalDate from;
         private final LocalDate to;
 
-        public Condition(LocalDate from, LocalDate to) {
+        public Condition(Long festivalId, LocalDate from, LocalDate to) {
+            this.festivalId = festivalId;
             this.from = from;
             this.to = to;
         }
