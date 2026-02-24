@@ -20,7 +20,6 @@ public class AgencySignupRequest {
     private String loginId;
 
     @NotBlank(message = "비밀번호는 필수입니다")
-    @Size(min = 8, max = 100, message = "비밀번호는 8자 이상이어야 합니다")
     @Schema(description = "비밀번호", example = "password123!")
     private String password;
 
