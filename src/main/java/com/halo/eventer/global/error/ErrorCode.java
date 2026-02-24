@@ -49,6 +49,7 @@ public enum ErrorCode {
     UN_AUTHORIZED("A003", "Unauthorized", 403),
     LOGIN_ID_ALREADY_EXISTS("A004", "Login ID already exists", 409),
     COMPANY_EMAIL_ALREADY_EXISTS("A005", "Company email already exists", 409),
+    PASSWORD_NOT_MATCH("A006", "Password confirmation does not match", 400),
 
     // StampUser
     STAMP_USER_ALREADY_EXISTS("SU001", "StampUser Already Exists", 400),

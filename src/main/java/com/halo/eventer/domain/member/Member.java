@@ -203,4 +203,14 @@ public class Member extends BaseTime {
         this.managerPosition = managerPosition;
         this.phone = managerPhone;
     }
+
+    public void updateProfile(String managerName, String managerPosition, String email) {
+        this.name = managerName;
+        this.managerPosition = managerPosition;
+        this.companyEmail = email;
+    }
+
+    public void changePassword(String newEncodedPassword) {
+        this.password = newEncodedPassword;
+    }
 }

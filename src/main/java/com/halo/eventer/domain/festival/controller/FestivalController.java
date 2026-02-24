@@ -4,11 +4,13 @@ import java.util.List;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.image.dto.FileDto;
+import com.halo.eventer.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +23,12 @@ public class FestivalController {
 
     private final FestivalService festivalService;
 
-    @Operation(summary = "축제 생성", description = "새로운 축제를 생성합니다.")
+    @Operation(summary = "축제 생성", description = "새로운 축제를 생성합니다. 생성한 회원이 owner로 설정됩니다.")
     @PostMapping()
-    public void createFestival(@Valid @RequestBody FestivalCreateDto festivalCreateDto) {
-        festivalService.create(festivalCreateDto);
+    public void createFestival(
+            @Valid @RequestBody FestivalCreateDto festivalCreateDto,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        festivalService.create(festivalCreateDto, userDetails.getMember());
     }
 
     @Operation(summary = "축제 상세 조회", description = "축제 ID로 축제 상세 정보를 조회합니다.")
