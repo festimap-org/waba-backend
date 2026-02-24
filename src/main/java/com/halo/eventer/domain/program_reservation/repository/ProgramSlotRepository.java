@@ -14,6 +14,8 @@ import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlot;
 public interface ProgramSlotRepository extends JpaRepository<ProgramSlot, Long> {
     void deleteAllByTemplateId(Long templateId);
 
+    void deleteAllByProgramId(Long programId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query(
             """
