@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.halo.eventer.domain.member.Member;
 import com.halo.eventer.domain.member.dto.AdminProfileUpdateRequest;
 import com.halo.eventer.domain.member.dto.AgencySignupRequest;
+import com.halo.eventer.domain.member.dto.CompanyInfoUpdateRequest;
 import com.halo.eventer.domain.member.dto.LoginDto;
 import com.halo.eventer.domain.member.dto.PasswordChangeRequest;
 import com.halo.eventer.domain.member.dto.TokenDto;
@@ -104,5 +105,15 @@ public class MemberService {
         }
 
         member.changePassword(encoder.encode(request.getNewPassword()));
+    }
+
+    public Member getCompanyInfo(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    }
+
+    @Transactional
+    public void updateCompanyInfo(Long memberId, CompanyInfoUpdateRequest request) {
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        member.updateCompany(request.getCompanyName(), request.getCompanyEmail(), request.getCompanyPhone());
     }
 }

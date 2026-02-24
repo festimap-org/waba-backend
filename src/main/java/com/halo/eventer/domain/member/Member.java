@@ -83,6 +83,9 @@ public class Member extends BaseTime {
     @Column(name = "company_email", length = 100)
     private String companyEmail;
 
+    @Column(name = "company_phone", length = 20)
+    private String companyPhone;
+
     @Column(name = "manager_position", length = 50)
     private String managerPosition;
 
@@ -208,6 +211,12 @@ public class Member extends BaseTime {
         this.name = managerName;
         this.managerPosition = managerPosition;
         this.companyEmail = email;
+    }
+
+    public void updateCompany(String companyName, String companyEmail, String companyPhone) {
+        this.companyName = companyName;
+        this.companyEmail = companyEmail;
+        this.companyPhone = companyPhone;
     }
 
     public void changePassword(String newEncodedPassword) {
