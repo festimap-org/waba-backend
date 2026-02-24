@@ -65,9 +65,12 @@ public class AdminProgramService {
         }
         deleteExpiredReservations(programId);
         slotRepository.deleteAllByProgramId(programId);
+        slotRepository.flush();
         patternRepository.deleteAllByProgramId(programId);
+        patternRepository.flush();
         scheduleTemplateRepository.deleteAllByProgramId(programId);
         additionalFieldOptionRepository.deleteAllByProgramId(programId);
+        additionalFieldOptionRepository.flush();
         additionalFieldRepository.deleteAllByProgramId(programId);
         programTagRepository.deleteAllByProgramId(programId);
         programBlockRepository.deleteAllByProgramId(programId);

@@ -6,6 +6,7 @@ import jakarta.persistence.LockModeType;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -14,7 +15,9 @@ import com.halo.eventer.domain.program_reservation.entity.slot.ProgramSlot;
 public interface ProgramSlotRepository extends JpaRepository<ProgramSlot, Long> {
     void deleteAllByTemplateId(Long templateId);
 
-    void deleteAllByProgramId(Long programId);
+    @Modifying
+    @Query("delete from ProgramSlot s where s.program.id = :programId")
+    void deleteAllByProgramId(@Param("programId") Long programId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query(
