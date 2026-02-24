@@ -47,6 +47,7 @@ public class AdminReservationService {
     @Transactional(readOnly = true)
     public AdminReservationPageResponse getReservations(
             Long festivalId,
+            Long programId,
             ReservationSearchField searchField,
             String keyword,
             ProgramReservationStatus status,
@@ -61,6 +62,11 @@ public class AdminReservationService {
 
             // 축제 필터
             predicate = cb.and(predicate, cb.equal(programJoin.get("festival").get("id"), festivalId));
+
+            // 프로그램 필터
+            if (programId != null) {
+                predicate = cb.and(predicate, cb.equal(programJoin.get("id"), programId));
+            }
 
             // HOLD, EXPIRED 상태는 항상 제외
             predicate = cb.and(predicate, cb.notEqual(root.get("status"), HOLD));
