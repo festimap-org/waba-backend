@@ -192,7 +192,9 @@ public class AdminProgramService {
         List<Long> reservationIds =
                 expiredReservations.stream().map(ProgramReservation::getId).collect(Collectors.toList());
         additionalAnswerRepository.deleteAllByReservationIdIn(reservationIds);
+        additionalAnswerRepository.flush();
         programReservationRepository.deleteAll(expiredReservations);
+        programReservationRepository.flush();
     }
 
     private Program loadProgramOrThrow(Long programId) {
