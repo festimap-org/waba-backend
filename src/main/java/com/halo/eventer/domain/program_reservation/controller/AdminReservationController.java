@@ -44,12 +44,13 @@ public class AdminReservationController {
             description = "예약 관리 대시보드용 예약 목록을 조회합니다. " + "상태: CONFIRMED(확정), CANCELED(취소)")
     public AdminReservationPageResponse getReservations(
             @Parameter(description = "축제 ID") @RequestParam Long festivalId,
+            @Parameter(description = "프로그램 ID (선택)") @RequestParam(required = false) Long programId,
             @Parameter(description = "검색 대상 (선택)") @RequestParam(required = false) ReservationSearchField searchField,
             @Parameter(description = "검색어 (선택)") @RequestParam(required = false) String keyword,
             @Parameter(description = "예약 상태 필터 (선택)") @RequestParam(required = false) ProgramReservationStatus status,
             @ParameterObject @PageableDefault(size = 8, sort = "createdAt", direction = Sort.Direction.DESC)
                     Pageable pageable) {
-        return adminReservationService.getReservations(festivalId, searchField, keyword, status, pageable);
+        return adminReservationService.getReservations(festivalId, programId, searchField, keyword, status, pageable);
     }
 
     /** GET 축제 내 추가 정보 항목 요약 */
