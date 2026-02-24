@@ -24,4 +24,6 @@ public interface ProgramAdditionalFieldRepository extends JpaRepository<ProgramA
             + " where f.program.festival.id = :festivalId"
             + " order by f.program.id, f.sortOrder")
     List<ProgramAdditionalField> findAllByFestivalId(@Param("festivalId") Long festivalId);
+
+    void deleteAllByProgramId(Long programId);
 }

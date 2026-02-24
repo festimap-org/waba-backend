@@ -9,4 +9,6 @@ import com.halo.eventer.domain.program_reservation.entity.slot.ProgramScheduleTe
 public interface ProgramScheduleTemplateRepository extends JpaRepository<ProgramScheduleTemplate, Long> {
 
     List<ProgramScheduleTemplate> findAllByProgramIdOrderByStartDate(Long programId);
+
+    void deleteAllByProgramId(Long programId);
 }

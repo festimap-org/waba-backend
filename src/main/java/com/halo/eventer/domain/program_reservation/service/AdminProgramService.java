@@ -33,6 +33,11 @@ public class AdminProgramService {
     private final FestivalRepository festivalRepository;
     private final ProgramReservationAdditionalAnswerRepository additionalAnswerRepository;
     private final FestivalCommonTemplateRepository templateRepository;
+    private final ProgramSlotRepository slotRepository;
+    private final ProgramTimePatternRepository patternRepository;
+    private final ProgramScheduleTemplateRepository scheduleTemplateRepository;
+    private final ProgramAdditionalFieldOptionRepository additionalFieldOptionRepository;
+    private final ProgramAdditionalFieldRepository additionalFieldRepository;
 
     @Transactional
     public ProgramCreateResponse create(Long festivalId, ProgramCreateRequest request) {
@@ -59,6 +64,11 @@ public class AdminProgramService {
             throw new BaseException("예약이 존재하는 프로그램은 삭제할 수 없습니다.", ErrorCode.ACTIVE_RESERVATION_EXISTS);
         }
         deleteExpiredReservations(programId);
+        slotRepository.deleteAllByProgramId(programId);
+        patternRepository.deleteAllByProgramId(programId);
+        scheduleTemplateRepository.deleteAllByProgramId(programId);
+        additionalFieldOptionRepository.deleteAllByProgramId(programId);
+        additionalFieldRepository.deleteAllByProgramId(programId);
         programTagRepository.deleteAllByProgramId(programId);
         programBlockRepository.deleteAllByProgramId(programId);
         programRepository.delete(program);
