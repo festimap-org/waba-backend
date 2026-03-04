@@ -52,6 +52,7 @@ public class Stamp {
 
     @Enumerated(EnumType.STRING)
     private PrizeExchangeImgType prizeExchangeImgType = PrizeExchangeImgType.DEFAULT;
+
     private String prizeExchangeCustomImgUrl;
 
     @Enumerated(EnumType.STRING)
