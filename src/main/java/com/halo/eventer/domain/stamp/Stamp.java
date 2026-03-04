@@ -50,6 +50,7 @@ public class Stamp {
     private String backgroundColor;
     private String backgroundSubColor;
 
+    @Enumerated(EnumType.STRING)
     private PrizeExchangeImgType prizeExchangeImgType = PrizeExchangeImgType.DEFAULT;
     private String prizeExchangeCustomImgUrl;
 
