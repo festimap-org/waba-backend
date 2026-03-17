@@ -12,8 +12,10 @@ public class AuthorizationConfig {
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 // 테스트 서버 CI/CD를 위한 health check 허용
-                .requestMatchers("/actuator/health").permitAll()
-                .requestMatchers("/actuator/info").permitAll()
+                .requestMatchers("/actuator/health")
+                .permitAll()
+                .requestMatchers("/actuator/info")
+                .permitAll()
                 .requestMatchers(SecurityConstants.SWAGGER_URLS)
                 .permitAll()
                 .requestMatchers(HttpMethod.GET, SecurityConstants.PUBLIC_GET_URLS)
