@@ -76,40 +76,42 @@ jobs:
           key: ${{ secrets.TEST_KEY }}
           envs: IMAGE_NAME,IMAGE_TAG,TEST_APP_YML,GHCR_USERNAME,GHCR_TOKEN,TEST_MYSQL_ROOT_PASSWORD
           script: |
-            set -e
+            script: |
+              set -e
 
-            mkdir -p /home/ubuntu/festimap-test/config
-            mkdir -p /home/ubuntu/festimap-test/logs
+              mkdir -p /home/ubuntu/festimap-test/config
+              mkdir -p /home/ubuntu/festimap-test/logs
 
-            cat > /home/ubuntu/festimap-test/config/application.yml <<EOF
-            $TEST_APP_YML
-            EOF
+              cat > /home/ubuntu/festimap-test/config/application.yml <<EOF
+              $TEST_APP_YML
+              EOF
 
-            cat > /home/ubuntu/festimap-test/.env <<EOF
-            IMAGE_NAME=$IMAGE_NAME
-            IMAGE_TAG=$IMAGE_TAG
-            TEST_MYSQL_ROOT_PASSWORD=$TEST_MYSQL_ROOT_PASSWORD
-            EOF
+              cat > /home/ubuntu/festimap-test/.env <<EOF
+              IMAGE_NAME=$IMAGE_NAME
+              IMAGE_TAG=$IMAGE_TAG
+              TEST_MYSQL_ROOT_PASSWORD=$TEST_MYSQL_ROOT_PASSWORD
+              EOF
 
-            pkill -f eventer || true
+              cd /home/ubuntu/festimap-test
 
-            cd /home/ubuntu/festimap-test
-            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+              echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
 
-            docker compose --env-file .env -f docker-compose.test.yml pull
-            docker compose --env-file .env -f docker-compose.test.yml up -d
+              docker compose --env-file .env -f docker-compose.test.yml down || true
+              docker compose --env-file .env -f docker-compose.test.yml pull
+              docker compose --env-file .env -f docker-compose.test.yml up -d
 
-            docker image prune -f
+              docker image prune -f
 
-            echo "Waiting for application to start..."
-            for i in {1..30}; do
-              if curl -sf http://localhost:7070/actuator/health > /dev/null 2>&1; then
-                echo "Health check passed!"
-                exit 0
-              fi
+              echo "Waiting for application to start..."
+              for i in {1..30}; do
+                if curl -sf http://localhost:7070/actuator/health > /dev/null 2>&1; then
+                  echo "Health check passed!"
+                  exit 0
+                fi
                 echo "Attempt $i/30: Application not ready, waiting..."
                 sleep 5
-            done
-            echo "Health check failed after 30 attempts"
-            docker compose --env-file .env -f docker-compose.test.yml logs api
-            exit 1
+              done
+
+              echo "Health check failed after 30 attempts"
+              docker compose --env-file .env -f docker-compose.test.yml logs api
+              exit 1
