@@ -7,7 +7,7 @@ services:
     container_name: festimap-test-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root1234
+      MYSQL_ROOT_PASSWORD: ${TEST_MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: festimap_test
       TZ: Asia/Seoul
     command:
@@ -16,6 +16,12 @@ services:
       - --default-time-zone=Asia/Seoul
     volumes:
       - festimap_test_mysql:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   redis:
     image: redis:7
@@ -24,14 +30,21 @@ services:
     command: ["redis-server","--appendonly","yes"]
     volumes:
       - festimap_test_redis:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   api:
     image: ${IMAGE_NAME}:${IMAGE_TAG}
     container_name: festimap-test-api
     restart: unless-stopped
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
       - "9998:9998"
       - "7070:7070"
@@ -40,7 +53,3 @@ services:
       - ./logs:/app/logs
     environment:
       SPRING_CONFIG_ADDITIONAL_LOCATION: /app/config/
-
-volumes:
-  festimap_test_mysql:
-  festimap_test_redis:

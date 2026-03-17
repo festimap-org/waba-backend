@@ -80,7 +80,7 @@ jobs:
             mkdir -p /home/ubuntu/festimap-test/config
             mkdir -p /home/ubuntu/festimap-test/logs
 
-            cat > /home/ubuntu/festimap-test/config/application.yml <<'EOF'
+            cat > /home/ubuntu/festimap-test/config/application.yml <<EOF
             $TEST_APP_YML
             EOF
 
@@ -99,5 +99,15 @@ jobs:
 
             docker image prune -f
 
-            sleep 15
-            curl -f http://localhost:7070/actuator/health
+            echo "Waiting for application to start..."
+            for i in {1..30}; do
+              if curl -sf http://localhost:7070/actuator/health > /dev/null 2>&1; then
+                echo "Health check passed!"
+                exit 0
+              fi
+                echo "Attempt $i/30: Application not ready, waiting..."
+                sleep 5
+            done
+            echo "Health check failed after 30 attempts"
+            docker compose --env-file .env -f docker-compose.test.yml logs api
+            exit 1
