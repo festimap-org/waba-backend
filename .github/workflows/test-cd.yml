@@ -68,12 +68,13 @@ jobs:
           TEST_APP_YML: ${{ secrets.TEST_DOCKER_APP_YML }}
           GHCR_USERNAME: ${{ github.actor }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEST_MYSQL_ROOT_PASSWORD: ${{ secrets.TEST_MYSQL_ROOT_PASSWORD }}
 
         with:
           host: ${{ secrets.TEST_HOST }}
           username: ${{ secrets.TEST_USER }}
           key: ${{ secrets.TEST_KEY }}
-          envs: IMAGE_NAME,IMAGE_TAG,TEST_APP_YML,GHCR_USERNAME,GHCR_TOKEN
+          envs: IMAGE_NAME,IMAGE_TAG,TEST_APP_YML,GHCR_USERNAME,GHCR_TOKEN,TEST_MYSQL_ROOT_PASSWORD
           script: |
             set -e
 
@@ -87,6 +88,7 @@ jobs:
             cat > /home/ubuntu/festimap-test/.env <<EOF
             IMAGE_NAME=$IMAGE_NAME
             IMAGE_TAG=$IMAGE_TAG
+            TEST_MYSQL_ROOT_PASSWORD=$TEST_MYSQL_ROOT_PASSWORD
             EOF
 
             pkill -f eventer || true

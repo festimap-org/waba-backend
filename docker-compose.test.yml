@@ -17,7 +17,7 @@ services:
     volumes:
       - festimap_test_mysql:/var/lib/mysql
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -31,10 +31,11 @@ services:
     volumes:
       - festimap_test_redis:/data
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 10s
 
   api:
     image: ${IMAGE_NAME}:${IMAGE_TAG}
