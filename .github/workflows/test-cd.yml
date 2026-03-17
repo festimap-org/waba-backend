@@ -1,0 +1,103 @@
+name: Deploy Test Server (Docker)
+
+on:
+  push:
+    branches: ["develop"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  JDK_VERSION: 17
+  IMAGE_NAME: ${{ secrets.TEST_GHCR_IMAGE }}
+
+jobs:
+  deploy-test:
+    name: Build & Deploy to Test Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JDK_VERSION }}
+          cache: gradle
+
+      - name: Grant execute permission
+        run: chmod +x gradlew
+
+      - name: Build bootJar
+        run: ./gradlew clean bootJar -x test
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Upload docker-compose
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.TEST_HOST }}
+          username: ${{ secrets.TEST_USER }}
+          key: ${{ secrets.TEST_KEY }}
+          source: "docker-compose.test.yml"
+          target: "/home/ubuntu/festimap-test"
+
+      - name: Deploy on Test Server
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          IMAGE_TAG: ${{ github.sha }}
+          TEST_APP_YML: ${{ secrets.TEST_DOCKER_APP_YML }}
+          GHCR_USERNAME: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        with:
+          host: ${{ secrets.TEST_HOST }}
+          username: ${{ secrets.TEST_USER }}
+          key: ${{ secrets.TEST_KEY }}
+          envs: IMAGE_NAME,IMAGE_TAG,TEST_APP_YML,GHCR_USERNAME,GHCR_TOKEN
+          script: |
+            set -e
+
+            mkdir -p /home/ubuntu/festimap-test/config
+            mkdir -p /home/ubuntu/festimap-test/logs
+
+            cat > /home/ubuntu/festimap-test/config/application.yml <<'EOF'
+            $TEST_APP_YML
+            EOF
+
+            cat > /home/ubuntu/festimap-test/.env <<EOF
+            IMAGE_NAME=$IMAGE_NAME
+            IMAGE_TAG=$IMAGE_TAG
+            EOF
+
+            pkill -f eventer || true
+
+            cd /home/ubuntu/festimap-test
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+
+            docker compose --env-file .env -f docker-compose.test.yml pull
+            docker compose --env-file .env -f docker-compose.test.yml up -d
+
+            docker image prune -f
+
+            sleep 15
+            curl -f http://localhost:7070/actuator/health
