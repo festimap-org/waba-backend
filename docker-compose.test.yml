@@ -54,3 +54,7 @@ services:
       - ./logs:/app/logs
     environment:
       SPRING_CONFIG_ADDITIONAL_LOCATION: /app/config/
+
+volumes:
+  festimap_test_mysql:
+  festimap_test_redis:
