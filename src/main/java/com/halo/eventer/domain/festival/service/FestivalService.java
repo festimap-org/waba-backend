@@ -28,13 +28,15 @@ public class FestivalService {
     private final FestivalRepository festivalRepository;
 
     @Transactional
-    public void create(FestivalCreateDto festivalCreateDto, Member owner) {
+    public Festival create(FestivalCreateDto festivalCreateDto, Member owner) {
         validateUniqueFestival(festivalCreateDto);
+
         Festival festival = Festival.from(festivalCreateDto);
         festival.applyDefaultMapCategory();
         festival.assignOwner(owner);
         festival.updateStatus(FestivalStatus.ACTIVE);
-        festivalRepository.save(festival);
+
+        return festivalRepository.save(festival);
     }
 
     @Transactional(readOnly = true)

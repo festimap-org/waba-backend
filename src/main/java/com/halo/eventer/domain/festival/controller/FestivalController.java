@@ -1,9 +1,13 @@
 package com.halo.eventer.domain.festival.controller;
 
 import java.util.List;
+
+import com.halo.eventer.domain.festival.Festival;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,11 +28,15 @@ public class FestivalController {
     private final FestivalService festivalService;
 
     @Operation(summary = "축제 생성", description = "새로운 축제를 생성합니다. 생성한 회원이 owner로 설정됩니다.")
-    @PostMapping()
-    public void createFestival(
+    @PostMapping
+    public ResponseEntity<FestivalCreateResponseDto> createFestival(
             @Valid @RequestBody FestivalCreateDto festivalCreateDto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        festivalService.create(festivalCreateDto, userDetails.getMember());
+
+        Festival festival = festivalService.create(festivalCreateDto, userDetails.getMember());
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new FestivalCreateResponseDto(festival));
     }
 
     @Operation(summary = "축제 상세 조회", description = "축제 ID로 축제 상세 정보를 조회합니다.")
