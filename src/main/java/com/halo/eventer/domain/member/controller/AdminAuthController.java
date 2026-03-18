@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.member.controller;
 
+import com.halo.eventer.domain.member.dto.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
@@ -14,11 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.halo.eventer.domain.member.Member;
-import com.halo.eventer.domain.member.dto.AgencySignupRequest;
-import com.halo.eventer.domain.member.dto.AgencySignupResponse;
-import com.halo.eventer.domain.member.dto.LoginDto;
-import com.halo.eventer.domain.member.dto.LoginIdCheckResponse;
-import com.halo.eventer.domain.member.dto.TokenDto;
 import com.halo.eventer.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,11 +39,11 @@ public class AdminAuthController {
 
     @Operation(
             summary = "관리자 전용 로그인",
-            description =
-                    "기관 담당자(AGENCY) 계정만 로그인 가능한 관리자 전용 API입니다. loginId와 password로 인증하며, 관리자 권한이 검증된 경우에만 JWT 토큰을 발급합니다.")
+            description = "기관 담당자(AGENCY) 계정의 loginId와 password로 로그인하여 JWT 토큰을 발급받습니다. 일반 로그인과 별도의 관리자 전용 API입니다."
+    )
     @PostMapping("/admin-login")
-    public ResponseEntity<TokenDto> adminLogin(@RequestBody LoginDto loginDto) {
-        return ResponseEntity.ok(memberService.loginAdmin(loginDto));
+    public ResponseEntity<TokenDto> adminLogin(@Valid @RequestBody AdminLoginRequest request) {
+        return ResponseEntity.ok(memberService.loginAdmin(request));
     }
 
     @Operation(summary = "관리자 회원가입", description = "기관 담당자(AGENCY) 계정을 생성합니다.")
