@@ -1,6 +1,5 @@
 package com.halo.eventer.domain.member.controller;
 
-import com.halo.eventer.domain.member.dto.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.halo.eventer.domain.member.Member;
+import com.halo.eventer.domain.member.dto.*;
 import com.halo.eventer.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,8 +39,7 @@ public class AdminAuthController {
 
     @Operation(
             summary = "관리자 전용 로그인",
-            description = "기관 담당자(AGENCY) 계정의 loginId와 password로 로그인하여 JWT 토큰을 발급받습니다. 일반 로그인과 별도의 관리자 전용 API입니다."
-    )
+            description = "기관 담당자(AGENCY) 계정의 loginId와 password로 로그인하여 JWT 토큰을 발급받습니다. 일반 로그인과 별도의 관리자 전용 API입니다.")
     @PostMapping("/admin-login")
     public ResponseEntity<TokenDto> adminLogin(@Valid @RequestBody AdminLoginRequest request) {
         return ResponseEntity.ok(memberService.loginAdmin(request));
