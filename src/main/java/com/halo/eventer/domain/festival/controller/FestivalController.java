@@ -1,8 +1,6 @@
 package com.halo.eventer.domain.festival.controller;
 
 import java.util.List;
-
-import com.halo.eventer.domain.festival.Festival;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 
@@ -11,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.domain.festival.dto.*;
 import com.halo.eventer.domain.festival.service.FestivalService;
 import com.halo.eventer.domain.image.dto.FileDto;
@@ -35,8 +34,7 @@ public class FestivalController {
 
         Festival festival = festivalService.create(festivalCreateDto, userDetails.getMember());
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new FestivalCreateResponseDto(festival));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new FestivalCreateResponseDto(festival));
     }
 
     @Operation(summary = "축제 상세 조회", description = "축제 ID로 축제 상세 정보를 조회합니다.")
