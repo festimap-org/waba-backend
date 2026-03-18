@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.halo.eventer.domain.member.Member;
+import com.halo.eventer.domain.member.MemberRole;
 import com.halo.eventer.domain.member.dto.AdminProfileUpdateRequest;
 import com.halo.eventer.domain.member.dto.AgencySignupRequest;
 import com.halo.eventer.domain.member.dto.CompanyInfoUpdateRequest;
@@ -33,6 +34,18 @@ public class MemberService {
 
     public TokenDto login(LoginDto loginDto) {
         Member member = memberRepository.findByLoginId(loginDto.getLoginId()).orElseThrow(MemberNotFoundException::new);
+        if (!encoder.matches(loginDto.getPassword(), member.getPassword())) {
+            throw new LoginFailedException();
+        }
+
+        return new TokenDto(jwtProvider.createToken(member.getLoginId(), member.getRoleNames()));
+    }
+
+    public TokenDto loginAdmin(LoginDto loginDto) {
+        Member member = memberRepository
+                .findByLoginIdAndRole(loginDto.getLoginId(), MemberRole.AGENCY)
+                .orElseThrow(MemberNotFoundException::new);
+
         if (!encoder.matches(loginDto.getPassword(), member.getPassword())) {
             throw new LoginFailedException();
         }

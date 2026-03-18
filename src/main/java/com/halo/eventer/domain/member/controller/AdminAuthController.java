@@ -33,10 +33,21 @@ public class AdminAuthController {
 
     private final MemberService memberService;
 
-    @Operation(summary = "관리자 로그인", description = "아이디와 비밀번호로 로그인하여 JWT 토큰을 발급받습니다.")
+    @Operation(
+            summary = "관리자 로그인 (레거시)",
+            description = "기존 관리자 로그인 API입니다. 내부 호환성을 위해 유지되며, 신규 관리자 인증은 별도의 관리자 전용 로그인 API 사용을 권장합니다.")
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) {
         return ResponseEntity.ok(memberService.login(loginDto));
+    }
+
+    @Operation(
+            summary = "관리자 전용 로그인",
+            description =
+                    "기관 담당자(AGENCY) 계정만 로그인 가능한 관리자 전용 API입니다. loginId와 password로 인증하며, 관리자 권한이 검증된 경우에만 JWT 토큰을 발급합니다.")
+    @PostMapping("/admin-login")
+    public ResponseEntity<TokenDto> adminLogin(@RequestBody LoginDto loginDto) {
+        return ResponseEntity.ok(memberService.loginAdmin(loginDto));
     }
 
     @Operation(summary = "관리자 회원가입", description = "기관 담당자(AGENCY) 계정을 생성합니다.")
