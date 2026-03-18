@@ -84,7 +84,7 @@ public class FestivalController {
     @Operation(summary = "축제 위치 수정", description = "축제의 위치 정보를 수정합니다.")
     @PatchMapping("/{festivalId}/location")
     public ResponseEntity<FestivalResDto> updateFestivalLocation(
-            @Min(1) @PathVariable Long festivalId, @RequestBody FestivalLocationDto festivalLocationDto) {
+            @Min(1) @PathVariable Long festivalId, @Valid @RequestBody FestivalLocationDto festivalLocationDto) {
 
         return ResponseEntity.ok(festivalService.updateLocation(festivalId, festivalLocationDto));
     }
@@ -98,7 +98,7 @@ public class FestivalController {
     @Operation(summary = "축제 이름 수정", description = "축제의 이름을 수정합니다.")
     @PatchMapping("/{festivalId}/name")
     public ResponseEntity<FestivalResDto> updateFestivalName(
-            @PathVariable Long festivalId, @RequestBody FestivalNameReqDto festivalNameReqDto) {
+            @Min(1) @PathVariable Long festivalId, @Valid @RequestBody FestivalNameReqDto festivalNameReqDto) {
 
         return ResponseEntity.ok(festivalService.updateFestivalName(festivalId, festivalNameReqDto));
     }
@@ -106,7 +106,7 @@ public class FestivalController {
     @Operation(summary = "축제 서브 도메인 수정", description = "축제의 서브 도메인을 수정합니다.")
     @PatchMapping("/{festivalId}/sub-domain")
     public ResponseEntity<FestivalResDto> updateFestivalSubDomain(
-            @PathVariable Long festivalId, @RequestBody FestivalSubDomainReqDto festivalSubdomainReqDto) {
+            @PathVariable Long festivalId, @Valid @RequestBody FestivalSubDomainReqDto festivalSubdomainReqDto) {
 
         return ResponseEntity.ok(festivalService.updateFestivalSubDomain(festivalId, festivalSubdomainReqDto));
     }

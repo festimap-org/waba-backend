@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class FestivalService {
 
     private final FestivalRepository festivalRepository;
@@ -39,7 +40,6 @@ public class FestivalService {
         return festivalRepository.save(festival);
     }
 
-    @Transactional(readOnly = true)
     public FestivalResDto findById(Long id) {
         Festival festival = loadFestivalOrThrow(id);
         return FestivalResDto.from(festival);
@@ -54,6 +54,10 @@ public class FestivalService {
     @Transactional
     public FestivalResDto update(Long id, FestivalCreateDto festivalCreateDto) {
         Festival festival = loadFestivalOrThrow(id);
+
+        validateUniqueFestivalName(id, festivalCreateDto.getName());
+        validateUniqueFestivalSubDomain(id, festivalCreateDto.getSubDomain());
+
         festival.updateFestival(festivalCreateDto);
         return FestivalResDto.from(festival);
     }
@@ -77,9 +81,10 @@ public class FestivalService {
     }
 
     public FestivalSummaryDto findBySubAddress(String subAddress) {
-        return new FestivalSummaryDto(festivalRepository
+        Festival festival = festivalRepository
                 .findBySubAddress(subAddress)
-                .orElseThrow(() -> new FestivalNotFoundException(subAddress)));
+                .orElseThrow(() -> new FestivalNotFoundException(subAddress));
+        return new FestivalSummaryDto(festival);
     }
 
     @Transactional
@@ -97,6 +102,9 @@ public class FestivalService {
     @Transactional
     public FestivalResDto updateFestivalName(Long festivalId, FestivalNameReqDto dto) {
         Festival festival = loadFestivalOrThrow(festivalId);
+
+        validateUniqueFestivalName(festivalId, dto.getName());
+
         festival.updateName(dto.getName());
         return FestivalResDto.from(festival);
     }
@@ -104,21 +112,11 @@ public class FestivalService {
     @Transactional
     public FestivalResDto updateFestivalSubDomain(Long festivalId, FestivalSubDomainReqDto dto) {
         Festival festival = loadFestivalOrThrow(festivalId);
+
+        validateUniqueFestivalSubDomain(festivalId, dto.getSubDomain());
+
         festival.updateSubDomain(dto.getSubDomain());
         return FestivalResDto.from(festival);
-    }
-
-    private Festival loadFestivalOrThrow(Long id) {
-        return festivalRepository.findById(id).orElseThrow(() -> new FestivalNotFoundException(id));
-    }
-
-    private void validateUniqueFestival(FestivalCreateDto festivalCreateDto) {
-        if (festivalRepository.findByName(festivalCreateDto.getName()).isPresent()
-                || festivalRepository
-                        .findBySubAddress(festivalCreateDto.getSubDomain())
-                        .isPresent()) {
-            throw new FestivalAlreadyExistsException();
-        }
     }
 
     @Transactional(readOnly = true)
@@ -126,6 +124,7 @@ public class FestivalService {
         if (member.getRole() == MemberRole.SUPER_ADMIN) {
             return findAll();
         }
+
         return festivalRepository.findByOwner(member).stream()
                 .map(FestivalSummaryDto::new)
                 .collect(Collectors.toList());
@@ -134,6 +133,7 @@ public class FestivalService {
     @Transactional
     public void approveFestival(Long festivalId, Member admin) {
         validateSuperAdmin(admin);
+
         Festival festival = loadFestivalOrThrow(festivalId);
         festival.updateStatus(FestivalStatus.ACTIVE);
     }
@@ -141,8 +141,41 @@ public class FestivalService {
     @Transactional
     public void updateFestivalStatus(Long festivalId, FestivalStatus status, Member admin) {
         validateSuperAdmin(admin);
+
         Festival festival = loadFestivalOrThrow(festivalId);
         festival.updateStatus(status);
+    }
+
+    private Festival loadFestivalOrThrow(Long id) {
+        return festivalRepository.findById(id).orElseThrow(() -> new FestivalNotFoundException(id));
+    }
+
+    private void validateUniqueFestival(FestivalCreateDto festivalCreateDto) {
+        boolean existsByName =
+                festivalRepository.findByName(festivalCreateDto.getName()).isPresent();
+        boolean existsBySubDomain = festivalRepository
+                .findBySubAddress(festivalCreateDto.getSubDomain())
+                .isPresent();
+
+        if (existsByName || existsBySubDomain) {
+            throw new FestivalAlreadyExistsException();
+        }
+    }
+
+    private void validateUniqueFestivalName(Long festivalId, String name) {
+        boolean exists = festivalRepository.existsByNameAndIdNot(name, festivalId);
+
+        if (exists) {
+            throw new FestivalAlreadyExistsException();
+        }
+    }
+
+    private void validateUniqueFestivalSubDomain(Long festivalId, String subDomain) {
+        boolean exists = festivalRepository.existsBySubAddressAndIdNot(subDomain, festivalId);
+
+        if (exists) {
+            throw new FestivalAlreadyExistsException();
+        }
     }
 
     private void validateSuperAdmin(Member member) {
