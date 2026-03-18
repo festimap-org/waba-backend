@@ -4,9 +4,10 @@ import com.halo.eventer.domain.festival.Festival;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class FestivalLocationDto {
+
     private String sido;
     private String sigungu;
     private String dongmyun;
@@ -16,7 +17,10 @@ public class FestivalLocationDto {
     private double longitude;
     private double latitude;
 
-    public FestivalLocationDto(double longitude, double latitude) {}
+    public FestivalLocationDto(double longitude, double latitude) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
 
     public FestivalLocationDto(Festival festival) {
         if (festival.getAddress() != null) {
