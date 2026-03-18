@@ -1,17 +1,12 @@
 package com.halo.eventer.domain.member.service;
 
+import com.halo.eventer.domain.member.dto.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.halo.eventer.domain.member.Member;
 import com.halo.eventer.domain.member.MemberRole;
-import com.halo.eventer.domain.member.dto.AdminProfileUpdateRequest;
-import com.halo.eventer.domain.member.dto.AgencySignupRequest;
-import com.halo.eventer.domain.member.dto.CompanyInfoUpdateRequest;
-import com.halo.eventer.domain.member.dto.LoginDto;
-import com.halo.eventer.domain.member.dto.PasswordChangeRequest;
-import com.halo.eventer.domain.member.dto.TokenDto;
 import com.halo.eventer.domain.member.exception.CompanyEmailAlreadyExistsException;
 import com.halo.eventer.domain.member.exception.LoginFailedException;
 import com.halo.eventer.domain.member.exception.LoginIdAlreadyExistsException;
@@ -41,12 +36,12 @@ public class MemberService {
         return new TokenDto(jwtProvider.createToken(member.getLoginId(), member.getRoleNames()));
     }
 
-    public TokenDto loginAdmin(LoginDto loginDto) {
+    public TokenDto loginAdmin(AdminLoginRequest request) {
         Member member = memberRepository
-                .findByLoginIdAndRole(loginDto.getLoginId(), MemberRole.AGENCY)
+                .findByLoginIdAndRole(request.getLoginId(), MemberRole.AGENCY)
                 .orElseThrow(MemberNotFoundException::new);
 
-        if (!encoder.matches(loginDto.getPassword(), member.getPassword())) {
+        if (!encoder.matches(request.getPassword(), member.getPassword())) {
             throw new LoginFailedException();
         }
 
