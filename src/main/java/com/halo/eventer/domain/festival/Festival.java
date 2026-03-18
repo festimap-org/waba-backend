@@ -155,7 +155,7 @@ public class Festival {
         this.name = name;
     }
 
-    public void updateSubdomain(String subdomain) {
+    public void updateSubDomain(String subdomain) {
         this.subAddress = subdomain;
     }
 

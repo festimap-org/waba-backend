@@ -39,65 +39,75 @@ public class FestivalController {
 
     @Operation(summary = "축제 상세 조회", description = "축제 ID로 축제 상세 정보를 조회합니다.")
     @GetMapping("/{id}")
-    public FestivalResDto getFestival(@Min(1) @PathVariable("id") Long id) {
-        return festivalService.findById(id);
+    public ResponseEntity<FestivalResDto> getFestival(@Min(1) @PathVariable Long id) {
+        return ResponseEntity.ok(festivalService.findById(id));
     }
 
     @Operation(summary = "축제 목록 조회", description = "모든 축제 목록을 조회합니다.")
     @GetMapping
-    public List<FestivalSummaryDto> getFestivals() {
-        return festivalService.findAll();
+    public ResponseEntity<List<FestivalSummaryDto>> getFestivals() {
+        return ResponseEntity.ok(festivalService.findAll());
     }
 
     @Operation(summary = "축제 수정", description = "축제 정보를 수정합니다.")
-    @PutMapping()
-    public FestivalResDto updateFestival(
-            @Min(1) @RequestParam("id") Long id, @Valid @RequestBody FestivalCreateDto festivalCreateDto) {
-        return festivalService.update(id, festivalCreateDto);
+    @PutMapping("/{id}")
+    public ResponseEntity<FestivalResDto> updateFestival(
+            @Min(1) @PathVariable Long id, @Valid @RequestBody FestivalCreateDto festivalCreateDto) {
+
+        return ResponseEntity.ok(festivalService.update(id, festivalCreateDto));
     }
 
     @Operation(summary = "축제 삭제", description = "축제를 삭제합니다.")
-    @DeleteMapping()
-    public void deleteFestival(@Min(1) @RequestParam("id") Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFestival(@Min(1) @PathVariable Long id) {
         festivalService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "축제 색상 수정", description = "축제의 테마 색상을 수정합니다.")
     @PatchMapping("/{festivalId}/color")
-    public void addColor(@Min(1) @PathVariable("festivalId") Long festivalId, @Valid @RequestBody ColorDto colorDto) {
+    public ResponseEntity<Void> updateColor(
+            @Min(1) @PathVariable Long festivalId, @Valid @RequestBody ColorDto colorDto) {
+
         festivalService.updateColor(festivalId, colorDto);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "축제 로고 수정", description = "축제의 로고 이미지를 수정합니다.")
     @PatchMapping("/{festivalId}/logo")
-    public void addLogo(@Min(1) @PathVariable("festivalId") Long festivalId, @RequestBody FileDto fileDto) {
+    public ResponseEntity<Void> updateLogo(@Min(1) @PathVariable Long festivalId, @RequestBody FileDto fileDto) {
+
         festivalService.updateLogo(festivalId, fileDto);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "축제 위치 수정", description = "축제의 위치 정보를 수정합니다.")
     @PatchMapping("/{festivalId}/location")
-    public FestivalResDto updateFestivalLocation(
-            @Min(1) @PathVariable("festivalId") Long festivalId, @RequestBody FestivalLocationDto festivalLocationDto) {
-        return festivalService.updateLocation(festivalId, festivalLocationDto);
+    public ResponseEntity<FestivalResDto> updateFestivalLocation(
+            @Min(1) @PathVariable Long festivalId, @RequestBody FestivalLocationDto festivalLocationDto) {
+
+        return ResponseEntity.ok(festivalService.updateLocation(festivalId, festivalLocationDto));
     }
 
     @Operation(summary = "축제 위치 조회", description = "축제의 위치 정보를 조회합니다.")
     @GetMapping("/{festivalId}/location")
-    public FestivalLocationDto getFestivalLocationInfo(@PathVariable("festivalId") Long festivalId) {
-        return festivalService.getFestivalLocationInfo(festivalId);
+    public ResponseEntity<FestivalLocationDto> getFestivalLocationInfo(@PathVariable Long festivalId) {
+        return ResponseEntity.ok(festivalService.getFestivalLocationInfo(festivalId));
     }
 
     @Operation(summary = "축제 이름 수정", description = "축제의 이름을 수정합니다.")
     @PatchMapping("/{festivalId}/name")
-    public void updateFestivalName(
-            @PathVariable("festivalId") Long festivalId, @RequestBody FestivalNameReqDto festivalNameReqDto) {
-        festivalService.updateFestivalName(festivalId, festivalNameReqDto);
+    public ResponseEntity<FestivalResDto> updateFestivalName(
+            @PathVariable Long festivalId, @RequestBody FestivalNameReqDto festivalNameReqDto) {
+
+        return ResponseEntity.ok(festivalService.updateFestivalName(festivalId, festivalNameReqDto));
     }
 
     @Operation(summary = "축제 서브 도메인 수정", description = "축제의 서브 도메인을 수정합니다.")
     @PatchMapping("/{festivalId}/sub-domain")
-    public void updateFestivalSubDomain(
-            @PathVariable("festivalId") Long festivalId, @RequestBody FestivalSubDomainReqDto festivalSubdomainReqDto) {
-        festivalService.updateFestivalSubDomain(festivalId, festivalSubdomainReqDto);
+    public ResponseEntity<FestivalResDto> updateFestivalSubDomain(
+            @PathVariable Long festivalId, @RequestBody FestivalSubDomainReqDto festivalSubdomainReqDto) {
+
+        return ResponseEntity.ok(festivalService.updateFestivalSubDomain(festivalId, festivalSubdomainReqDto));
     }
 }
