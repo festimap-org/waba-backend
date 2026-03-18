@@ -28,4 +28,8 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
     List<Festival> findByOwner(Member owner);
 
     boolean existsByIdAndOwnerId(Long festivalId, Long ownerId);
+
+    boolean existsByNameAndIdNot(String name, Long id);
+
+    boolean existsBySubAddressAndIdNot(String subAddress, Long id);
 }
