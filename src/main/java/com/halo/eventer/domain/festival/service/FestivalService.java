@@ -95,15 +95,17 @@ public class FestivalService {
     }
 
     @Transactional
-    public void updateFestivalName(Long id, FestivalNameReqDto nameReqDto) {
-        Festival festival = loadFestivalOrThrow(id);
-        festival.updateName(nameReqDto.getName());
+    public FestivalResDto updateFestivalName(Long festivalId, FestivalNameReqDto dto) {
+        Festival festival = loadFestivalOrThrow(festivalId);
+        festival.updateName(dto.getName());
+        return FestivalResDto.from(festival);
     }
 
     @Transactional
-    public void updateFestivalSubDomain(Long festivalId, FestivalSubDomainReqDto subdomainReqDto) {
+    public FestivalResDto updateFestivalSubDomain(Long festivalId, FestivalSubDomainReqDto dto) {
         Festival festival = loadFestivalOrThrow(festivalId);
-        festival.updateSubdomain(subdomainReqDto.getSubDomain());
+        festival.updateSubDomain(dto.getSubDomain());
+        return FestivalResDto.from(festival);
     }
 
     private Festival loadFestivalOrThrow(Long id) {
