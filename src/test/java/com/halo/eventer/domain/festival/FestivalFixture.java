@@ -22,6 +22,6 @@ public class FestivalFixture {
     }
 
     public static FestivalSummaryDto 축제요약_응답_DTO() {
-        return new FestivalSummaryDto(1L, "축제", "subAddress", 0, 0);
+        return new FestivalSummaryDto(1L, "축제", "festival-sub-domain", 0, 0);
     }
 }

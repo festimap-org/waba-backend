@@ -119,7 +119,7 @@ public class FestivalServiceTest {
         // then
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0).getFestivalName()).isEqualTo("축제");
-        assertThat(result.get(0).getSubAddress()).isEqualTo("univ");
+        assertThat(result.get(0).getSubDomain()).isEqualTo("univ");
     }
 
     @Test
@@ -214,7 +214,7 @@ public class FestivalServiceTest {
         // then
         assertThat(festivalSummaryDto).isNotNull();
         assertThat(festivalSummaryDto.getFestivalName()).isEqualTo("축제");
-        assertThat(festivalSummaryDto.getSubAddress()).isEqualTo("univ");
+        assertThat(festivalSummaryDto.getSubDomain()).isEqualTo("univ");
     }
 
     @Test

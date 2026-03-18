@@ -8,26 +8,18 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FestivalResDto {
-    private Long id;
 
+    private Long id;
     private String name;
     private String subDomain;
-
     private String logo;
-
     private ColorDto colors;
-
-    private double latitude; // 위도
-    private double longitude; // 경도
+    private double latitude;
+    private double longitude;
 
     public FestivalResDto(
-            final Long id,
-            final String name,
-            final String logo,
-            final ColorDto colors,
-            final double latitude,
-            final double longitude,
-            final String subDomain) {
+            Long id, String name, String logo, ColorDto colors, double latitude, double longitude, String subDomain) {
+
         this.id = id;
         this.name = name;
         this.logo = logo;
@@ -37,13 +29,12 @@ public class FestivalResDto {
         this.subDomain = subDomain;
     }
 
-    public static FestivalResDto from(final Festival festival) {
-        final ColorDto colorDto = ColorDto.from(festival);
+    public static FestivalResDto from(Festival festival) {
         return new FestivalResDto(
                 festival.getId(),
                 festival.getName(),
                 festival.getLogo(),
-                colorDto,
+                ColorDto.from(festival),
                 festival.getLatitude(),
                 festival.getLongitude(),
                 festival.getSubAddress());

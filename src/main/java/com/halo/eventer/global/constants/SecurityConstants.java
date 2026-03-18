@@ -90,7 +90,8 @@ public class SecurityConstants {
         "/api/v1/auth/sms/verify",
         // 관리자(AGENCY) 인증 API
         "/api/v1/admin/auth/login",
-        "/api/v1/admin/auth/signup"
+        "/api/v1/admin/auth/signup",
+        "/api/v1/admin/auth/admin-login"
     };
 
     public static final String[] PUBLIC_PATCH_URLS = {"/stamp/user/*/*", "/stamp/user/check/v2/*", "/stamp/mission"};
