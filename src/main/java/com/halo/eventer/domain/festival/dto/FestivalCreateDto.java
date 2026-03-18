@@ -1,6 +1,6 @@
 package com.halo.eventer.domain.festival.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class FestivalCreateDto {
 
-    @NotNull
+    @NotBlank
     private String name;
 
-    @NotNull
+    @NotBlank
     private String subDomain;
 }
