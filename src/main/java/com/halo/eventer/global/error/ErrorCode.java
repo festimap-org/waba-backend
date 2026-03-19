@@ -43,6 +43,13 @@ public enum ErrorCode {
     // Vote Error
     ALREADY_LIKE("C006", "Already Like Element", 400),
 
+    // Festival Vote Error
+    VOTE_NOT_FOUND("FV001", "Vote not found", 404),
+    CANDIDATE_NOT_FOUND("FV002", "Candidate not found", 404),
+    ALREADY_VOTED("FV003", "Already voted", 409),
+    VOTE_NOT_ENABLED("FV004", "Vote is not enabled", 400),
+    VOTE_CANCEL_NOT_ALLOWED("FV005", "Vote cancel is not allowed", 400),
+
     // Auth
     LOGIN_FAILED("A001", "Login Failed", 401),
     UN_AUTHENTICATED("A002", "Unauthenticated", 401),
