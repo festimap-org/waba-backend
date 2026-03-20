@@ -2,11 +2,11 @@ package com.halo.eventer.domain.vote.entity;
 
 import java.time.LocalDateTime;
 
-import com.halo.eventer.domain.vote.Vote;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import com.halo.eventer.domain.vote.Vote;
 import com.halo.eventer.domain.vote.fixture.VoteFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;

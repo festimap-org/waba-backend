@@ -3,12 +3,10 @@ package com.halo.eventer.domain.vote;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.halo.eventer.domain.festival.Festival;
 import jakarta.persistence.*;
 
+import com.halo.eventer.domain.festival.Festival;
 import com.halo.eventer.global.common.BaseTime;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -82,8 +80,13 @@ public class Vote extends BaseTime {
         return vote;
     }
 
-    public void updateInfo(String title, String voteImageUrl, String candidateDefaultImageUrl,
-            boolean showRank, boolean showVoteCount, boolean allowCancel) {
+    public void updateInfo(
+            String title,
+            String voteImageUrl,
+            String candidateDefaultImageUrl,
+            boolean showRank,
+            boolean showVoteCount,
+            boolean allowCancel) {
         this.title = title;
         this.voteImageUrl = voteImageUrl;
         this.candidateDefaultImageUrl = candidateDefaultImageUrl;
@@ -92,8 +95,11 @@ public class Vote extends BaseTime {
         this.allowCancel = allowCancel;
     }
 
-    public void updateSchedule(LocalDateTime displayStartAt, LocalDateTime displayEndAt,
-            LocalDateTime voteStartAt, LocalDateTime voteEndAt) {
+    public void updateSchedule(
+            LocalDateTime displayStartAt,
+            LocalDateTime displayEndAt,
+            LocalDateTime voteStartAt,
+            LocalDateTime voteEndAt) {
         this.displayStartAt = displayStartAt;
         this.displayEndAt = displayEndAt;
         this.voteStartAt = voteStartAt;

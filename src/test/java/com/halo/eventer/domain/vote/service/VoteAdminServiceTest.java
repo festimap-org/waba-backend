@@ -33,11 +33,17 @@ import static org.mockito.BDDMockito.*;
 @SuppressWarnings("NonAsciiCharacters")
 class VoteAdminServiceTest {
 
-    @Mock private VoteRepository voteRepository;
-    @Mock private FestivalRepository festivalRepository;
-    @Mock private VoteRedisRepository voteRedisRepository;
+    @Mock
+    private VoteRepository voteRepository;
 
-    @InjectMocks private VoteAdminService voteAdminService;
+    @Mock
+    private FestivalRepository festivalRepository;
+
+    @Mock
+    private VoteRedisRepository voteRedisRepository;
+
+    @InjectMocks
+    private VoteAdminService voteAdminService;
 
     private Festival festival;
     private Vote vote;
@@ -89,8 +95,7 @@ class VoteAdminServiceTest {
     void 투표_상세_조회_존재하지_않는_투표_실패() {
         given(voteRepository.findByIdWithCandidates(anyLong())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> voteAdminService.getVote(존재하지_않는_투표_ID))
-                .isInstanceOf(VoteNotFoundException.class);
+        assertThatThrownBy(() -> voteAdminService.getVote(존재하지_않는_투표_ID)).isInstanceOf(VoteNotFoundException.class);
     }
 
     @Test
@@ -107,8 +112,7 @@ class VoteAdminServiceTest {
     void 투표_기본_정보_조회_존재하지_않는_투표_실패() {
         given(voteRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> voteAdminService.getVoteInfo(존재하지_않는_투표_ID))
-                .isInstanceOf(VoteNotFoundException.class);
+        assertThatThrownBy(() -> voteAdminService.getVoteInfo(존재하지_않는_투표_ID)).isInstanceOf(VoteNotFoundException.class);
     }
 
     @Test
@@ -179,7 +183,6 @@ class VoteAdminServiceTest {
     void 투표_삭제_존재하지_않는_투표_실패() {
         given(voteRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> voteAdminService.deleteVote(존재하지_않는_투표_ID))
-                .isInstanceOf(VoteNotFoundException.class);
+        assertThatThrownBy(() -> voteAdminService.deleteVote(존재하지_않는_투표_ID)).isInstanceOf(VoteNotFoundException.class);
     }
 }

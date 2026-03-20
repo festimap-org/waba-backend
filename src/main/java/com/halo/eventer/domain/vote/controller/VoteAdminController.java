@@ -16,7 +16,6 @@ import com.halo.eventer.domain.vote.dto.response.VoteInfoResponse;
 import com.halo.eventer.domain.vote.dto.response.VoteResponse;
 import com.halo.eventer.domain.vote.dto.response.VoteScheduleResponse;
 import com.halo.eventer.domain.vote.service.VoteAdminService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +31,14 @@ public class VoteAdminController {
     @Operation(summary = "투표 생성(Only Title)")
     @PostMapping("/festivals/{festivalId}/votes")
     public ResponseEntity<Void> createVote(
-            @Min(1) @PathVariable("festivalId") Long festivalId,
-            @Valid @RequestBody VoteCreateRequest request) {
+            @Min(1) @PathVariable("festivalId") Long festivalId, @Valid @RequestBody VoteCreateRequest request) {
         voteAdminService.createVote(festivalId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary = "축제별 투표 목록 조회")
     @GetMapping("/festivals/{festivalId}/votes")
-    public ResponseEntity<List<VoteResponse>> getVotesByFestival(
-            @Min(1) @PathVariable("festivalId") Long festivalId) {
+    public ResponseEntity<List<VoteResponse>> getVotesByFestival(@Min(1) @PathVariable("festivalId") Long festivalId) {
         return ResponseEntity.ok(voteAdminService.getVotesByFestival(festivalId));
     }
 
@@ -66,8 +63,7 @@ public class VoteAdminController {
     @Operation(summary = "투표 기본 정보 수정 (제목/이미지/표시 설정)")
     @PatchMapping("/votes/{voteId}/info")
     public ResponseEntity<Void> updateVoteInfo(
-            @Min(1) @PathVariable("voteId") Long voteId,
-            @Valid @RequestBody VoteInfoUpdateRequest request) {
+            @Min(1) @PathVariable("voteId") Long voteId, @Valid @RequestBody VoteInfoUpdateRequest request) {
         voteAdminService.updateVoteInfo(voteId, request);
         return ResponseEntity.noContent().build();
     }
@@ -75,8 +71,7 @@ public class VoteAdminController {
     @Operation(summary = "투표 일정 수정 (오픈/노출 시간)")
     @PatchMapping("/votes/{voteId}/schedule")
     public ResponseEntity<Void> updateVoteSchedule(
-            @Min(1) @PathVariable("voteId") Long voteId,
-            @Valid @RequestBody VoteScheduleUpdateRequest request) {
+            @Min(1) @PathVariable("voteId") Long voteId, @Valid @RequestBody VoteScheduleUpdateRequest request) {
         voteAdminService.updateVoteSchedule(voteId, request);
         return ResponseEntity.ok().build();
     }

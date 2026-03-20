@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.halo.eventer.domain.vote.Vote;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -78,9 +77,8 @@ public class VoteDetailResponse {
         response.displayEndAt = vote.getDisplayEndAt();
         response.voteStartAt = vote.getVoteStartAt();
         response.voteEndAt = vote.getVoteEndAt();
-        response.candidates = vote.getCandidates().stream()
-                .map(CandidateResponse::fromAdmin)
-                .collect(Collectors.toList());
+        response.candidates =
+                vote.getCandidates().stream().map(CandidateResponse::fromAdmin).collect(Collectors.toList());
         return response;
     }
 }

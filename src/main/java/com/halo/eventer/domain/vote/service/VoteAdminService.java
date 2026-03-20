@@ -20,7 +20,6 @@ import com.halo.eventer.domain.vote.dto.response.VoteScheduleResponse;
 import com.halo.eventer.domain.vote.exception.VoteNotFoundException;
 import com.halo.eventer.domain.vote.repository.VoteRedisRepository;
 import com.halo.eventer.domain.vote.repository.VoteRepository;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -33,9 +32,8 @@ public class VoteAdminService {
 
     @Transactional
     public void createVote(Long festivalId, VoteCreateRequest request) {
-        Festival festival = festivalRepository
-                .findById(festivalId)
-                .orElseThrow(() -> new FestivalNotFoundException(festivalId));
+        Festival festival =
+                festivalRepository.findById(festivalId).orElseThrow(() -> new FestivalNotFoundException(festivalId));
 
         Vote vote = Vote.create(festival, request.getTitle());
         voteRepository.save(vote);
@@ -50,9 +48,7 @@ public class VoteAdminService {
 
     @Transactional(readOnly = true)
     public VoteDetailResponse getVote(Long voteId) {
-        Vote vote = voteRepository
-                .findByIdWithCandidates(voteId)
-                .orElseThrow(() -> new VoteNotFoundException(voteId));
+        Vote vote = voteRepository.findByIdWithCandidates(voteId).orElseThrow(() -> new VoteNotFoundException(voteId));
         return VoteDetailResponse.forAdmin(vote);
     }
 
