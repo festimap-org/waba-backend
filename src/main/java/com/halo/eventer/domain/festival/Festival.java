@@ -35,7 +35,8 @@ public class Festival {
     private Long id;
 
     private String name;
-    private String subAddress;
+    @Column(name = "sub_domain")
+    private String subDomain;
 
     private String mainColor;
     private String subColor;
@@ -96,9 +97,9 @@ public class Festival {
     @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ParkingManagement> parkingManagements = new ArrayList<>();
 
-    private Festival(String name, String subAddress) {
+    private Festival(String name, String subDomain) {
         this.name = name;
-        this.subAddress = subAddress;
+        this.subDomain = subDomain;
     }
 
     public static Festival from(FestivalCreateDto festivalCreateDto) {
@@ -113,7 +114,7 @@ public class Festival {
 
     public void updateFestival(FestivalCreateDto festivalCreateDto) {
         this.name = festivalCreateDto.getName();
-        this.subAddress = festivalCreateDto.getSubDomain();
+        this.subDomain = festivalCreateDto.getSubDomain();
     }
 
     public void updateColor(ColorDto colorDto) {
@@ -156,7 +157,7 @@ public class Festival {
     }
 
     public void updateSubDomain(String subdomain) {
-        this.subAddress = subdomain;
+        this.subDomain = subdomain;
     }
 
     public boolean isActive() {
