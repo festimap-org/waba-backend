@@ -12,6 +12,6 @@ public class FestivalCreateResponseDto {
     public FestivalCreateResponseDto(Festival festival) {
         this.festivalId = festival.getId();
         this.name = festival.getName();
-        this.subDomain = festival.getSubAddress();
+        this.subDomain = festival.getSubDomain();
     }
 }
