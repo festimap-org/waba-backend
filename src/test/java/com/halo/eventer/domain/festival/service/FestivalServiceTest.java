@@ -223,8 +223,7 @@ public class FestivalServiceTest {
         given(festivalRepository.findBySubDomain("univ")).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> festivalService.findBySubDomain("univ"))
-                .isInstanceOf(FestivalNotFoundException.class);
+        assertThatThrownBy(() -> festivalService.findBySubDomain("univ")).isInstanceOf(FestivalNotFoundException.class);
     }
 
     @Test

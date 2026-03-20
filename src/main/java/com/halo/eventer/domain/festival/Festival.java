@@ -35,6 +35,7 @@ public class Festival {
     private Long id;
 
     private String name;
+
     @Column(name = "sub_domain")
     private String subDomain;
 
