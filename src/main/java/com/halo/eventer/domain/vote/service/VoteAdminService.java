@@ -13,11 +13,11 @@ import com.halo.eventer.domain.vote.Vote;
 import com.halo.eventer.domain.vote.dto.request.VoteCreateRequest;
 import com.halo.eventer.domain.vote.dto.request.VoteInfoUpdateRequest;
 import com.halo.eventer.domain.vote.dto.request.VoteScheduleUpdateRequest;
-import com.halo.eventer.domain.vote.dto.response.VoteDetailResponse;
 import com.halo.eventer.domain.vote.dto.response.VoteInfoResponse;
 import com.halo.eventer.domain.vote.dto.response.VoteResponse;
 import com.halo.eventer.domain.vote.dto.response.VoteScheduleResponse;
 import com.halo.eventer.domain.vote.exception.VoteNotFoundException;
+import com.halo.eventer.domain.vote.repository.CandidateRepository;
 import com.halo.eventer.domain.vote.repository.VoteRedisRepository;
 import com.halo.eventer.domain.vote.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +28,7 @@ public class VoteAdminService {
 
     private final VoteRepository voteRepository;
     private final FestivalRepository festivalRepository;
+    private final CandidateRepository candidateRepository;
     private final VoteRedisRepository voteRedisRepository;
 
     @Transactional
@@ -46,15 +47,10 @@ public class VoteAdminService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public VoteDetailResponse getVote(Long voteId) {
-        Vote vote = voteRepository.findByIdWithCandidates(voteId).orElseThrow(() -> new VoteNotFoundException(voteId));
-        return VoteDetailResponse.forAdmin(vote);
-    }
-
     @Transactional
     public void deleteVote(Long voteId) {
         Vote vote = loadVoteOrThrow(voteId);
+        candidateRepository.deleteAllByVoteId(voteId);
         voteRepository.delete(vote);
         voteRedisRepository.deleteVoteCache(voteId);
     }

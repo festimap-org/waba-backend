@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import com.halo.eventer.domain.vote.dto.request.VoteCreateRequest;
 import com.halo.eventer.domain.vote.dto.request.VoteInfoUpdateRequest;
 import com.halo.eventer.domain.vote.dto.request.VoteScheduleUpdateRequest;
-import com.halo.eventer.domain.vote.dto.response.VoteDetailResponse;
 import com.halo.eventer.domain.vote.dto.response.VoteInfoResponse;
 import com.halo.eventer.domain.vote.dto.response.VoteResponse;
 import com.halo.eventer.domain.vote.dto.response.VoteScheduleResponse;
@@ -52,12 +51,6 @@ public class VoteAdminController {
     @GetMapping("/votes/{voteId}/schedule")
     public ResponseEntity<VoteScheduleResponse> getVoteSchedule(@Min(1) @PathVariable("voteId") Long voteId) {
         return ResponseEntity.ok(voteAdminService.getVoteSchedule(voteId));
-    }
-
-    @Operation(summary = "투표 상세 조회")
-    @GetMapping("/votes/{voteId}")
-    public ResponseEntity<VoteDetailResponse> getVote(@Min(1) @PathVariable("voteId") Long voteId) {
-        return ResponseEntity.ok(voteAdminService.getVote(voteId));
     }
 
     @Operation(summary = "투표 기본 정보 수정 (제목/이미지/표시 설정)")

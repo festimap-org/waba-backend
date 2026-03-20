@@ -1,8 +1,6 @@
 package com.halo.eventer.domain.vote;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import jakarta.persistence.*;
 
 import com.halo.eventer.domain.festival.Festival;
@@ -68,10 +66,6 @@ public class Vote extends BaseTime {
 
     @Column(name = "vote_end_at")
     private LocalDateTime voteEndAt;
-
-    @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("displayOrder ASC")
-    private List<Candidate> candidates = new ArrayList<>();
 
     public static Vote create(Festival festival, String title) {
         Vote vote = new Vote();

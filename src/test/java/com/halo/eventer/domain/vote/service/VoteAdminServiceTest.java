@@ -15,8 +15,8 @@ import com.halo.eventer.domain.festival.FestivalFixture;
 import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.vote.Vote;
-import com.halo.eventer.domain.vote.dto.response.VoteDetailResponse;
 import com.halo.eventer.domain.vote.dto.response.VoteInfoResponse;
+import com.halo.eventer.domain.vote.repository.CandidateRepository;
 import com.halo.eventer.domain.vote.dto.response.VoteResponse;
 import com.halo.eventer.domain.vote.dto.response.VoteScheduleResponse;
 import com.halo.eventer.domain.vote.exception.VoteNotFoundException;
@@ -38,6 +38,9 @@ class VoteAdminServiceTest {
 
     @Mock
     private FestivalRepository festivalRepository;
+
+    @Mock
+    private CandidateRepository candidateRepository;
 
     @Mock
     private VoteRedisRepository voteRedisRepository;
@@ -79,23 +82,6 @@ class VoteAdminServiceTest {
         List<VoteResponse> result = voteAdminService.getVotesByFestival(축제_ID);
 
         assertThat(result).hasSize(votes.size());
-    }
-
-    @Test
-    void 투표_상세_조회_성공() {
-        given(voteRepository.findByIdWithCandidates(anyLong())).willReturn(Optional.of(vote));
-
-        VoteDetailResponse result = voteAdminService.getVote(투표_ID);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getTitle()).isEqualTo(vote.getTitle());
-    }
-
-    @Test
-    void 투표_상세_조회_존재하지_않는_투표_실패() {
-        given(voteRepository.findByIdWithCandidates(anyLong())).willReturn(Optional.empty());
-
-        assertThatThrownBy(() -> voteAdminService.getVote(존재하지_않는_투표_ID)).isInstanceOf(VoteNotFoundException.class);
     }
 
     @Test
@@ -175,6 +161,7 @@ class VoteAdminServiceTest {
 
         voteAdminService.deleteVote(투표_ID);
 
+        then(candidateRepository).should().deleteAllByVoteId(투표_ID);
         then(voteRepository).should().delete(vote);
         then(voteRedisRepository).should().deleteVoteCache(투표_ID);
     }
