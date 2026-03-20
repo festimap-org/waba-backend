@@ -162,7 +162,6 @@ public class FestivalService {
         }
     }
 
-
     private void validateUniqueFestivalName(Long festivalId, String name) {
         boolean exists = festivalRepository.existsByNameAndIdNot(name, festivalId);
 
