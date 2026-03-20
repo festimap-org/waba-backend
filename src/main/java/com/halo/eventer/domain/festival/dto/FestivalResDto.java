@@ -37,6 +37,6 @@ public class FestivalResDto {
                 ColorDto.from(festival),
                 festival.getLatitude(),
                 festival.getLongitude(),
-                festival.getSubAddress());
+                festival.getSubDomain());
     }
 }

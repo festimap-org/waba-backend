@@ -116,10 +116,10 @@ public class AlimtalkService {
                 + "🚨 공통 안내 사항\n"
                 + commonNotice;
 
-        String subAddress = program.getFestival().getSubAddress();
-        String reservationConfirmUrl = buildProgramUrl(subAddress, "/myreservation");
-        String programDetailUrl = buildProgramUrl(subAddress, "/detail?id=" + program.getId());
-        String programListUrl = buildProgramUrl(subAddress, "");
+        String subDomain = program.getFestival().getSubDomain();
+        String reservationConfirmUrl = buildProgramUrl(subDomain, "/myreservation");
+        String programDetailUrl = buildProgramUrl(subDomain, "/detail?id=" + program.getId());
+        String programListUrl = buildProgramUrl(subDomain, "");
 
         List<AlimtalkButton> buttons = List.of(
                 AlimtalkButton.wl("내 예약 확인", reservationConfirmUrl),
@@ -154,9 +154,9 @@ public class AlimtalkService {
                 + price + "원\n" + "\n"
                 + "※ 결제 방법에 따라 환불은 영업일 기준 최대 7일 이상 소요될 수 있습니다.";
 
-        String subAddress = program.getFestival().getSubAddress();
-        String reservationConfirmUrl = buildProgramUrl(subAddress, "/myreservation");
-        String programListUrl = buildProgramUrl(subAddress, "");
+        String subDomain = program.getFestival().getSubDomain();
+        String reservationConfirmUrl = buildProgramUrl(subDomain, "/myreservation");
+        String programListUrl = buildProgramUrl(subDomain, "");
 
         List<AlimtalkButton> buttons = List.of(
                 AlimtalkButton.wl("내 예약 확인", reservationConfirmUrl), AlimtalkButton.wl("다른 프로그램 보기", programListUrl));
@@ -209,10 +209,10 @@ public class AlimtalkService {
                 + "\n" + "\n"
                 + "※ 집결 장소 및 상세 안내는 ‘프로그램 상세’에서 확인하실 수 있습니다.";
 
-        String subAddress = program.getFestival().getSubAddress();
-        String reservationConfirmUrl = buildProgramUrl(subAddress, "/myreservation");
-        String programDetailUrl = buildProgramUrl(subAddress, "/detail?id=" + program.getId());
-        String programListUrl = buildProgramUrl(subAddress, "");
+        String subDomain = program.getFestival().getSubDomain();
+        String reservationConfirmUrl = buildProgramUrl(subDomain, "/myreservation");
+        String programDetailUrl = buildProgramUrl(subDomain, "/detail?id=" + program.getId());
+        String programListUrl = buildProgramUrl(subDomain, "");
 
         List<AlimtalkButton> buttons = List.of(
                 AlimtalkButton.wl("내 예약 확인", reservationConfirmUrl),
@@ -268,10 +268,10 @@ public class AlimtalkService {
                 + "\n" + "\n"
                 + "※ 집결 장소 및 상세 안내는 ‘프로그램 상세’에서 확인하실 수 있습니다.";
 
-        String subAddress = program.getFestival().getSubAddress();
-        String reservationConfirmUrl = buildProgramUrl(subAddress, "/myreservation");
-        String programDetailUrl = buildProgramUrl(subAddress, "/detail?id=" + program.getId());
-        String programListUrl = buildProgramUrl(subAddress, "");
+        String subDomain = program.getFestival().getSubDomain();
+        String reservationConfirmUrl = buildProgramUrl(subDomain, "/myreservation");
+        String programDetailUrl = buildProgramUrl(subDomain, "/detail?id=" + program.getId());
+        String programListUrl = buildProgramUrl(subDomain, "");
 
         List<AlimtalkButton> buttons = List.of(
                 AlimtalkButton.wl("내 예약 확인", reservationConfirmUrl),

@@ -32,8 +32,8 @@ public class HomeController {
 
     @Operation(summary = "서브 도메인으로 축제 조회", description = "서브 도메인 주소로 축제 요약 정보를 조회합니다.")
     @GetMapping("/home")
-    public FestivalSummaryDto getFestivalBySubAddress(@NotNull @RequestParam("subAddress") String name) {
-        return festivalService.findBySubAddress(name);
+    public FestivalSummaryDto getFestivalBySubDomain(@NotNull @RequestParam("subDomain") String subDomain) {
+        return festivalService.findBySubDomain(subDomain);
     }
 
     @Operation(summary = "헬스 체크", description = "서버 상태를 확인합니다.")

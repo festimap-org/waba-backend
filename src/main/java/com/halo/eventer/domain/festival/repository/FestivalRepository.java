@@ -14,7 +14,7 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
 
     Optional<Festival> findByName(String name);
 
-    Optional<Festival> findBySubAddress(String subAddress);
+    Optional<Festival> findBySubDomain(String subDomain);
 
     @Query("SELECT f FROM Festival f "
             + "JOIN FETCH f.baseWidgets w "
@@ -31,5 +31,5 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
 
     boolean existsByNameAndIdNot(String name, Long id);
 
-    boolean existsBySubAddressAndIdNot(String subAddress, Long id);
+    boolean existsBySubDomainAndIdNot(String subDomain, Long id);
 }
