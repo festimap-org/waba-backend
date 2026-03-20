@@ -48,7 +48,7 @@ public class MapCategoryRepositoryTest {
     void 지도_카테고리_생성() {
         assertThat(mapCategory.getCategoryName()).isEqualTo("카테고리");
         assertThat(mapCategory.getFestival().getName()).isEqualTo("축제");
-        assertThat(mapCategory.getFestival().getSubAddress()).isEqualTo("univ");
+        assertThat(mapCategory.getFestival().getSubDomain()).isEqualTo("univ");
     }
 
     @Test
