@@ -17,15 +17,15 @@ public class FestivalSummaryDto {
     public FestivalSummaryDto(Festival festival) {
         this.id = festival.getId();
         this.festivalName = festival.getName();
-        this.subDomain = festival.getSubAddress(); // 내부 → 외부 매핑
+        this.subDomain = festival.getSubDomain(); // 내부 → 외부 매핑
         this.latitude = festival.getLatitude();
         this.longitude = festival.getLongitude();
     }
 
-    public FestivalSummaryDto(Long id, String festivalName, String subAddress, double latitude, double longitude) {
+    public FestivalSummaryDto(Long id, String festivalName, String subDomain, double latitude, double longitude) {
         this.id = id;
         this.festivalName = festivalName;
-        this.subDomain = subAddress; // 여기서 변환
+        this.subDomain = subDomain; // 여기서 변환
         this.latitude = latitude;
         this.longitude = longitude;
     }

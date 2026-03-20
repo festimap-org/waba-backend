@@ -9,5 +9,5 @@ public class FestivalUpdateResDto {
     private Long id;
 
     private String name;
-    private String subAddress;
+    private String subDomain;
 }
