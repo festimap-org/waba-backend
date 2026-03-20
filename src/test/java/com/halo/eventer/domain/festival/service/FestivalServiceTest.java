@@ -55,7 +55,7 @@ public class FestivalServiceTest {
     void 축제생성_성공() {
         // given
         given(festivalRepository.findByName(anyString())).willReturn(Optional.empty());
-        given(festivalRepository.findBySubAddress(anyString())).willReturn(Optional.empty());
+        given(festivalRepository.findBySubDomain(anyString())).willReturn(Optional.empty());
         given(festivalRepository.save(any())).willReturn(festival);
 
         // when
@@ -64,7 +64,7 @@ public class FestivalServiceTest {
         // then
         verify(festivalRepository, times(1))
                 .save(argThat(savedFestival -> savedFestival.getName().equals(festivalCreateDto.getName())
-                        && savedFestival.getSubAddress().equals(festivalCreateDto.getSubDomain())));
+                        && savedFestival.getSubDomain().equals(festivalCreateDto.getSubDomain())));
     }
 
     @Test()
@@ -80,7 +80,7 @@ public class FestivalServiceTest {
     @Test
     void 축제생성_서브주소같은_경우() {
         // given
-        given(festivalRepository.findBySubAddress(anyString())).willReturn(Optional.of(festival));
+        given(festivalRepository.findBySubDomain(anyString())).willReturn(Optional.of(festival));
 
         // when & then
         assertThatThrownBy(() -> festivalService.create(festivalCreateDto, owner))
@@ -204,12 +204,12 @@ public class FestivalServiceTest {
     }
 
     @Test
-    void subAddress조회_성공() {
+    void subDomain조회_성공() {
         // given
-        given(festivalRepository.findBySubAddress("univ")).willReturn(Optional.of(festival));
+        given(festivalRepository.findBySubDomain("univ")).willReturn(Optional.of(festival));
 
         // when
-        FestivalSummaryDto festivalSummaryDto = festivalService.findBySubAddress("univ");
+        FestivalSummaryDto festivalSummaryDto = festivalService.findBySubDomain("univ");
 
         // then
         assertThat(festivalSummaryDto).isNotNull();
@@ -218,12 +218,12 @@ public class FestivalServiceTest {
     }
 
     @Test
-    void subAddress조회_축제가없는_경우() {
+    void subDomain조회_축제가없는_경우() {
         // given
-        given(festivalRepository.findBySubAddress("univ")).willReturn(Optional.empty());
+        given(festivalRepository.findBySubDomain("univ")).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> festivalService.findBySubAddress("univ"))
+        assertThatThrownBy(() -> festivalService.findBySubDomain("univ"))
                 .isInstanceOf(FestivalNotFoundException.class);
     }
 

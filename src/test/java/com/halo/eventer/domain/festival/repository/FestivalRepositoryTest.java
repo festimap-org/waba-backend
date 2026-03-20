@@ -39,7 +39,7 @@ public class FestivalRepositoryTest {
     @Test
     void 축제생성() {
         assertThat(festival.getName()).isEqualTo("축제");
-        assertThat(festival.getSubAddress()).isEqualTo("univ");
+        assertThat(festival.getSubDomain()).isEqualTo("univ");
     }
 
     @Test
@@ -64,7 +64,7 @@ public class FestivalRepositoryTest {
     @Test
     void subAddress로_축제_찾기() {
         // when
-        Optional<Festival> result = festivalRepository.findBySubAddress("univ");
+        Optional<Festival> result = festivalRepository.findBySubDomain("univ");
 
         // then
         assertThat(result.isPresent()).isTrue();
@@ -74,7 +74,7 @@ public class FestivalRepositoryTest {
     @Test
     void subAddress로_축제_찾기_실패() {
         // when
-        Optional<Festival> result = festivalRepository.findBySubAddress("uni");
+        Optional<Festival> result = festivalRepository.findBySubDomain("uni");
 
         // then
         assertThat(result.isPresent()).isFalse();

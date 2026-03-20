@@ -80,10 +80,10 @@ public class FestivalService {
         festival.updateLogo(fileDto);
     }
 
-    public FestivalSummaryDto findBySubAddress(String subAddress) {
+    public FestivalSummaryDto findBySubDomain(String subDomain) {
         Festival festival = festivalRepository
-                .findBySubAddress(subAddress)
-                .orElseThrow(() -> new FestivalNotFoundException(subAddress));
+                .findBySubDomain(subDomain)
+                .orElseThrow(() -> new FestivalNotFoundException(subDomain));
         return new FestivalSummaryDto(festival);
     }
 
@@ -154,13 +154,14 @@ public class FestivalService {
         boolean existsByName =
                 festivalRepository.findByName(festivalCreateDto.getName()).isPresent();
         boolean existsBySubDomain = festivalRepository
-                .findBySubAddress(festivalCreateDto.getSubDomain())
+                .findBySubDomain(festivalCreateDto.getSubDomain())
                 .isPresent();
 
         if (existsByName || existsBySubDomain) {
             throw new FestivalAlreadyExistsException();
         }
     }
+
 
     private void validateUniqueFestivalName(Long festivalId, String name) {
         boolean exists = festivalRepository.existsByNameAndIdNot(name, festivalId);
@@ -171,7 +172,7 @@ public class FestivalService {
     }
 
     private void validateUniqueFestivalSubDomain(Long festivalId, String subDomain) {
-        boolean exists = festivalRepository.existsBySubAddressAndIdNot(subDomain, festivalId);
+        boolean exists = festivalRepository.existsBySubDomainAndIdNot(subDomain, festivalId);
 
         if (exists) {
             throw new FestivalAlreadyExistsException();
