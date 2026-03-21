@@ -3,11 +3,13 @@ package com.halo.eventer.domain.vote.dto.response;
 import java.time.LocalDateTime;
 
 import com.halo.eventer.domain.vote.Vote;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class VoteScheduleResponse {
 
     private LocalDateTime displayStartAt;
@@ -18,13 +20,12 @@ public class VoteScheduleResponse {
     private boolean voteEnabled;
 
     public static VoteScheduleResponse from(Vote vote) {
-        VoteScheduleResponse response = new VoteScheduleResponse();
-        response.displayStartAt = vote.getDisplayStartAt();
-        response.displayEndAt = vote.getDisplayEndAt();
-        response.displayEnabled = vote.isDisplayEnabled();
-        response.voteStartAt = vote.getVoteStartAt();
-        response.voteEndAt = vote.getVoteEndAt();
-        response.voteEnabled = vote.isVoteEnabled();
-        return response;
+        return new VoteScheduleResponse(
+                vote.getDisplayStartAt(),
+                vote.getDisplayEndAt(),
+                vote.isDisplayEnabled(),
+                vote.getVoteStartAt(),
+                vote.getVoteEndAt(),
+                vote.isVoteEnabled());
     }
 }

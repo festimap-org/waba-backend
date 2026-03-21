@@ -1,6 +1,7 @@
 package com.halo.eventer.domain.vote.dto.request;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +11,10 @@ import lombok.NoArgsConstructor;
 public class DisplayOrderUpdateRequest {
 
     @NotNull
+    @Positive
     private Long candidateIdA;
 
     @NotNull
+    @Positive
     private Long candidateIdB;
 }

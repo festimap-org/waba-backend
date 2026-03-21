@@ -75,9 +75,9 @@ public class VoteAdminService {
                 request.getTitle(),
                 request.getVoteImageUrl(),
                 request.getCandidateDefaultImageUrl(),
-                request.isShowRank(),
-                request.isShowVoteCount(),
-                request.isAllowCancel());
+                request.getShowRank() != null ? request.getShowRank() : vote.isShowRank(),
+                request.getShowVoteCount() != null ? request.getShowVoteCount() : vote.isShowVoteCount(),
+                request.getAllowCancel() != null ? request.getAllowCancel() : vote.isAllowCancel());
     }
 
     @Transactional
@@ -99,7 +99,7 @@ public class VoteAdminService {
     }
 
     private void validateSchedule(LocalDateTime start, LocalDateTime end) {
-        if (start != null && end != null && !start.isBefore(end)) {
+        if (!start.isBefore(end)) {
             throw new BaseException(ErrorCode.INVALID_SCHEDULE);
         }
     }

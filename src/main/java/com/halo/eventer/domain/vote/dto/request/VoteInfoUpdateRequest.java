@@ -16,7 +16,7 @@ public class VoteInfoUpdateRequest {
 
     private String voteImageUrl;
     private String candidateDefaultImageUrl;
-    private boolean showRank;
-    private boolean showVoteCount;
-    private boolean allowCancel;
+    private Boolean showRank;
+    private Boolean showVoteCount;
+    private Boolean allowCancel;
 }

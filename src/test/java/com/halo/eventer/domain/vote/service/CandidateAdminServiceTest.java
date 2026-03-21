@@ -10,8 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.halo.eventer.domain.festival.Festival;
-import com.halo.eventer.domain.festival.FestivalFixture;
 import com.halo.eventer.domain.vote.Candidate;
 import com.halo.eventer.domain.vote.Vote;
 import com.halo.eventer.domain.vote.dto.response.CandidateListResponse;
@@ -53,7 +51,6 @@ class CandidateAdminServiceTest {
 
     @BeforeEach
     void setUp() {
-        Festival festival = FestivalFixture.축제_엔티티();
         vote = VoteFixture.투표_생성();
         candidateA = CandidateFixture.후보_생성(vote, 후보_ID_A, 0);
         candidateB = CandidateFixture.후보_생성(vote, 후보_ID_B, 1);

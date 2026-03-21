@@ -23,6 +23,7 @@ import com.halo.eventer.domain.vote.fixture.VoteFixture;
 import com.halo.eventer.domain.vote.repository.CandidateRepository;
 import com.halo.eventer.domain.vote.repository.VoteRedisRepository;
 import com.halo.eventer.domain.vote.repository.VoteRepository;
+import com.halo.eventer.global.error.ErrorCode;
 import com.halo.eventer.global.error.exception.BaseException;
 
 import static com.halo.eventer.domain.vote.fixture.VoteFixture.*;
@@ -161,13 +162,15 @@ class VoteAdminServiceTest {
     @Test
     void 투표_일정_수정_노출_시작이_종료_이후_실패() {
         assertThatThrownBy(() -> voteAdminService.updateVoteSchedule(투표_ID, 노출_시작이_종료_이후인_일정_수정_요청()))
-                .isInstanceOf(BaseException.class);
+                .isInstanceOf(BaseException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_SCHEDULE);
     }
 
     @Test
     void 투표_일정_수정_투표_시작이_종료_이후_실패() {
         assertThatThrownBy(() -> voteAdminService.updateVoteSchedule(투표_ID, 투표_시작이_종료_이후인_일정_수정_요청()))
-                .isInstanceOf(BaseException.class);
+                .isInstanceOf(BaseException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_SCHEDULE);
     }
 
     @Test
