@@ -17,6 +17,12 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
 
     void deleteAllByVoteId(Long voteId);
 
+    @Query("SELECT c FROM Candidate c WHERE c.id IN :ids AND c.vote.id = :voteId")
+    List<Candidate> findAllByIdInAndVoteId(@Param("ids") List<Long> ids, @Param("voteId") Long voteId);
+
+    @Query("SELECT COALESCE(MAX(c.displayOrder), -1) FROM Candidate c WHERE c.vote.id = :voteId")
+    int findMaxDisplayOrderByVoteId(@Param("voteId") Long voteId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT c FROM Candidate c WHERE c.id = :id")
     Optional<Candidate> findByIdForUpdate(@Param("id") Long id);

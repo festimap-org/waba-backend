@@ -26,6 +26,14 @@ public class VoteFixture {
         return vote;
     }
 
+    public static Vote 기본_이미지가_있는_투표_생성() {
+        Festival festival = FestivalFixture.축제_엔티티();
+        Vote vote = Vote.create(festival, "테스트 투표");
+        setField(vote, "id", 투표_ID);
+        setField(vote, "candidateDefaultImageUrl", "https://image.url/default.jpg");
+        return vote;
+    }
+
     public static List<Vote> 투표_목록_생성() {
         return List.of(투표_생성(), 투표_생성());
     }

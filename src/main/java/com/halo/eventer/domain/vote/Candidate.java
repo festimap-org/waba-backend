@@ -74,23 +74,16 @@ public class Candidate extends BaseTime {
         return candidate;
     }
 
-    public void update(
-            String code,
-            String displayName,
-            String realName,
-            String description,
-            String imageUrl,
-            String phone,
-            boolean isEnabled,
-            int displayOrder) {
-        this.code = code;
+    public void update(String displayName, String realName, String description, String imageUrl, String phone) {
         this.displayName = displayName;
         this.realName = realName;
         this.description = description;
         this.imageUrl = imageUrl;
         this.phone = phone;
+    }
+
+    public void updateEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
-        this.displayOrder = displayOrder;
     }
 
     public void incrementVoteCount() {
