@@ -51,8 +51,32 @@ public class VoteFixture {
         VoteScheduleUpdateRequest request = new VoteScheduleUpdateRequest();
         setField(request, "displayStartAt", LocalDateTime.of(2026, 5, 1, 10, 0));
         setField(request, "displayEndAt", LocalDateTime.of(2026, 5, 10, 22, 0));
+        setField(request, "displayEnabled", true);
         setField(request, "voteStartAt", LocalDateTime.of(2026, 5, 2, 10, 0));
         setField(request, "voteEndAt", LocalDateTime.of(2026, 5, 9, 22, 0));
+        setField(request, "voteEnabled", true);
+        return request;
+    }
+
+    public static VoteScheduleUpdateRequest 노출_시작이_종료_이후인_일정_수정_요청() {
+        VoteScheduleUpdateRequest request = new VoteScheduleUpdateRequest();
+        setField(request, "displayStartAt", LocalDateTime.of(2026, 5, 10, 22, 0));
+        setField(request, "displayEndAt", LocalDateTime.of(2026, 5, 1, 10, 0));
+        setField(request, "displayEnabled", true);
+        setField(request, "voteStartAt", LocalDateTime.of(2026, 5, 2, 10, 0));
+        setField(request, "voteEndAt", LocalDateTime.of(2026, 5, 9, 22, 0));
+        setField(request, "voteEnabled", true);
+        return request;
+    }
+
+    public static VoteScheduleUpdateRequest 투표_시작이_종료_이후인_일정_수정_요청() {
+        VoteScheduleUpdateRequest request = new VoteScheduleUpdateRequest();
+        setField(request, "displayStartAt", LocalDateTime.of(2026, 5, 1, 10, 0));
+        setField(request, "displayEndAt", LocalDateTime.of(2026, 5, 10, 22, 0));
+        setField(request, "displayEnabled", true);
+        setField(request, "voteStartAt", LocalDateTime.of(2026, 5, 9, 22, 0));
+        setField(request, "voteEndAt", LocalDateTime.of(2026, 5, 2, 10, 0));
+        setField(request, "voteEnabled", true);
         return request;
     }
 }

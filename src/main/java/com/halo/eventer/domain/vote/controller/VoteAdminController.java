@@ -58,7 +58,7 @@ public class VoteAdminController {
     public ResponseEntity<Void> updateVoteInfo(
             @Min(1) @PathVariable("voteId") Long voteId, @Valid @RequestBody VoteInfoUpdateRequest request) {
         voteAdminService.updateVoteInfo(voteId, request);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "투표 일정 수정 (오픈/노출 시간)")

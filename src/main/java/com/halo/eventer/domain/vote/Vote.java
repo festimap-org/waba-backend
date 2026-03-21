@@ -92,12 +92,16 @@ public class Vote extends BaseTime {
     public void updateSchedule(
             LocalDateTime displayStartAt,
             LocalDateTime displayEndAt,
+            boolean displayEnabled,
             LocalDateTime voteStartAt,
-            LocalDateTime voteEndAt) {
+            LocalDateTime voteEndAt,
+            boolean voteEnabled) {
         this.displayStartAt = displayStartAt;
         this.displayEndAt = displayEndAt;
+        this.displayEnabled = displayEnabled;
         this.voteStartAt = voteStartAt;
         this.voteEndAt = voteEndAt;
+        this.voteEnabled = voteEnabled;
     }
 
     public boolean isVotable() {

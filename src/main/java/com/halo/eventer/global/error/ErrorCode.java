@@ -49,6 +49,7 @@ public enum ErrorCode {
     ALREADY_VOTED("FV003", "Already voted", 409),
     VOTE_NOT_ENABLED("FV004", "Vote is not enabled", 400),
     VOTE_CANCEL_NOT_ALLOWED("FV005", "Vote cancel is not allowed", 400),
+    INVALID_SCHEDULE("FV006", "Start time must be before end time", 400),
 
     // Auth
     LOGIN_FAILED("A001", "Login Failed", 401),

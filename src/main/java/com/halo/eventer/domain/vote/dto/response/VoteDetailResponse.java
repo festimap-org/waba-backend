@@ -3,7 +3,6 @@ package com.halo.eventer.domain.vote.dto.response;
 import java.time.LocalDateTime;
 
 import com.halo.eventer.domain.vote.Vote;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

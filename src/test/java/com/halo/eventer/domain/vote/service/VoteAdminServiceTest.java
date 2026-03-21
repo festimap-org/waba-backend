@@ -16,13 +16,14 @@ import com.halo.eventer.domain.festival.exception.FestivalNotFoundException;
 import com.halo.eventer.domain.festival.repository.FestivalRepository;
 import com.halo.eventer.domain.vote.Vote;
 import com.halo.eventer.domain.vote.dto.response.VoteInfoResponse;
-import com.halo.eventer.domain.vote.repository.CandidateRepository;
 import com.halo.eventer.domain.vote.dto.response.VoteResponse;
 import com.halo.eventer.domain.vote.dto.response.VoteScheduleResponse;
 import com.halo.eventer.domain.vote.exception.VoteNotFoundException;
 import com.halo.eventer.domain.vote.fixture.VoteFixture;
+import com.halo.eventer.domain.vote.repository.CandidateRepository;
 import com.halo.eventer.domain.vote.repository.VoteRedisRepository;
 import com.halo.eventer.domain.vote.repository.VoteRepository;
+import com.halo.eventer.global.error.exception.BaseException;
 
 import static com.halo.eventer.domain.vote.fixture.VoteFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -145,6 +146,8 @@ class VoteAdminServiceTest {
 
         assertThat(vote.getDisplayStartAt()).isNotNull();
         assertThat(vote.getVoteStartAt()).isNotNull();
+        assertThat(vote.isDisplayEnabled()).isTrue();
+        assertThat(vote.isVoteEnabled()).isTrue();
     }
 
     @Test
@@ -153,6 +156,18 @@ class VoteAdminServiceTest {
 
         assertThatThrownBy(() -> voteAdminService.updateVoteSchedule(존재하지_않는_투표_ID, 투표_일정_수정_요청()))
                 .isInstanceOf(VoteNotFoundException.class);
+    }
+
+    @Test
+    void 투표_일정_수정_노출_시작이_종료_이후_실패() {
+        assertThatThrownBy(() -> voteAdminService.updateVoteSchedule(투표_ID, 노출_시작이_종료_이후인_일정_수정_요청()))
+                .isInstanceOf(BaseException.class);
+    }
+
+    @Test
+    void 투표_일정_수정_투표_시작이_종료_이후_실패() {
+        assertThatThrownBy(() -> voteAdminService.updateVoteSchedule(투표_ID, 투표_시작이_종료_이후인_일정_수정_요청()))
+                .isInstanceOf(BaseException.class);
     }
 
     @Test

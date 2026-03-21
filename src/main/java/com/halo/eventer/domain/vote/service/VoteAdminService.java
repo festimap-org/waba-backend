@@ -1,5 +1,6 @@
 package com.halo.eventer.domain.vote.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,8 @@ import com.halo.eventer.domain.vote.exception.VoteNotFoundException;
 import com.halo.eventer.domain.vote.repository.CandidateRepository;
 import com.halo.eventer.domain.vote.repository.VoteRedisRepository;
 import com.halo.eventer.domain.vote.repository.VoteRepository;
+import com.halo.eventer.global.error.ErrorCode;
+import com.halo.eventer.global.error.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -79,15 +82,25 @@ public class VoteAdminService {
 
     @Transactional
     public void updateVoteSchedule(Long voteId, VoteScheduleUpdateRequest request) {
+        validateSchedule(request.getDisplayStartAt(), request.getDisplayEndAt());
+        validateSchedule(request.getVoteStartAt(), request.getVoteEndAt());
         Vote vote = loadVoteOrThrow(voteId);
         vote.updateSchedule(
                 request.getDisplayStartAt(),
                 request.getDisplayEndAt(),
+                request.isDisplayEnabled(),
                 request.getVoteStartAt(),
-                request.getVoteEndAt());
+                request.getVoteEndAt(),
+                request.isVoteEnabled());
     }
 
     private Vote loadVoteOrThrow(Long voteId) {
         return voteRepository.findById(voteId).orElseThrow(() -> new VoteNotFoundException(voteId));
+    }
+
+    private void validateSchedule(LocalDateTime start, LocalDateTime end) {
+        if (start != null && end != null && !start.isBefore(end)) {
+            throw new BaseException(ErrorCode.INVALID_SCHEDULE);
+        }
     }
 }
